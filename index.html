@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seu Nome | Computational Design</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #050505;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* UI Minimalista */
+        .overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+            mix-blend-mode: difference;
+        }
+
+        h1 {
+            font-size: 4rem;
+            letter-spacing: -2px;
+            margin: 0;
+            font-weight: 100;
+        }
+
+        p {
+            font-size: 1rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-top: 10px;
+            color: #00ff88;
+        }
+
+        .code-snippet {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            font-size: 0.8rem;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay">
+        <h1>[ SEU NOME ]</h1>
+        <p>Architectural Intelligence</p>
+    </div>
+
+    <div class="code-snippet">
+        // SYSTEM: ONLINE<br>
+        // RENDER: THREE.JS<br>
+        // LOGIC: PARAMETRIC
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <script type="module">
+        import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
+
+        // 1. Setup da Cena
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x050505, 0.001); // Profundidade escura
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, -10, 15); // Câmera olhando meio de baixo/inclinada
+        camera.lookAt(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // 2. Criando o Terreno (PlaneGeometry)
+        // Pense nisso como criar uma malha no Revit com muitos pontos
+        const geometry = new THREE.PlaneGeometry(60, 60, 40, 40);
+
+        // Material estilo "Tron" / Wireframe tecnológico
+        const material = new THREE.MeshBasicMaterial({
+            color: 0x00ff88, // Verde Matrix/Tech
+            wireframe: true,
+            transparent: true,
+            opacity: 0.3
+        });
+
+        const terrain = new THREE.Mesh(geometry, material);
+        scene.add(terrain);
+
+        // 3. Lógica Paramétrica (A mágica do movimento)
+        let count = 0;
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Acessando os vértices da geometria (como se fosse uma lista de pontos no Dynamo)
+            const positionAttribute = geometry.attributes.position;
+            const vertex = new THREE.Vector3();
+
+            // Loop para alterar a altura (Z) de cada ponto baseado em Seno/Cosseno
+            for (let i = 0; i < positionAttribute.count; i++) {
+                vertex.fromBufferAttribute(positionAttribute, i);
+
+                // Essa fórmula matemática cria as ondas
+                // É idêntico ao que você faria no Grasshopper com um Graph Mapper
+                const waveX = Math.sin(vertex.x * 0.5 + count * 0.02) * 2;
+                const waveY = Math.cos(vertex.y * 0.3 + count * 0.03) * 2;
+
+                // Atualiza a altura Z
+                positionAttribute.setZ(i, waveX + waveY);
+            }
+
+            positionAttribute.needsUpdate = true; // Avisa o renderizador que a forma mudou
+            count += 1; // Avança o tempo
+
+            // Rotação leve do terreno todo
+            terrain.rotation.z += 0.001;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Responsividade
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
