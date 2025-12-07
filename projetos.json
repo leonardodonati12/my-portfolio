@@ -1,0 +1,22 @@
+[
+	{
+		"titulo": "Plugin Revit Automation",
+		"tech": "C# / Revit API / WPF",
+		"descricao": "Desenvolvi um plugin que automatiza a criação de vistas e folhas. Reduziu o tempo de documentação em 40%."
+	},
+	{
+		"titulo": "Pavilhão Paramétrico",
+		"tech": "Rhino / Grasshopper / Python",
+		"descricao": "Estudo de forma baseado em atratores solares. A geometria reage dinamicamente à incidência de luz simulada."
+	},
+	{
+		"titulo": "Otimização Topográfica",
+		"tech": "Dynamo / Civil 3D",
+		"descricao": "Script para cálculo de corte e aterro otimizado, gerando tabelas automáticas no Excel para orçamentação."
+	},
+	{
+		"titulo": "My Creative Portfolio",
+		"tech": "Three.js / JavaScript / WebGL",
+		"descricao": "Este site! Uma exploração de web design imersivo, geometria gerativa e consumo de dados JSON."
+	}
+]
