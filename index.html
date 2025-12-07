@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seu Nome | Computational Design</title>
+    <title>Leonardo Donati | Portfolio</title>
     <style>
         body {
             margin: 0;
             overflow: hidden;
             background-color: #050505;
             color: #fff;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Consolas', monospace;
         }
 
+        /* O Canvas 3D fica no fundo */
         #canvas-container {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -22,52 +23,112 @@
             z-index: -1;
         }
 
-        /* UI Minimalista */
-        .overlay {
+        /* Títulos principais (Flutuando na esquerda) */
+        .hero {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
+            top: 10%;
+            left: 5%;
             pointer-events: none;
-            mix-blend-mode: difference;
         }
 
         h1 {
-            font-size: 4rem;
-            letter-spacing: -2px;
+            font-size: 3.5rem;
             margin: 0;
-            font-weight: 100;
+            color: #fff;
+            mix-blend-mode: overlay;
         }
 
-        p {
-            font-size: 1rem;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            margin-top: 10px;
+        .subtitle {
             color: #00ff88;
+            letter-spacing: 3px;
+            font-size: 1rem;
+            margin-top: 10px;
         }
 
-        .code-snippet {
+        /* A Galeria Lateral (Scrollável) */
+        .gallery-container {
             position: absolute;
-            bottom: 30px;
-            left: 30px;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 100vh;
+            overflow-y: auto; /* Permite rolar para baixo */
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.6); /* Vidro escuro */
+            backdrop-filter: blur(10px); /* Efeito Blur estilo Windows Aero */
+            border-left: 1px solid #333;
+        }
+
+        /* Estilo dos Cards de Projeto */
+        .project-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #00ff88;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+            .project-card:hover {
+                transform: translateX(-10px); /* Efeito de "puxar" ao passar o mouse */
+                background: rgba(0, 255, 136, 0.1);
+            }
+
+        .project-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        .project-tech {
             font-size: 0.8rem;
-            color: #444;
+            color: #00ff88;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .project-desc {
+            font-size: 0.9rem;
+            color: #ccc;
+            line-height: 1.4;
+        }
+
+        /* Barra de rolagem estilizada */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #111;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #00ff88;
+        }
+
+        /* Responsividade para celular */
+        @media (max-width: 768px) {
+            .gallery-container {
+                width: 100%;
+                bottom: 0;
+                top: auto;
+                height: 50vh;
+                border-left: none;
+                border-top: 1px solid #333;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="overlay">
-        <h1>[ SEU NOME ]</h1>
-        <p>Architectural Intelligence</p>
+    <div class="hero">
+        <h1>LEONARDO<br>DONATI</h1>
+        <div class="subtitle">COMPUTATIONAL DESIGN & DEV</div>
     </div>
 
-    <div class="code-snippet">
-        // SYSTEM: ONLINE<br>
-        // RENDER: THREE.JS<br>
-        // LOGIC: PARAMETRIC
+    <div class="gallery-container" id="lista-projetos">
     </div>
 
     <div id="canvas-container"></div>
@@ -75,68 +136,85 @@
     <script type="module">
         import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
 
-        // 1. Setup da Cena
-        const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x050505, 0.001); // Profundidade escura
+        // --- CÓDIGO DA GALERIA DE PROJETOS (Aqui que você brilha) ---
 
+        // 1. Sua "Base de Dados" (Array de Objetos)
+        // Dica de C#: É como uma List<Project>
+        const meusProjetos = [
+            {
+                titulo: "Plugin Revit Automation",
+                tech: "C# / Revit API / WPF",
+                descricao: "Ferramenta desenvolvida para automatizar a criação de vistas e folhas, reduzindo o tempo de projeto em 40%."
+            },
+            {
+                titulo: "Pavilhão Paramétrico",
+                tech: "Rhino / Grasshopper / Python",
+                descricao: "Estudo de forma baseado em atratores solares. A geometria reage à incidência de luz simulada."
+            },
+            {
+                titulo: "Otimização Topográfica",
+                tech: "Dynamo / Civil 3D",
+                descricao: "Script para cálculo de corte e aterro otimizado, gerando tabelas automáticas no Excel."
+            },
+            {
+                titulo: "My Creative Portfolio",
+                tech: "Three.js / JavaScript / WebGL",
+                descricao: "Este site! Uma exploração de web design imersivo e geometria gerativa rodando no browser."
+            }
+        ];
+
+        // 2. O Loop Gerador (O "Foreach" do JavaScript)
+        const container = document.getElementById('lista-projetos');
+
+        meusProjetos.forEach(projeto => {
+            // Cria o HTML de cada card dinamicamente
+            const card = document.createElement('div');
+            card.className = 'project-card';
+
+            card.innerHTML = `
+                    <div class="project-title">${projeto.titulo}</div>
+                    <div class="project-tech">// ${projeto.tech}</div>
+                    <div class="project-desc">${projeto.descricao}</div>
+                `;
+
+            container.appendChild(card);
+        });
+
+
+        // --- CÓDIGO DO FUNDO 3D (Não precisa mexer) ---
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x050505, 0.002);
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, -10, 15); // Câmera olhando meio de baixo/inclinada
+        camera.position.set(-10, 5, 10);
         camera.lookAt(0, 0, 0);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        // 2. Criando o Terreno (PlaneGeometry)
-        // Pense nisso como criar uma malha no Revit com muitos pontos
-        const geometry = new THREE.PlaneGeometry(60, 60, 40, 40);
+        const geometry = new THREE.IcosahedronGeometry(4, 2);
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 });
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
 
-        // Material estilo "Tron" / Wireframe tecnológico
-        const material = new THREE.MeshBasicMaterial({
-            color: 0x00ff88, // Verde Matrix/Tech
-            wireframe: true,
-            transparent: true,
-            opacity: 0.3
-        });
-
-        const terrain = new THREE.Mesh(geometry, material);
-        scene.add(terrain);
-
-        // 3. Lógica Paramétrica (A mágica do movimento)
-        let count = 0;
+        // Partículas flutuando
+        const pGeo = new THREE.BufferGeometry();
+        const pCount = 2000;
+        const pPos = new Float32Array(pCount * 3);
+        for (let i = 0; i < pCount * 3; i++) pPos[i] = (Math.random() - 0.5) * 30;
+        pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+        const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff });
+        const particles = new THREE.Points(pGeo, pMat);
+        scene.add(particles);
 
         function animate() {
             requestAnimationFrame(animate);
-
-            // Acessando os vértices da geometria (como se fosse uma lista de pontos no Dynamo)
-            const positionAttribute = geometry.attributes.position;
-            const vertex = new THREE.Vector3();
-
-            // Loop para alterar a altura (Z) de cada ponto baseado em Seno/Cosseno
-            for (let i = 0; i < positionAttribute.count; i++) {
-                vertex.fromBufferAttribute(positionAttribute, i);
-
-                // Essa fórmula matemática cria as ondas
-                // É idêntico ao que você faria no Grasshopper com um Graph Mapper
-                const waveX = Math.sin(vertex.x * 0.5 + count * 0.02) * 2;
-                const waveY = Math.cos(vertex.y * 0.3 + count * 0.03) * 2;
-
-                // Atualiza a altura Z
-                positionAttribute.setZ(i, waveX + waveY);
-            }
-
-            positionAttribute.needsUpdate = true; // Avisa o renderizador que a forma mudou
-            count += 1; // Avança o tempo
-
-            // Rotação leve do terreno todo
-            terrain.rotation.z += 0.001;
-
+            sphere.rotation.y += 0.002;
+            particles.rotation.y -= 0.0005;
             renderer.render(scene, camera);
         }
-
         animate();
 
-        // Responsividade
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
