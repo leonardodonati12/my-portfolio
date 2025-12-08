@@ -13,6 +13,7 @@
             color: #fff;
             font-family: 'Consolas', 'Courier New', monospace;
             cursor: none;
+            user-select: none;
         }
 
         #canvas-container {
@@ -58,7 +59,7 @@
             box-sizing: border-box;
         }
 
-        /* ESTILOS DE TEXTO */
+        /* TEXTOS OVERLAY */
         .intro-name {
             font-size: 4rem;
             font-weight: 900;
@@ -107,6 +108,21 @@
             margin-bottom: 0;
         }
 
+        .continue-hint {
+            margin-top: 50px;
+            font-size: 0.8rem;
+            color: #555;
+            letter-spacing: 2px;
+            animation: pulse 2s infinite;
+            cursor: none;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+
+        #phrases-overlay .continue-hint {
+            margin-top: 50px;
+        }
+
         .enter-btn {
             padding: 15px 40px;
             border: 1px solid #00ff88;
@@ -127,22 +143,174 @@
                 box-shadow: 0 0 20px #00ff88;
             }
 
-        .continue-hint {
-            margin-top: 50px;
-            font-size: 0.8rem;
-            color: #555;
-            letter-spacing: 2px;
-            animation: pulse 2s infinite;
-            cursor: none;
+        /* --- SITE UI (HERO) --- */
+        .hero {
+            position: absolute;
+            top: 10%;
+            left: 5%;
+            pointer-events: none;
             opacity: 0;
-            transition: opacity 1s;
+            transition: opacity 2s;
+            z-index: 10;
         }
 
-        #phrases-overlay .continue-hint {
-            margin-top: 50px;
+            .hero h1, .hero .subtitle {
+                pointer-events: auto;
+                cursor: help;
+            }
+
+        h1 {
+            font-size: 3.5rem;
+            margin: 0;
+            color: #fff;
+            mix-blend-mode: overlay;
+            line-height: 1.1;
         }
 
-        /* MODAL */
+        .subtitle {
+            color: #00ff88;
+            letter-spacing: 3px;
+            font-size: 1rem;
+            margin-top: 15px;
+            display: inline-block;
+            padding: 5px 0;
+        }
+
+        .interaction-hint {
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #555;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 2s;
+        }
+
+        body.active .hero, body.active .interaction-hint {
+            opacity: 1;
+        }
+
+        /* --- PAINEL FLUTUANTE DE HABILIDADES (REVIT STYLE) --- */
+
+        /* O Botão Lateral (Aba) */
+        #skills-toggle {
+            position: fixed;
+            top: 20%;
+            left: 0;
+            background: #000;
+            border: 1px solid #00ff88;
+            border-left: none;
+            color: #00ff88;
+            padding: 20px 10px;
+            writing-mode: vertical-rl;
+            text-orientation: mixed; /* Texto Vertical */
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: none;
+            z-index: 4000;
+            transition: all 0.3s;
+            opacity: 0; /* Começa invisível até entrar no site */
+        }
+
+        body.active #skills-toggle {
+            opacity: 1;
+        }
+
+        #skills-toggle:hover {
+            background: #00ff88;
+            color: #000;
+            padding-left: 20px;
+        }
+
+        /* A Janela Flutuante */
+        #skills-panel {
+            position: fixed;
+            top: 20%;
+            left: 60px; /* Logo ao lado do botão */
+            width: 300px;
+            background: rgba(10, 10, 10, 0.95);
+            border: 1px solid #333;
+            box-shadow: 5px 5px 20px rgba(0,0,0,0.5);
+            z-index: 4001;
+            display: none; /* Escondido inicialment */
+            flex-direction: column;
+        }
+
+        /* Cabeçalho para Arrastar (Handle) */
+        .panel-header {
+            background: #1a1a1a;
+            color: #888;
+            padding: 8px 15px;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            cursor: grab; /* Mãozinha para arrastar */
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .panel-header:active {
+                cursor: grabbing;
+                background: #222;
+            }
+
+        .close-panel {
+            cursor: pointer;
+            color: #555;
+        }
+
+            .close-panel:hover {
+                color: #fff;
+            }
+
+        /* Conteúdo das Skills */
+        .panel-content {
+            padding: 20px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .skill-item {
+            margin-bottom: 15px;
+        }
+
+        .skill-name {
+            font-size: 0.8rem;
+            color: #fff;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .skill-percent {
+            color: #555;
+        }
+
+        /* Barra de Carregamento Retrô (Blocos) */
+        .retro-bar {
+            display: flex;
+            gap: 2px;
+        }
+
+        .bar-block {
+            height: 10px;
+            flex: 1;
+            background: #111;
+            border: 1px solid #333;
+        }
+
+            .bar-block.filled {
+                background: #00ff88;
+                box-shadow: 0 0 5px #00ff88;
+                border-color: #00ff88;
+            }
+
+        /* --- MODAL DE PROJETO --- */
         #project-modal {
             position: fixed;
             top: 50%;
@@ -153,7 +321,7 @@
             background: rgba(10, 10, 10, 0.95);
             border: 1px solid #00ff88;
             padding: 40px;
-            z-index: 4000;
+            z-index: 4005;
             display: none;
             flex-direction: column;
             box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
@@ -202,82 +370,7 @@
                 color: #00ff88;
             }
 
-        /* EFEITOS ESPECIAIS */
-        .char-hidden {
-            opacity: 0;
-        }
-
-        .glitch-char {
-            color: #555;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 0.5;
-            }
-
-            50% {
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
-        }
-
-        /* --- SITE PRINCIPAL (HERO RESTAURADO) --- */
-        .hero {
-            position: absolute;
-            top: 10%; /* VOLTOU PRO TOPO */
-            left: 5%;
-            pointer-events: none; /* Deixa o clique passar pro 3D... */
-            opacity: 0;
-            transition: opacity 2s;
-            z-index: 10;
-        }
-
-            /* ...MAS ativamos o clique nos textos filhos para o efeito funcionar */
-            .hero h1, .hero .subtitle {
-                pointer-events: auto;
-                cursor: help; /* Indica interatividade */
-            }
-
-        h1 {
-            font-size: 3.5rem;
-            margin: 0;
-            color: #fff;
-            mix-blend-mode: overlay;
-            line-height: 1.1;
-        }
-
-        .subtitle {
-            color: #00ff88;
-            letter-spacing: 3px;
-            font-size: 1rem;
-            margin-top: 15px;
-            display: inline-block; /* Importante para o efeito de hover funcionar bem */
-            padding: 5px 0;
-        }
-
-        .interaction-hint {
-            position: absolute;
-            bottom: 5%;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #555;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 2s;
-        }
-
-        body.active .hero, body.active .interaction-hint {
-            opacity: 1;
-        }
-
+        /* EXTRAS */
         ::-webkit-scrollbar {
             width: 5px;
         }
@@ -313,23 +406,45 @@
             transition: width 0.2s, height 0.2s, background-color 0.2s;
         }
 
+        .char-hidden {
+            opacity: 0;
+        }
+
+        .glitch-char {
+            color: #555;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 2.5rem;
-            }
-
-            .intro-name {
-                font-size: 2.5rem;
-            }
-
-            #about-overlay, #phrases-overlay {
-                padding: 0 10%;
             }
 
             #project-modal {
                 width: 90%;
             }
 
+            #skills-panel {
+                width: 80%;
+                left: 10%;
+                top: 10%;
+            }
+            /* No celular não flutua tanto */
             body {
                 cursor: auto;
             }
@@ -349,13 +464,11 @@
         <div class="intro-role" id="scramble-text"></div>
         <button class="enter-btn" id="start-btn">[ ENTER SYSTEM ]</button>
     </div>
-
     <div id="about-overlay" class="overlay-screen">
         <div class="about-title">WHO AM I?</div>
         <div class="about-text" id="bio-text-container"></div>
         <div class="continue-hint" id="about-hint">[ CLICK ANYWHERE TO CONTINUE ]</div>
     </div>
-
     <div id="phrases-overlay" class="overlay-screen">
         <div class="phrases-text" id="phrases-container"></div>
         <div class="continue-hint" style="opacity: 1;">[ CLICK ANYWHERE TO CONTINUE ]</div>
@@ -369,15 +482,18 @@
     </div>
 
     <div class="hero">
-        <h1 id="hero-name">
-            <div id="name-line-1">LEONARDO</div>
-            <div id="name-line-2">DONATI</div>
-        </h1>
+        <h1 id="hero-name"><div id="name-line-1">LEONARDO</div><div id="name-line-2">DONATI</div></h1>
         <div class="subtitle" id="hero-subtitle">ARCHITECTURE STUDENT</div>
     </div>
+    <div class="interaction-hint">[ DRAG TO ROTATE • CLICK NODES FOR DETAILS ]</div>
 
-    <div class="interaction-hint">
-        [ DRAG TO ROTATE • CLICK NODES FOR DETAILS ]
+    <div id="skills-toggle">ABILITIES</div> <div id="skills-panel">
+        <div class="panel-header" id="panel-header">
+            <span>:: PROPERTIES : SYSTEM STATS</span>
+            <span class="close-panel" id="close-panel-btn">×</span>
+        </div>
+        <div class="panel-content" id="skills-list">
+        </div>
     </div>
 
     <div id="canvas-container"></div>
@@ -386,115 +502,123 @@
         import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
         import { OrbitControls } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls.js';
 
-        // DOM ELEMENTS
-        const introOverlay = document.getElementById('intro-overlay');
-        const aboutOverlay = document.getElementById('about-overlay');
-        const phrasesOverlay = document.getElementById('phrases-overlay');
-        const startBtn = document.getElementById('start-btn');
-        const bioContainer = document.getElementById('bio-text-container');
-        const aboutHint = document.getElementById('about-hint');
-        const phrasesContainer = document.getElementById('phrases-container');
+        // --- DADOS DAS HABILIDADES ---
+        const mySkills = [
+            { name: "REVIT / BIM", level: 90 },
+            { name: "RHINO / GRASSHOPPER", level: 85 },
+            { name: "DYNAMO", level: 80 },
+            { name: "C# / API DEV", level: 70 },
+            { name: "PYTHON", level: 60 },
+            { name: "ARCHICAD", level: 75 },
+            { name: "HTML / CSS / JS", level: 50 },
+            { name: "CREATIVITY", level: 100 }
+        ];
 
-        // Modal
-        const modal = document.getElementById('project-modal');
-        const modalTitle = document.getElementById('modal-title');
-        const modalTech = document.getElementById('modal-tech');
-        const modalDesc = document.getElementById('modal-desc');
-        const closeBtn = document.getElementById('close-modal-btn');
+        // --- LÓGICA DO PAINEL DE HABILIDADES ---
+        const skillsToggle = document.getElementById('skills-toggle');
+        const skillsPanel = document.getElementById('skills-panel');
+        const panelHeader = document.getElementById('panel-header');
+        const closePanelBtn = document.getElementById('close-panel-btn');
+        const skillsList = document.getElementById('skills-list');
 
-        // Hero Interaction Elements
-        const heroName = document.getElementById('hero-name');
-        const nameLine1 = document.getElementById('name-line-1');
-        const nameLine2 = document.getElementById('name-line-2');
-        const heroSubtitle = document.getElementById('hero-subtitle');
+        // 1. Gerar as barras retrô
+        mySkills.forEach(skill => {
+            const item = document.createElement('div');
+            item.className = 'skill-item';
 
-        const bioText = "I avoid definitions; I feel they limit me.\n\nWhenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative.\n\nI seek to make each piece obey an invisible rule and decide to tell a unique story.\n\nI persist in the attempt to compile everything that resonates with me...";
-        const phrasesList = ["I wrote the code, but you are the one rendering it.", "Careful where you click: some variables are loose.", "As you observe the project, the algorithm observes you.", "Don't be afraid. It is just logic trying to be art.", "Loading fragments of a thought process...", "This is not a website. It is a render of my consciousness.", "Here, gravity is just a syntax suggestion.", "You are not on the internet. You are inside a loop of my creative process.", "Space under construction. The mind, too.", "Don't touch the screen. The digital concrete is still wet.", "Are you the user, or just another parameter?", "Welcome to the backend of my imagination.", "Compiling chaos into structure. Please wait.", "Entry permitted. Exit not guaranteed.", "Everything here is code. Even the void.", "This is a portfolio. This is not a portfolio.", "You are in my mind now. Good luck.", "This page is thinking about you right now.", "Your visit has been logged. My architecture now knows who you are.", "To navigate here is to compile memories that are not yours.", "There is a system error: it has learned to feel."];
+            // Calcula quantos blocos preenchidos (total 10 blocos)
+            const totalBlocks = 15;
+            const filledBlocks = Math.round((skill.level / 100) * totalBlocks);
 
-        // --- INTERAÇÃO NO NOME E SUBTITULO (NOVO) ---
+            let blocksHTML = '';
+            for (let i = 0; i < totalBlocks; i++) {
+                const isFilled = i < filledBlocks ? 'filled' : '';
+                blocksHTML += `<div class="bar-block ${isFilled}"></div>`;
+            }
 
-        // Efeito no Nome (Hover)
-        heroName.addEventListener('mouseenter', () => {
-            scrambleTo(nameLine1, "LEONARDO");
-            scrambleTo(nameLine2, "DONATI");
+            item.innerHTML = `
+                    <div class="skill-name">
+                        <span>${skill.name}</span>
+                        <span class="skill-percent">[${skill.level}%]</span>
+                    </div>
+                    <div class="retro-bar">${blocksHTML}</div>
+                `;
+            skillsList.appendChild(item);
         });
 
-        // Efeito no Subtítulo (Troca de texto)
-        heroSubtitle.addEventListener('mouseenter', () => {
-            scrambleTo(heroSubtitle, "SCRAMBLED THOUGHTS");
+        // 2. Abrir/Fechar Painel
+        skillsToggle.addEventListener('click', () => {
+            skillsPanel.style.display = 'flex';
+            skillsToggle.style.opacity = '0'; // Esconde a aba quando abre
         });
 
-        heroSubtitle.addEventListener('mouseleave', () => {
-            scrambleTo(heroSubtitle, "ARCHITECTURE STUDENT");
+        closePanelBtn.addEventListener('click', () => {
+            skillsPanel.style.display = 'none';
+            skillsToggle.style.opacity = '1';
+        });
+
+        // 3. Lógica de Arrastar (Draggable)
+        let isDragging = false;
+        let startX, startY, initialLeft, initialTop;
+
+        panelHeader.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            // Pega a posição atual da janela
+            const rect = skillsPanel.getBoundingClientRect();
+            initialLeft = rect.left;
+            initialTop = rect.top;
+            panelHeader.style.cursor = 'grabbing';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            skillsPanel.style.left = `${initialLeft + dx}px`;
+            skillsPanel.style.top = `${initialTop + dy}px`;
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+            panelHeader.style.cursor = 'grab';
         });
 
 
-        // --- FLUXO DE NAVEGAÇÃO ---
-        startBtn.addEventListener('click', () => {
-            introOverlay.style.opacity = '0';
-            setTimeout(() => { introOverlay.style.display = 'none'; aboutOverlay.style.display = 'flex'; runGhostTypewriter(bioText, bioContainer, () => { aboutHint.style.opacity = '1'; }); }, 1000);
-        });
+        // --- CÓDIGO ANTERIOR (MANTIDO) ---
+        const introOverlay = document.getElementById('intro-overlay'); const aboutOverlay = document.getElementById('about-overlay'); const phrasesOverlay = document.getElementById('phrases-overlay'); const startBtn = document.getElementById('start-btn'); const bioContainer = document.getElementById('bio-text-container'); const aboutHint = document.getElementById('about-hint'); const phrasesContainer = document.getElementById('phrases-container'); const modal = document.getElementById('project-modal'); const modalTitle = document.getElementById('modal-title'); const modalTech = document.getElementById('modal-tech'); const modalDesc = document.getElementById('modal-desc'); const closeBtn = document.getElementById('close-modal-btn'); const heroName = document.getElementById('hero-name'); const nameLine1 = document.getElementById('name-line-1'); const nameLine2 = document.getElementById('name-line-2'); const heroSubtitle = document.getElementById('hero-subtitle'); const bioText = "I avoid definitions; I feel they limit me.\n\nWhenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative.\n\nI seek to make each piece obey an invisible rule and decide to tell a unique story.\n\nI persist in the attempt to compile everything that resonates with me..."; const phrasesList = ["I wrote the code, but you are the one rendering it.", "Careful where you click: some variables are loose.", "As you observe the project, the algorithm observes you.", "Don't be afraid. It is just logic trying to be art.", "Loading fragments of a thought process...", "This is not a website. It is a render of my consciousness.", "Here, gravity is just a syntax suggestion.", "You are not on the internet. You are inside a loop of my creative process.", "Space under construction. The mind, too.", "Don't touch the screen. The digital concrete is still wet.", "Are you the user, or just another parameter?", "Welcome to the backend of my imagination.", "Compiling chaos into structure. Please wait.", "Entry permitted. Exit not guaranteed.", "Everything here is code. Even the void.", "This is a portfolio. This is not a portfolio.", "You are in my mind now. Good luck.", "This page is thinking about you right now.", "Your visit has been logged. My architecture now knows who you are.", "To navigate here is to compile memories that are not yours.", "There is a system error: it has learned to feel."];
 
+        heroName.addEventListener('mouseenter', () => { scrambleTo(nameLine1, "LEONARDO"); scrambleTo(nameLine2, "DONATI"); });
+        heroSubtitle.addEventListener('mouseenter', () => { scrambleTo(heroSubtitle, "SCRAMBLED THOUGHTS"); });
+        heroSubtitle.addEventListener('mouseleave', () => { scrambleTo(heroSubtitle, "ARCHITECTURE STUDENT"); });
+
+        startBtn.addEventListener('click', () => { introOverlay.style.opacity = '0'; setTimeout(() => { introOverlay.style.display = 'none'; aboutOverlay.style.display = 'flex'; runGhostTypewriter(bioText, bioContainer, () => { aboutHint.style.opacity = '1'; }); }, 1000); });
         let bioFinished = false;
-        aboutOverlay.addEventListener('click', () => {
-            if (!bioFinished) { bioFinished = true; const spans = bioContainer.querySelectorAll('span'); spans.forEach(s => { s.className = ''; s.innerText = s.dataset.char; s.style.opacity = '1'; }); aboutHint.style.opacity = '1'; return; }
-            aboutOverlay.style.opacity = '0';
-            setTimeout(() => { aboutOverlay.style.display = 'none'; phrasesOverlay.style.display = 'flex'; phrasesContainer.innerText = ""; runPhrasesLoop(); }, 1000);
-        });
-
+        aboutOverlay.addEventListener('click', () => { if (!bioFinished) { bioFinished = true; const spans = bioContainer.querySelectorAll('span'); spans.forEach(s => { s.className = ''; s.innerText = s.dataset.char; s.style.opacity = '1'; }); aboutHint.style.opacity = '1'; return; } aboutOverlay.style.opacity = '0'; setTimeout(() => { aboutOverlay.style.display = 'none'; phrasesOverlay.style.display = 'flex'; phrasesContainer.innerText = ""; runPhrasesLoop(); }, 1000); });
         let stopPhrasesLoop = false;
-        phrasesOverlay.addEventListener('click', () => {
-            stopPhrasesLoop = true; phrasesOverlay.style.opacity = '0'; document.body.classList.add('active'); setTimeout(() => { phrasesOverlay.style.display = 'none'; }, 1000);
-        });
+        phrasesOverlay.addEventListener('click', () => { stopPhrasesLoop = true; phrasesOverlay.style.opacity = '0'; document.body.classList.add('active'); setTimeout(() => { phrasesOverlay.style.display = 'none'; }, 1000); });
 
-        async function runPhrasesLoop() {
-            let index = 0;
-            while (!stopPhrasesLoop) { await scrambleTo(phrasesContainer, phrasesList[index]); if (stopPhrasesLoop) break; await new Promise(r => setTimeout(r, 4000)); if (stopPhrasesLoop) break; index = (index + 1) % phrasesList.length; }
-        }
+        async function runPhrasesLoop() { let index = 0; while (!stopPhrasesLoop) { await scrambleTo(phrasesContainer, phrasesList[index]); if (stopPhrasesLoop) break; await new Promise(r => setTimeout(r, 4000)); if (stopPhrasesLoop) break; index = (index + 1) % phrasesList.length; } }
+        function scrambleTo(element, newText) { return new Promise(resolve => { const oldText = element.innerText; const length = Math.max(oldText.length, newText.length); const queue = []; const chars = '!<>-_\\/[]{}—=+*^?#________'; for (let i = 0; i < length; i++) { const from = oldText[i] || ''; const to = newText[i] || ''; const start = Math.floor(Math.random() * 40); const end = start + Math.floor(Math.random() * 40); queue.push({ from, to, start, end }); } let frame = 0; const update = () => { let output = ''; let complete = 0; for (let i = 0; i < queue.length; i++) { let { from, to, start, end, char } = queue[i]; if (frame >= end) { complete++; output += to; } else if (frame >= start) { if (!char || Math.random() < 0.28) { char = chars[Math.floor(Math.random() * chars.length)]; queue[i].char = char; } output += `<span class="glitch-char">${char}</span>`; } else { output += from; } } element.innerHTML = output; if (complete === queue.length) { resolve(); } else { if (stopPhrasesLoop && element === phrasesContainer) { resolve(); return; } requestAnimationFrame(update); frame++; } }; update(); }); }
+        async function runGhostTypewriter(text, element, callback) { const chars = '!<>-_\\/[]{}—=+*^?#________'; element.innerHTML = ''; const spans = []; for (let i = 0; i < text.length; i++) { const char = text[i]; if (char === '\n') { element.appendChild(document.createElement('br')); spans.push({ isBreak: true }); } else { const span = document.createElement('span'); span.innerText = char; span.dataset.char = char; span.className = 'char-hidden'; element.appendChild(span); spans.push({ dom: span, isBreak: false }); } } for (let i = 0; i < spans.length; i++) { if (bioFinished) break; const item = spans[i]; if (item.isBreak) { await new Promise(r => setTimeout(r, 30)); continue; } const span = item.dom; if (span.innerText === ' ') { span.className = ''; span.innerHTML = '&nbsp;'; span.style.opacity = '1'; await new Promise(r => setTimeout(r, 5)); continue; } span.className = 'glitch-char'; span.style.opacity = '1'; for (let j = 0; j < 3; j++) { span.innerText = chars[Math.floor(Math.random() * chars.length)]; await new Promise(r => setTimeout(r, 10)); } span.innerText = span.dataset.char; span.className = ''; } bioFinished = true; if (callback) callback(); }
 
-        function scrambleTo(element, newText) {
-            return new Promise(resolve => {
-                const oldText = element.innerText;
-                const length = Math.max(oldText.length, newText.length);
-                const queue = [];
-                const chars = '!<>-_\\/[]{}—=+*^?#________';
-                for (let i = 0; i < length; i++) { const from = oldText[i] || ''; const to = newText[i] || ''; const start = Math.floor(Math.random() * 40); const end = start + Math.floor(Math.random() * 40); queue.push({ from, to, start, end }); }
-                let frame = 0;
-                const update = () => { let output = ''; let complete = 0; for (let i = 0; i < queue.length; i++) { let { from, to, start, end, char } = queue[i]; if (frame >= end) { complete++; output += to; } else if (frame >= start) { if (!char || Math.random() < 0.28) { char = chars[Math.floor(Math.random() * chars.length)]; queue[i].char = char; } output += `<span class="glitch-char">${char}</span>`; } else { output += from; } } element.innerHTML = output; if (complete === queue.length) { resolve(); } else { if (stopPhrasesLoop && element === phrasesContainer) { resolve(); return; } requestAnimationFrame(update); frame++; } }; update();
-            });
-        }
-
-        async function runGhostTypewriter(text, element, callback) {
-            const chars = '!<>-_\\/[]{}—=+*^?#________'; element.innerHTML = ''; const spans = [];
-            for (let i = 0; i < text.length; i++) { const char = text[i]; if (char === '\n') { element.appendChild(document.createElement('br')); spans.push({ isBreak: true }); } else { const span = document.createElement('span'); span.innerText = char; span.dataset.char = char; span.className = 'char-hidden'; element.appendChild(span); spans.push({ dom: span, isBreak: false }); } }
-            for (let i = 0; i < spans.length; i++) { if (bioFinished) break; const item = spans[i]; if (item.isBreak) { await new Promise(r => setTimeout(r, 30)); continue; } const span = item.dom; if (span.innerText === ' ') { span.className = ''; span.innerHTML = '&nbsp;'; span.style.opacity = '1'; await new Promise(r => setTimeout(r, 5)); continue; } span.className = 'glitch-char'; span.style.opacity = '1'; for (let j = 0; j < 3; j++) { span.innerText = chars[Math.floor(Math.random() * chars.length)]; await new Promise(r => setTimeout(r, 10)); } span.innerText = span.dataset.char; span.className = ''; }
-            bioFinished = true; if (callback) callback();
-        }
-
-        // --- HACKER SCRAMBLE E RESTO ---
-        const roles = ["ARCHITECTURE STUDENT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND"];
-        const el = document.getElementById('scramble-text'); const chars = '!<>-_\\/[]{}—=+*^?#________'; let roleIndex = 0; let loopInterval = null;
-        const setText = (newText) => { const oldText = el.innerText; const length = Math.max(oldText.length, newText.length); let queue = []; for (let i = 0; i < length; i++) { const from = oldText[i] || ''; const to = newText[i] || ''; const start = Math.floor(Math.random() * 40); const end = start + Math.floor(Math.random() * 40); queue.push({ from, to, start, end }); } cancelAnimationFrame(loopInterval); let frame = 0; const update = () => { let output = ''; let complete = 0; for (let i = 0, n = queue.length; i < n; i++) { let { from, to, start, end, char } = queue[i]; if (frame >= end) { complete++; output += to; } else if (frame >= start) { if (!char || Math.random() < 0.28) { char = chars[Math.floor(Math.random() * chars.length)]; queue[i].char = char; } output += `<span style="color: #444;">${char}</span>`; } else { output += from; } } el.innerHTML = output; if (complete === queue.length) { setTimeout(nextRole, 2000); } else { loopInterval = requestAnimationFrame(update); frame++; } }; update(); };
-        const nextRole = () => { if (document.body.classList.contains('active') || aboutOverlay.style.display === 'flex' || phrasesOverlay.style.display === 'flex') return; setText(roles[roleIndex]); roleIndex = (roleIndex + 1) % roles.length; }; nextRole();
-
-        const cursorDot = document.querySelector('.cursor-dot'); const cursorOutline = document.querySelector('.cursor-outline');
-        window.addEventListener('mousemove', function (e) { const posX = e.clientX; const posY = e.clientY; cursorDot.style.left = `${posX}px`; cursorDot.style.top = `${posY}px`; cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" }); });
-        const addHoverEffect = (element) => { element.addEventListener('mouseenter', () => { cursorOutline.style.width = '60px'; cursorOutline.style.height = '60px'; cursorOutline.style.backgroundColor = 'rgba(0, 255, 136, 0.1)'; }); element.addEventListener('mouseleave', () => { cursorOutline.style.width = '40px'; cursorOutline.style.height = '40px'; cursorOutline.style.backgroundColor = 'transparent'; }); };
-        addHoverEffect(startBtn); addHoverEffect(aboutOverlay); addHoverEffect(phrasesOverlay); addHoverEffect(closeBtn);
-        // Adiciona efeito de cursor também no nome e subtítulo
-        addHoverEffect(heroName); addHoverEffect(heroSubtitle);
+        const roles = ["ARCHITECTURE STUDENT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND"]; const el = document.getElementById('scramble-text'); const chars = '!<>-_\\/[]{}—=+*^?#________'; let roleIndex = 0; let loopInterval = null; const setText = (newText) => { const oldText = el.innerText; const length = Math.max(oldText.length, newText.length); let queue = []; for (let i = 0; i < length; i++) { const from = oldText[i] || ''; const to = newText[i] || ''; const start = Math.floor(Math.random() * 40); const end = start + Math.floor(Math.random() * 40); queue.push({ from, to, start, end }); } cancelAnimationFrame(loopInterval); let frame = 0; const update = () => { let output = ''; let complete = 0; for (let i = 0, n = queue.length; i < n; i++) { let { from, to, start, end, char } = queue[i]; if (frame >= end) { complete++; output += to; } else if (frame >= start) { if (!char || Math.random() < 0.28) { char = chars[Math.floor(Math.random() * chars.length)]; queue[i].char = char; } output += `<span style="color: #444;">${char}</span>`; } else { output += from; } } el.innerHTML = output; if (complete === queue.length) { setTimeout(nextRole, 2000); } else { loopInterval = requestAnimationFrame(update); frame++; } }; update(); }; const nextRole = () => { if (document.body.classList.contains('active') || aboutOverlay.style.display === 'flex' || phrasesOverlay.style.display === 'flex') return; setText(roles[roleIndex]); roleIndex = (roleIndex + 1) % roles.length; }; nextRole();
+        const cursorDot = document.querySelector('.cursor-dot'); const cursorOutline = document.querySelector('.cursor-outline'); window.addEventListener('mousemove', function (e) { const posX = e.clientX; const posY = e.clientY; cursorDot.style.left = `${posX}px`; cursorDot.style.top = `${posY}px`; cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" }); }); const addHoverEffect = (element) => { element.addEventListener('mouseenter', () => { cursorOutline.style.width = '60px'; cursorOutline.style.height = '60px'; cursorOutline.style.backgroundColor = 'rgba(0, 255, 136, 0.1)'; }); element.addEventListener('mouseleave', () => { cursorOutline.style.width = '40px'; cursorOutline.style.height = '40px'; cursorOutline.style.backgroundColor = 'transparent'; }); }; addHoverEffect(startBtn); addHoverEffect(aboutOverlay); addHoverEffect(phrasesOverlay); addHoverEffect(closeBtn); addHoverEffect(heroName); addHoverEffect(heroSubtitle); addHoverEffect(panelHeader); addHoverEffect(skillsToggle);
 
         const scene = new THREE.Scene(); scene.fog = new THREE.FogExp2(0x050505, 0.002); const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.set(-10, 5, 10); camera.lookAt(0, 0, 0); const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); renderer.setSize(window.innerWidth, window.innerHeight); document.getElementById('canvas-container').appendChild(renderer.domElement); const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.dampingFactor = 0.05; controls.enableZoom = true; controls.autoRotate = false;
         const geometry = new THREE.IcosahedronGeometry(4, 2); const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 }); const sphere = new THREE.Mesh(geometry, material); scene.add(sphere);
         const pGeo = new THREE.BufferGeometry(); const pCount = 2000; const pPos = new Float32Array(pCount * 3); for (let i = 0; i < pCount * 3; i++) pPos[i] = (Math.random() - 0.5) * 30; pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3)); const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff }); const particles = new THREE.Points(pGeo, pMat); scene.add(particles);
-
-        const raycaster = new THREE.Raycaster(); const mouse = new THREE.Vector2(); const projectNodes = [];
-        fetch('projetos.json').then(r => r.json()).then(projetos => { const projectGroup = new THREE.Group(); scene.add(projectGroup); const radius = 6.5; const goldenAngle = Math.PI * (3 - Math.sqrt(5)); projetos.forEach((proj, i) => { const y = 1 - (i / (projetos.length - 1)) * 2; const radiusAtY = Math.sqrt(1 - y * y); const theta = goldenAngle * i; const x = Math.cos(theta) * radiusAtY; const z = Math.sin(theta) * radiusAtY; const nodeGeo = new THREE.SphereGeometry(0.3, 16, 16); const nodeMat = new THREE.MeshBasicMaterial({ color: 0xffffff }); const node = new THREE.Mesh(nodeGeo, nodeMat); node.position.set(x * radius, y * radius, z * radius); node.userData = { id: i, data: proj }; projectNodes.push(node); projectGroup.add(node); }); }).catch(e => console.error(e));
-        window.addEventListener('click', (event) => { if (!document.body.classList.contains('active')) return; if (event.target.closest('#project-modal') || event.target.closest('.close-modal') || event.target.closest('.hero')) return; mouse.x = (event.clientX / window.innerWidth) * 2 - 1; mouse.y = -(event.clientY / window.innerHeight) * 2 + 1; raycaster.setFromCamera(mouse, camera); const intersects = raycaster.intersectObjects(projectNodes); if (intersects.length > 0) { const clickedNode = intersects[0].object; const projectData = clickedNode.userData.data; openModal(projectData); } });
+        const raycaster = new THREE.Raycaster(); const mouse = new THREE.Vector2(); const projectNodes = []; fetch('projetos.json').then(r => r.json()).then(projetos => { const projectGroup = new THREE.Group(); scene.add(projectGroup); const radius = 6.5; const goldenAngle = Math.PI * (3 - Math.sqrt(5)); projetos.forEach((proj, i) => { const y = 1 - (i / (projetos.length - 1)) * 2; const radiusAtY = Math.sqrt(1 - y * y); const theta = goldenAngle * i; const x = Math.cos(theta) * radiusAtY; const z = Math.sin(theta) * radiusAtY; const nodeGeo = new THREE.SphereGeometry(0.3, 16, 16); const nodeMat = new THREE.MeshBasicMaterial({ color: 0xffffff }); const node = new THREE.Mesh(nodeGeo, nodeMat); node.position.set(x * radius, y * radius, z * radius); node.userData = { id: i, data: proj }; projectNodes.push(node); projectGroup.add(node); }); }).catch(e => console.error(e));
+        window.addEventListener('click', (event) => {
+            if (!document.body.classList.contains('active')) return;
+            // Ignora se clicou no painel de skills
+            if (event.target.closest('#project-modal') || event.target.closest('.close-modal') || event.target.closest('.hero') || event.target.closest('#skills-panel') || event.target.closest('#skills-toggle')) return;
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1; mouse.y = -(event.clientY / window.innerHeight) * 2 + 1; raycaster.setFromCamera(mouse, camera); const intersects = raycaster.intersectObjects(projectNodes); if (intersects.length > 0) { const clickedNode = intersects[0].object; const projectData = clickedNode.userData.data; openModal(projectData); }
+        });
         function openModal(data) { modalTitle.innerText = data.titulo; modalTech.innerText = "// " + data.tech; modalDesc.innerText = data.descricao; modal.style.display = 'flex'; setTimeout(() => { modal.classList.add('open'); }, 10); }
         closeBtn.addEventListener('click', () => { modal.classList.remove('open'); setTimeout(() => { modal.style.display = 'none'; }, 500); });
-        function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); } animate();
-        window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
+        function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); } animate(); window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
     </script>
 </body>
 </html>
