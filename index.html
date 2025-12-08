@@ -100,18 +100,18 @@
             right: 300px;
         }
 
-        /* --- ABAS LATERAIS (ESTÉTICA GOOGLE CHROME DARK) --- */
+        /* --- ABAS LATERAIS (REFINE: COMPACT & INVERTED FLOW) --- */
         #folder-stack {
             position: fixed;
-            top: 15%;
-            left: 0; /* Subi para 15% */
+            top: 80px; /* Subi bastante (era 15%) */
+            left: 0;
             display: flex;
             flex-direction: column;
-            gap: 0; /* Gap zero para permitir sobreposição */
+            gap: 0;
             z-index: 4000;
             opacity: 0;
             transition: opacity 1s;
-            padding-left: 0; /* Garante que colem na esquerda */
+            padding-left: 0;
         }
 
         body.active #folder-stack {
@@ -119,55 +119,58 @@
         }
 
         .folder-tab {
-            /* Estilo Base (Inativo - Chrome Dark Tab) */
-            background-color: #35363A;
-            color: #9aa0a6; /* Cinza claro do texto inativo */
-            border: none; /* Remove borda neon antiga */
-            /* Formato de Aba Vertical */
-            border-radius: 0 12px 12px 0; /* Arredondado apenas na direita */
-            padding: 30px 12px; /* Área de clique */
-            width: 24px; /* Largura base */
-            /* Texto Vertical */
+            /* Visual Flow: Invertido (Direita para Esquerda) */
+            /* O gradiente começa mais claro na direita e escurece na borda esquerda */
+            background: linear-gradient(to left, #3d3e42, #202124);
+            color: #9aa0a6;
+            border: none;
+            /* Geometria Compacta */
+            border-radius: 0 8px 8px 0; /* Curva um pouco mais fechada */
+            padding: 20px 6px; /* Bem mais fino (Diminuí o tamanho das caixas) */
+            width: 22px; /* Largura reduzida */
+            /* Texto */
             writing-mode: vertical-rl;
             text-orientation: mixed;
             transform: rotate(180deg);
-            font-size: 0.7rem;
+            font-size: 0.65rem; /* Fonte menor e mais técnica */
             letter-spacing: 2px;
             text-transform: uppercase;
             cursor: grab;
-            /* O Segredo da Sobreposição (Cascata Vertical) */
-            margin-top: -8px;
+            /* Sobreposição */
+            margin-top: -5px; /* Ajustado para o novo tamanho */
             position: relative;
             z-index: 1;
-            /* Sombras e Transições */
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-            transition: transform 0.2s, background-color 0.2s, color 0.2s, width 0.2s, z-index 0s;
+            /* Sombra Invertida (Vem da direita) */
+            box-shadow: inset -1px 0 2px rgba(255,255,255,0.05), 3px 3px 6px rgba(0,0,0,0.6);
+            transition: transform 0.2s, width 0.2s, color 0.2s, z-index 0s;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-            /* Primeira aba não pode ter margem negativa no topo */
             .folder-tab:first-child {
                 margin-top: 0;
             }
 
-            /* Hover */
+            /* Hover: Expande levemente */
             .folder-tab:hover {
-                background-color: #454649; /* Levemente mais claro */
+                background: linear-gradient(to left, #4a4b4e, #2d2e31);
                 color: #e8eaed;
-                width: 32px;
-                z-index: 10; /* Traz para frente */
+                width: 28px; /* Expansão controlada */
+                z-index: 10;
             }
 
-            /* Estado Ativo (Selecionado) */
+            /* Ativo: Fusão com o painel */
             .folder-tab.active-tab {
-                background-color: #202124; /* Mesma cor do corpo/painel ativo */
-                color: #00ff88; /* Mantive o verde para identidade */
-                width: 35px; /* Maior destaque */
-                z-index: 20; /* Sempre no topo */
-                box-shadow: 5px 0 15px rgba(0,0,0,0.7); /* Sombra mais forte */
-                cursor: default;
+                /* Fundo sólido igual ao do painel para parecer uma peça única */
+                background: #0f0f0f;
+                color: #00ff88;
+                width: 30px;
+                z-index: 20;
+                /* Remove a borda arredondada da direita para "conectar" visualmente com o painel que abre */
+                border-radius: 0 4px 4px 0;
+                box-shadow: 5px 0 15px rgba(0,0,0,0.8);
+                border-right: 1px solid #00ff88; /* Detalhe neon sutil na conexão */
             }
 
             .folder-tab.dragging {
@@ -175,6 +178,23 @@
                 cursor: grabbing;
             }
 
+        /* Mobile adjustment */
+        @media (max-width: 768px) {
+            #folder-stack {
+                top: auto;
+                height: 40px;
+            }
+
+            .folder-tab {
+                padding: 8px;
+                width: auto;
+                border-radius: 8px 8px 0 0;
+                background: linear-gradient(to top, #3d3e42, #202124); /* Ajuste de fluxo no mobile */
+                margin-top: 0;
+                margin-left: -5px;
+                border-right: none;
+            }
+        }
         /* --- TELAS DE OVERLAY --- */
         .overlay-screen {
             position: fixed;
