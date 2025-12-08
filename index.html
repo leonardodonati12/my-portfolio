@@ -100,49 +100,69 @@
             right: 300px;
         }
 
-        /* --- ABAS LATERAIS (REFINE: COMPACT & INVERTED FLOW) --- */
+        /* --- ABAS LATERAIS (GEOMETRIA INVERTIDA & REATIVAS) --- */
         #folder-stack {
             position: fixed;
-            top: 80px; /* Subi bastante (era 15%) */
+            top: 80px;
             left: 0;
             display: flex;
             flex-direction: column;
             gap: 0;
             z-index: 4000;
             opacity: 0;
-            transition: opacity 1s;
             padding-left: 0;
+            /* Ajuste visual para ver a curva na esquerda */
+            margin-left: 8px;
+            /* Transição suave para a movimentação em conjunto */
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 1s;
         }
 
         body.active #folder-stack {
             opacity: 1;
         }
 
+        /* 1. MOVER PARA DIREITA (Quando abre painel na esquerda) */
+        /* 240px é a largura do painel + um respiro */
+        body.push-left #folder-stack {
+            transform: translateX(232px);
+        }
+
+        /* 2. MOVER PARA BAIXO (Quando abre painel no topo) */
+        /* Desce o suficiente para sair da frente do painel superior */
+        body.push-top #folder-stack {
+            transform: translateY(200px);
+        }
+
+        /* 3. MOVER PARA CIMA (Quando abre painel em baixo) */
+        /* Sobe um pouco para equilibrar a composição */
+        body.push-bottom #folder-stack {
+            transform: translateY(-50px);
+        }
+
         .folder-tab {
-            /* Visual Flow: Invertido (Direita para Esquerda) */
-            /* O gradiente começa mais claro na direita e escurece na borda esquerda */
-            background: linear-gradient(to left, #3d3e42, #202124);
+            /* Visual Flow Invertido */
+            background: linear-gradient(to right, #3d3e42, #202124); /* Gradiente ajustado */
             color: #9aa0a6;
             border: none;
-            /* Geometria Compacta */
-            border-radius: 0 8px 8px 0; /* Curva um pouco mais fechada */
-            padding: 20px 6px; /* Bem mais fino (Diminuí o tamanho das caixas) */
-            width: 22px; /* Largura reduzida */
+            /* GEOMETRIA INVERTIDA: Curva na Esquerda, Reto na Direita */
+            border-radius: 12px 0 0 12px;
+            padding: 20px 6px;
+            width: 22px;
             /* Texto */
             writing-mode: vertical-rl;
             text-orientation: mixed;
             transform: rotate(180deg);
-            font-size: 0.65rem; /* Fonte menor e mais técnica */
+            font-size: 0.65rem;
             letter-spacing: 2px;
             text-transform: uppercase;
             cursor: grab;
             /* Sobreposição */
-            margin-top: -5px; /* Ajustado para o novo tamanho */
+            margin-top: -5px;
             position: relative;
             z-index: 1;
-            /* Sombra Invertida (Vem da direita) */
-            box-shadow: inset -1px 0 2px rgba(255,255,255,0.05), 3px 3px 6px rgba(0,0,0,0.6);
-            transition: transform 0.2s, width 0.2s, color 0.2s, z-index 0s;
+            /* Sombra Ajustada para a nova geometria */
+            box-shadow: -2px 2px 5px rgba(0,0,0,0.5);
+            transition: transform 0.2s, width 0.2s, color 0.2s, background 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -152,31 +172,58 @@
                 margin-top: 0;
             }
 
-            /* Hover: Expande levemente */
+            /* Hover */
             .folder-tab:hover {
-                background: linear-gradient(to left, #4a4b4e, #2d2e31);
+                background: linear-gradient(to right, #4a4b4e, #2d2e31);
                 color: #e8eaed;
-                width: 28px; /* Expansão controlada */
+                width: 28px;
                 z-index: 10;
+                /* Move um pouco para esquerda ao passar o mouse para destacar */
+                transform: rotate(180deg) translateX(5px);
             }
 
-            /* Ativo: Fusão com o painel */
+            /* Ativo */
             .folder-tab.active-tab {
-                /* Fundo sólido igual ao do painel para parecer uma peça única */
                 background: #0f0f0f;
                 color: #00ff88;
                 width: 30px;
                 z-index: 20;
-                /* Remove a borda arredondada da direita para "conectar" visualmente com o painel que abre */
-                border-radius: 0 4px 4px 0;
-                box-shadow: 5px 0 15px rgba(0,0,0,0.8);
-                border-right: 1px solid #00ff88; /* Detalhe neon sutil na conexão */
+                /* Mantém o lado direito reto para conectar com o painel se ele abrir na direita, 
+               ou apenas por estética se abrir na esquerda */
+                border-radius: 12px 0 0 12px;
+                box-shadow: 0 0 15px rgba(0,0,0,0.8);
+                /* Borda sutil na direita para acabamento */
+                border-right: 1px solid #333;
             }
 
             .folder-tab.dragging {
                 opacity: 0.5;
                 cursor: grabbing;
             }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            #folder-stack {
+                top: auto;
+                height: 40px;
+                margin-left: 0;
+                transform: none !important;
+            }
+
+            .folder-tab {
+                padding: 8px;
+                width: auto;
+                border-radius: 8px 8px 0 0; /* No mobile mantemos normal (topo) */
+                margin-top: 0;
+                margin-left: -5px;
+                border-right: none;
+                transform: none;
+            }
+
+                .folder-tab:hover {
+                    transform: none;
+                }
+        }
 
         /* Mobile adjustment */
         @media (max-width: 768px) {
