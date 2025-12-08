@@ -16,7 +16,6 @@
             user-select: none;
         }
 
-        /* O CONTAINER GLOBAL QUE SERÁ EMPURRADO */
         #main-wrapper {
             position: fixed;
             top: 0;
@@ -27,21 +26,13 @@
             z-index: 0;
         }
 
-        /* ESTADOS DE EMPURRÃO (DOCKING) */
+        /* ESTADOS DE EMPURRÃO (DOCKING) - Reduzido para 240px */
         body.push-left #main-wrapper {
-            transform: translateX(260px);
+            transform: translateX(240px);
         }
 
         body.push-right #main-wrapper {
-            transform: translateX(-260px);
-        }
-
-        body.push-top #main-wrapper {
-            transform: translateY(260px);
-        }
-
-        body.push-bottom #main-wrapper {
-            transform: translateY(-260px);
+            transform: translateX(-240px);
         }
 
         #canvas-container {
@@ -66,22 +57,22 @@
             justify-content: center;
             align-items: center;
             transition: opacity 1s ease-in-out;
-            z-index: 5000;
+            z-index: 6000; /* Z-index altíssimo */
         }
 
         #intro-overlay {
-            z-index: 5003;
+            z-index: 6003;
         }
 
         #about-overlay {
-            z-index: 5002;
+            z-index: 6002;
             display: none;
             padding: 0 25%;
             box-sizing: border-box;
         }
 
         #phrases-overlay {
-            z-index: 5001;
+            z-index: 6001;
             display: none;
             padding: 0 15%;
             box-sizing: border-box;
@@ -175,7 +166,7 @@
         .hero {
             position: absolute;
             top: 10%;
-            left: 5%;
+            left: 80px; /* Afastado por causa do menu */
             pointer-events: none;
             opacity: 0;
             transition: opacity 2s;
@@ -221,105 +212,80 @@
             opacity: 1;
         }
 
-        /* --- PAINEL DE HABILIDADES (SYSTEM PROPS) --- */
-
-        #skills-toggle {
+        /* --- DOCK LATERAL (MENU) --- */
+        #side-dock {
             position: fixed;
-            top: 20%;
+            top: 0;
             left: 0;
-            background: #000;
-            border: 1px solid #00ff88;
-            border-left: none;
-            color: #00ff88;
-            padding: 30px 12px;
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-            font-size: 0.8rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            cursor: none;
+            width: 50px;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            border-right: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 20px;
             z-index: 4000;
-            transition: all 0.3s;
-            border-radius: 0 15px 15px 0;
             opacity: 0;
+            transition: opacity 1s;
         }
 
-        body.active #skills-toggle {
+        body.active #side-dock {
             opacity: 1;
         }
 
-        #skills-toggle:hover {
-            background: #00ff88;
-            color: #000;
-            padding-left: 20px;
-            box-shadow: 0 0 15px rgba(0,255,136,0.3);
+        .dock-item {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            color: #555;
+            padding: 20px 10px;
+            cursor: none;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.7rem;
+            transition: all 0.3s;
+            border-left: 2px solid transparent;
         }
 
-        #skills-panel {
+            .dock-item:hover, .dock-item.active {
+                color: #00ff88;
+                border-left: 2px solid #00ff88;
+                background: rgba(0,255,136,0.05);
+            }
+
+        /* --- SISTEMA DE PAINÉIS (JANELAS) --- */
+        .ui-panel {
             position: fixed;
-            background: rgba(15, 15, 15, 0.9);
+            background: rgba(15, 15, 15, 0.95);
             backdrop-filter: blur(15px);
             border: 1px solid #333;
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
             z-index: 4001;
             display: none;
             flex-direction: column;
-            transition: width 0.3s, height 0.3s, border-radius 0.3s; /* Transições suaves de geometria */
+            transition: width 0.3s, height 0.3s, border-radius 0.3s;
+            /* Tamanho Reduzido */
+            top: 0;
+            left: 0;
+            width: 240px;
+            height: 100%;
         }
 
-            /* --- CONFIGURAÇÕES DE ACOPLAMENTO (DOCKING) --- */
-
-            /* Esquerda (Padrão) */
-            #skills-panel.docked-left {
-                top: 0;
-                left: 0;
-                width: 260px;
-                height: 100%;
+            .ui-panel.docked-left {
                 border-radius: 0;
                 border-right: 1px solid #00ff88;
             }
 
-            /* Direita */
-            #skills-panel.docked-right {
-                top: 0;
-                right: 0;
-                width: 260px;
-                height: 100%;
-                border-radius: 0;
-                border-left: 1px solid #00ff88;
-            }
-
-            /* Topo */
-            #skills-panel.docked-top {
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 260px;
-                border-radius: 0;
-                border-bottom: 1px solid #00ff88;
-            }
-
-            /* Baixo */
-            #skills-panel.docked-bottom {
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                height: 260px;
-                border-radius: 0;
-                border-top: 1px solid #00ff88;
-            }
-
-            /* Flutuante */
-            #skills-panel.floating {
-                width: 260px;
+            .ui-panel.floating {
+                width: 240px;
                 height: auto;
+                max-height: 80vh;
                 border-radius: 15px;
                 border: 1px solid #444;
             }
 
-        /* CABEÇALHO DO PAINEL */
         .panel-header {
-            padding: 10px 15px;
+            padding: 12px 15px;
             font-size: 0.75rem;
             letter-spacing: 2px;
             color: #00ff88;
@@ -329,10 +295,10 @@
             justify-content: space-between;
             align-items: center;
             background: rgba(0,255,136,0.05);
-            transition: background 0.2s;
+            user-select: none;
         }
 
-        #skills-panel.floating .panel-header {
+        .ui-panel.floating .panel-header {
             border-radius: 15px 15px 0 0;
         }
 
@@ -341,22 +307,33 @@
             background: rgba(0,255,136,0.2);
         }
 
-        /* Área de conteúdo das skills */
+        .close-panel {
+            cursor: pointer;
+            color: #fff;
+            font-size: 1.2rem;
+        }
+
+            .close-panel:hover {
+                color: #00ff88;
+            }
+
         .panel-content {
             padding: 20px;
             overflow-y: auto;
             flex: 1;
         }
-        /* Se estiver top/bottom, mudar layout para colunas se quiser (opcional, mantive lista vertical simples) */
 
+        /* --- CONTEÚDO ESPECÍFICO DOS PAINÉIS --- */
+
+        /* Skills (Barras) */
         .skill-item {
             margin-bottom: 15px;
         }
 
         .skill-name {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #eee;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             display: flex;
             justify-content: space-between;
             letter-spacing: 1px;
@@ -365,7 +342,7 @@
         .retro-bar {
             display: flex;
             gap: 2px;
-            height: 6px;
+            height: 5px;
         }
 
         .bar-block {
@@ -379,15 +356,109 @@
                 box-shadow: 0 0 5px rgba(0,255,136,0.4);
             }
 
-        .close-panel {
-            cursor: pointer;
-            color: #fff;
-            font-size: 1.2rem;
+        /* Timeline (Linha do Tempo) */
+        .timeline-item {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 25px;
+            border-left: 1px solid #333;
         }
 
-            .close-panel:hover {
-                color: #00ff88;
+            .timeline-item::before {
+                content: '';
+                position: absolute;
+                left: -3px;
+                top: 0;
+                width: 5px;
+                height: 5px;
+                background: #00ff88;
+                border-radius: 50%;
+                box-shadow: 0 0 5px #00ff88;
             }
+
+        .time-date {
+            font-size: 0.65rem;
+            color: #00ff88;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+        }
+
+        .time-role {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+        .time-place {
+            font-size: 0.7rem;
+            color: #888;
+            font-style: italic;
+            margin-bottom: 5px;
+        }
+
+        .time-desc {
+            font-size: 0.7rem;
+            color: #aaa;
+            line-height: 1.4;
+        }
+
+        /* Contatos */
+        .contact-item {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #222;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+            .contact-item:hover {
+                border-color: #00ff88;
+                background: rgba(0,255,136,0.05);
+            }
+
+        .contact-label {
+            font-size: 0.6rem;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 3px;
+        }
+
+        .contact-val {
+            font-size: 0.8rem;
+            color: #fff;
+            word-break: break-all;
+        }
+
+            .contact-val a {
+                color: #fff;
+                text-decoration: none;
+                cursor: none;
+            }
+
+                .contact-val a:hover {
+                    color: #00ff88;
+                }
+
+        /* Extras */
+        .extra-item {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 10px;
+        }
+
+        .extra-title {
+            font-size: 0.8rem;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+
+        .extra-detail {
+            font-size: 0.7rem;
+            color: #888;
+            line-height: 1.4;
+        }
 
         /* --- MODAL PROJETO --- */
         #project-modal {
@@ -401,7 +472,7 @@
             border: 1px solid #00ff88;
             padding: 40px;
             border-radius: 20px;
-            z-index: 4005;
+            z-index: 5005;
             display: none;
             flex-direction: column;
             box-shadow: 0 0 50px rgba(0, 255, 136, 0.15);
@@ -452,8 +523,8 @@
 
         /* EXTRAS */
         ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
+            width: 4px;
+            height: 4px;
         }
 
         ::-webkit-scrollbar-track {
@@ -521,6 +592,34 @@
                 font-size: 2.5rem;
             }
 
+            #side-dock {
+                bottom: 0;
+                top: auto;
+                width: 100%;
+                height: 50px;
+                flex-direction: row;
+                border-right: none;
+                border-top: 1px solid #333;
+            }
+
+            .dock-item {
+                writing-mode: horizontal-tb;
+                padding: 0 10px;
+                font-size: 0.6rem;
+                border-left: none;
+                border-top: 2px solid transparent;
+            }
+
+                .dock-item:hover, .dock-item.active {
+                    border-left: none;
+                    border-top: 2px solid #00ff88;
+                }
+
+            .hero {
+                left: 5%;
+                top: 5%;
+            }
+
             #project-modal {
                 width: 90%;
             }
@@ -532,18 +631,20 @@
             .cursor-dot, .cursor-outline {
                 display: none;
             }
-            /* Mobile desativa docking complexo */
+
             body[class*="push-"] #main-wrapper {
                 transform: none !important;
             }
 
-            #skills-panel {
+            .ui-panel {
                 width: 100% !important;
-                height: 50% !important;
-                bottom: 0 !important;
+                height: 60% !important;
+                bottom: 50px !important;
                 top: auto !important;
                 left: 0 !important;
                 border-radius: 20px 20px 0 0;
+                border: none;
+                border-top: 1px solid #00ff88;
             }
         }
     </style>
@@ -583,14 +684,91 @@
         </div>
     </div>
 
-    <div id="skills-toggle">ABILITIES</div>
+    <div id="side-dock">
+        <div class="dock-item" data-target="skills-panel">ABILITIES</div>
+        <div class="dock-item" data-target="timeline-panel">TIMELINE</div>
+        <div class="dock-item" data-target="extras-panel">EXTRAS</div>
+        <div class="dock-item" data-target="contact-panel">CONTACT</div>
+    </div>
 
-    <div id="skills-panel" class="docked-left">
-        <div class="panel-header" id="panel-header">
-            <span>:: PROPERTIES</span>
-            <span class="close-panel" id="close-panel-btn">×</span>
+    <div id="skills-panel" class="ui-panel">
+        <div class="panel-header"><span>:: SYSTEM STATS</span><span class="close-panel">×</span></div>
+        <div class="panel-content" id="skills-list"></div>
+    </div>
+
+    <div id="timeline-panel" class="ui-panel">
+        <div class="panel-header"><span>:: LOGS / HISTORY</span><span class="close-panel">×</span></div>
+        <div class="panel-content" id="timeline-list">
+            <div class="timeline-item">
+                <div class="time-date">Ago 2024 - Present</div>
+                <div class="time-role">Spbim - Estágio Arq</div>
+                <div class="time-place">São Paulo - SP</div>
+                <div class="time-desc">Implementação BIM, modelagem paramétrica, nuvem de pontos (laser scanner), compatibilização.</div>
+            </div>
+            <div class="timeline-item">
+                <div class="time-date">Oct 2020 - Apr 2021</div>
+                <div class="time-role">Tekno S.A. - Estágio Elétrica</div>
+                <div class="time-place">Guaratinguetá - SP</div>
+                <div class="time-desc">Análise e desenvolvimento de plantas elétricas, manutenção preventiva e corretiva.</div>
+            </div>
+            <div class="timeline-item">
+                <div class="time-date">Jan 2022 - Dec 2026</div>
+                <div class="time-role">Universidade Anhembi Morumbi</div>
+                <div class="time-desc">Arquitetura e Urbanismo (Superior).</div>
+            </div>
+            <div class="timeline-item">
+                <div class="time-date">Jan 2017 - Dec 2019</div>
+                <div class="time-role">Colégio Técnico Industrial - Unesp</div>
+                <div class="time-desc">Ensino Médio Técnico.</div>
+            </div>
         </div>
-        <div class="panel-content" id="skills-list">
+    </div>
+
+    <div id="extras-panel" class="ui-panel">
+        <div class="panel-header"><span>:: ADD-ONS / LANG</span><span class="close-panel">×</span></div>
+        <div class="panel-content">
+            <div class="extra-item">
+                <div class="extra-title">Reconhecendo a Mooca</div>
+                <div class="extra-detail">Levantamento urbano/arquitetônico, fotogrametria, análise de fluxos e ilhas de calor.</div>
+            </div>
+            <div class="extra-item">
+                <div class="extra-title">Monitoria Workshop Spbim</div>
+                <div class="extra-detail">Levantamentos com Laser Scanner (Maio 2025).</div>
+            </div>
+            <div class="extra-item">
+                <div class="extra-title">Medalhista OBA</div>
+                <div class="extra-detail">Ouro (2015), Bronze (2016), Prata (2019).</div>
+            </div>
+            <div class="extra-item">
+                <div class="extra-title">Monitoria Semana Integração</div>
+                <div class="extra-detail">Ctig - Unesp (2018, 2019, 2020).</div>
+            </div>
+            <div class="extra-item">
+                <div class="extra-title">Languages</div>
+                <div class="extra-detail">Portuguese (Native)<br>English (B1 - Intermediate)</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="contact-panel" class="ui-panel">
+        <div class="panel-header"><span>:: CONNECT</span><span class="close-panel">×</span></div>
+        <div class="panel-content">
+            <div class="contact-item">
+                <div class="contact-label">Phone / WhatsApp</div>
+                <div class="contact-val">+55 12 99777 3790</div>
+            </div>
+            <div class="contact-item">
+                <div class="contact-label">Email</div>
+                <div class="contact-val"><a href="mailto:leonardodonati12@gmail.com">leonardodonati12@gmail.com</a></div>
+            </div>
+            <div class="contact-item">
+                <div class="contact-label">LinkedIn</div>
+                <div class="contact-val"><a href="https://linkedin.com/in/leonardodonati12/" target="_blank">in/leonardodonati12</a></div>
+            </div>
+            <div class="contact-item">
+                <div class="contact-label">GitHub</div>
+                <div class="contact-val"><a href="https://github.com/leonardodonati12" target="_blank">@leonardodonati12</a></div>
+            </div>
         </div>
     </div>
 
@@ -598,18 +776,30 @@
         import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
         import { OrbitControls } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls.js';
 
-        // --- SKILLS ---
-        const mySkills = [{ name: "REVIT / BIM", level: 90 }, { name: "RHINO / GRASSHOPPER", level: 85 }, { name: "DYNAMO", level: 80 }, { name: "C# / API DEV", level: 70 }, { name: "PYTHON", level: 60 }, { name: "ARCHICAD", level: 75 }, { name: "HTML / CSS / JS", level: 50 }, { name: "CREATIVITY", level: 100 }];
+        // --- SKILLS DATA (ATUALIZADO) ---
+        const mySkills = [
+            { name: "REVIT / BIM", level: 95 },
+            { name: "DYNAMO / PYTHON", level: 85 },
+            { name: "RHINO / GRASSHOPPER", level: 80 },
+            { name: "NAVISWORKS", level: 75 },
+            { name: "ARCHICAD", level: 70 },
+            { name: "INFRAWORKS / RECAP", level: 75 },
+            { name: "SKETCHUP", level: 90 },
+            { name: "C# / API DEV", level: 65 },
+            { name: "THREE.JS / WEBGL", level: 60 },
+            { name: "HTML / CSS / JS", level: 70 },
+            { name: "POWER BI", level: 80 },
+            { name: "PHOTOSHOP / AI", level: 85 }
+        ];
 
-        // --- DOCKING SYSTEM LOGIC ---
-        const skillsToggle = document.getElementById('skills-toggle');
-        const skillsPanel = document.getElementById('skills-panel');
-        const panelHeader = document.getElementById('panel-header');
-        const closePanelBtn = document.getElementById('close-panel-btn');
-        const skillsList = document.getElementById('skills-list');
+        // --- PAINEL SYSTEM LOGIC (UNIVERSAL) ---
+        const dockItems = document.querySelectorAll('.dock-item');
+        const panels = document.querySelectorAll('.ui-panel');
         const body = document.body;
+        let activePanel = null;
 
-        // Gerar Barras
+        // Gerar Barras de Skills
+        const skillsList = document.getElementById('skills-list');
         mySkills.forEach(skill => {
             const item = document.createElement('div'); item.className = 'skill-item';
             const totalBlocks = 20; const filledBlocks = Math.round((skill.level / 100) * totalBlocks);
@@ -618,106 +808,92 @@
             skillsList.appendChild(item);
         });
 
-        // FUNÇÃO DE DOCKING (O Cérebro da Operação)
-        function dockPanel(position) {
-            // Remove todos os estados
-            skillsPanel.classList.remove('docked-left', 'docked-right', 'docked-top', 'docked-bottom', 'floating');
-            body.classList.remove('push-left', 'push-right', 'push-top', 'push-bottom');
-
-            // Reseta estilos inline de drag
-            skillsPanel.style.top = ''; skillsPanel.style.left = ''; skillsPanel.style.right = ''; skillsPanel.style.bottom = '';
-
-            if (position === 'float') {
-                skillsPanel.classList.add('floating');
-            } else {
-                skillsPanel.classList.add(`docked-${position}`);
-                body.classList.add(`push-${position}`);
-            }
+        // Função de Fechar Painel
+        function closeAllPanels() {
+            panels.forEach(p => {
+                p.style.display = 'none';
+                p.classList.remove('docked-left', 'floating'); // Reset classes
+            });
+            dockItems.forEach(i => i.classList.remove('active'));
+            body.classList.remove('push-left');
+            activePanel = null;
         }
 
-        // ABRIR (Default Left)
-        skillsToggle.addEventListener('click', () => {
-            skillsPanel.style.display = 'flex';
-            skillsToggle.style.opacity = '0';
-            dockPanel('left');
+        // Função de Abrir Painel
+        function openPanel(panelId) {
+            const panel = document.getElementById(panelId);
+            if (activePanel === panel) return; // Já está aberto
+
+            closeAllPanels(); // Fecha outros
+
+            panel.style.display = 'flex';
+            panel.classList.add('docked-left'); // Padrão docked
+
+            // Reseta posição caso tenha sido movido antes
+            panel.style.top = '0'; panel.style.left = '0'; panel.style.height = '100%';
+
+            body.classList.add('push-left');
+            activePanel = panel;
+
+            // Highlight no menu
+            document.querySelector(`[data-target="${panelId}"]`).classList.add('active');
+        }
+
+        // Event Listeners Menu
+        dockItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const target = item.getAttribute('data-target');
+                if (activePanel && activePanel.id === target) closeAllPanels();
+                else openPanel(target);
+            });
         });
 
-        // FECHAR
-        closePanelBtn.addEventListener('click', () => {
-            skillsPanel.style.display = 'none';
-            skillsToggle.style.opacity = '1';
-            body.classList.remove('push-left', 'push-right', 'push-top', 'push-bottom');
+        // Event Listeners Fechar (X)
+        document.querySelectorAll('.close-panel').forEach(btn => {
+            btn.addEventListener('click', closeAllPanels);
         });
 
-        // DRAG & SNAP SYSTEM
+        // --- DRAG SYSTEM (UNIVERSAL PARA TODOS OS PAINÉIS) ---
         let isDragging = false;
         let startX, startY;
+        let currentDragPanel = null;
 
-        panelHeader.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            startX = e.clientX;
-            startY = e.clientY;
+        document.querySelectorAll('.panel-header').forEach(header => {
+            header.addEventListener('mousedown', (e) => {
+                currentDragPanel = header.parentElement;
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
 
-            // Se estava dockado, vira flutuante na posição do mouse
-            if (!skillsPanel.classList.contains('floating')) {
-                // Remove push do body imediatamente
-                body.classList.remove('push-left', 'push-right', 'push-top', 'push-bottom');
-
-                // Vira floating
-                skillsPanel.classList.remove('docked-left', 'docked-right', 'docked-top', 'docked-bottom');
-                skillsPanel.classList.add('floating');
-
-                // Posiciona onde o mouse está (com um offset pra não pular)
-                skillsPanel.style.left = (e.clientX - 130) + 'px'; // Metade da largura
-                skillsPanel.style.top = (e.clientY - 20) + 'px';
-            }
-
-            panelHeader.style.cursor = 'grabbing';
+                // Undock logic
+                if (!currentDragPanel.classList.contains('floating')) {
+                    body.classList.remove('push-left');
+                    currentDragPanel.classList.remove('docked-left');
+                    currentDragPanel.classList.add('floating');
+                    currentDragPanel.style.height = 'auto';
+                    currentDragPanel.style.left = (e.clientX - 120) + 'px'; // Metade de 240
+                    currentDragPanel.style.top = (e.clientY - 20) + 'px';
+                }
+                header.style.cursor = 'grabbing';
+            });
         });
 
         window.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            // Movimento simples (sem offset complexo pra simplificar)
-            skillsPanel.style.left = (e.clientX - 130) + 'px';
-            skillsPanel.style.top = (e.clientY - 20) + 'px';
-
-            // Highlight visual (Opcional: mudar borda se estiver perto da borda)
-            const edgeThreshold = 50;
-            if (e.clientX < edgeThreshold) skillsPanel.style.borderColor = '#00ff88'; // Left
-            else if (e.clientX > window.innerWidth - edgeThreshold) skillsPanel.style.borderColor = '#00ff88'; // Right
-            else if (e.clientY < edgeThreshold) skillsPanel.style.borderColor = '#00ff88'; // Top
-            else if (e.clientY > window.innerHeight - edgeThreshold) skillsPanel.style.borderColor = '#00ff88'; // Bottom
-            else skillsPanel.style.borderColor = '#333'; // Normal
+            if (!isDragging || !currentDragPanel) return;
+            // Move simples
+            currentDragPanel.style.left = (e.clientX - 120) + 'px';
+            currentDragPanel.style.top = (e.clientY - 20) + 'px';
         });
 
-        window.addEventListener('mouseup', (e) => {
+        window.addEventListener('mouseup', () => {
             if (!isDragging) return;
             isDragging = false;
-            panelHeader.style.cursor = 'grab';
-            skillsPanel.style.borderColor = '#333'; // Reset cor
-
-            const edgeThreshold = 50; // Pixels perto da borda pra "imantar"
-
-            // Lógica de SNAP (Imã)
-            if (e.clientX < edgeThreshold) {
-                dockPanel('left');
-            } else if (e.clientX > window.innerWidth - edgeThreshold) {
-                dockPanel('right');
-            } else if (e.clientY < edgeThreshold) {
-                dockPanel('top');
-            } else if (e.clientY > window.innerHeight - edgeThreshold) {
-                dockPanel('bottom');
-            } else {
-                // Mantém flutuante
-                dockPanel('float');
-                // Mantém a posição final do drag
-                skillsPanel.style.left = (e.clientX - 130) + 'px';
-                skillsPanel.style.top = (e.clientY - 20) + 'px';
-            }
+            if (currentDragPanel) currentDragPanel.querySelector('.panel-header').style.cursor = 'grab';
+            currentDragPanel = null;
         });
 
 
-        // --- CÓDIGO PADRÃO (RESTANTE DO SITE) ---
+        // --- CÓDIGO PADRÃO (MANTIDO) ---
         const introOverlay = document.getElementById('intro-overlay'); const aboutOverlay = document.getElementById('about-overlay'); const phrasesOverlay = document.getElementById('phrases-overlay'); const startBtn = document.getElementById('start-btn'); const bioContainer = document.getElementById('bio-text-container'); const aboutHint = document.getElementById('about-hint'); const phrasesContainer = document.getElementById('phrases-container'); const modal = document.getElementById('project-modal'); const modalTitle = document.getElementById('modal-title'); const modalTech = document.getElementById('modal-tech'); const modalDesc = document.getElementById('modal-desc'); const closeBtn = document.getElementById('close-modal-btn'); const heroName = document.getElementById('hero-name'); const nameLine1 = document.getElementById('name-line-1'); const nameLine2 = document.getElementById('name-line-2'); const heroSubtitle = document.getElementById('hero-subtitle'); const bioText = "I avoid definitions; I feel they limit me.\n\nWhenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative.\n\nI seek to make each piece obey an invisible rule and decide to tell a unique story.\n\nI persist in the attempt to compile everything that resonates with me..."; const phrasesList = ["I wrote the code, but you are the one rendering it.", "Careful where you click: some variables are loose.", "As you observe the project, the algorithm observes you.", "Don't be afraid. It is just logic trying to be art.", "Loading fragments of a thought process...", "This is not a website. It is a render of my consciousness.", "Here, gravity is just a syntax suggestion.", "You are not on the internet. You are inside a loop of my creative process.", "Space under construction. The mind, too.", "Don't touch the screen. The digital concrete is still wet.", "Are you the user, or just another parameter?", "Welcome to the backend of my imagination.", "Compiling chaos into structure. Please wait.", "Entry permitted. Exit not guaranteed.", "Everything here is code. Even the void.", "This is a portfolio. This is not a portfolio.", "You are in my mind now. Good luck.", "This page is thinking about you right now.", "Your visit has been logged. My architecture now knows who you are.", "To navigate here is to compile memories that are not yours.", "There is a system error: it has learned to feel."];
         heroName.addEventListener('mouseenter', () => { scrambleTo(nameLine1, "LEONARDO"); scrambleTo(nameLine2, "DONATI"); }); heroSubtitle.addEventListener('mouseenter', () => { scrambleTo(heroSubtitle, "SCRAMBLED THOUGHTS"); }); heroSubtitle.addEventListener('mouseleave', () => { scrambleTo(heroSubtitle, "ARCHITECTURE STUDENT"); });
         startBtn.addEventListener('click', () => { introOverlay.style.opacity = '0'; setTimeout(() => { introOverlay.style.display = 'none'; aboutOverlay.style.display = 'flex'; runGhostTypewriter(bioText, bioContainer, () => { aboutHint.style.opacity = '1'; }); }, 1000); });
@@ -726,12 +902,16 @@
         async function runPhrasesLoop() { let index = 0; while (!stopPhrasesLoop) { await scrambleTo(phrasesContainer, phrasesList[index]); if (stopPhrasesLoop) break; await new Promise(r => setTimeout(r, 4000)); if (stopPhrasesLoop) break; index = (index + 1) % phrasesList.length; } }
         function scrambleTo(element, newText) { return new Promise(resolve => { const oldText = element.innerText; const length = Math.max(oldText.length, newText.length); const queue = []; const chars = '!<>-_\\/[]{}—=+*^?#________'; for (let i = 0; i < length; i++) { const from = oldText[i] || ''; const to = newText[i] || ''; const start = Math.floor(Math.random() * 40); const end = start + Math.floor(Math.random() * 40); queue.push({ from, to, start, end }); } let frame = 0; const update = () => { let output = ''; let complete = 0; for (let i = 0; i < queue.length; i++) { let { from, to, start, end, char } = queue[i]; if (frame >= end) { complete++; output += to; } else if (frame >= start) { if (!char || Math.random() < 0.28) { char = chars[Math.floor(Math.random() * chars.length)]; queue[i].char = char; } output += `<span class="glitch-char">${char}</span>`; } else { output += from; } } element.innerHTML = output; if (complete === queue.length) { resolve(); } else { if (stopPhrasesLoop && element === phrasesContainer) { resolve(); return; } requestAnimationFrame(update); frame++; } }; update(); }); }
         async function runGhostTypewriter(text, element, callback) { const chars = '!<>-_\\/[]{}—=+*^?#________'; element.innerHTML = ''; const spans = []; for (let i = 0; i < text.length; i++) { const char = text[i]; if (char === '\n') { element.appendChild(document.createElement('br')); spans.push({ isBreak: true }); } else { const span = document.createElement('span'); span.innerText = char; span.dataset.char = char; span.className = 'char-hidden'; element.appendChild(span); spans.push({ dom: span, isBreak: false }); } } for (let i = 0; i < spans.length; i++) { if (bioFinished) break; const item = spans[i]; if (item.isBreak) { await new Promise(r => setTimeout(r, 30)); continue; } const span = item.dom; if (span.innerText === ' ') { span.className = ''; span.innerHTML = '&nbsp;'; span.style.opacity = '1'; await new Promise(r => setTimeout(r, 5)); continue; } span.className = 'glitch-char'; span.style.opacity = '1'; for (let j = 0; j < 3; j++) { span.innerText = chars[Math.floor(Math.random() * chars.length)]; await new Promise(r => setTimeout(r, 10)); } span.innerText = span.dataset.char; span.className = ''; } bioFinished = true; if (callback) callback(); }
-        const cursorDot = document.querySelector('.cursor-dot'); const cursorOutline = document.querySelector('.cursor-outline'); window.addEventListener('mousemove', function (e) { const posX = e.clientX; const posY = e.clientY; cursorDot.style.left = `${posX}px`; cursorDot.style.top = `${posY}px`; cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" }); }); const addHoverEffect = (element) => { element.addEventListener('mouseenter', () => { cursorOutline.style.width = '60px'; cursorOutline.style.height = '60px'; cursorOutline.style.backgroundColor = 'rgba(0, 255, 136, 0.1)'; }); element.addEventListener('mouseleave', () => { cursorOutline.style.width = '40px'; cursorOutline.style.height = '40px'; cursorOutline.style.backgroundColor = 'transparent'; }); }; addHoverEffect(startBtn); addHoverEffect(aboutOverlay); addHoverEffect(phrasesOverlay); addHoverEffect(closeBtn); addHoverEffect(heroName); addHoverEffect(heroSubtitle); addHoverEffect(skillsToggle); addHoverEffect(panelHeader);
+        const cursorDot = document.querySelector('.cursor-dot'); const cursorOutline = document.querySelector('.cursor-outline'); window.addEventListener('mousemove', function (e) { const posX = e.clientX; const posY = e.clientY; cursorDot.style.left = `${posX}px`; cursorDot.style.top = `${posY}px`; cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" }); }); const addHoverEffect = (element) => { element.addEventListener('mouseenter', () => { cursorOutline.style.width = '60px'; cursorOutline.style.height = '60px'; cursorOutline.style.backgroundColor = 'rgba(0, 255, 136, 0.1)'; }); element.addEventListener('mouseleave', () => { cursorOutline.style.width = '40px'; cursorOutline.style.height = '40px'; cursorOutline.style.backgroundColor = 'transparent'; }); }; addHoverEffect(startBtn); addHoverEffect(aboutOverlay); addHoverEffect(phrasesOverlay); addHoverEffect(closeBtn); addHoverEffect(heroName); addHoverEffect(heroSubtitle); document.querySelectorAll('.panel-header').forEach(h => addHoverEffect(h)); document.querySelectorAll('.dock-item').forEach(i => addHoverEffect(i));
 
         const scene = new THREE.Scene(); scene.fog = new THREE.FogExp2(0x050505, 0.002); const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.set(-10, 5, 10); camera.lookAt(0, 0, 0); const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); renderer.setSize(window.innerWidth, window.innerHeight); document.getElementById('canvas-container').appendChild(renderer.domElement); const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.dampingFactor = 0.05; controls.enableZoom = true; controls.autoRotate = false;
         const geometry = new THREE.IcosahedronGeometry(4, 2); const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 }); const sphere = new THREE.Mesh(geometry, material); scene.add(sphere); const pGeo = new THREE.BufferGeometry(); const pCount = 2000; const pPos = new Float32Array(pCount * 3); for (let i = 0; i < pCount * 3; i++) pPos[i] = (Math.random() - 0.5) * 30; pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3)); const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff }); const particles = new THREE.Points(pGeo, pMat); scene.add(particles);
         const raycaster = new THREE.Raycaster(); const mouse = new THREE.Vector2(); const projectNodes = []; fetch('projetos.json').then(r => r.json()).then(projetos => { const projectGroup = new THREE.Group(); scene.add(projectGroup); const radius = 6.5; const goldenAngle = Math.PI * (3 - Math.sqrt(5)); projetos.forEach((proj, i) => { const y = 1 - (i / (projetos.length - 1)) * 2; const radiusAtY = Math.sqrt(1 - y * y); const theta = goldenAngle * i; const x = Math.cos(theta) * radiusAtY; const z = Math.sin(theta) * radiusAtY; const nodeGeo = new THREE.SphereGeometry(0.3, 16, 16); const nodeMat = new THREE.MeshBasicMaterial({ color: 0xffffff }); const node = new THREE.Mesh(nodeGeo, nodeMat); node.position.set(x * radius, y * radius, z * radius); node.userData = { id: i, data: proj }; projectNodes.push(node); projectGroup.add(node); }); }).catch(e => console.error(e));
-        window.addEventListener('click', (event) => { if (!document.body.classList.contains('active')) return; if (event.target.closest('#project-modal') || event.target.closest('.close-modal') || event.target.closest('.hero') || event.target.closest('#skills-panel') || event.target.closest('#skills-toggle')) return; mouse.x = (event.clientX / window.innerWidth) * 2 - 1; mouse.y = -(event.clientY / window.innerHeight) * 2 + 1; raycaster.setFromCamera(mouse, camera); const intersects = raycaster.intersectObjects(projectNodes); if (intersects.length > 0) { const clickedNode = intersects[0].object; const projectData = clickedNode.userData.data; openModal(projectData); } });
+        window.addEventListener('click', (event) => {
+            if (!document.body.classList.contains('active')) return;
+            if (event.target.closest('.ui-panel') || event.target.closest('#side-dock') || event.target.closest('#project-modal') || event.target.closest('.close-modal')) return;
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1; mouse.y = -(event.clientY / window.innerHeight) * 2 + 1; raycaster.setFromCamera(mouse, camera); const intersects = raycaster.intersectObjects(projectNodes); if (intersects.length > 0) { const clickedNode = intersects[0].object; const projectData = clickedNode.userData.data; openModal(projectData); }
+        });
         function openModal(data) { modalTitle.innerText = data.titulo; modalTech.innerText = "// " + data.tech; modalDesc.innerText = data.descricao; modal.style.display = 'flex'; setTimeout(() => { modal.classList.add('open'); }, 10); }
         closeBtn.addEventListener('click', () => { modal.classList.remove('open'); setTimeout(() => { modal.style.display = 'none'; }, 500); });
         function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); } animate(); window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
