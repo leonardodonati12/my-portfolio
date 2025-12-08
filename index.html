@@ -12,10 +12,9 @@
             background-color: #050505;
             color: #fff;
             font-family: 'Consolas', 'Courier New', monospace;
-            cursor: none; /* Esconde a seta padrão do Windows */
+            cursor: none; /* Esconde a seta padrão */
         }
 
-        /* O Canvas 3D fica no fundo */
         #canvas-container {
             position: fixed;
             top: 0;
@@ -25,18 +24,68 @@
             z-index: -1;
         }
 
-        /* --- ESTILO DO CURSOR PERSONALIZADO --- */
+        /* --- TELA DE INTRO (OVERLAY) --- */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000; /* Fundo preto total */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 5000; /* Fica acima de tudo, menos do cursor */
+            transition: opacity 1.5s ease-in-out; /* O Fade-out suave */
+        }
+
+        .intro-text {
+            font-size: 1.5rem;
+            letter-spacing: 5px;
+            color: #00ff88;
+            margin-bottom: 30px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 2s forwards 0.5s; /* Texto aparece devagar */
+        }
+
+        .enter-btn {
+            padding: 15px 40px;
+            border: 1px solid #00ff88;
+            background: transparent;
+            color: #fff;
+            font-family: 'Consolas', monospace;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            cursor: none; /* Mantém cursor customizado */
+            transition: all 0.3s;
+            opacity: 0;
+            animation: fadeIn 2s forwards 1.5s; /* Botão aparece depois do texto */
+        }
+
+            .enter-btn:hover {
+                background: #00ff88;
+                color: #000;
+                box-shadow: 0 0 20px #00ff88;
+            }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* --- ESTILO DO CURSOR --- */
         .cursor-dot {
             width: 8px;
             height: 8px;
             background-color: #00ff88;
             border-radius: 50%;
             position: fixed;
-            top: 0;
-            left: 0;
             transform: translate(-50%, -50%);
             pointer-events: none;
-            z-index: 9999;
+            z-index: 9999; /* Máxima prioridade */
         }
 
         .cursor-outline {
@@ -45,20 +94,20 @@
             border: 1px solid rgba(0, 255, 136, 0.5);
             border-radius: 50%;
             position: fixed;
-            top: 0;
-            left: 0;
             transform: translate(-50%, -50%);
             pointer-events: none;
             z-index: 9998;
             transition: width 0.2s, height 0.2s, background-color 0.2s;
         }
 
-        /* --- TÍTULOS (HERO) --- */
+        /* --- SITE PRINCIPAL (HERO) --- */
         .hero {
             position: absolute;
             top: 10%;
             left: 5%;
             pointer-events: none;
+            opacity: 0;
+            transition: opacity 2s;
         }
 
         h1 {
@@ -88,6 +137,20 @@
             background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(10px);
             border-left: 1px solid #333;
+            opacity: 0; /* Começa invisível */
+            transition: opacity 2s;
+            transform: translateX(50px); /* Começa levemente deslocada */
+        }
+
+        /* Classe para ativar o site quando a intro sumir */
+        body.active .hero {
+            opacity: 1;
+        }
+
+        body.active .gallery-container {
+            opacity: 1;
+            transform: translateX(0);
+            transition: opacity 2s, transform 1s;
         }
 
         .project-card {
@@ -97,10 +160,9 @@
             margin-bottom: 30px;
             border-radius: 4px;
             transition: transform 0.3s, background 0.3s;
-            cursor: none; /* Garante que o cursor continue personalizado aqui */
+            cursor: none;
         }
 
-            /* Efeito de Hover nos Cards */
             .project-card:hover {
                 transform: translateX(-10px);
                 background: rgba(0, 255, 136, 0.1);
@@ -126,7 +188,6 @@
             line-height: 1.4;
         }
 
-        /* Barra de rolagem estilizada */
         ::-webkit-scrollbar {
             width: 5px;
         }
@@ -152,7 +213,7 @@
             h1 {
                 font-size: 2.5rem;
             }
-            /* No celular, voltamos o cursor normal pois não tem mouse */
+
             body {
                 cursor: auto;
             }
@@ -168,6 +229,14 @@
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
 
+    <div id="intro-overlay">
+        <div class="intro-text">
+            SYSTEM INITIALIZED<br>
+            <span style="font-size: 0.8rem; color: #666;">WAITING FOR USER INPUT...</span>
+        </div>
+        <button class="enter-btn" id="start-btn">[ ENTER SYSTEM ]</button>
+    </div>
+
     <div class="hero">
         <h1>LEONARDO<br>DONATI</h1>
         <div class="subtitle">COMPUTATIONAL DESIGN & DEV</div>
@@ -181,6 +250,36 @@
     <script type="module">
         import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
 
+        // --- 0. LÓGICA DA INTRO (NOVO) ---
+        const startBtn = document.getElementById('start-btn');
+        const overlay = document.getElementById('intro-overlay');
+        const clickables = document.querySelectorAll('a, .project-card, button, .enter-btn'); // Adicionei o botão aqui
+
+        startBtn.addEventListener('click', () => {
+            // 1. Fade out no overlay
+            overlay.style.opacity = '0';
+
+            // 2. Revela o conteúdo do site
+            document.body.classList.add('active');
+
+            // 3. Remove o overlay do HTML depois de 1.5s para não atrapalhar cliques
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 1500);
+        });
+
+        // Efeito de cursor no botão de Start
+        startBtn.addEventListener('mouseenter', () => {
+            cursorOutline.style.width = '60px';
+            cursorOutline.style.height = '60px';
+            cursorOutline.style.backgroundColor = 'rgba(0, 255, 136, 0.1)';
+        });
+        startBtn.addEventListener('mouseleave', () => {
+            cursorOutline.style.width = '40px';
+            cursorOutline.style.height = '40px';
+            cursorOutline.style.backgroundColor = 'transparent';
+        });
+
         // --- 1. LÓGICA DO CURSOR ---
         const cursorDot = document.querySelector('.cursor-dot');
         const cursorOutline = document.querySelector('.cursor-outline');
@@ -188,16 +287,9 @@
         window.addEventListener('mousemove', function (e) {
             const posX = e.clientX;
             const posY = e.clientY;
-
-            // Ponto central segue instantâneo
             cursorDot.style.left = `${posX}px`;
             cursorDot.style.top = `${posY}px`;
-
-            // Círculo segue suave (animação)
-            cursorOutline.animate({
-                left: `${posX}px`,
-                top: `${posY}px`
-            }, { duration: 500, fill: "forwards" });
+            cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" });
         });
 
         // --- 2. LÓGICA DA GALERIA (JSON) ---
@@ -209,14 +301,12 @@
                 meusProjetos.forEach(projeto => {
                     const card = document.createElement('div');
                     card.className = 'project-card';
-
                     card.innerHTML = `
                             <div class="project-title">${projeto.titulo}</div>
                             <div class="project-tech">// ${projeto.tech}</div>
                             <div class="project-desc">${projeto.descricao}</div>
                         `;
-
-                    // Adiciona interação do cursor neste card específico
+                    // Interação do cursor nos cards
                     card.addEventListener('mouseenter', () => {
                         cursorOutline.style.width = '60px';
                         cursorOutline.style.height = '60px';
@@ -227,14 +317,10 @@
                         cursorOutline.style.height = '40px';
                         cursorOutline.style.backgroundColor = 'transparent';
                     });
-
                     container.appendChild(card);
                 });
             })
-            .catch(erro => {
-                console.error("Erro no JSON:", erro);
-                container.innerHTML = "<p style='color:red;'>Erro ao carregar dados.</p>";
-            });
+            .catch(erro => console.error("Erro no JSON:", erro));
 
         // --- 3. LÓGICA DO 3D (THREE.JS) ---
         const scene = new THREE.Scene();
@@ -248,13 +334,11 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        // Geometria Paramétrica (Icosaedro)
         const geometry = new THREE.IcosahedronGeometry(4, 2);
         const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 });
         const sphere = new THREE.Mesh(geometry, material);
         scene.add(sphere);
 
-        // Partículas (Poeira Digital)
         const pGeo = new THREE.BufferGeometry();
         const pCount = 2000;
         const pPos = new Float32Array(pCount * 3);
@@ -264,7 +348,6 @@
         const particles = new THREE.Points(pGeo, pMat);
         scene.add(particles);
 
-        // Loop de Animação
         function animate() {
             requestAnimationFrame(animate);
             sphere.rotation.y += 0.002;
@@ -274,7 +357,6 @@
         }
         animate();
 
-        // Responsividade
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
