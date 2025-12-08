@@ -92,7 +92,7 @@
             justify-content: center;
             align-items: center;
             z-index: 4000;
-            padding: 0 30%; /* Ajuste de margem */
+            padding: 0 30%; /* Mantendo o texto estreito e elegante */
             box-sizing: border-box;
             transition: opacity 1.5s ease-in-out;
         }
@@ -104,18 +104,19 @@
             letter-spacing: 3px;
         }
 
+        /* AQUI ESTÁ A MÁGICA DO FORMATO ANTIGO */
         .about-text {
             font-size: 1.1rem;
-            line-height: 1.6;
+            line-height: 1.8;
             color: #ddd;
-            text-align: left; /* Melhor para leitura com quebras */
+            text-align: justify; /* Volta o justificado */
             min-height: 150px;
+            white-space: pre-wrap; /* Respeita parágrafos naturalmente */
         }
 
         .glitch-char {
             color: #555;
         }
-        /* Cor do glitch (cinza) */
 
         .continue-hint {
             margin-top: 50px;
@@ -328,7 +329,7 @@
         const bioContainer = document.getElementById('bio-text-container');
         const continueHint = document.getElementById('continue-hint');
 
-        // AQUI: Usei \n para definir as quebras de linha explicitamente
+        // O Texto com os parágrafos originais
         const bioText = "I avoid definitions; I feel they limit me.\n\nWhenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative.\n\nI seek to make each piece obey an invisible rule and decide to tell a unique story.\n\nI persist in the attempt to compile everything that resonates with me...";
 
         // --- 1. TRANSIÇÃO: INTRO -> ABOUT ---
@@ -348,8 +349,8 @@
         aboutOverlay.addEventListener('click', () => {
             if (!isTypingFinished) {
                 isTypingFinished = true;
-                // Converte os \n em <br> se o usuário pular a animação
-                bioContainer.innerHTML = bioText.replace(/\n/g, '<br>');
+                // Completa o texto respeitando o formato
+                bioContainer.innerText = bioText;
                 continueHint.style.opacity = '1';
                 return;
             }
@@ -359,21 +360,20 @@
             setTimeout(() => { aboutOverlay.style.display = 'none'; }, 1500);
         });
 
-        // --- FUNÇÃO: HYPER TYPEWRITER (TURBO & LINE BREAKS) ---
+        // --- FUNÇÃO: HYPER TYPEWRITER (FORMATO PRE-WRAP + GLITCH RÁPIDO) ---
         async function hyperTypewriter(text, element) {
             const chars = '!<>-_\\/[]{}—=+*^?#________';
-            element.innerHTML = '';
+            element.innerText = ''; // Limpa
 
             for (let i = 0; i < text.length; i++) {
                 if (isTypingFinished) break;
 
                 const targetChar = text[i];
 
-                // TRATAMENTO DE QUEBRA DE LINHA (\n)
+                // Detecta o Enter e insere ele puro no HTML (o CSS pre-wrap faz o resto)
                 if (targetChar === '\n') {
-                    element.appendChild(document.createElement('br'));
-                    // Uma pausa minúscula na quebra de linha para dar ritmo
-                    await new Promise(r => setTimeout(r, 50));
+                    element.appendChild(document.createTextNode('\n'));
+                    await new Promise(r => setTimeout(r, 20)); // Pausa curta na quebra
                     continue;
                 }
 
@@ -382,17 +382,16 @@
 
                 if (targetChar === ' ') {
                     span.innerHTML = '&nbsp;';
-                    // Espaço é super rápido
                     await new Promise(r => setTimeout(r, 5));
                     continue;
                 }
 
-                // GLITCH: Reduzi para 3 repetições de 5ms (muito rápido/imperceptível)
+                // GLITCH TURBO: 3 variações de 5ms cada
                 for (let j = 0; j < 3; j++) {
                     if (isTypingFinished) break;
                     span.innerText = chars[Math.floor(Math.random() * chars.length)];
                     span.className = 'glitch-char';
-                    await new Promise(r => setTimeout(r, 5)); // 5ms = Turbo
+                    await new Promise(r => setTimeout(r, 5));
                 }
 
                 span.innerText = targetChar;
@@ -403,7 +402,7 @@
             continueHint.style.opacity = '1';
         }
 
-        // --- RESTO DO CÓDIGO (INTRO SCRAMBLE, 3D, ETC) ---
+        // --- RESTO DO CÓDIGO ---
         const roles = ["URBAN DESIGNER", "ARCHITECTURE STUDENT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND"];
         const el = document.getElementById('scramble-text');
         const chars = '!<>-_\\/[]{}—=+*^?#________';
