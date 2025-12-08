@@ -1,7 +1,7 @@
 import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
 import { OrbitControls } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls.js';
 
-// --- ELEMENTOS DOM (Selecionando aqui para usar no Scramble) ---
+// --- ELEMENTOS DOM ---
 const introOverlay = document.getElementById('intro-overlay');
 const aboutOverlay = document.getElementById('about-overlay');
 const phrasesOverlay = document.getElementById('phrases-overlay');
@@ -19,7 +19,7 @@ const nameLine1 = document.getElementById('name-line-1');
 const nameLine2 = document.getElementById('name-line-2');
 const heroSubtitle = document.getElementById('hero-subtitle');
 
-// --- SUA NOVA FUNÇÃO: ROLE SCRAMBLE EFFECT ---
+// --- ROLE SCRAMBLE EFFECT ---
 const roles = ["URBAN DESIGNER", "ARCHITECTURE STUDENT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND"];
 const el = document.getElementById('scramble-text');
 const chars = '!<>-_\\/[]{}—=+*^?#________';
@@ -68,13 +68,10 @@ const setText = (newText) => {
 };
 
 const nextRole = () => {
-    // Para o loop se sair da tela de intro
     if (document.body.classList.contains('active') || aboutOverlay.style.display === 'flex') return;
     setText(roles[roleIndex]);
     roleIndex = (roleIndex + 1) % roles.length;
 };
-
-// Inicia o loop de roles assim que carrega
 nextRole();
 
 
@@ -98,7 +95,6 @@ mySkills.forEach(skill => {
     skillsList.appendChild(item);
 });
 
-// Populate other panels via JS
 document.getElementById('timeline-content').innerHTML = `
         <div class="timeline-item"><div class="time-date">Ago 2024 - Present</div><div class="time-role">Spbim - Estágio Arq</div><div class="time-place">São Paulo - SP</div><div class="time-desc">Implementação BIM, modelagem paramétrica, nuvem de pontos (laser scanner), compatibilização.</div></div>
         <div class="timeline-item"><div class="time-date">Oct 2020 - Apr 2021</div><div class="time-role">Tekno S.A. - Estágio Elétrica</div><div class="time-place">Guaratinguetá - SP</div><div class="time-desc">Análise e desenvolvimento de plantas elétricas, manutenção preventiva e corretiva.</div></div>
@@ -129,12 +125,10 @@ document.querySelectorAll('.folder-tab').forEach(tab => {
         tab.classList.add('dragging');
         e.dataTransfer.effectAllowed = 'move';
     });
-
     tab.addEventListener('dragend', () => {
         draggedTab = null;
         tab.classList.remove('dragging');
     });
-
     tab.addEventListener('click', (e) => {
         openPanel(tab.getAttribute('data-target'));
     });
@@ -166,23 +160,20 @@ function getDragAfterElement(container, y) {
 // --- WINDOW MANAGER LOGIC ---
 const panels = document.querySelectorAll('.ui-panel');
 const body = document.body;
-let activePanel = null;
 
 function closePanel(panel) {
     panel.style.display = 'none';
     document.querySelector(`[data-target="${panel.id}"]`)?.classList.remove('active-tab');
     if (!panel.classList.contains('floating')) {
-        body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom'); // Limpa tudo
+        body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
     }
 }
 
 function openPanel(panelId) {
     const panel = document.getElementById(panelId);
     panels.forEach(p => { if (p.id !== panelId && !p.classList.contains('floating')) closePanel(p); });
-
     panel.style.display = 'flex';
     document.querySelector(`[data-target="${panelId}"]`)?.classList.add('active-tab');
-
     if (!panel.classList.contains('floating')) dockPanel(panel, 'left');
 }
 
@@ -193,7 +184,6 @@ function dockPanel(panel, side) {
     if (side !== 'float') {
         panel.classList.add(`docked-${side}`);
         body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
-        // Adiciona classe de push correspondente
         body.classList.add(`push-${side}`);
     } else {
         panel.classList.add('floating');
@@ -202,7 +192,7 @@ function dockPanel(panel, side) {
 }
 
 // --- DRAG PANELS ---
-let isDragging = false, startX, startY, dragPanel = null, diffX = 0, diffY = 0;
+let isDragging = false, dragPanel = null, diffX = 0, diffY = 0;
 document.querySelectorAll('.panel-header').forEach(h => {
     h.addEventListener('mousedown', (e) => {
         dragPanel = h.parentElement; isDragging = true;
@@ -238,7 +228,7 @@ window.addEventListener('mouseup', (e) => {
 });
 document.querySelectorAll('.close-panel').forEach(btn => btn.addEventListener('click', (e) => closePanel(e.target.closest('.ui-panel'))));
 
-// --- RESTO DO CÓDIGO ---
+// --- RESTO DO CÓDIGO (INTRO) ---
 const bioText = "I avoid definitions; I feel they limit me.\n\nWhenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative.\n\nI seek to make each piece obey an invisible rule and decide to tell a unique story.\n\nI persist in the attempt to compile everything that resonates with me...";
 const phrasesList = ["I wrote the code, but you are the one rendering it.", "Careful where you click: some variables are loose.", "As you observe the project, the algorithm observes you.", "Don't be afraid. It is just logic trying to be art.", "Loading fragments of a thought process...", "This is not a website. It is a render of my consciousness.", "Here, gravity is just a syntax suggestion.", "You are not on the internet. You are inside a loop of my creative process.", "Space under construction. The mind, too.", "Don't touch the screen. The digital concrete is still wet.", "Are you the user, or just another parameter?", "Welcome to the backend of my imagination.", "Compiling chaos into structure. Please wait.", "Entry permitted. Exit not guaranteed.", "Everything here is code. Even the void.", "This is a portfolio. This is not a portfolio.", "You are in my mind now. Good luck.", "This page is thinking about you right now.", "Your visit has been logged. My architecture now knows who you are.", "To navigate here is to compile memories that are not yours.", "There is a system error: it has learned to feel."];
 
@@ -420,37 +410,53 @@ document.getElementById('portfolio-btn').addEventListener('mouseleave', () => {
     cursorOutline.style.backgroundColor = 'transparent';
 });
 
+// --- THREE.JS CONFIGURATION ---
 const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x050505, 0.002);
+
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(-10, 5, 10);
 camera.lookAt(0, 0, 0);
+
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('canvas-container').appendChild(renderer.domElement);
+
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 controls.enableZoom = true;
-controls.autoRotate = false;
+// 5. MOVIMENTAÇÃO ORBITAL (Camera lenta)
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.5; // Velocidade lenta
+
+// --- OBJECTS ---
 const geometry = new THREE.IcosahedronGeometry(4, 2);
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 });
 const sphere = new THREE.Mesh(geometry, material);
+// Guardar ID para animação de hover
+sphere.userData = { isCenter: true };
 scene.add(sphere);
+
+// 1. AUMENTAR LIMITE DE PONTOS BRANCOS E ESPAÇAMENTO
 const pGeo = new THREE.BufferGeometry();
-const pCount = 2000;
+const pCount = 6000; // Aumentado de 2000
 const pPos = new Float32Array(pCount * 3);
-for (let i = 0; i < pCount * 3; i++) pPos[i] = (Math.random() - 0.5) * 30;
+for (let i = 0; i < pCount * 3; i++) {
+    // Aumentado range de 30 para 100 para espalhar mais
+    pPos[i] = (Math.random() - 0.5) * 100;
+}
 pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
 const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff });
 const particles = new THREE.Points(pGeo, pMat);
 scene.add(particles);
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
+
+// --- PROJECT NODES ---
 const projectNodes = [];
+const projectGroup = new THREE.Group();
+scene.add(projectGroup);
+
 fetch('projetos.json').then(r => r.json()).then(projetos => {
-    const projectGroup = new THREE.Group();
-    scene.add(projectGroup);
     const radius = 6.5;
     const goldenAngle = Math.PI * (3 - Math.sqrt(5));
     projetos.forEach((proj, i) => {
@@ -459,20 +465,37 @@ fetch('projetos.json').then(r => r.json()).then(projetos => {
         const theta = goldenAngle * i;
         const x = Math.cos(theta) * radiusAtY;
         const z = Math.sin(theta) * radiusAtY;
+
+        // 3. ESTILIZAÇÃO DAS ESFERAS (Para animação)
         const nodeGeo = new THREE.SphereGeometry(0.3, 16, 16);
-        const nodeMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        const nodeMat = new THREE.MeshBasicMaterial({ color: 0xffffff }); // Começa branco
         const node = new THREE.Mesh(nodeGeo, nodeMat);
+
         node.position.set(x * radius, y * radius, z * radius);
-        node.userData = { id: i, data: proj };
+        node.userData = { id: i, data: proj, isNode: true };
+
         projectNodes.push(node);
         projectGroup.add(node);
     });
 }).catch(e => console.error(e));
+
+// --- INTERACTION LOGIC (RAYCASTER & HOVER) ---
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let hoveredNode = null;
+let hoveredCenter = null;
+
+// Rastrear mouse sem clicar
+window.addEventListener('mousemove', (event) => {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+});
+
 window.addEventListener('click', (event) => {
     if (!document.body.classList.contains('active')) return;
     if (event.target.closest('.ui-panel') || event.target.closest('.folder-tab') || event.target.closest('#project-modal') || event.target.closest('.close-modal')) return;
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    // Raycaster click check
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(projectNodes);
     if (intersects.length > 0) {
@@ -481,6 +504,7 @@ window.addEventListener('click', (event) => {
         openModal(projectData);
     }
 });
+
 function openModal(data) {
     modalTitle.innerText = data.titulo;
     modalTech.innerText = "// " + data.tech;
@@ -492,12 +516,77 @@ closeBtn.addEventListener('click', () => {
     modal.classList.remove('open');
     setTimeout(() => { modal.style.display = 'none'; }, 500);
 });
+
+// 2. BOTÃO DOUBLE CLICK NO SCROLL (MIDDLE BUTTON)
+let lastMiddleClick = 0;
+window.addEventListener('mousedown', (e) => {
+    // e.button === 1 é o botão do meio (scroll wheel click)
+    if (e.button === 1) {
+        e.preventDefault(); // Previne scroll padrão
+        const now = Date.now();
+        if (now - lastMiddleClick < 300) {
+            // Double click detectado
+            controls.reset(); // Reseta a câmera para a posição inicial
+        }
+        lastMiddleClick = now;
+    }
+});
+
+// --- ANIMATION LOOP ---
 function animate() {
     requestAnimationFrame(animate);
     controls.update();
+
+    // Lógica de Hover (Animações 3 e 4)
+    if (document.body.classList.contains('active')) {
+        raycaster.setFromCamera(mouse, camera);
+
+        // Verifica interseção com Nodes e com o Centro
+        const intersectsNodes = raycaster.intersectObjects(projectNodes);
+        const intersectsCenter = raycaster.intersectObject(sphere);
+
+        // 3. ANIMAÇÃO DE HOVER NOS NODES (Projetos)
+        if (intersectsNodes.length > 0) {
+            const object = intersectsNodes[0].object;
+            if (hoveredNode !== object) {
+                // Reset anterior
+                if (hoveredNode) {
+                    hoveredNode.material.color.setHex(0xffffff);
+                }
+                hoveredNode = object;
+                // Deixa verde neon
+                hoveredNode.material.color.setHex(0x00ff88);
+                document.body.style.cursor = 'pointer';
+            }
+        } else {
+            if (hoveredNode) {
+                hoveredNode.material.color.setHex(0xffffff);
+                hoveredNode = null;
+                document.body.style.cursor = 'none'; // Volta pro cursor customizado
+            }
+        }
+
+        // Animação suave de escala (Lerp)
+        projectNodes.forEach(node => {
+            const targetScale = (node === hoveredNode) ? 2 : 1; // Dobra tamanho se hover
+            node.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
+        });
+
+        // 4. ANIMAÇÃO DO ICOSAEDRO (Centro)
+        if (intersectsCenter.length > 0) {
+            sphere.rotation.y += 0.02; // Gira mais rápido
+            sphere.rotation.x += 0.02;
+            sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.6, 0.05); // Mais visível
+        } else {
+            // Rotação padrão lenta (já acontece no else abaixo se quiser somar)
+            sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.15, 0.05); // Volta ao normal
+        }
+    }
+
     renderer.render(scene, camera);
 }
 animate();
+
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
