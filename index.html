@@ -72,30 +72,32 @@
             bottom: 280px;
         }
 
-        /* 2. BOTÃO PORTFOLIO (Reativo à Direita) */
+        /* 2. BOTÃO PORTFOLIO (Limpo e Alinhado) */
         #portfolio-btn {
             position: fixed;
-            top: 30px;
-            right: 40px;
+            top: 10.5%; /* Alinhado visualmente com o .hero (que está em 10%) */
+            right: 80px; /* Mais respiro da lateral */
+
             font-size: 0.8rem;
-            color: #fff;
+            color: #aaa; /* Começa mais discreto sem a borda */
             letter-spacing: 2px;
             text-decoration: none;
-            border: 1px solid rgba(255,255,255,0.3);
+            border: none; /* Borda removida como pediu */
+            background: transparent;
             padding: 8px 15px;
-            border-radius: 20px;
             z-index: 4000;
             cursor: pointer;
-            transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background 0.3s; /* Adicionado transição de right */
+            transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), color 0.3s, transform 0.3s;
         }
 
             #portfolio-btn:hover {
-                background: #00ff88;
-                color: #000;
-                border-color: #00ff88;
+                color: #00ff88;
+                background: transparent; /* Sem fundo, apenas brilho no texto */
+                text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+                transform: translateX(-5px); /* Efeito sutil de movimento */
             }
 
-        /* Se empurrar na direita, move o botão */
+        /* Se empurrar na direita, move junto */
         body.push-right #portfolio-btn {
             right: 300px;
         }
@@ -402,11 +404,17 @@
             letter-spacing: 1px;
             pointer-events: none;
             opacity: 0;
-            transition: opacity 2s;
+            /* Adicionei 'bottom' na transição para animar a subida */
+            transition: opacity 2s, bottom 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        body.active .hero, body.active .interaction-hint {
+        body.active .interaction-hint {
             opacity: 1;
+        }
+
+        /* NOVA REGRA: Sobe quando tiver painel inferior */
+        body.push-bottom .interaction-hint {
+            bottom: 280px; /* 260px do painel + 20px de respiro */
         }
 
         /* --- SISTEMA DE PAINÉIS --- */
