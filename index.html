@@ -24,7 +24,7 @@
             z-index: -1;
         }
 
-        /* --- TELAS DE OVERLAY (Intro, About, Phrases) --- */
+        /* --- TELAS DE OVERLAY --- */
         .overlay-screen {
             position: fixed;
             top: 0;
@@ -37,7 +37,7 @@
             justify-content: center;
             align-items: center;
             transition: opacity 1s ease-in-out;
-            z-index: 5000; /* Base Z-index */
+            z-index: 5000;
         }
 
         #intro-overlay {
@@ -94,14 +94,17 @@
             white-space: pre-wrap;
         }
 
-        /* ESTILO DAS FRASES (NOVO) */
+        /* ESTILO DAS FRASES (Loop) */
         .phrases-text {
             font-size: 1.5rem;
             line-height: 1.5;
             color: #00ff88;
             text-align: center;
-            min-height: 100px; /* Evita pulos */
+            min-height: 80px; /* Reduzi um pouco para ficar mais compacto */
             text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center; /* Alinha o texto mais pra baixo perto da dica */
         }
 
         /* BOTÃO E DICAS */
@@ -126,7 +129,7 @@
             }
 
         .continue-hint {
-            margin-top: 60px;
+            margin-top: 50px; /* Padrão para telas normais */
             font-size: 0.8rem;
             color: #555;
             letter-spacing: 2px;
@@ -134,6 +137,11 @@
             cursor: none;
             opacity: 0;
             transition: opacity 1s;
+        }
+
+        /* AJUSTE ESPECÍFICO PARA APROXIMAR NA TELA DE FRASES */
+        #phrases-overlay .continue-hint {
+            margin-top: 20px; /* Bem pertinho da frase */
         }
 
         /* EFEITOS ESPECIAIS */
@@ -348,11 +356,10 @@
     <script type="module">
         import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
 
-        // ELEMENTOS DOM
+        // DOM ELEMENTS
         const introOverlay = document.getElementById('intro-overlay');
         const aboutOverlay = document.getElementById('about-overlay');
         const phrasesOverlay = document.getElementById('phrases-overlay');
-
         const startBtn = document.getElementById('start-btn');
         const bioContainer = document.getElementById('bio-text-container');
         const aboutHint = document.getElementById('about-hint');
@@ -385,7 +392,7 @@
             "There is a system error: it has learned to feel."
         ];
 
-        // --- 1. TRANSIÇÃO: INTRO -> ABOUT ---
+        // 1. INTRO -> ABOUT
         startBtn.addEventListener('click', () => {
             introOverlay.style.opacity = '0';
             setTimeout(() => {
@@ -397,72 +404,52 @@
             }, 1000);
         });
 
-        // --- 2. TRANSIÇÃO: ABOUT -> PHRASES ---
+        // 2. ABOUT -> PHRASES
         let bioFinished = false;
         aboutOverlay.addEventListener('click', () => {
             if (!bioFinished) {
-                // Se clicar antes de acabar, revela o texto
                 bioFinished = true;
                 const spans = bioContainer.querySelectorAll('span');
                 spans.forEach(s => { s.className = ''; s.innerText = s.dataset.char; });
                 aboutHint.style.opacity = '1';
                 return;
             }
-
-            // Vai para as frases
             aboutOverlay.style.opacity = '0';
             setTimeout(() => {
                 aboutOverlay.style.display = 'none';
                 phrasesOverlay.style.display = 'flex';
-                // Inicia o Loop Infinito de frases
                 runPhrasesLoop();
             }, 1000);
         });
 
-        // --- 3. TRANSIÇÃO: PHRASES -> SITE PRINCIPAL ---
+        // 3. PHRASES -> SITE
         let stopPhrasesLoop = false;
         phrasesOverlay.addEventListener('click', () => {
-            stopPhrasesLoop = true; // Para o loop
+            stopPhrasesLoop = true;
             phrasesOverlay.style.opacity = '0';
-            document.body.classList.add('active'); // Revela o site
+            document.body.classList.add('active');
             setTimeout(() => { phrasesOverlay.style.display = 'none'; }, 1000);
         });
 
-
-        // --- LÓGICA DO LOOP DE FRASES ---
+        // LÓGICA LOOP FRASES
         async function runPhrasesLoop() {
             let index = 0;
-
             while (!stopPhrasesLoop) {
-                // Pega a frase atual
                 const phrase = phrasesList[index];
-
-                // Escreve a frase (Ghost Effect)
                 await runGhostTypewriter(phrase, phrasesContainer, null, true);
-
                 if (stopPhrasesLoop) break;
-
-                // Espera 3 segundos para ler
                 await new Promise(r => setTimeout(r, 3000));
-
                 if (stopPhrasesLoop) break;
-
-                // Apaga a frase (efeito simples de limpar)
                 phrasesContainer.innerHTML = '';
-
-                // Próxima frase
                 index = (index + 1) % phrasesList.length;
             }
         }
 
-
-        // --- FUNÇÃO GHOST TYPEWRITER (GENÉRICA) ---
-        // Agora aceita um callback e um modo "fast" para as frases
+        // GHOST TYPEWRITER (CORE)
         async function runGhostTypewriter(text, element, callback, isPhraseMode = false) {
             const chars = '!<>-_\\/[]{}—=+*^?#________';
             element.innerHTML = '';
 
-            // Passo 1: Layout Invisível
             const spans = [];
             for (let i = 0; i < text.length; i++) {
                 const char = text[i];
@@ -477,13 +464,10 @@
                 }
             }
 
-            // Passo 2: Revelar
-            // Se for modo Frase, é mais rápido. Se for Bio, é mais lento e dramático.
             const glitchSpeed = isPhraseMode ? 5 : 10;
             const letterDelay = isPhraseMode ? 10 : 30;
 
             for (let i = 0; i < spans.length; i++) {
-                // Verifica se deve parar (no caso da Bio quando clica, ou frases quando sai)
                 if (!isPhraseMode && bioFinished) break;
                 if (isPhraseMode && stopPhrasesLoop) break;
 
@@ -495,7 +479,6 @@
                     span.className = ''; await new Promise(r => setTimeout(r, 5)); continue;
                 }
 
-                // Glitch
                 for (let j = 0; j < 3; j++) {
                     span.innerText = chars[Math.floor(Math.random() * chars.length)];
                     span.className = 'glitch-char';
@@ -510,8 +493,7 @@
             if (callback) callback();
         }
 
-
-        // --- RESTO DO CÓDIGO (INTRO SCRAMBLE, 3D, ETC) ---
+        // RESTO DO CÓDIGO
         const roles = ["URBAN DESIGNER", "ARCHITECTURE STUDENT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND"];
         const el = document.getElementById('scramble-text');
         const chars = '!<>-_\\/[]{}—=+*^?#________';
