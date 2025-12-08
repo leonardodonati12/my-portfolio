@@ -92,7 +92,7 @@
             justify-content: center;
             align-items: center;
             z-index: 4000;
-            padding: 0 30%; /* Mantendo o texto estreito e elegante */
+            padding: 0 25%; /* Margem ajustada para leitura confortável */
             box-sizing: border-box;
             transition: opacity 1.5s ease-in-out;
         }
@@ -100,26 +100,30 @@
         .about-title {
             font-size: 2rem;
             color: #00ff88;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             letter-spacing: 3px;
         }
 
-        /* AQUI ESTÁ A MÁGICA DO FORMATO ANTIGO */
         .about-text {
             font-size: 1.1rem;
-            line-height: 1.8;
+            line-height: 1.8; /* Espaçamento bom entre linhas */
             color: #ddd;
-            text-align: justify; /* Volta o justificado */
-            min-height: 150px;
-            white-space: pre-wrap; /* Respeita parágrafos naturalmente */
+            text-align: left; /* Alinhado à esquerda evita buracos estranhos */
+            width: 100%;
+            white-space: pre-wrap; /* Respeita os parágrafos do texto */
         }
 
+        /* Classes para o efeito Fantasma */
+        .char-hidden {
+            color: transparent;
+        }
+        /* Ocupa espaço mas não aparece */
         .glitch-char {
             color: #555;
         }
 
         .continue-hint {
-            margin-top: 50px;
+            margin-top: 60px;
             font-size: 0.8rem;
             color: #555;
             letter-spacing: 2px;
@@ -329,7 +333,7 @@
         const bioContainer = document.getElementById('bio-text-container');
         const continueHint = document.getElementById('continue-hint');
 
-        // O Texto com os parágrafos originais
+        // Texto Unificado - Layout travado
         const bioText = "I avoid definitions; I feel they limit me.\n\nWhenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative.\n\nI seek to make each piece obey an invisible rule and decide to tell a unique story.\n\nI persist in the attempt to compile everything that resonates with me...";
 
         // --- 1. TRANSIÇÃO: INTRO -> ABOUT ---
@@ -338,8 +342,9 @@
             setTimeout(() => {
                 introOverlay.style.display = 'none';
                 aboutOverlay.style.display = 'flex';
-                // Inicia o Hyper Typewriter
-                hyperTypewriter(bioText, bioContainer);
+
+                // Prepara e Inicia (Técnica Fantasma)
+                runGhostTypewriter(bioText, bioContainer);
             }, 1000);
         });
 
@@ -348,9 +353,15 @@
 
         aboutOverlay.addEventListener('click', () => {
             if (!isTypingFinished) {
-                isTypingFinished = true;
-                // Completa o texto respeitando o formato
-                bioContainer.innerText = bioText;
+                isTypingFinished = true; // A função de digitação verifica isso e para
+
+                // Revela todo o texto instantaneamente
+                const spans = bioContainer.querySelectorAll('span');
+                spans.forEach(span => {
+                    span.className = ''; // Remove a classe hidden
+                    span.innerText = span.dataset.char; // Garante o caractere certo
+                });
+
                 continueHint.style.opacity = '1';
                 return;
             }
@@ -360,41 +371,64 @@
             setTimeout(() => { aboutOverlay.style.display = 'none'; }, 1500);
         });
 
-        // --- FUNÇÃO: HYPER TYPEWRITER (FORMATO PRE-WRAP + GLITCH RÁPIDO) ---
-        async function hyperTypewriter(text, element) {
+        // --- FUNÇÃO: GHOST TYPEWRITER (LAYOUT TRAVADO) ---
+        async function runGhostTypewriter(text, element) {
             const chars = '!<>-_\\/[]{}—=+*^?#________';
-            element.innerText = ''; // Limpa
+            element.innerHTML = ''; // Limpa
 
+            // PASSO 1: CRIAR A ESTRUTURA COMPLETA (INVISÍVEL)
+            // Isso garante que o layout já ocupe o espaço final desde o início
+            const spans = [];
             for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+
+                if (char === '\n') {
+                    const br = document.createElement('br'); // Quebra real
+                    element.appendChild(br);
+                    // Adiciona um placeholder no array para mantermos o ritmo de tempo
+                    spans.push({ isBreak: true });
+                } else {
+                    const span = document.createElement('span');
+                    span.innerText = char;
+                    span.dataset.char = char; // Guarda a letra original
+                    span.className = 'char-hidden'; // Começa invisível (transparent)
+                    element.appendChild(span);
+                    spans.push({ dom: span, isBreak: false });
+                }
+            }
+
+            // PASSO 2: "ACENDER" CADA LETRA COM GLITCH
+            for (let i = 0; i < spans.length; i++) {
                 if (isTypingFinished) break;
 
-                const targetChar = text[i];
+                const item = spans[i];
 
-                // Detecta o Enter e insere ele puro no HTML (o CSS pre-wrap faz o resto)
-                if (targetChar === '\n') {
-                    element.appendChild(document.createTextNode('\n'));
-                    await new Promise(r => setTimeout(r, 20)); // Pausa curta na quebra
+                if (item.isBreak) {
+                    await new Promise(r => setTimeout(r, 30)); // Pausa na quebra de linha
                     continue;
                 }
 
-                const span = document.createElement('span');
-                element.appendChild(span);
+                const span = item.dom;
 
-                if (targetChar === ' ') {
-                    span.innerHTML = '&nbsp;';
+                // Torna visível, mas começando com glitch
+                // O span já está no lugar certo, então nada muda de posição
+
+                if (span.innerText === ' ') {
+                    span.className = ''; // Espaço aparece direto
                     await new Promise(r => setTimeout(r, 5));
                     continue;
                 }
 
-                // GLITCH TURBO: 3 variações de 5ms cada
+                // Glitch Turbo (Troca letra no lugar sem mexer layout)
                 for (let j = 0; j < 3; j++) {
                     if (isTypingFinished) break;
                     span.innerText = chars[Math.floor(Math.random() * chars.length)];
                     span.className = 'glitch-char';
-                    await new Promise(r => setTimeout(r, 5));
+                    await new Promise(r => setTimeout(r, 10));
                 }
 
-                span.innerText = targetChar;
+                // Fixa a letra final
+                span.innerText = span.dataset.char;
                 span.className = '';
             }
 
