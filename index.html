@@ -54,7 +54,7 @@
         #phrases-overlay {
             z-index: 5001;
             display: none;
-            padding: 0 20%;
+            padding: 0 15%;
             box-sizing: border-box;
         }
 
@@ -94,17 +94,18 @@
             white-space: pre-wrap;
         }
 
-        /* CORREÇÃO DO BUG DAS FRASES */
+        /* FRASES (HACKER STYLE) */
         .phrases-text {
             font-size: 1.5rem;
-            line-height: 1.5;
+            line-height: 1.4;
             color: #00ff88;
             text-align: center;
-            min-height: 100px;
+            min-height: 80px;
             text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
-            /* Removido o display: flex que causava o bug */
-            display: block;
-            width: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            margin-bottom: 0; /* Garante que não empurre nada pra baixo */
         }
 
         /* BOTÃO E DICAS */
@@ -139,15 +140,16 @@
             transition: opacity 1s;
         }
 
+        /* AJUSTE: MÁXIMA APROXIMAÇÃO */
         #phrases-overlay .continue-hint {
-            margin-top: 30px;
+            margin-top: 10px; /* Colado na frase */
         }
 
         /* EFEITOS ESPECIAIS */
         .char-hidden {
             opacity: 0;
         }
-        /* Usando opacity em vez de color transparent para garantir layout */
+
         .glitch-char {
             color: #555;
         }
@@ -355,6 +357,7 @@
     <script type="module">
         import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
 
+        // DOM ELEMENTS
         const introOverlay = document.getElementById('intro-overlay');
         const aboutOverlay = document.getElementById('about-overlay');
         const phrasesOverlay = document.getElementById('phrases-overlay');
@@ -415,6 +418,8 @@
             setTimeout(() => {
                 aboutOverlay.style.display = 'none';
                 phrasesOverlay.style.display = 'flex';
+                // Inicia com a primeira frase
+                phrasesContainer.innerText = "";
                 runPhrasesLoop();
             }, 1000);
         });
@@ -428,24 +433,79 @@
             setTimeout(() => { phrasesOverlay.style.display = 'none'; }, 1000);
         });
 
+        // --- HACKER SCRAMBLE LOOP (Versão Nova) ---
         async function runPhrasesLoop() {
             let index = 0;
             while (!stopPhrasesLoop) {
-                const phrase = phrasesList[index];
-                await runGhostTypewriter(phrase, phrasesContainer, null, true);
+                // EFEITO HACKER: Transforma o texto atual no próximo
+                await scrambleTo(phrasesContainer, phrasesList[index]);
+
                 if (stopPhrasesLoop) break;
-                await new Promise(r => setTimeout(r, 3000));
+
+                // Espera leitura
+                await new Promise(r => setTimeout(r, 4000));
+
                 if (stopPhrasesLoop) break;
-                phrasesContainer.innerHTML = '';
+
+                // Prepara próxima (sem apagar, só transmutar)
                 index = (index + 1) % phrasesList.length;
             }
         }
 
-        async function runGhostTypewriter(text, element, callback, isPhraseMode = false) {
-            // CORREÇÃO: Limpei os caracteres estranhos que causam tremedeira (larguras diferentes)
-            const chars = '!<>-_/[]{}*^?#';
-            element.innerHTML = '';
+        // Função Scramble (Transforma texto A em B)
+        function scrambleTo(element, newText) {
+            return new Promise(resolve => {
+                const oldText = element.innerText;
+                const length = Math.max(oldText.length, newText.length);
+                const queue = [];
+                const chars = '!<>-_\\/[]{}—=+*^?#________';
 
+                for (let i = 0; i < length; i++) {
+                    const from = oldText[i] || '';
+                    const to = newText[i] || '';
+                    const start = Math.floor(Math.random() * 40);
+                    const end = start + Math.floor(Math.random() * 40);
+                    queue.push({ from, to, start, end });
+                }
+
+                let frame = 0;
+                const update = () => {
+                    let output = '';
+                    let complete = 0;
+                    for (let i = 0; i < queue.length; i++) {
+                        let { from, to, start, end, char } = queue[i];
+                        if (frame >= end) {
+                            complete++;
+                            output += to;
+                        } else if (frame >= start) {
+                            if (!char || Math.random() < 0.28) {
+                                char = chars[Math.floor(Math.random() * chars.length)];
+                                queue[i].char = char;
+                            }
+                            output += `<span class="glitch-char">${char}</span>`;
+                        } else {
+                            output += from;
+                        }
+                    }
+                    element.innerHTML = output;
+
+                    if (complete === queue.length) {
+                        resolve();
+                    } else {
+                        if (stopPhrasesLoop) { resolve(); return; }
+                        requestAnimationFrame(update);
+                        frame++;
+                    }
+                };
+                update();
+            });
+        }
+
+
+        // --- GHOST TYPEWRITER (APENAS PARA A BIO AGORA) ---
+        async function runGhostTypewriter(text, element, callback) {
+            const chars = '!<>-_\\/[]{}—=+*^?#________';
+            element.innerHTML = '';
             const spans = [];
             for (let i = 0; i < text.length; i++) {
                 const char = text[i];
@@ -454,49 +514,28 @@
                     spans.push({ isBreak: true });
                 } else {
                     const span = document.createElement('span');
-                    span.innerText = char;
-                    span.dataset.char = char;
-                    span.className = 'char-hidden';
+                    span.innerText = char; span.dataset.char = char; span.className = 'char-hidden';
                     element.appendChild(span);
                     spans.push({ dom: span, isBreak: false });
                 }
             }
 
-            const glitchSpeed = isPhraseMode ? 5 : 10;
-            const letterDelay = isPhraseMode ? 10 : 30;
-
             for (let i = 0; i < spans.length; i++) {
-                if (!isPhraseMode && bioFinished) break;
-                if (isPhraseMode && stopPhrasesLoop) break;
-
+                if (bioFinished) break;
                 const item = spans[i];
-                if (item.isBreak) { await new Promise(r => setTimeout(r, letterDelay)); continue; }
-
+                if (item.isBreak) { await new Promise(r => setTimeout(r, 30)); continue; }
                 const span = item.dom;
-
-                // CORREÇÃO: Espaços em branco agora funcionam em display: block
                 if (span.innerText === ' ') {
-                    span.className = '';
-                    span.innerHTML = '&nbsp;'; // Garante que o espaço ocupe lugar visualmente
-                    span.style.opacity = '1';
-                    await new Promise(r => setTimeout(r, 5));
-                    continue;
+                    span.className = ''; span.innerHTML = '&nbsp;'; span.style.opacity = '1'; await new Promise(r => setTimeout(r, 5)); continue;
                 }
-
-                // Glitch com opacity
-                span.className = 'glitch-char';
-                span.style.opacity = '1';
-
+                span.className = 'glitch-char'; span.style.opacity = '1';
                 for (let j = 0; j < 3; j++) {
                     span.innerText = chars[Math.floor(Math.random() * chars.length)];
-                    await new Promise(r => setTimeout(r, glitchSpeed));
+                    await new Promise(r => setTimeout(r, 10));
                 }
-
-                span.innerText = span.dataset.char;
-                span.className = '';
+                span.innerText = span.dataset.char; span.className = '';
             }
-
-            if (!isPhraseMode) bioFinished = true;
+            bioFinished = true;
             if (callback) callback();
         }
 
