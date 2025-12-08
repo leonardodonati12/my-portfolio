@@ -16,8 +16,24 @@
             user-select: none;
         }
 
-        #canvas-container {
+        /* O CONTAINER GLOBAL QUE SERÁ EMPURRADO */
+        #main-wrapper {
             position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); /* Animação suave */
+            z-index: 0;
+        }
+
+        /* Quando a classe 'pushed' é adicionada ao corpo, empurramos o wrapper */
+        body.pushed #main-wrapper {
+            transform: translateX(320px); /* Empurra 320px para a direita */
+        }
+
+        #canvas-container {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -143,7 +159,7 @@
                 box-shadow: 0 0 20px #00ff88;
             }
 
-        /* --- SITE UI (HERO) --- */
+        /* --- SITE UI (DENTRO DO WRAPPER) --- */
         .hero {
             position: absolute;
             top: 10%;
@@ -193,9 +209,9 @@
             opacity: 1;
         }
 
-        /* --- PAINEL FLUTUANTE DE HABILIDADES (REVIT STYLE) --- */
+        /* --- PAINEL DE HABILIDADES (FLUIDO & HÍBRIDO) --- */
 
-        /* O Botão Lateral (Aba) */
+        /* Botão Lateral */
         #skills-toggle {
             position: fixed;
             top: 20%;
@@ -204,16 +220,17 @@
             border: 1px solid #00ff88;
             border-left: none;
             color: #00ff88;
-            padding: 20px 10px;
+            padding: 30px 12px;
             writing-mode: vertical-rl;
-            text-orientation: mixed; /* Texto Vertical */
-            font-size: 0.9rem;
-            letter-spacing: 3px;
+            text-orientation: mixed;
+            font-size: 0.8rem;
+            letter-spacing: 4px;
             text-transform: uppercase;
             cursor: none;
             z-index: 4000;
             transition: all 0.3s;
-            opacity: 0; /* Começa invisível até entrar no site */
+            border-radius: 0 15px 15px 0; /* Arredondado */
+            opacity: 0;
         }
 
         body.active #skills-toggle {
@@ -224,93 +241,108 @@
             background: #00ff88;
             color: #000;
             padding-left: 20px;
+            box-shadow: 0 0 15px rgba(0,255,136,0.3);
         }
 
-        /* A Janela Flutuante */
+        /* O Painel */
         #skills-panel {
             position: fixed;
-            top: 20%;
-            left: 60px; /* Logo ao lado do botão */
-            width: 300px;
-            background: rgba(10, 10, 10, 0.95);
-            border: 1px solid #333;
-            box-shadow: 5px 5px 20px rgba(0,0,0,0.5);
+            background: rgba(15, 15, 15, 0.85); /* Mais translúcido */
+            backdrop-filter: blur(15px); /* Efeito vidro (Glassmorphism) */
+            border-right: 1px solid #333;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
             z-index: 4001;
-            display: none; /* Escondido inicialment */
+            display: none;
             flex-direction: column;
+            /* Estado Inicial (Docked/Acoplado) */
+            top: 0;
+            left: 0;
+            width: 320px;
+            height: 100%;
+            border-radius: 0; /* Reto quando acoplado */
+            transition: transform 0.5s ease, border-radius 0.3s, height 0.3s;
         }
 
-        /* Cabeçalho para Arrastar (Handle) */
+            /* Classe quando vira flutuante */
+            #skills-panel.floating {
+                height: auto;
+                border: 1px solid #333;
+                border-radius: 20px; /* Borda redonda fluida */
+                box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            }
+
         .panel-header {
-            background: #1a1a1a;
-            color: #888;
-            padding: 8px 15px;
+            padding: 15px 20px;
             font-size: 0.8rem;
-            letter-spacing: 1px;
-            cursor: grab; /* Mãozinha para arrastar */
-            border-bottom: 1px solid #333;
+            letter-spacing: 2px;
+            color: #00ff88;
+            cursor: grab;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: rgba(0,255,136,0.05);
+            /* Arredondar topo se for flutuante */
         }
 
-            .panel-header:active {
-                cursor: grabbing;
-                background: #222;
-            }
+        #skills-panel.floating .panel-header {
+            border-radius: 20px 20px 0 0;
+        }
+
+        .panel-header:active {
+            cursor: grabbing;
+            background: rgba(0,255,136,0.1);
+        }
 
         .close-panel {
             cursor: pointer;
-            color: #555;
+            color: #fff;
+            font-size: 1.2rem;
+            transition: transform 0.3s;
         }
 
             .close-panel:hover {
-                color: #fff;
+                transform: rotate(90deg);
+                color: #00ff88;
             }
 
-        /* Conteúdo das Skills */
         .panel-content {
-            padding: 20px;
-            max-height: 60vh;
+            padding: 30px 25px;
             overflow-y: auto;
+            flex: 1;
         }
 
         .skill-item {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .skill-name {
             font-size: 0.8rem;
-            color: #fff;
-            margin-bottom: 5px;
+            color: #eee;
+            margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
+            letter-spacing: 1px;
         }
 
-        .skill-percent {
-            color: #555;
-        }
-
-        /* Barra de Carregamento Retrô (Blocos) */
         .retro-bar {
             display: flex;
-            gap: 2px;
+            gap: 3px;
+            height: 8px;
         }
 
         .bar-block {
-            height: 10px;
             flex: 1;
-            background: #111;
-            border: 1px solid #333;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
         }
 
             .bar-block.filled {
                 background: #00ff88;
-                box-shadow: 0 0 5px #00ff88;
-                border-color: #00ff88;
+                box-shadow: 0 0 8px rgba(0,255,136,0.4);
             }
 
-        /* --- MODAL DE PROJETO --- */
+        /* --- MODAL PROJETO --- */
         #project-modal {
             position: fixed;
             top: 50%;
@@ -321,10 +353,11 @@
             background: rgba(10, 10, 10, 0.95);
             border: 1px solid #00ff88;
             padding: 40px;
+            border-radius: 20px; /* Fluido */
             z-index: 4005;
             display: none;
             flex-direction: column;
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
+            box-shadow: 0 0 50px rgba(0, 255, 136, 0.15);
             opacity: 0;
             transition: opacity 0.5s;
         }
@@ -376,12 +409,17 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: #111;
+            background: transparent;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #00ff88;
+            background: #333;
+            border-radius: 10px;
         }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #00ff88;
+            }
 
         .cursor-dot {
             width: 8px;
@@ -439,18 +477,20 @@
                 width: 90%;
             }
 
-            #skills-panel {
-                width: 80%;
-                left: 10%;
-                top: 10%;
-            }
-            /* No celular não flutua tanto */
             body {
                 cursor: auto;
             }
 
             .cursor-dot, .cursor-outline {
                 display: none;
+            }
+            /* No celular, o painel cobre a tela e não empurra */
+            body.pushed #main-wrapper {
+                transform: none;
+            }
+
+            #skills-panel {
+                width: 100%;
             }
         }
     </style>
@@ -474,90 +514,88 @@
         <div class="continue-hint" style="opacity: 1;">[ CLICK ANYWHERE TO CONTINUE ]</div>
     </div>
 
-    <div id="project-modal">
-        <div class="close-modal" id="close-modal-btn">×</div>
-        <div class="modal-title" id="modal-title">Project Name</div>
-        <div class="modal-tech" id="modal-tech">// Tech Stack</div>
-        <div class="modal-desc" id="modal-desc">Description goes here...</div>
+    <div id="main-wrapper">
+        <div class="hero">
+            <h1 id="hero-name"><div id="name-line-1">LEONARDO</div><div id="name-line-2">DONATI</div></h1>
+            <div class="subtitle" id="hero-subtitle">ARCHITECTURE STUDENT</div>
+        </div>
+        <div class="interaction-hint">[ DRAG TO ROTATE • CLICK NODES FOR DETAILS ]</div>
+
+        <div id="canvas-container"></div>
+
+        <div id="project-modal">
+            <div class="close-modal" id="close-modal-btn">×</div>
+            <div class="modal-title" id="modal-title">Project Name</div>
+            <div class="modal-tech" id="modal-tech">// Tech Stack</div>
+            <div class="modal-desc" id="modal-desc">Description goes here...</div>
+        </div>
     </div>
 
-    <div class="hero">
-        <h1 id="hero-name"><div id="name-line-1">LEONARDO</div><div id="name-line-2">DONATI</div></h1>
-        <div class="subtitle" id="hero-subtitle">ARCHITECTURE STUDENT</div>
-    </div>
-    <div class="interaction-hint">[ DRAG TO ROTATE • CLICK NODES FOR DETAILS ]</div>
+    <div id="skills-toggle">ABILITIES</div>
 
-    <div id="skills-toggle">ABILITIES</div> <div id="skills-panel">
+    <div id="skills-panel">
         <div class="panel-header" id="panel-header">
-            <span>:: PROPERTIES : SYSTEM STATS</span>
+            <span>SYSTEM STATS</span>
             <span class="close-panel" id="close-panel-btn">×</span>
         </div>
         <div class="panel-content" id="skills-list">
         </div>
     </div>
 
-    <div id="canvas-container"></div>
-
     <script type="module">
         import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
         import { OrbitControls } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls.js';
 
-        // --- DADOS DAS HABILIDADES ---
+        // --- SKILLS ---
         const mySkills = [
-            { name: "REVIT / BIM", level: 90 },
-            { name: "RHINO / GRASSHOPPER", level: 85 },
-            { name: "DYNAMO", level: 80 },
-            { name: "C# / API DEV", level: 70 },
-            { name: "PYTHON", level: 60 },
-            { name: "ARCHICAD", level: 75 },
-            { name: "HTML / CSS / JS", level: 50 },
-            { name: "CREATIVITY", level: 100 }
+            { name: "REVIT / BIM", level: 90 }, { name: "RHINO / GRASSHOPPER", level: 85 },
+            { name: "DYNAMO", level: 80 }, { name: "C# / API DEV", level: 70 },
+            { name: "PYTHON", level: 60 }, { name: "ARCHICAD", level: 75 },
+            { name: "HTML / CSS / JS", level: 50 }, { name: "CREATIVITY", level: 100 }
         ];
 
-        // --- LÓGICA DO PAINEL DE HABILIDADES ---
+        // --- UI LOGIC (PAINEL HÍBRIDO) ---
         const skillsToggle = document.getElementById('skills-toggle');
         const skillsPanel = document.getElementById('skills-panel');
         const panelHeader = document.getElementById('panel-header');
         const closePanelBtn = document.getElementById('close-panel-btn');
         const skillsList = document.getElementById('skills-list');
+        let isDocked = true; // Estado inicial
 
-        // 1. Gerar as barras retrô
+        // Gerar Barras
         mySkills.forEach(skill => {
-            const item = document.createElement('div');
-            item.className = 'skill-item';
-
-            // Calcula quantos blocos preenchidos (total 10 blocos)
-            const totalBlocks = 15;
-            const filledBlocks = Math.round((skill.level / 100) * totalBlocks);
-
+            const item = document.createElement('div'); item.className = 'skill-item';
+            const totalBlocks = 20; const filledBlocks = Math.round((skill.level / 100) * totalBlocks);
             let blocksHTML = '';
-            for (let i = 0; i < totalBlocks; i++) {
-                const isFilled = i < filledBlocks ? 'filled' : '';
-                blocksHTML += `<div class="bar-block ${isFilled}"></div>`;
-            }
-
-            item.innerHTML = `
-                    <div class="skill-name">
-                        <span>${skill.name}</span>
-                        <span class="skill-percent">[${skill.level}%]</span>
-                    </div>
-                    <div class="retro-bar">${blocksHTML}</div>
-                `;
+            for (let i = 0; i < totalBlocks; i++) { blocksHTML += `<div class="bar-block ${i < filledBlocks ? 'filled' : ''}"></div>`; }
+            item.innerHTML = `<div class="skill-name"><span>${skill.name}</span><span class="skill-percent">${skill.level}%</span></div><div class="retro-bar">${blocksHTML}</div>`;
             skillsList.appendChild(item);
         });
 
-        // 2. Abrir/Fechar Painel
+        // ABRIR (EMPURRA A TELA)
         skillsToggle.addEventListener('click', () => {
             skillsPanel.style.display = 'flex';
-            skillsToggle.style.opacity = '0'; // Esconde a aba quando abre
+            skillsToggle.style.opacity = '0';
+
+            // Reseta para modo Docked
+            isDocked = true;
+            skillsPanel.classList.remove('floating');
+            skillsPanel.style.top = '0';
+            skillsPanel.style.left = '0';
+            skillsPanel.style.height = '100%'; // Altura total
+
+            // Adiciona classe no corpo para empurrar o site
+            document.body.classList.add('pushed');
         });
 
+        // FECHAR
         closePanelBtn.addEventListener('click', () => {
             skillsPanel.style.display = 'none';
             skillsToggle.style.opacity = '1';
+            document.body.classList.remove('pushed'); // Volta o site pro lugar
         });
 
-        // 3. Lógica de Arrastar (Draggable)
+        // ARRASTAR (TRANSFORMA EM FLUTUANTE)
         let isDragging = false;
         let startX, startY, initialLeft, initialTop;
 
@@ -565,7 +603,19 @@
             isDragging = true;
             startX = e.clientX;
             startY = e.clientY;
-            // Pega a posição atual da janela
+
+            // Se estava acoplado, agora solta!
+            if (isDocked) {
+                isDocked = false;
+                document.body.classList.remove('pushed'); // O site volta pro fundo
+                skillsPanel.classList.add('floating'); // Muda visual para bolha
+                skillsPanel.style.height = 'auto'; // Altura automática
+
+                // Define posição inicial onde o mouse está (para não pular)
+                skillsPanel.style.left = '20px';
+                skillsPanel.style.top = '100px';
+            }
+
             const rect = skillsPanel.getBoundingClientRect();
             initialLeft = rect.left;
             initialTop = rect.top;
@@ -586,36 +636,22 @@
         });
 
 
-        // --- CÓDIGO ANTERIOR (MANTIDO) ---
+        // --- CÓDIGO PADRÃO (MANTIDO) ---
         const introOverlay = document.getElementById('intro-overlay'); const aboutOverlay = document.getElementById('about-overlay'); const phrasesOverlay = document.getElementById('phrases-overlay'); const startBtn = document.getElementById('start-btn'); const bioContainer = document.getElementById('bio-text-container'); const aboutHint = document.getElementById('about-hint'); const phrasesContainer = document.getElementById('phrases-container'); const modal = document.getElementById('project-modal'); const modalTitle = document.getElementById('modal-title'); const modalTech = document.getElementById('modal-tech'); const modalDesc = document.getElementById('modal-desc'); const closeBtn = document.getElementById('close-modal-btn'); const heroName = document.getElementById('hero-name'); const nameLine1 = document.getElementById('name-line-1'); const nameLine2 = document.getElementById('name-line-2'); const heroSubtitle = document.getElementById('hero-subtitle'); const bioText = "I avoid definitions; I feel they limit me.\n\nWhenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative.\n\nI seek to make each piece obey an invisible rule and decide to tell a unique story.\n\nI persist in the attempt to compile everything that resonates with me..."; const phrasesList = ["I wrote the code, but you are the one rendering it.", "Careful where you click: some variables are loose.", "As you observe the project, the algorithm observes you.", "Don't be afraid. It is just logic trying to be art.", "Loading fragments of a thought process...", "This is not a website. It is a render of my consciousness.", "Here, gravity is just a syntax suggestion.", "You are not on the internet. You are inside a loop of my creative process.", "Space under construction. The mind, too.", "Don't touch the screen. The digital concrete is still wet.", "Are you the user, or just another parameter?", "Welcome to the backend of my imagination.", "Compiling chaos into structure. Please wait.", "Entry permitted. Exit not guaranteed.", "Everything here is code. Even the void.", "This is a portfolio. This is not a portfolio.", "You are in my mind now. Good luck.", "This page is thinking about you right now.", "Your visit has been logged. My architecture now knows who you are.", "To navigate here is to compile memories that are not yours.", "There is a system error: it has learned to feel."];
-
-        heroName.addEventListener('mouseenter', () => { scrambleTo(nameLine1, "LEONARDO"); scrambleTo(nameLine2, "DONATI"); });
-        heroSubtitle.addEventListener('mouseenter', () => { scrambleTo(heroSubtitle, "SCRAMBLED THOUGHTS"); });
-        heroSubtitle.addEventListener('mouseleave', () => { scrambleTo(heroSubtitle, "ARCHITECTURE STUDENT"); });
-
+        heroName.addEventListener('mouseenter', () => { scrambleTo(nameLine1, "LEONARDO"); scrambleTo(nameLine2, "DONATI"); }); heroSubtitle.addEventListener('mouseenter', () => { scrambleTo(heroSubtitle, "SCRAMBLED THOUGHTS"); }); heroSubtitle.addEventListener('mouseleave', () => { scrambleTo(heroSubtitle, "ARCHITECTURE STUDENT"); });
         startBtn.addEventListener('click', () => { introOverlay.style.opacity = '0'; setTimeout(() => { introOverlay.style.display = 'none'; aboutOverlay.style.display = 'flex'; runGhostTypewriter(bioText, bioContainer, () => { aboutHint.style.opacity = '1'; }); }, 1000); });
-        let bioFinished = false;
-        aboutOverlay.addEventListener('click', () => { if (!bioFinished) { bioFinished = true; const spans = bioContainer.querySelectorAll('span'); spans.forEach(s => { s.className = ''; s.innerText = s.dataset.char; s.style.opacity = '1'; }); aboutHint.style.opacity = '1'; return; } aboutOverlay.style.opacity = '0'; setTimeout(() => { aboutOverlay.style.display = 'none'; phrasesOverlay.style.display = 'flex'; phrasesContainer.innerText = ""; runPhrasesLoop(); }, 1000); });
-        let stopPhrasesLoop = false;
-        phrasesOverlay.addEventListener('click', () => { stopPhrasesLoop = true; phrasesOverlay.style.opacity = '0'; document.body.classList.add('active'); setTimeout(() => { phrasesOverlay.style.display = 'none'; }, 1000); });
-
+        let bioFinished = false; aboutOverlay.addEventListener('click', () => { if (!bioFinished) { bioFinished = true; const spans = bioContainer.querySelectorAll('span'); spans.forEach(s => { s.className = ''; s.innerText = s.dataset.char; s.style.opacity = '1'; }); aboutHint.style.opacity = '1'; return; } aboutOverlay.style.opacity = '0'; setTimeout(() => { aboutOverlay.style.display = 'none'; phrasesOverlay.style.display = 'flex'; phrasesContainer.innerText = ""; runPhrasesLoop(); }, 1000); });
+        let stopPhrasesLoop = false; phrasesOverlay.addEventListener('click', () => { stopPhrasesLoop = true; phrasesOverlay.style.opacity = '0'; document.body.classList.add('active'); setTimeout(() => { phrasesOverlay.style.display = 'none'; }, 1000); });
         async function runPhrasesLoop() { let index = 0; while (!stopPhrasesLoop) { await scrambleTo(phrasesContainer, phrasesList[index]); if (stopPhrasesLoop) break; await new Promise(r => setTimeout(r, 4000)); if (stopPhrasesLoop) break; index = (index + 1) % phrasesList.length; } }
         function scrambleTo(element, newText) { return new Promise(resolve => { const oldText = element.innerText; const length = Math.max(oldText.length, newText.length); const queue = []; const chars = '!<>-_\\/[]{}—=+*^?#________'; for (let i = 0; i < length; i++) { const from = oldText[i] || ''; const to = newText[i] || ''; const start = Math.floor(Math.random() * 40); const end = start + Math.floor(Math.random() * 40); queue.push({ from, to, start, end }); } let frame = 0; const update = () => { let output = ''; let complete = 0; for (let i = 0; i < queue.length; i++) { let { from, to, start, end, char } = queue[i]; if (frame >= end) { complete++; output += to; } else if (frame >= start) { if (!char || Math.random() < 0.28) { char = chars[Math.floor(Math.random() * chars.length)]; queue[i].char = char; } output += `<span class="glitch-char">${char}</span>`; } else { output += from; } } element.innerHTML = output; if (complete === queue.length) { resolve(); } else { if (stopPhrasesLoop && element === phrasesContainer) { resolve(); return; } requestAnimationFrame(update); frame++; } }; update(); }); }
         async function runGhostTypewriter(text, element, callback) { const chars = '!<>-_\\/[]{}—=+*^?#________'; element.innerHTML = ''; const spans = []; for (let i = 0; i < text.length; i++) { const char = text[i]; if (char === '\n') { element.appendChild(document.createElement('br')); spans.push({ isBreak: true }); } else { const span = document.createElement('span'); span.innerText = char; span.dataset.char = char; span.className = 'char-hidden'; element.appendChild(span); spans.push({ dom: span, isBreak: false }); } } for (let i = 0; i < spans.length; i++) { if (bioFinished) break; const item = spans[i]; if (item.isBreak) { await new Promise(r => setTimeout(r, 30)); continue; } const span = item.dom; if (span.innerText === ' ') { span.className = ''; span.innerHTML = '&nbsp;'; span.style.opacity = '1'; await new Promise(r => setTimeout(r, 5)); continue; } span.className = 'glitch-char'; span.style.opacity = '1'; for (let j = 0; j < 3; j++) { span.innerText = chars[Math.floor(Math.random() * chars.length)]; await new Promise(r => setTimeout(r, 10)); } span.innerText = span.dataset.char; span.className = ''; } bioFinished = true; if (callback) callback(); }
-
         const roles = ["ARCHITECTURE STUDENT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND"]; const el = document.getElementById('scramble-text'); const chars = '!<>-_\\/[]{}—=+*^?#________'; let roleIndex = 0; let loopInterval = null; const setText = (newText) => { const oldText = el.innerText; const length = Math.max(oldText.length, newText.length); let queue = []; for (let i = 0; i < length; i++) { const from = oldText[i] || ''; const to = newText[i] || ''; const start = Math.floor(Math.random() * 40); const end = start + Math.floor(Math.random() * 40); queue.push({ from, to, start, end }); } cancelAnimationFrame(loopInterval); let frame = 0; const update = () => { let output = ''; let complete = 0; for (let i = 0, n = queue.length; i < n; i++) { let { from, to, start, end, char } = queue[i]; if (frame >= end) { complete++; output += to; } else if (frame >= start) { if (!char || Math.random() < 0.28) { char = chars[Math.floor(Math.random() * chars.length)]; queue[i].char = char; } output += `<span style="color: #444;">${char}</span>`; } else { output += from; } } el.innerHTML = output; if (complete === queue.length) { setTimeout(nextRole, 2000); } else { loopInterval = requestAnimationFrame(update); frame++; } }; update(); }; const nextRole = () => { if (document.body.classList.contains('active') || aboutOverlay.style.display === 'flex' || phrasesOverlay.style.display === 'flex') return; setText(roles[roleIndex]); roleIndex = (roleIndex + 1) % roles.length; }; nextRole();
-        const cursorDot = document.querySelector('.cursor-dot'); const cursorOutline = document.querySelector('.cursor-outline'); window.addEventListener('mousemove', function (e) { const posX = e.clientX; const posY = e.clientY; cursorDot.style.left = `${posX}px`; cursorDot.style.top = `${posY}px`; cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" }); }); const addHoverEffect = (element) => { element.addEventListener('mouseenter', () => { cursorOutline.style.width = '60px'; cursorOutline.style.height = '60px'; cursorOutline.style.backgroundColor = 'rgba(0, 255, 136, 0.1)'; }); element.addEventListener('mouseleave', () => { cursorOutline.style.width = '40px'; cursorOutline.style.height = '40px'; cursorOutline.style.backgroundColor = 'transparent'; }); }; addHoverEffect(startBtn); addHoverEffect(aboutOverlay); addHoverEffect(phrasesOverlay); addHoverEffect(closeBtn); addHoverEffect(heroName); addHoverEffect(heroSubtitle); addHoverEffect(panelHeader); addHoverEffect(skillsToggle);
+        const cursorDot = document.querySelector('.cursor-dot'); const cursorOutline = document.querySelector('.cursor-outline'); window.addEventListener('mousemove', function (e) { const posX = e.clientX; const posY = e.clientY; cursorDot.style.left = `${posX}px`; cursorDot.style.top = `${posY}px`; cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" }); }); const addHoverEffect = (element) => { element.addEventListener('mouseenter', () => { cursorOutline.style.width = '60px'; cursorOutline.style.height = '60px'; cursorOutline.style.backgroundColor = 'rgba(0, 255, 136, 0.1)'; }); element.addEventListener('mouseleave', () => { cursorOutline.style.width = '40px'; cursorOutline.style.height = '40px'; cursorOutline.style.backgroundColor = 'transparent'; }); }; addHoverEffect(startBtn); addHoverEffect(aboutOverlay); addHoverEffect(phrasesOverlay); addHoverEffect(closeBtn); addHoverEffect(heroName); addHoverEffect(heroSubtitle); addHoverEffect(skillsToggle); addHoverEffect(panelHeader);
 
         const scene = new THREE.Scene(); scene.fog = new THREE.FogExp2(0x050505, 0.002); const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.set(-10, 5, 10); camera.lookAt(0, 0, 0); const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); renderer.setSize(window.innerWidth, window.innerHeight); document.getElementById('canvas-container').appendChild(renderer.domElement); const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.dampingFactor = 0.05; controls.enableZoom = true; controls.autoRotate = false;
-        const geometry = new THREE.IcosahedronGeometry(4, 2); const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 }); const sphere = new THREE.Mesh(geometry, material); scene.add(sphere);
-        const pGeo = new THREE.BufferGeometry(); const pCount = 2000; const pPos = new Float32Array(pCount * 3); for (let i = 0; i < pCount * 3; i++) pPos[i] = (Math.random() - 0.5) * 30; pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3)); const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff }); const particles = new THREE.Points(pGeo, pMat); scene.add(particles);
+        const geometry = new THREE.IcosahedronGeometry(4, 2); const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 }); const sphere = new THREE.Mesh(geometry, material); scene.add(sphere); const pGeo = new THREE.BufferGeometry(); const pCount = 2000; const pPos = new Float32Array(pCount * 3); for (let i = 0; i < pCount * 3; i++) pPos[i] = (Math.random() - 0.5) * 30; pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3)); const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff }); const particles = new THREE.Points(pGeo, pMat); scene.add(particles);
         const raycaster = new THREE.Raycaster(); const mouse = new THREE.Vector2(); const projectNodes = []; fetch('projetos.json').then(r => r.json()).then(projetos => { const projectGroup = new THREE.Group(); scene.add(projectGroup); const radius = 6.5; const goldenAngle = Math.PI * (3 - Math.sqrt(5)); projetos.forEach((proj, i) => { const y = 1 - (i / (projetos.length - 1)) * 2; const radiusAtY = Math.sqrt(1 - y * y); const theta = goldenAngle * i; const x = Math.cos(theta) * radiusAtY; const z = Math.sin(theta) * radiusAtY; const nodeGeo = new THREE.SphereGeometry(0.3, 16, 16); const nodeMat = new THREE.MeshBasicMaterial({ color: 0xffffff }); const node = new THREE.Mesh(nodeGeo, nodeMat); node.position.set(x * radius, y * radius, z * radius); node.userData = { id: i, data: proj }; projectNodes.push(node); projectGroup.add(node); }); }).catch(e => console.error(e));
-        window.addEventListener('click', (event) => {
-            if (!document.body.classList.contains('active')) return;
-            // Ignora se clicou no painel de skills
-            if (event.target.closest('#project-modal') || event.target.closest('.close-modal') || event.target.closest('.hero') || event.target.closest('#skills-panel') || event.target.closest('#skills-toggle')) return;
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1; mouse.y = -(event.clientY / window.innerHeight) * 2 + 1; raycaster.setFromCamera(mouse, camera); const intersects = raycaster.intersectObjects(projectNodes); if (intersects.length > 0) { const clickedNode = intersects[0].object; const projectData = clickedNode.userData.data; openModal(projectData); }
-        });
+        window.addEventListener('click', (event) => { if (!document.body.classList.contains('active')) return; if (event.target.closest('#project-modal') || event.target.closest('.close-modal') || event.target.closest('.hero') || event.target.closest('#skills-panel') || event.target.closest('#skills-toggle')) return; mouse.x = (event.clientX / window.innerWidth) * 2 - 1; mouse.y = -(event.clientY / window.innerHeight) * 2 + 1; raycaster.setFromCamera(mouse, camera); const intersects = raycaster.intersectObjects(projectNodes); if (intersects.length > 0) { const clickedNode = intersects[0].object; const projectData = clickedNode.userData.data; openModal(projectData); } });
         function openModal(data) { modalTitle.innerText = data.titulo; modalTech.innerText = "// " + data.tech; modalDesc.innerText = data.descricao; modal.style.display = 'flex'; setTimeout(() => { modal.classList.add('open'); }, 10); }
         closeBtn.addEventListener('click', () => { modal.classList.remove('open'); setTimeout(() => { modal.style.display = 'none'; }, 500); });
         function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); } animate(); window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
