@@ -27,7 +27,7 @@
             z-index: 0;
         }
 
-        /* Lógica de Empurrão */
+        /* Lógica de Empurrão do Site */
         body.push-left #main-wrapper {
             transform: translateX(240px);
         }
@@ -35,7 +35,14 @@
         body.push-top #main-wrapper {
             transform: translateY(240px);
         }
-        /* Direita e Baixo não empurram o site visualmente, mas afetam UI elements */
+
+        body.push-right #main-wrapper {
+            transform: none;
+        }
+        /* Site estático na direita */
+        body.push-bottom #main-wrapper {
+            transform: none;
+        }
 
         #canvas-container {
             position: absolute;
@@ -48,24 +55,24 @@
 
         /* --- UI ELEMENTS FIXOS --- */
 
-        /* 1. COPYRIGHT (Dinâmico) */
+        /* 1. COPYRIGHT (Mais claro e reativo) */
         #copyright {
             position: fixed;
             bottom: 20px;
             left: 20px;
             font-size: 0.7rem;
-            color: #444;
+            color: #aaa; /* Mais claro */
             letter-spacing: 1px;
             z-index: 100;
             pointer-events: none;
             transition: bottom 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
-        /* Se houver painel embaixo, o copyright sobe */
+
         body.push-bottom #copyright {
             bottom: 280px;
         }
 
-        /* 2. BOTÃO PORTFOLIO (Topo Direito) */
+        /* 2. BOTÃO PORTFOLIO (Reativo à Direita) */
         #portfolio-btn {
             position: fixed;
             top: 30px;
@@ -79,23 +86,28 @@
             border-radius: 20px;
             z-index: 4000;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background 0.3s; /* Adicionado transição de right */
         }
 
             #portfolio-btn:hover {
-                background: #fff;
+                background: #00ff88;
                 color: #000;
-                border-color: #fff;
+                border-color: #00ff88;
             }
 
-        /* --- ABAS LATERAIS (FICHÁRIO REORDENÁVEL) --- */
+        /* Se empurrar na direita, move o botão */
+        body.push-right #portfolio-btn {
+            right: 300px;
+        }
+
+        /* --- ABAS LATERAIS (ESTÉTICA VERDE) --- */
         #folder-stack {
             position: fixed;
-            top: 20%;
-            left: 0; /* Centralizado verticalmente ou ajustável */
+            top: 15%;
+            left: 0; /* Subi para 15% */
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 5px; /* Empilhamento mais justo */
             z-index: 4000;
             opacity: 0;
             transition: opacity 1s;
@@ -106,41 +118,40 @@
         }
 
         .folder-tab {
-            background: #050505;
-            border: 1px solid #333;
-            border-left: none;
-            color: #555;
-            /* Estilo Vertical */
+            background: #000;
+            border: 1px solid #00ff88; /* Verde */
+            border-left: none; /* Cola na borda */
+            color: #00ff88;
+            /* Texto Vertical */
             writing-mode: vertical-rl;
             text-orientation: mixed;
             transform: rotate(180deg);
-            padding: 20px 8px;
-            font-size: 0.75rem;
-            letter-spacing: 2px;
+            padding: 25px 10px;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            cursor: grab; /* Mãozinha para arrastar */
-            border-radius: 0 8px 8px 0;
-            transition: transform 0.2s, background 0.2s, color 0.2s, width 0.2s;
+            cursor: grab;
+            border-radius: 0 5px 5px 0; /* Cantos levemente arredondados */
+            transition: transform 0.2s, background 0.2s, color 0.2s, width 0.2s, box-shadow 0.2s;
             position: relative;
-            width: 25px; /* Largura fixa */
+            width: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 0 5px rgba(0, 255, 136, 0.1);
         }
 
             .folder-tab:hover {
-                width: 35px; /* Cresce pro lado */
+                width: 30px;
                 background: #00ff88;
                 color: #000;
-                border-color: #00ff88;
+                box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
             }
 
             .folder-tab.active-tab {
-                background: #111;
-                color: #00ff88;
-                border-color: #00ff88;
-                border-right: 3px solid #00ff88;
-                width: 35px;
+                background: rgba(0, 255, 136, 0.15);
+                width: 30px;
+                box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.2);
             }
 
             .folder-tab.dragging {
@@ -797,7 +808,7 @@
             skillsList.appendChild(item);
         });
 
-        // Populate other panels via JS to keep HTML clean or static HTML below
+        // Populate other panels via JS
         document.getElementById('timeline-content').innerHTML = `
                 <div class="timeline-item"><div class="time-date">Ago 2024 - Present</div><div class="time-role">Spbim - Estágio Arq</div><div class="time-place">São Paulo - SP</div><div class="time-desc">Implementação BIM, modelagem paramétrica, nuvem de pontos (laser scanner), compatibilização.</div></div>
                 <div class="timeline-item"><div class="time-date">Oct 2020 - Apr 2021</div><div class="time-role">Tekno S.A. - Estágio Elétrica</div><div class="time-place">Guaratinguetá - SP</div><div class="time-desc">Análise e desenvolvimento de plantas elétricas, manutenção preventiva e corretiva.</div></div>
@@ -818,7 +829,7 @@
                 <div class="contact-item"><div class="contact-label">GitHub</div><div class="contact-val"><a href="https://github.com/leonardodonati12" target="_blank">@leonardodonati12</a></div></div>
             `;
 
-        // --- TAB REORDERING LOGIC (DRAG & DROP) ---
+        // --- TAB REORDERING LOGIC ---
         const folderStack = document.getElementById('folder-stack');
         let draggedTab = null;
 
@@ -834,9 +845,7 @@
                 tab.classList.remove('dragging');
             });
 
-            // Click to Open
             tab.addEventListener('click', (e) => {
-                // Prevent opening if it was a drag action
                 openPanel(tab.getAttribute('data-target'));
             });
         });
@@ -873,14 +882,12 @@
             panel.style.display = 'none';
             document.querySelector(`[data-target="${panel.id}"]`)?.classList.remove('active-tab');
             if (!panel.classList.contains('floating')) {
-                // Check exclusividade de Docking
-                body.classList.remove('push-left', 'push-top');
+                body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom'); // Limpa tudo
             }
         }
 
         function openPanel(panelId) {
             const panel = document.getElementById(panelId);
-            // Fecha outros dockados
             panels.forEach(p => { if (p.id !== panelId && !p.classList.contains('floating')) closePanel(p); });
 
             panel.style.display = 'flex';
@@ -895,13 +902,12 @@
 
             if (side !== 'float') {
                 panel.classList.add(`docked-${side}`);
-                body.classList.remove('push-left', 'push-top');
-                if (side === 'left') body.classList.add('push-left');
-                if (side === 'top') body.classList.add('push-top');
-                if (side === 'bottom') body.classList.add('push-bottom'); // Para Copyright
+                body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
+                // Adiciona classe de push correspondente
+                body.classList.add(`push-${side}`);
             } else {
                 panel.classList.add('floating');
-                body.classList.remove('push-left', 'push-top', 'push-bottom');
+                body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
             }
         }
 
@@ -923,9 +929,9 @@
             dragPanel.style.left = (e.clientX - diffX) + 'px'; dragPanel.style.top = (e.clientY - diffY) + 'px';
             const t = 50;
             if (e.clientX < t) dragPanel.style.borderColor = '#00ff88';
-            else if (e.clientY < t) dragPanel.style.borderColor = '#00ff88';
-            else if (e.clientY > window.innerHeight - t) dragPanel.style.borderColor = '#00ff88'; // Bottom
             else if (e.clientX > window.innerWidth - t) dragPanel.style.borderColor = '#00ff88';
+            else if (e.clientY < t) dragPanel.style.borderColor = '#00ff88';
+            else if (e.clientY > window.innerHeight - t) dragPanel.style.borderColor = '#00ff88';
             else dragPanel.style.borderColor = '#333';
         });
         window.addEventListener('mouseup', (e) => {
@@ -942,7 +948,7 @@
         });
         document.querySelectorAll('.close-panel').forEach(btn => btn.addEventListener('click', (e) => closePanel(e.target.closest('.ui-panel'))));
 
-        // --- DEFAULT OS CODE ---
+        // --- RESTO DO CÓDIGO ---
         const introOverlay = document.getElementById('intro-overlay'); const aboutOverlay = document.getElementById('about-overlay'); const phrasesOverlay = document.getElementById('phrases-overlay'); const startBtn = document.getElementById('start-btn'); const bioContainer = document.getElementById('bio-text-container'); const aboutHint = document.getElementById('about-hint'); const phrasesContainer = document.getElementById('phrases-container'); const modal = document.getElementById('project-modal'); const modalTitle = document.getElementById('modal-title'); const modalTech = document.getElementById('modal-tech'); const modalDesc = document.getElementById('modal-desc'); const closeBtn = document.getElementById('close-modal-btn'); const heroName = document.getElementById('hero-name'); const nameLine1 = document.getElementById('name-line-1'); const nameLine2 = document.getElementById('name-line-2'); const heroSubtitle = document.getElementById('hero-subtitle'); const bioText = "I avoid definitions; I feel they limit me.\n\nWhenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative.\n\nI seek to make each piece obey an invisible rule and decide to tell a unique story.\n\nI persist in the attempt to compile everything that resonates with me..."; const phrasesList = ["I wrote the code, but you are the one rendering it.", "Careful where you click: some variables are loose.", "As you observe the project, the algorithm observes you.", "Don't be afraid. It is just logic trying to be art.", "Loading fragments of a thought process...", "This is not a website. It is a render of my consciousness.", "Here, gravity is just a syntax suggestion.", "You are not on the internet. You are inside a loop of my creative process.", "Space under construction. The mind, too.", "Don't touch the screen. The digital concrete is still wet.", "Are you the user, or just another parameter?", "Welcome to the backend of my imagination.", "Compiling chaos into structure. Please wait.", "Entry permitted. Exit not guaranteed.", "Everything here is code. Even the void.", "This is a portfolio. This is not a portfolio.", "You are in my mind now. Good luck.", "This page is thinking about you right now.", "Your visit has been logged. My architecture now knows who you are.", "To navigate here is to compile memories that are not yours.", "There is a system error: it has learned to feel."];
         heroName.addEventListener('mouseenter', () => { scrambleTo(nameLine1, "LEONARDO"); scrambleTo(nameLine2, "DONATI"); }); heroSubtitle.addEventListener('mouseenter', () => { scrambleTo(heroSubtitle, "SCRAMBLED THOUGHTS"); }); heroSubtitle.addEventListener('mouseleave', () => { scrambleTo(heroSubtitle, "ARCHITECTURE STUDENT"); });
         startBtn.addEventListener('click', () => { introOverlay.style.opacity = '0'; setTimeout(() => { introOverlay.style.display = 'none'; aboutOverlay.style.display = 'flex'; runGhostTypewriter(bioText, bioContainer, () => { aboutHint.style.opacity = '1'; }); }, 1000); });
