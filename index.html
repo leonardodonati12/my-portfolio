@@ -94,17 +94,17 @@
             white-space: pre-wrap;
         }
 
-        /* ESTILO DAS FRASES (Loop) */
+        /* CORREÇÃO DO BUG DAS FRASES */
         .phrases-text {
             font-size: 1.5rem;
             line-height: 1.5;
             color: #00ff88;
             text-align: center;
-            min-height: 80px; /* Reduzi um pouco para ficar mais compacto */
+            min-height: 100px;
             text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
-            display: flex;
-            align-items: flex-end;
-            justify-content: center; /* Alinha o texto mais pra baixo perto da dica */
+            /* Removido o display: flex que causava o bug */
+            display: block;
+            width: 100%;
         }
 
         /* BOTÃO E DICAS */
@@ -129,7 +129,7 @@
             }
 
         .continue-hint {
-            margin-top: 50px; /* Padrão para telas normais */
+            margin-top: 50px;
             font-size: 0.8rem;
             color: #555;
             letter-spacing: 2px;
@@ -139,16 +139,15 @@
             transition: opacity 1s;
         }
 
-        /* AJUSTE ESPECÍFICO PARA APROXIMAR NA TELA DE FRASES */
         #phrases-overlay .continue-hint {
-            margin-top: 20px; /* Bem pertinho da frase */
+            margin-top: 30px;
         }
 
         /* EFEITOS ESPECIAIS */
         .char-hidden {
-            color: transparent;
+            opacity: 0;
         }
-
+        /* Usando opacity em vez de color transparent para garantir layout */
         .glitch-char {
             color: #555;
         }
@@ -356,7 +355,6 @@
     <script type="module">
         import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
 
-        // DOM ELEMENTS
         const introOverlay = document.getElementById('intro-overlay');
         const aboutOverlay = document.getElementById('about-overlay');
         const phrasesOverlay = document.getElementById('phrases-overlay');
@@ -365,7 +363,6 @@
         const aboutHint = document.getElementById('about-hint');
         const phrasesContainer = document.getElementById('phrases-container');
 
-        // DADOS
         const bioText = "I avoid definitions; I feel they limit me.\n\nWhenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative.\n\nI seek to make each piece obey an invisible rule and decide to tell a unique story.\n\nI persist in the attempt to compile everything that resonates with me...";
 
         const phrasesList = [
@@ -410,7 +407,7 @@
             if (!bioFinished) {
                 bioFinished = true;
                 const spans = bioContainer.querySelectorAll('span');
-                spans.forEach(s => { s.className = ''; s.innerText = s.dataset.char; });
+                spans.forEach(s => { s.className = ''; s.innerText = s.dataset.char; s.style.opacity = '1'; });
                 aboutHint.style.opacity = '1';
                 return;
             }
@@ -431,7 +428,6 @@
             setTimeout(() => { phrasesOverlay.style.display = 'none'; }, 1000);
         });
 
-        // LÓGICA LOOP FRASES
         async function runPhrasesLoop() {
             let index = 0;
             while (!stopPhrasesLoop) {
@@ -445,9 +441,9 @@
             }
         }
 
-        // GHOST TYPEWRITER (CORE)
         async function runGhostTypewriter(text, element, callback, isPhraseMode = false) {
-            const chars = '!<>-_\\/[]{}—=+*^?#________';
+            // CORREÇÃO: Limpei os caracteres estranhos que causam tremedeira (larguras diferentes)
+            const chars = '!<>-_/[]{}*^?#';
             element.innerHTML = '';
 
             const spans = [];
@@ -458,7 +454,9 @@
                     spans.push({ isBreak: true });
                 } else {
                     const span = document.createElement('span');
-                    span.innerText = char; span.dataset.char = char; span.className = 'char-hidden';
+                    span.innerText = char;
+                    span.dataset.char = char;
+                    span.className = 'char-hidden';
                     element.appendChild(span);
                     spans.push({ dom: span, isBreak: false });
                 }
@@ -475,13 +473,22 @@
                 if (item.isBreak) { await new Promise(r => setTimeout(r, letterDelay)); continue; }
 
                 const span = item.dom;
+
+                // CORREÇÃO: Espaços em branco agora funcionam em display: block
                 if (span.innerText === ' ') {
-                    span.className = ''; await new Promise(r => setTimeout(r, 5)); continue;
+                    span.className = '';
+                    span.innerHTML = '&nbsp;'; // Garante que o espaço ocupe lugar visualmente
+                    span.style.opacity = '1';
+                    await new Promise(r => setTimeout(r, 5));
+                    continue;
                 }
+
+                // Glitch com opacity
+                span.className = 'glitch-char';
+                span.style.opacity = '1';
 
                 for (let j = 0; j < 3; j++) {
                     span.innerText = chars[Math.floor(Math.random() * chars.length)];
-                    span.className = 'glitch-char';
                     await new Promise(r => setTimeout(r, glitchSpeed));
                 }
 
@@ -493,7 +500,7 @@
             if (callback) callback();
         }
 
-        // RESTO DO CÓDIGO
+        // --- RESTO DO CÓDIGO ---
         const roles = ["URBAN DESIGNER", "ARCHITECTURE STUDENT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND"];
         const el = document.getElementById('scramble-text');
         const chars = '!<>-_\\/[]{}—=+*^?#________';
