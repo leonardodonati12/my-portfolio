@@ -16,7 +16,7 @@
             user-select: none;
         }
 
-        /* O CONTAINER GLOBAL QUE SERÁ EMPURRADO PELO DOCKING */
+        /* O CONTAINER GLOBAL (SITE) */
         #main-wrapper {
             position: fixed;
             top: 0;
@@ -27,21 +27,23 @@
             z-index: 0;
         }
 
-        /* ESTADOS DE EMPURRÃO (VOLTAMOS COM O SISTEMA DE IMÃS) */
+        /* LÓGICA DE EMPURRÃO SELETIVA (ATUALIZADO) */
+        /* Só empurra se for Esquerda ou Topo */
         body.push-left #main-wrapper {
-            transform: translateX(260px);
-        }
-
-        body.push-right #main-wrapper {
-            transform: translateX(-260px);
+            transform: translateX(240px);
         }
 
         body.push-top #main-wrapper {
-            transform: translateY(260px);
+            transform: translateY(240px);
+        }
+
+        /* Direita e Baixo NÃO empurram mais (O site fica estático) */
+        body.push-right #main-wrapper {
+            transform: none;
         }
 
         body.push-bottom #main-wrapper {
-            transform: translateY(-260px);
+            transform: none;
         }
 
         #canvas-container {
@@ -175,7 +177,7 @@
         .hero {
             position: absolute;
             top: 10%;
-            left: 5%;
+            left: 80px;
             pointer-events: none;
             opacity: 0;
             transition: opacity 2s;
@@ -221,48 +223,55 @@
             opacity: 1;
         }
 
-        /* --- ABAS FLUTUANTES (DRAGGABLE TABS) --- */
-        .dock-tab {
+        /* --- SIDEBAR DE PASTAS (FIXA E EMPILHADA) --- */
+        #folder-stack {
             position: fixed;
-            background: #000;
-            border: 1px solid #00ff88;
-            color: #00ff88;
-            padding: 15px 10px;
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-            font-size: 0.7rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            cursor: grab;
+            top: 25%;
+            left: 0;
+            display: flex;
+            flex-direction: column;
             z-index: 4000;
-            transition: opacity 0.3s, background 0.3s, color 0.3s, box-shadow 0.3s;
-            opacity: 0; /* Começa invisível */
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: opacity 1s;
         }
 
-        body.active .dock-tab {
+        body.active #folder-stack {
             opacity: 1;
         }
 
-        .dock-tab:active {
-            cursor: grabbing;
-            border-color: #fff;
+        .folder-tab {
+            background: #000;
+            border: 1px solid #00ff88;
+            border-left: none; /* Cola na borda */
+            color: #00ff88;
+            padding: 12px 25px 12px 15px; /* Espaço extra na direita */
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            width: fit-content;
+            margin-bottom: -5px; /* Efeito de empilhamento (overlap) */
+            border-radius: 0 10px 10px 0; /* Formato de pasta */
+            transition: transform 0.2s, background 0.2s, color 0.2s, padding 0.2s;
+            position: relative;
         }
 
-        .dock-tab:hover {
-            background: #00ff88;
-            color: #000;
-            box-shadow: 0 0 15px rgba(0,255,136,0.4);
-        }
+            .folder-tab:hover {
+                transform: translateX(10px); /* Sai um pouco pra fora */
+                background: #00ff88;
+                color: #000;
+                z-index: 10;
+            }
 
-        .dock-tab.active-tab {
-            background: rgba(0,255,136,0.2);
-            border-color: #fff;
-            color: #fff;
-        }
+            .folder-tab.active-tab {
+                background: rgba(0, 255, 136, 0.2);
+                color: #fff;
+                border-color: #fff;
+                transform: translateX(5px);
+                z-index: 5;
+            }
 
-        /* --- SISTEMA DE PAINÉIS (COM IMÃS) --- */
+        /* --- SISTEMA DE PAINÉIS --- */
         .ui-panel {
             position: fixed;
             background: rgba(15, 15, 15, 0.95);
@@ -273,16 +282,14 @@
             display: none;
             flex-direction: column;
             transition: width 0.3s, height 0.3s, border-radius 0.3s;
-            /* Tamanho Padrão */
-            width: 260px;
+            width: 240px;
             height: auto;
         }
 
-            /* Classes de Acoplamento (Magnet System) */
             .ui-panel.docked-left {
                 top: 0;
                 left: 0;
-                width: 260px;
+                width: 240px;
                 height: 100%;
                 border-radius: 0;
                 border-right: 1px solid #00ff88;
@@ -291,7 +298,7 @@
             .ui-panel.docked-right {
                 top: 0;
                 right: 0;
-                width: 260px;
+                width: 240px;
                 height: 100%;
                 border-radius: 0;
                 border-left: 1px solid #00ff88;
@@ -315,9 +322,8 @@
                 border-top: 1px solid #00ff88;
             }
 
-            /* Flutuante */
             .ui-panel.floating {
-                width: 260px;
+                width: 240px;
                 max-height: 80vh;
                 border-radius: 15px;
                 border: 1px solid #444;
@@ -625,35 +631,38 @@
             h1 {
                 font-size: 2.5rem;
             }
-            /* Mobile desativa drag complexo */
-            .dock-tab {
-                writing-mode: horizontal-tb;
-                width: auto;
-                height: auto;
-                position: static;
-                display: inline-block;
-                margin: 5px;
-            }
 
-            #mobile-menu {
-                position: fixed;
+            #folder-stack {
+                top: auto;
                 bottom: 0;
                 left: 0;
                 width: 100%;
-                display: flex;
-                justify-content: center;
+                flex-direction: row;
+                height: 50px;
                 background: #000;
+                border-top: 1px solid #333;
+            }
+
+            .folder-tab {
+                width: auto;
+                margin: 0;
+                border-radius: 5px 5px 0 0;
                 padding: 10px;
-                z-index: 4000;
+                flex: 1;
+                text-align: center;
+                border-left: 1px solid #00ff88;
+                border-bottom: none;
             }
 
             .ui-panel {
                 width: 100% !important;
                 height: 60% !important;
-                bottom: 60px !important;
+                bottom: 50px !important;
                 top: auto !important;
                 left: 0 !important;
                 border-radius: 20px 20px 0 0;
+                border: none;
+                border-top: 1px solid #00ff88;
             }
 
             body[class*="push-"] #main-wrapper {
@@ -697,10 +706,12 @@
         </div>
     </div>
 
-    <div id="tab-skills" class="dock-tab" data-target="skills-panel" style="top: 20%; left: 0;">ABILITIES</div>
-    <div id="tab-timeline" class="dock-tab" data-target="timeline-panel" style="top: 35%; left: 0;">TIMELINE</div>
-    <div id="tab-extras" class="dock-tab" data-target="extras-panel" style="top: 50%; left: 0;">EXTRAS</div>
-    <div id="tab-contact" class="dock-tab" data-target="contact-panel" style="top: 65%; left: 0;">CONTACT</div>
+    <div id="folder-stack">
+        <div class="folder-tab" data-target="skills-panel">ABILITIES</div>
+        <div class="folder-tab" data-target="timeline-panel">TIMELINE</div>
+        <div class="folder-tab" data-target="extras-panel">EXTRAS</div>
+        <div class="folder-tab" data-target="contact-panel">CONTACT</div>
+    </div>
 
     <div id="skills-panel" class="ui-panel">
         <div class="panel-header"><span>:: SYSTEM STATS</span><span class="close-panel">×</span></div>
@@ -770,8 +781,8 @@
             { name: "POWER BI", level: 80 }, { name: "PHOTOSHOP / AI", level: 85 }
         ];
 
-        // --- SISTEMA DE JANELAS (OS LOGIC) ---
-        const tabs = document.querySelectorAll('.dock-tab');
+        // --- SISTEMA DE JANELAS ---
+        const folderTabs = document.querySelectorAll('.folder-tab');
         const panels = document.querySelectorAll('.ui-panel');
         const body = document.body;
         const skillsList = document.getElementById('skills-list');
@@ -785,47 +796,32 @@
             skillsList.appendChild(item);
         });
 
-        // 1. DRAGGABLE TABS (Abas Soltas)
-        let dragItem = null;
-        let diffX = 0, diffY = 0;
-
-        tabs.forEach(tab => {
-            tab.addEventListener('mousedown', (e) => {
-                dragItem = tab;
-                const rect = tab.getBoundingClientRect();
-                diffX = e.clientX - rect.left;
-                diffY = e.clientY - rect.top;
-                tab.style.cursor = 'grabbing';
-            });
-
-            // Lógica de Clique para Abrir
-            tab.addEventListener('click', (e) => {
-                if (tab.hasMoved) return; // Se arrastou, não abre
-                openPanel(tab.getAttribute('data-target'));
+        // 1. ABRIR PAINEL (Botão Pasta)
+        folderTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetId = tab.getAttribute('data-target');
+                openPanel(targetId);
             });
         });
 
-        // 2. FUNÇÕES DE PAINEL (Dock/Float/Close)
         function closePanel(panel) {
             panel.style.display = 'none';
-            // Se estava dockado, remove o push do body
-            if (!panel.classList.contains('floating')) {
-                panel.classList.remove('docked-left', 'docked-right', 'docked-top', 'docked-bottom');
-                // Verifica se tem outro painel dockado antes de limpar o body
-                const anyDocked = Array.from(panels).some(p => p.style.display === 'flex' && !p.classList.contains('floating'));
-                if (!anyDocked) {
-                    body.classList.remove('push-left', 'push-right', 'push-top', 'push-bottom');
-                }
-            }
-            // Remove active da tab
             document.querySelector(`[data-target="${panel.id}"]`).classList.remove('active-tab');
+
+            // Só remove empurrão se não houver mais nada dockado que exija empurrão
+            const anyDockedLeftOrTop = Array.from(panels).some(p =>
+                p.style.display === 'flex' && (p.classList.contains('docked-left') || p.classList.contains('docked-top'))
+            );
+
+            if (!anyDockedLeftOrTop) {
+                body.classList.remove('push-left', 'push-top');
+            }
         }
 
         function openPanel(panelId) {
             const panel = document.getElementById(panelId);
 
-            // Lógica de Exclusividade: Fecha outros que estejam ACOPLADOS (Docked)
-            // Se o usuário arrastou um painel pra flutuar, ele pode ficar aberto junto com o novo.
+            // Fecha outros dockados para manter a ordem
             panels.forEach(p => {
                 if (p.id !== panelId && !p.classList.contains('floating')) {
                     closePanel(p);
@@ -835,46 +831,53 @@
             panel.style.display = 'flex';
             document.querySelector(`[data-target="${panelId}"]`).classList.add('active-tab');
 
-            // Se o painel já é flutuante, só mostra. Se não, Docka na esquerda por padrão.
+            // Se não for flutuante, abre dockado na esquerda
             if (!panel.classList.contains('floating')) {
                 dockPanel(panel, 'left');
             }
         }
 
         function dockPanel(panel, side) {
-            // Limpa estados anteriores
+            // Limpa classes anteriores
             panel.classList.remove('docked-left', 'docked-right', 'docked-top', 'docked-bottom', 'floating');
             panel.style.top = ''; panel.style.left = ''; panel.style.right = ''; panel.style.bottom = '';
             panel.style.height = ''; panel.style.width = '';
 
-            // Se for dock
             if (side !== 'float') {
-                body.classList.remove('push-left', 'push-right', 'push-top', 'push-bottom'); // Limpa push anterior
                 panel.classList.add(`docked-${side}`);
-                body.classList.add(`push-${side}`);
+
+                // LÓGICA DE EMPURRÃO SELETIVA
+                body.classList.remove('push-left', 'push-top'); // Limpa antigos
+                if (side === 'left') body.classList.add('push-left');
+                if (side === 'top') body.classList.add('push-top');
+                // Right e Bottom não ganham classe no body (site estático)
             } else {
                 panel.classList.add('floating');
-                // Se tornou flutuante, removemos o empurrão do body se não houver outro dockado
-                const anyOtherDocked = Array.from(panels).some(p => p !== panel && p.style.display === 'flex' && !p.classList.contains('floating'));
-                if (!anyOtherDocked) body.classList.remove('push-left', 'push-right', 'push-top', 'push-bottom');
+                // Se flutuou, verifica se precisa limpar o body
+                const anyDockedLeftOrTop = Array.from(panels).some(p =>
+                    p !== panel && p.style.display === 'flex' && (p.classList.contains('docked-left') || p.classList.contains('docked-top'))
+                );
+                if (!anyDockedLeftOrTop) body.classList.remove('push-left', 'push-top');
             }
         }
 
-        // 3. DRAG DE PAINÉIS (COM IMÃS/MAGNET SYSTEM)
+        // 2. DRAG & SNAP
+        let isDragging = false;
+        let startX, startY;
         let dragPanel = null;
+        let diffX = 0, diffY = 0;
 
         document.querySelectorAll('.panel-header').forEach(h => {
             h.addEventListener('mousedown', (e) => {
                 dragPanel = h.parentElement;
+                isDragging = true;
                 const rect = dragPanel.getBoundingClientRect();
                 diffX = e.clientX - rect.left;
                 diffY = e.clientY - rect.top;
 
-                // Se estava dockado, vira flutuante instantaneamente ao arrastar
                 if (!dragPanel.classList.contains('floating')) {
                     dockPanel(dragPanel, 'float');
                     dragPanel.style.height = 'auto';
-                    // Ajusta posição inicial para não pular
                     dragPanel.style.left = (e.clientX - diffX) + 'px';
                     dragPanel.style.top = (e.clientY - diffY) + 'px';
                 }
@@ -882,52 +885,27 @@
             });
         });
 
-        // Close Buttons
-        document.querySelectorAll('.close-panel').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                closePanel(e.target.closest('.ui-panel'));
-            });
-        });
-
-        // GLOBAL MOUSE MOVE (Gerencia tanto Tabs quanto Panels)
         window.addEventListener('mousemove', (e) => {
-            // Drag Tabs
-            if (dragItem) {
-                dragItem.hasMoved = true;
-                dragItem.style.left = (e.clientX - diffX) + 'px';
-                dragItem.style.top = (e.clientY - diffY) + 'px';
-            }
+            if (!isDragging || !dragPanel) return;
+            dragPanel.style.left = (e.clientX - diffX) + 'px';
+            dragPanel.style.top = (e.clientY - diffY) + 'px';
 
-            // Drag Panels
-            if (dragPanel) {
-                dragPanel.style.left = (e.clientX - diffX) + 'px';
-                dragPanel.style.top = (e.clientY - diffY) + 'px';
-
-                // Magnet Visual Feedback (Bordas brilham)
-                const threshold = 50;
-                if (e.clientX < threshold) dragPanel.style.borderColor = '#00ff88';
-                else if (e.clientX > window.innerWidth - threshold) dragPanel.style.borderColor = '#00ff88';
-                else if (e.clientY < threshold) dragPanel.style.borderColor = '#00ff88';
-                else if (e.clientY > window.innerHeight - threshold) dragPanel.style.borderColor = '#00ff88';
-                else dragPanel.style.borderColor = '#333';
-            }
+            const threshold = 50;
+            if (e.clientX < threshold) dragPanel.style.borderColor = '#00ff88';
+            else if (e.clientX > window.innerWidth - threshold) dragPanel.style.borderColor = '#00ff88';
+            else if (e.clientY < threshold) dragPanel.style.borderColor = '#00ff88';
+            else if (e.clientY > window.innerHeight - threshold) dragPanel.style.borderColor = '#00ff88';
+            else dragPanel.style.borderColor = '#333';
         });
 
         window.addEventListener('mouseup', (e) => {
-            if (dragItem) {
-                dragItem.style.cursor = 'grab';
-                setTimeout(() => dragItem.hasMoved = false, 100); // Hack para não disparar click logo após drag
-                dragItem = null;
-            }
-
+            if (!isDragging) return;
+            isDragging = false;
             if (dragPanel) {
-                const h = dragPanel.querySelector('.panel-header');
-                h.style.cursor = 'grab';
+                dragPanel.querySelector('.panel-header').style.cursor = 'grab';
                 dragPanel.style.borderColor = '#333';
-
-                // LÓGICA DE IMÃ (MAGNET SNAP)
                 const threshold = 50;
-                // Só permite um dockado por vez para não quebrar o layout (regra de exclusividade de dock)
+
                 if (e.clientX < threshold) dockPanel(dragPanel, 'left');
                 else if (e.clientX > window.innerWidth - threshold) dockPanel(dragPanel, 'right');
                 else if (e.clientY < threshold) dockPanel(dragPanel, 'top');
@@ -937,8 +915,12 @@
             }
         });
 
+        document.querySelectorAll('.close-panel').forEach(btn => {
+            btn.addEventListener('click', (e) => closePanel(e.target.closest('.ui-panel')));
+        });
 
-        // --- CÓDIGO PADRÃO ---
+
+        // --- CÓDIGO PADRÃO (MANTIDO) ---
         const introOverlay = document.getElementById('intro-overlay'); const aboutOverlay = document.getElementById('about-overlay'); const phrasesOverlay = document.getElementById('phrases-overlay'); const startBtn = document.getElementById('start-btn'); const bioContainer = document.getElementById('bio-text-container'); const aboutHint = document.getElementById('about-hint'); const phrasesContainer = document.getElementById('phrases-container'); const modal = document.getElementById('project-modal'); const modalTitle = document.getElementById('modal-title'); const modalTech = document.getElementById('modal-tech'); const modalDesc = document.getElementById('modal-desc'); const closeBtn = document.getElementById('close-modal-btn'); const heroName = document.getElementById('hero-name'); const nameLine1 = document.getElementById('name-line-1'); const nameLine2 = document.getElementById('name-line-2'); const heroSubtitle = document.getElementById('hero-subtitle'); const bioText = "I avoid definitions; I feel they limit me.\n\nWhenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative.\n\nI seek to make each piece obey an invisible rule and decide to tell a unique story.\n\nI persist in the attempt to compile everything that resonates with me..."; const phrasesList = ["I wrote the code, but you are the one rendering it.", "Careful where you click: some variables are loose.", "As you observe the project, the algorithm observes you.", "Don't be afraid. It is just logic trying to be art.", "Loading fragments of a thought process...", "This is not a website. It is a render of my consciousness.", "Here, gravity is just a syntax suggestion.", "You are not on the internet. You are inside a loop of my creative process.", "Space under construction. The mind, too.", "Don't touch the screen. The digital concrete is still wet.", "Are you the user, or just another parameter?", "Welcome to the backend of my imagination.", "Compiling chaos into structure. Please wait.", "Entry permitted. Exit not guaranteed.", "Everything here is code. Even the void.", "This is a portfolio. This is not a portfolio.", "You are in my mind now. Good luck.", "This page is thinking about you right now.", "Your visit has been logged. My architecture now knows who you are.", "To navigate here is to compile memories that are not yours.", "There is a system error: it has learned to feel."];
         heroName.addEventListener('mouseenter', () => { scrambleTo(nameLine1, "LEONARDO"); scrambleTo(nameLine2, "DONATI"); }); heroSubtitle.addEventListener('mouseenter', () => { scrambleTo(heroSubtitle, "SCRAMBLED THOUGHTS"); }); heroSubtitle.addEventListener('mouseleave', () => { scrambleTo(heroSubtitle, "ARCHITECTURE STUDENT"); });
         startBtn.addEventListener('click', () => { introOverlay.style.opacity = '0'; setTimeout(() => { introOverlay.style.display = 'none'; aboutOverlay.style.display = 'flex'; runGhostTypewriter(bioText, bioContainer, () => { aboutHint.style.opacity = '1'; }); }, 1000); });
@@ -947,14 +929,14 @@
         async function runPhrasesLoop() { let index = 0; while (!stopPhrasesLoop) { await scrambleTo(phrasesContainer, phrasesList[index]); if (stopPhrasesLoop) break; await new Promise(r => setTimeout(r, 4000)); if (stopPhrasesLoop) break; index = (index + 1) % phrasesList.length; } }
         function scrambleTo(element, newText) { return new Promise(resolve => { const oldText = element.innerText; const length = Math.max(oldText.length, newText.length); const queue = []; const chars = '!<>-_\\/[]{}—=+*^?#________'; for (let i = 0; i < length; i++) { const from = oldText[i] || ''; const to = newText[i] || ''; const start = Math.floor(Math.random() * 40); const end = start + Math.floor(Math.random() * 40); queue.push({ from, to, start, end }); } let frame = 0; const update = () => { let output = ''; let complete = 0; for (let i = 0; i < queue.length; i++) { let { from, to, start, end, char } = queue[i]; if (frame >= end) { complete++; output += to; } else if (frame >= start) { if (!char || Math.random() < 0.28) { char = chars[Math.floor(Math.random() * chars.length)]; queue[i].char = char; } output += `<span class="glitch-char">${char}</span>`; } else { output += from; } } element.innerHTML = output; if (complete === queue.length) { resolve(); } else { if (stopPhrasesLoop && element === phrasesContainer) { resolve(); return; } requestAnimationFrame(update); frame++; } }; update(); }); }
         async function runGhostTypewriter(text, element, callback) { const chars = '!<>-_\\/[]{}—=+*^?#________'; element.innerHTML = ''; const spans = []; for (let i = 0; i < text.length; i++) { const char = text[i]; if (char === '\n') { element.appendChild(document.createElement('br')); spans.push({ isBreak: true }); } else { const span = document.createElement('span'); span.innerText = char; span.dataset.char = char; span.className = 'char-hidden'; element.appendChild(span); spans.push({ dom: span, isBreak: false }); } } for (let i = 0; i < spans.length; i++) { if (bioFinished) break; const item = spans[i]; if (item.isBreak) { await new Promise(r => setTimeout(r, 30)); continue; } const span = item.dom; if (span.innerText === ' ') { span.className = ''; span.innerHTML = '&nbsp;'; span.style.opacity = '1'; await new Promise(r => setTimeout(r, 5)); continue; } span.className = 'glitch-char'; span.style.opacity = '1'; for (let j = 0; j < 3; j++) { span.innerText = chars[Math.floor(Math.random() * chars.length)]; await new Promise(r => setTimeout(r, 10)); } span.innerText = span.dataset.char; span.className = ''; } bioFinished = true; if (callback) callback(); }
-        const cursorDot = document.querySelector('.cursor-dot'); const cursorOutline = document.querySelector('.cursor-outline'); window.addEventListener('mousemove', function (e) { const posX = e.clientX; const posY = e.clientY; cursorDot.style.left = `${posX}px`; cursorDot.style.top = `${posY}px`; cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" }); }); const addHoverEffect = (element) => { element.addEventListener('mouseenter', () => { cursorOutline.style.width = '60px'; cursorOutline.style.height = '60px'; cursorOutline.style.backgroundColor = 'rgba(0, 255, 136, 0.1)'; }); element.addEventListener('mouseleave', () => { cursorOutline.style.width = '40px'; cursorOutline.style.height = '40px'; cursorOutline.style.backgroundColor = 'transparent'; }); }; addHoverEffect(startBtn); addHoverEffect(aboutOverlay); addHoverEffect(phrasesOverlay); addHoverEffect(closeBtn); addHoverEffect(heroName); addHoverEffect(heroSubtitle); document.querySelectorAll('.panel-header').forEach(h => addHoverEffect(h)); document.querySelectorAll('.dock-tab').forEach(i => addHoverEffect(i));
+        const cursorDot = document.querySelector('.cursor-dot'); const cursorOutline = document.querySelector('.cursor-outline'); window.addEventListener('mousemove', function (e) { const posX = e.clientX; const posY = e.clientY; cursorDot.style.left = `${posX}px`; cursorDot.style.top = `${posY}px`; cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" }); }); const addHoverEffect = (element) => { element.addEventListener('mouseenter', () => { cursorOutline.style.width = '60px'; cursorOutline.style.height = '60px'; cursorOutline.style.backgroundColor = 'rgba(0, 255, 136, 0.1)'; }); element.addEventListener('mouseleave', () => { cursorOutline.style.width = '40px'; cursorOutline.style.height = '40px'; cursorOutline.style.backgroundColor = 'transparent'; }); }; addHoverEffect(startBtn); addHoverEffect(aboutOverlay); addHoverEffect(phrasesOverlay); addHoverEffect(closeBtn); addHoverEffect(heroName); addHoverEffect(heroSubtitle); document.querySelectorAll('.panel-header').forEach(h => addHoverEffect(h)); document.querySelectorAll('.folder-tab').forEach(i => addHoverEffect(i));
 
         const scene = new THREE.Scene(); scene.fog = new THREE.FogExp2(0x050505, 0.002); const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.set(-10, 5, 10); camera.lookAt(0, 0, 0); const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); renderer.setSize(window.innerWidth, window.innerHeight); document.getElementById('canvas-container').appendChild(renderer.domElement); const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.dampingFactor = 0.05; controls.enableZoom = true; controls.autoRotate = false;
         const geometry = new THREE.IcosahedronGeometry(4, 2); const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 }); const sphere = new THREE.Mesh(geometry, material); scene.add(sphere); const pGeo = new THREE.BufferGeometry(); const pCount = 2000; const pPos = new Float32Array(pCount * 3); for (let i = 0; i < pCount * 3; i++) pPos[i] = (Math.random() - 0.5) * 30; pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3)); const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff }); const particles = new THREE.Points(pGeo, pMat); scene.add(particles);
         const raycaster = new THREE.Raycaster(); const mouse = new THREE.Vector2(); const projectNodes = []; fetch('projetos.json').then(r => r.json()).then(projetos => { const projectGroup = new THREE.Group(); scene.add(projectGroup); const radius = 6.5; const goldenAngle = Math.PI * (3 - Math.sqrt(5)); projetos.forEach((proj, i) => { const y = 1 - (i / (projetos.length - 1)) * 2; const radiusAtY = Math.sqrt(1 - y * y); const theta = goldenAngle * i; const x = Math.cos(theta) * radiusAtY; const z = Math.sin(theta) * radiusAtY; const nodeGeo = new THREE.SphereGeometry(0.3, 16, 16); const nodeMat = new THREE.MeshBasicMaterial({ color: 0xffffff }); const node = new THREE.Mesh(nodeGeo, nodeMat); node.position.set(x * radius, y * radius, z * radius); node.userData = { id: i, data: proj }; projectNodes.push(node); projectGroup.add(node); }); }).catch(e => console.error(e));
         window.addEventListener('click', (event) => {
             if (!document.body.classList.contains('active')) return;
-            if (event.target.closest('.ui-panel') || event.target.closest('.dock-tab') || event.target.closest('#project-modal') || event.target.closest('.close-modal')) return;
+            if (event.target.closest('.ui-panel') || event.target.closest('.folder-tab') || event.target.closest('#project-modal') || event.target.closest('.close-modal')) return;
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1; mouse.y = -(event.clientY / window.innerHeight) * 2 + 1; raycaster.setFromCamera(mouse, camera); const intersects = raycaster.intersectObjects(projectNodes); if (intersects.length > 0) { const clickedNode = intersects[0].object; const projectData = clickedNode.userData.data; openModal(projectData); }
         });
         function openModal(data) { modalTitle.innerText = data.titulo; modalTech.innerText = "// " + data.tech; modalDesc.innerText = data.descricao; modal.style.display = 'flex'; setTimeout(() => { modal.classList.add('open'); }, 10); }
