@@ -3,316 +3,994 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio Leonardo - Chrome Style</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-
+    <title>Leonardo Donati | OS</title>
     <style>
-        :root {
-            --bg-color: #202124; /* Fundo geral (Chrome Dark) */
-            --tab-bg-active: #202124; /* Cor da aba ativa */
-            --tab-bg-inactive: #35363A; /* Cor da aba inativa */
-            --text-color: #e8eaed;
-            --accent-color: #8ab4f8; /* Azul estilo Google */
-        }
-
+        /* --- CONFIGURAÇÕES GERAIS --- */
         body {
             margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Inter', sans-serif;
-            height: 100vh;
-            overflow: hidden; /* Evita scroll na tela cheia */
+            overflow: hidden;
+            background-color: #050505;
+            color: #fff;
+            font-family: 'Consolas', 'Courier New', monospace;
+            cursor: none;
+            user-select: none;
         }
 
-        /* --- 1. ESTÉTICA DAS ABAS (CHROME STYLE) --- */
-
-        .browser-top-bar {
-            background-color: #000; /* Fundo preto atrás das abas */
-            padding-top: 8px; /* Espaço acima das abas */
-            height: 40px; /* Altura total da barra */
-            display: flex;
-            align-items: flex-end; /* Alinha abas embaixo */
+        /* CONTAINER GLOBAL */
+        #main-wrapper {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            z-index: 1000;
+            height: 100%;
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: 0;
         }
 
-        .tabs-container {
-            display: flex;
-            padding-left: 0; /* Encostado na esquerda */
+        /* Lógica de Empurrão do Site */
+        body.push-left #main-wrapper {
+            transform: translateX(240px);
+        }
+
+        body.push-top #main-wrapper {
+            transform: translateY(240px);
+        }
+
+        body.push-right #main-wrapper {
+            transform: none;
+        }
+        /* Site estático na direita */
+        body.push-bottom #main-wrapper {
+            transform: none;
+        }
+
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
+            z-index: 0;
         }
 
-        .chrome-tab {
+        /* --- UI ELEMENTS FIXOS --- */
+
+        /* 1. COPYRIGHT (Mais claro e reativo) */
+        #copyright {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            font-size: 0.7rem;
+            color: #aaa; /* Mais claro */
+            letter-spacing: 1px;
+            z-index: 100;
+            pointer-events: none;
+            transition: bottom 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        body.push-bottom #copyright {
+            bottom: 280px;
+        }
+
+        /* 2. BOTÃO PORTFOLIO (Reativo à Direita) */
+        #portfolio-btn {
+            position: fixed;
+            top: 30px;
+            right: 40px;
+            font-size: 0.8rem;
+            color: #fff;
+            letter-spacing: 2px;
+            text-decoration: none;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            z-index: 4000;
+            cursor: pointer;
+            transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background 0.3s; /* Adicionado transição de right */
+        }
+
+            #portfolio-btn:hover {
+                background: #00ff88;
+                color: #000;
+                border-color: #00ff88;
+            }
+
+        /* Se empurrar na direita, move o botão */
+        body.push-right #portfolio-btn {
+            right: 300px;
+        }
+
+        /* --- ABAS LATERAIS (ESTÉTICA GOOGLE CHROME DARK) --- */
+        #folder-stack {
+            position: fixed;
+            top: 15%;
+            left: 0; /* Subi para 15% */
+            display: flex;
+            flex-direction: column;
+            gap: 0; /* Gap zero para permitir sobreposição */
+            z-index: 4000;
+            opacity: 0;
+            transition: opacity 1s;
+            padding-left: 0; /* Garante que colem na esquerda */
+        }
+
+        body.active #folder-stack {
+            opacity: 1;
+        }
+
+        .folder-tab {
+            /* Estilo Base (Inativo - Chrome Dark Tab) */
+            background-color: #35363A;
+            color: #9aa0a6; /* Cinza claro do texto inativo */
+            border: none; /* Remove borda neon antiga */
+            /* Formato de Aba Vertical */
+            border-radius: 0 12px 12px 0; /* Arredondado apenas na direita */
+            padding: 30px 12px; /* Área de clique */
+            width: 24px; /* Largura base */
+            /* Texto Vertical */
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: grab;
+            /* O Segredo da Sobreposição (Cascata Vertical) */
+            margin-top: -8px;
             position: relative;
-            width: 200px;
-            max-width: 240px;
-            height: 34px;
-            background-color: var(--tab-bg-inactive);
-            color: #9aa0a6;
-            margin-left: -12px; /* O PULO DO GATO: Sobreposição negativa */
-            border-radius: 8px 8px 0 0;
-            display: flex;
-            align-items: center;
-            padding: 0 12px;
-            font-size: 13px;
-            cursor: default;
-            user-select: none;
-            transition: z-index 0s, background-color 0.1s;
-            /* Máscara para suavizar a divisão entre abas */
-            box-shadow: -1px 0 1px rgba(0,0,0,0.5);
-        }
-
-            /* A primeira aba não precisa entrar na esquerda */
-            .chrome-tab:first-child {
-                margin-left: 0;
-            }
-
-            /* Hover na aba inativa */
-            .chrome-tab:not(.active):hover {
-                background-color: #454649;
-                z-index: 2; /* Sobe um pouco pra não ficar atrás */
-            }
-
-            /* --- ABA ATIVA (A Mágica das Curvas) --- */
-            .chrome-tab.active {
-                background-color: var(--bg-color);
-                color: var(--text-color);
-                z-index: 10; /* Sempre no topo */
-                box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Sombra suave */
-            }
-
-                /* Curvinha esquerda da aba ativa */
-                .chrome-tab.active::before {
-                    content: "";
-                    position: absolute;
-                    bottom: 0;
-                    left: -8px;
-                    width: 8px;
-                    height: 8px;
-                    /* Truque do box-shadow para fazer a curva invertida */
-                    box-shadow: 4px 4px 0 var(--bg-color);
-                    border-radius: 0 0 100% 0;
-                    pointer-events: none;
-                }
-
-                /* Curvinha direita da aba ativa */
-                .chrome-tab.active::after {
-                    content: "";
-                    position: absolute;
-                    bottom: 0;
-                    right: -8px;
-                    width: 8px;
-                    height: 8px;
-                    box-shadow: -4px 4px 0 var(--bg-color);
-                    border-radius: 0 0 0 100%;
-                    pointer-events: none;
-                }
-
-        /* Conteúdo interno da aba */
-        .tab-inner {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            gap: 10px;
-            pointer-events: none; /* Para não atrapalhar o drag */
-        }
-
-        .favicon {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
+            z-index: 1;
+            /* Sombras e Transições */
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+            transition: transform 0.2s, background-color 0.2s, color 0.2s, width 0.2s, z-index 0s;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
-            font-weight: bold;
-            color: #fff;
         }
 
-        /* --- 2. CONTEÚDO PRINCIPAL & ANIMAÇÃO DE TEXTO --- */
+            /* Primeira aba não pode ter margem negativa no topo */
+            .folder-tab:first-child {
+                margin-top: 0;
+            }
 
-        .main-stage {
-            margin-top: 50px; /* Compensa a altura da barra fixa */
-            height: calc(100vh - 50px);
+            /* Hover */
+            .folder-tab:hover {
+                background-color: #454649; /* Levemente mais claro */
+                color: #e8eaed;
+                width: 32px;
+                z-index: 10; /* Traz para frente */
+            }
+
+            /* Estado Ativo (Selecionado) */
+            .folder-tab.active-tab {
+                background-color: #202124; /* Mesma cor do corpo/painel ativo */
+                color: #00ff88; /* Mantive o verde para identidade */
+                width: 35px; /* Maior destaque */
+                z-index: 20; /* Sempre no topo */
+                box-shadow: 5px 0 15px rgba(0,0,0,0.7); /* Sombra mais forte */
+                cursor: default;
+            }
+
+            .folder-tab.dragging {
+                opacity: 0.5;
+                cursor: grabbing;
+            }
+
+        /* --- TELAS DE OVERLAY --- */
+        .overlay-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            transition: opacity 1s ease-in-out;
+            z-index: 6000;
+        }
+
+        #intro-overlay {
+            z-index: 6003;
+        }
+
+        #about-overlay {
+            z-index: 6002;
+            display: none;
+            padding: 0 25%;
+            box-sizing: border-box;
+        }
+
+        #phrases-overlay {
+            z-index: 6001;
+            display: none;
+            padding: 0 15%;
+            box-sizing: border-box;
+        }
+
+        .intro-name {
+            font-size: 4rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            color: #fff;
+            margin-bottom: 10px;
             text-align: center;
         }
 
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            font-weight: 600;
+        .intro-role {
+            font-size: 1.2rem;
+            letter-spacing: 5px;
+            color: #00ff88;
+            margin-bottom: 50px;
+            text-align: center;
+            height: 30px;
+            font-weight: bold;
         }
 
-        .typing-container {
+        .about-title {
+            font-size: 2rem;
+            color: #00ff88;
+            margin-bottom: 40px;
+            letter-spacing: 3px;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #ddd;
+            text-align: left;
+            width: 100%;
+            white-space: pre-wrap;
+        }
+
+        .phrases-text {
             font-size: 1.5rem;
-            color: var(--accent-color);
-            min-height: 2rem; /* Reserva espaço pra não pular */
+            line-height: 1.4;
+            color: #00ff88;
+            text-align: center;
+            min-height: 80px;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
             display: flex;
-            align-items: center;
-            gap: 2px;
+            align-items: flex-end;
+            justify-content: center;
+            margin-bottom: 0;
         }
 
-        /* Cursor piscando */
-        .cursor {
+        .continue-hint {
+            margin-top: 50px;
+            font-size: 0.8rem;
+            color: #555;
+            letter-spacing: 2px;
+            animation: pulse 2s infinite;
+            cursor: none;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+
+        #phrases-overlay .continue-hint {
+            margin-top: 50px;
+        }
+
+        .enter-btn {
+            padding: 15px 40px;
+            border: 1px solid #00ff88;
+            background: transparent;
+            color: #fff;
+            font-family: 'Consolas', monospace;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            cursor: none;
+            transition: all 0.3s;
+            opacity: 0;
+            animation: fadeIn 2s forwards 1s;
+        }
+
+            .enter-btn:hover {
+                background: #00ff88;
+                color: #000;
+                box-shadow: 0 0 20px #00ff88;
+            }
+
+        /* --- SITE UI --- */
+        .hero {
+            position: absolute;
+            top: 10%;
+            left: 80px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 2s;
+            z-index: 10;
+        }
+
+            .hero h1, .hero .subtitle {
+                pointer-events: auto;
+                cursor: help;
+            }
+
+        h1 {
+            font-size: 3.5rem;
+            margin: 0;
+            color: #fff;
+            mix-blend-mode: overlay;
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            color: #00ff88;
+            letter-spacing: 3px;
+            font-size: 1rem;
+            margin-top: 15px;
             display: inline-block;
-            width: 2px;
-            height: 1.2em;
-            background-color: var(--text-color);
-            animation: blink 1s infinite;
+            padding: 5px 0;
         }
 
-        @keyframes blink {
-            0%, 100% {
+        .interaction-hint {
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #555;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 2s;
+        }
+
+        body.active .hero, body.active .interaction-hint {
+            opacity: 1;
+        }
+
+        /* --- SISTEMA DE PAINÉIS --- */
+        .ui-panel {
+            position: fixed;
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid #333;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            z-index: 4001;
+            display: none;
+            flex-direction: column;
+            transition: width 0.3s, height 0.3s, border-radius 0.3s;
+            width: 240px;
+            height: auto;
+        }
+
+            .ui-panel.docked-left {
+                top: 0;
+                left: 0;
+                width: 240px;
+                height: 100%;
+                border-radius: 0;
+                border-right: 1px solid #00ff88;
+            }
+
+            .ui-panel.docked-right {
+                top: 0;
+                right: 0;
+                width: 240px;
+                height: 100%;
+                border-radius: 0;
+                border-left: 1px solid #00ff88;
+            }
+
+            .ui-panel.docked-top {
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 260px;
+                border-radius: 0;
+                border-bottom: 1px solid #00ff88;
+            }
+
+            .ui-panel.docked-bottom {
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 260px;
+                border-radius: 0;
+                border-top: 1px solid #00ff88;
+            }
+
+            .ui-panel.floating {
+                width: 240px;
+                max-height: 80vh;
+                border-radius: 15px;
+                border: 1px solid #444;
+            }
+
+        .panel-header {
+            padding: 12px 15px;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            color: #00ff88;
+            cursor: grab;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,255,136,0.05);
+            user-select: none;
+        }
+
+        .ui-panel.floating .panel-header {
+            border-radius: 15px 15px 0 0;
+        }
+
+        .panel-header:active {
+            cursor: grabbing;
+            background: rgba(0,255,136,0.2);
+        }
+
+        .close-panel {
+            cursor: pointer;
+            color: #fff;
+            font-size: 1.2rem;
+        }
+
+            .close-panel:hover {
+                color: #00ff88;
+            }
+
+        .panel-content {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        /* CONTEÚDO DOS PAINÉIS */
+        .skill-item {
+            margin-bottom: 15px;
+        }
+
+        .skill-name {
+            font-size: 0.65rem;
+            color: #eee;
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+            letter-spacing: 1px;
+        }
+
+        .retro-bar {
+            display: flex;
+            gap: 2px;
+            height: 5px;
+        }
+
+        .bar-block {
+            flex: 1;
+            background: rgba(255,255,255,0.1);
+            border-radius: 1px;
+        }
+
+            .bar-block.filled {
+                background: #00ff88;
+                box-shadow: 0 0 5px rgba(0,255,136,0.4);
+            }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 25px;
+            border-left: 1px solid #333;
+        }
+
+            .timeline-item::before {
+                content: '';
+                position: absolute;
+                left: -3px;
+                top: 0;
+                width: 5px;
+                height: 5px;
+                background: #00ff88;
+                border-radius: 50%;
+                box-shadow: 0 0 5px #00ff88;
+            }
+
+        .time-date {
+            font-size: 0.65rem;
+            color: #00ff88;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+        }
+
+        .time-role {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+        .time-place {
+            font-size: 0.7rem;
+            color: #888;
+            font-style: italic;
+            margin-bottom: 5px;
+        }
+
+        .time-desc {
+            font-size: 0.7rem;
+            color: #aaa;
+            line-height: 1.4;
+        }
+
+        .contact-item {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #222;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+            .contact-item:hover {
+                border-color: #00ff88;
+                background: rgba(0,255,136,0.05);
+            }
+
+        .contact-label {
+            font-size: 0.6rem;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 3px;
+        }
+
+        .contact-val {
+            font-size: 0.8rem;
+            color: #fff;
+            word-break: break-all;
+        }
+
+            .contact-val a {
+                color: #fff;
+                text-decoration: none;
+                cursor: none;
+            }
+
+                .contact-val a:hover {
+                    color: #00ff88;
+                }
+
+        .extra-item {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 10px;
+        }
+
+        .extra-title {
+            font-size: 0.8rem;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+
+        .extra-detail {
+            font-size: 0.7rem;
+            color: #888;
+            line-height: 1.4;
+        }
+
+        /* MODAL */
+        #project-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 500px;
+            background: rgba(10, 10, 10, 0.95);
+            border: 1px solid #00ff88;
+            padding: 40px;
+            border-radius: 20px;
+            z-index: 5005;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 0 50px rgba(0, 255, 136, 0.15);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+            #project-modal.open {
+                display: flex;
                 opacity: 1;
             }
 
+        .modal-title {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .modal-tech {
+            color: #00ff88;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .modal-desc {
+            color: #ccc;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: #555;
+            font-size: 1.5rem;
+            cursor: none;
+            transition: color 0.3s;
+        }
+
+            .close-modal:hover {
+                color: #00ff88;
+            }
+
+        /* EXTRAS */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 10px;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #00ff88;
+            }
+
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #00ff88;
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(0, 255, 136, 0.5);
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9998;
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+
+        .char-hidden {
+            opacity: 0;
+        }
+
+        .glitch-char {
+            color: #555;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.5;
+            }
+
             50% {
-                opacity: 0;
+                opacity: 1;
             }
         }
 
-        /* Classe fantasma do Drag n Drop */
-        .sortable-ghost {
-            opacity: 0.5;
-            background: #444;
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            #folder-stack {
+                top: auto;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 50px;
+                flex-direction: row; /* Horizontal no mobile */
+                background: #000;
+                border-top: 1px solid #333;
+                gap: 0;
+            }
+
+            .folder-tab {
+                writing-mode: horizontal-tb;
+                transform: none;
+                width: auto;
+                margin: 0;
+                margin-left: -10px; /* Sobreposição Horizontal */
+                border-radius: 10px 10px 0 0; /* Arredondado no topo */
+                padding: 10px;
+                flex: 1;
+                text-align: center;
+                border-left: none;
+                border-bottom: none;
+            }
+
+                .folder-tab:first-child {
+                    margin-left: 0;
+                }
+
+            .ui-panel {
+                width: 100% !important;
+                height: 60% !important;
+                bottom: 50px !important;
+                top: auto !important;
+                left: 0 !important;
+                border-radius: 20px 20px 0 0;
+                border: none;
+                border-top: 1px solid #00ff88;
+            }
+
+            body[class*="push-"] #main-wrapper {
+                transform: none !important;
+            }
+
+            #portfolio-btn {
+                top: 10px;
+                right: 10px;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
 
-    <div class="browser-top-bar">
-        <div class="tabs-container" id="tabs-list">
+    <div id="intro-overlay" class="overlay-screen">
+        <div class="intro-name">LEONARDO DONATI</div>
+        <div class="intro-role" id="scramble-text"></div>
+        <button class="enter-btn" id="start-btn">[ ENTER SYSTEM ]</button>
+    </div>
+    <div id="about-overlay" class="overlay-screen">
+        <div class="about-title">WHO AM I?</div>
+        <div class="about-text" id="bio-text-container"></div>
+        <div class="continue-hint" id="about-hint">[ CLICK ANYWHERE TO CONTINUE ]</div>
+    </div>
+    <div id="phrases-overlay" class="overlay-screen">
+        <div class="phrases-text" id="phrases-container"></div>
+        <div class="continue-hint" style="opacity: 1;">[ CLICK ANYWHERE TO CONTINUE ]</div>
+    </div>
 
-            <div class="chrome-tab active">
-                <div class="tab-inner">
-                    <div class="favicon" style="background: #E06F6F;">R</div> <span>Revit Automation</span>
-                </div>
-            </div>
+    <a href="portfolio.html" id="portfolio-btn">PORTFOLIO</a>
+    <div id="copyright">© 2025 Leonardo Donati. All rights reserved.</div>
 
-            <div class="chrome-tab">
-                <div class="tab-inner">
-                    <div class="favicon" style="background: #57B660;">G</div> <span>Grasshopper Scripts</span>
-                </div>
-            </div>
+    <div id="main-wrapper">
+        <div class="hero">
+            <h1 id="hero-name"><div id="name-line-1">LEONARDO</div><div id="name-line-2">DONATI</div></h1>
+            <div class="subtitle" id="hero-subtitle">ARCHITECTURE STUDENT</div>
+        </div>
+        <div class="interaction-hint">[ DRAG TO ROTATE • CLICK NODES FOR DETAILS ]</div>
+        <div id="canvas-container"></div>
 
-            <div class="chrome-tab">
-                <div class="tab-inner">
-                    <div class="favicon" style="background: #4C8BF5;">I</div> <span>Innovation Hub</span>
-                </div>
-            </div>
-
-            <div class="chrome-tab">
-                <div class="tab-inner">
-                    <div class="favicon" style="background: #F4D03F; color:black;">P</div>
-                    <span>Python Plugins</span>
-                </div>
-            </div>
-
+        <div id="project-modal">
+            <div class="close-modal" id="close-modal-btn">×</div>
+            <div class="modal-title" id="modal-title">Project Name</div>
+            <div class="modal-tech" id="modal-tech">// Tech Stack</div>
+            <div class="modal-desc" id="modal-desc">Description goes here...</div>
         </div>
     </div>
 
-    <div class="main-stage">
-        <h1>Olá, eu sou Leonardo Donati</h1>
-
-        <div class="typing-container">
-            <span>Eu sou </span>
-            <span id="dynamic-text"></span>
-            <span class="cursor"></span>
-        </div>
+    <div id="folder-stack">
+        <div class="folder-tab" draggable="true" data-target="skills-panel">ABILITIES</div>
+        <div class="folder-tab" draggable="true" data-target="timeline-panel">TIMELINE</div>
+        <div class="folder-tab" draggable="true" data-target="extras-panel">EXTRAS</div>
+        <div class="folder-tab" draggable="true" data-target="contact-panel">CONTACT</div>
     </div>
 
-    <script>
-        // --- 1. LÓGICA DAS ABAS (Drag & Drop e Ativação) ---
+    <div id="skills-panel" class="ui-panel"><div class="panel-header"><span>:: SYSTEM STATS</span><span class="close-panel">×</span></div><div class="panel-content" id="skills-list"></div></div>
+    <div id="timeline-panel" class="ui-panel"><div class="panel-header"><span>:: LOGS / HISTORY</span><span class="close-panel">×</span></div><div class="panel-content" id="timeline-content"></div></div>
+    <div id="extras-panel" class="ui-panel"><div class="panel-header"><span>:: ADD-ONS</span><span class="close-panel">×</span></div><div class="panel-content" id="extras-content"></div></div>
+    <div id="contact-panel" class="ui-panel"><div class="panel-header"><span>:: CONNECT</span><span class="close-panel">×</span></div><div class="panel-content" id="contact-content"></div></div>
 
-        // Inicializa o SortableJS
-        const el = document.getElementById('tabs-list');
-        Sortable.create(el, {
-            animation: 200, // milissegundos
-            ghostClass: 'sortable-ghost',
-            direction: 'horizontal',
-            onEnd: function (evt) {
-                // Aqui você pode salvar a nova ordem se precisar
-            }
+    <script type="module">
+        import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
+        import { OrbitControls } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls.js';
+
+        // --- DATA ---
+        const mySkills = [
+            { name: "REVIT / BIM", level: 95 }, { name: "DYNAMO / PYTHON", level: 85 },
+            { name: "RHINO / GRASSHOPPER", level: 80 }, { name: "NAVISWORKS", level: 75 },
+            { name: "ARCHICAD", level: 70 }, { name: "INFRAWORKS / RECAP", level: 75 },
+            { name: "SKETCHUP", level: 90 }, { name: "C# / API DEV", level: 65 },
+            { name: "THREE.JS / WEBGL", level: 60 }, { name: "HTML / CSS / JS", level: 70 },
+            { name: "POWER BI", level: 80 }, { name: "PHOTOSHOP / AI", level: 85 }
+        ];
+
+        // --- POPULATE PANELS ---
+        const skillsList = document.getElementById('skills-list');
+        mySkills.forEach(skill => {
+            const item = document.createElement('div'); item.className = 'skill-item';
+            const totalBlocks = 20; const filledBlocks = Math.round((skill.level / 100) * totalBlocks);
+            let blocksHTML = ''; for (let i = 0; i < totalBlocks; i++) { blocksHTML += `<div class="bar-block ${i < filledBlocks ? 'filled' : ''}"></div>`; }
+            item.innerHTML = `<div class="skill-name"><span>${skill.name}</span><span class="skill-percent">${skill.level}%</span></div><div class="retro-bar">${blocksHTML}</div>`;
+            skillsList.appendChild(item);
         });
 
-        // Lógica de Clique nas Abas
-        const tabs = document.querySelectorAll('.chrome-tab');
+        // Populate other panels via JS
+        document.getElementById('timeline-content').innerHTML = `
+                <div class="timeline-item"><div class="time-date">Ago 2024 - Present</div><div class="time-role">Spbim - Estágio Arq</div><div class="time-place">São Paulo - SP</div><div class="time-desc">Implementação BIM, modelagem paramétrica, nuvem de pontos (laser scanner), compatibilização.</div></div>
+                <div class="timeline-item"><div class="time-date">Oct 2020 - Apr 2021</div><div class="time-role">Tekno S.A. - Estágio Elétrica</div><div class="time-place">Guaratinguetá - SP</div><div class="time-desc">Análise e desenvolvimento de plantas elétricas, manutenção preventiva e corretiva.</div></div>
+                <div class="timeline-item"><div class="time-date">Jan 2022 - Dec 2026</div><div class="time-role">Universidade Anhembi Morumbi</div><div class="time-desc">Arquitetura e Urbanismo (Superior).</div></div>
+                <div class="timeline-item"><div class="time-date">Jan 2017 - Dec 2019</div><div class="time-role">Colégio Técnico Industrial - Unesp</div><div class="time-desc">Ensino Médio Técnico.</div></div>
+            `;
+        document.getElementById('extras-content').innerHTML = `
+                <div class="extra-item"><div class="extra-title">Reconhecendo a Mooca</div><div class="extra-detail">Levantamento urbano/arquitetônico, fotogrametria, análise de fluxos e ilhas de calor.</div></div>
+                <div class="extra-item"><div class="extra-title">Monitoria Workshop Spbim</div><div class="extra-detail">Levantamentos com Laser Scanner (Maio 2025).</div></div>
+                <div class="extra-item"><div class="extra-title">Medalhista OBA</div><div class="extra-detail">Ouro (2015), Bronze (2016), Prata (2019).</div></div>
+                <div class="extra-item"><div class="extra-title">Monitoria Semana Integração</div><div class="extra-detail">Ctig - Unesp (2018, 2019, 2020).</div></div>
+                <div class="extra-item"><div class="extra-title">Languages</div><div class="extra-detail">Portuguese (Native)<br>English (B1 - Intermediate)</div></div>
+            `;
+        document.getElementById('contact-content').innerHTML = `
+                <div class="contact-item"><div class="contact-label">Phone / WhatsApp</div><div class="contact-val">+55 12 99777 3790</div></div>
+                <div class="contact-item"><div class="contact-label">Email</div><div class="contact-val"><a href="mailto:leonardodonati12@gmail.com">leonardodonati12@gmail.com</a></div></div>
+                <div class="contact-item"><div class="contact-label">LinkedIn</div><div class="contact-val"><a href="https://linkedin.com/in/leonardodonati12/" target="_blank">in/leonardodonati12</a></div></div>
+                <div class="contact-item"><div class="contact-label">GitHub</div><div class="contact-val"><a href="https://github.com/leonardodonati12" target="_blank">@leonardodonati12</a></div></div>
+            `;
 
-        tabs.forEach(tab => {
-            tab.addEventListener('mousedown', () => { // mousedown reage mais rápido que click
-                // 1. Remove active de todas
-                tabs.forEach(t => t.classList.remove('active'));
+        // --- TAB REORDERING LOGIC ---
+        const folderStack = document.getElementById('folder-stack');
+        let draggedTab = null;
 
-                // 2. Adiciona active na clicada
-                tab.classList.add('active');
+        document.querySelectorAll('.folder-tab').forEach(tab => {
+            tab.addEventListener('dragstart', (e) => {
+                draggedTab = tab;
+                tab.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+            });
 
-                // 3. Atualiza conteúdo da página (Simulação)
-                const text = tab.querySelector('span').innerText;
-                console.log("Navegou para: " + text);
-                // Aqui você carregaria o conteúdo real...
+            tab.addEventListener('dragend', () => {
+                draggedTab = null;
+                tab.classList.remove('dragging');
+            });
+
+            tab.addEventListener('click', (e) => {
+                openPanel(tab.getAttribute('data-target'));
             });
         });
 
-        // --- 2. LÓGICA DO TEXTO DINÂMICO (Typewriter) ---
-
-        const textElement = document.getElementById("dynamic-text");
-
-        // Lista de profissões/habilidades
-        const phrases = [
-            "Architecture Student.",
-            "Innovation Assistant.",
-            "Revit Plugin Developer.",
-            "Computational Designer."
-        ];
-
-        let phraseIndex = 0; // Qual frase está sendo escrita
-        let charIndex = 0;   // Qual letra da frase
-        let isDeleting = false; // Se está apagando ou escrevendo
-        let typeSpeed = 100; // Velocidade de digitação padrão
-
-        function typeEffect() {
-            const currentPhrase = phrases[phraseIndex];
-
-            if (isDeleting) {
-                // Apagando
-                textElement.innerText = currentPhrase.substring(0, charIndex - 1);
-                charIndex--;
-                typeSpeed = 50; // Apaga mais rápido
+        folderStack.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(folderStack, e.clientY);
+            if (afterElement == null) {
+                folderStack.appendChild(draggedTab);
             } else {
-                // Escrevendo
-                textElement.innerText = currentPhrase.substring(0, charIndex + 1);
-                charIndex++;
-                typeSpeed = 100; // Escreve normal
+                folderStack.insertBefore(draggedTab, afterElement);
             }
+        });
 
-            // Lógica de virada (Terminou de escrever ou apagar)
-            if (!isDeleting && charIndex === currentPhrase.length) {
-                // Terminou de escrever: pausa antes de apagar
-                isDeleting = true;
-                typeSpeed = 2000; // Espera 2 segundos lendo
-            } else if (isDeleting && charIndex === 0) {
-                // Terminou de apagar: vai para a próxima frase
-                isDeleting = false;
-                phraseIndex = (phraseIndex + 1) % phrases.length; // Loop infinito
-                typeSpeed = 500; // Pausa curta antes de começar a próxima
-            }
-
-            setTimeout(typeEffect, typeSpeed);
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.folder-tab:not(.dragging)')];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
         }
 
-        // Inicia a animação quando a página carrega
-        document.addEventListener('DOMContentLoaded', typeEffect);
+        // --- WINDOW MANAGER LOGIC ---
+        const panels = document.querySelectorAll('.ui-panel');
+        const body = document.body;
+        let activePanel = null;
 
+        function closePanel(panel) {
+            panel.style.display = 'none';
+            document.querySelector(`[data-target="${panel.id}"]`)?.classList.remove('active-tab');
+            if (!panel.classList.contains('floating')) {
+                body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom'); // Limpa tudo
+            }
+        }
+
+        function openPanel(panelId) {
+            const panel = document.getElementById(panelId);
+            panels.forEach(p => { if (p.id !== panelId && !p.classList.contains('floating')) closePanel(p); });
+
+            panel.style.display = 'flex';
+            document.querySelector(`[data-target="${panelId}"]`)?.classList.add('active-tab');
+
+            if (!panel.classList.contains('floating')) dockPanel(panel, 'left');
+        }
+
+        function dockPanel(panel, side) {
+            panel.classList.remove('docked-left', 'docked-right', 'docked-top', 'docked-bottom', 'floating');
+            panel.style.top = ''; panel.style.left = ''; panel.style.right = ''; panel.style.bottom = ''; panel.style.height = ''; panel.style.width = '';
+
+            if (side !== 'float') {
+                panel.classList.add(`docked-${side}`);
+                body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
+                // Adiciona classe de push correspondente
+                body.classList.add(`push-${side}`);
+            } else {
+                panel.classList.add('floating');
+                body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
+            }
+        }
+
+        // --- DRAG PANELS ---
+        let isDragging = false, startX, startY, dragPanel = null, diffX = 0, diffY = 0;
+        document.querySelectorAll('.panel-header').forEach(h => {
+            h.addEventListener('mousedown', (e) => {
+                dragPanel = h.parentElement; isDragging = true;
+                const rect = dragPanel.getBoundingClientRect(); diffX = e.clientX - rect.left; diffY = e.clientY - rect.top;
+                if (!dragPanel.classList.contains('floating')) {
+                    dockPanel(dragPanel, 'float'); dragPanel.style.height = 'auto';
+                    dragPanel.style.left = (e.clientX - diffX) + 'px'; dragPanel.style.top = (e.clientY - diffY) + 'px';
+                }
+                h.style.cursor = 'grabbing';
+            });
+        });
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging || !dragPanel) return;
+            dragPanel.style.left = (e.clientX - diffX) + 'px'; dragPanel.style.top = (e.clientY - diffY) + 'px';
+            const t = 50;
+            if (e.clientX < t) dragPanel.style.borderColor = '#00ff88';
+            else if (e.clientX > window.innerWidth - t) dragPanel.style.borderColor = '#00ff88';
+            else if (e.clientY < t) dragPanel.style.borderColor = '#00ff88';
+            else if (e.clientY > window.innerHeight - t) dragPanel.style.borderColor = '#00ff88';
+            else dragPanel.style.borderColor = '#333';
+        });
+        window.addEventListener('mouseup', (e) => {
+            if (!isDragging) return; isDragging = false;
+            if (dragPanel) {
+                dragPanel.querySelector('.panel-header').style.cursor = 'grab'; dragPanel.style.borderColor = '#333';
+                const t = 50;
+                if (e.clientX < t) dockPanel(dragPanel, 'left');
+                else if (e.clientX > window.innerWidth - t) dockPanel(dragPanel, 'right');
+                else if (e.clientY < t) dockPanel(dragPanel, 'top');
+                else if (e.clientY > window.innerHeight - t) dockPanel(dragPanel, 'bottom');
+                dragPanel = null;
+            }
+        });
+        document.querySelectorAll('.close-panel').forEach(btn => btn.addEventListener('click', (e) => closePanel(e.target.closest('.ui-panel'))));
+
+        // --- RESTO DO CÓDIGO ---
+        const introOverlay = document.getElementById('intro-overlay'); const aboutOverlay = document.getElementById('about-overlay'); const phrasesOverlay = document.getElementById('phrases-overlay'); const startBtn = document.getElementById('start-btn'); const bioContainer = document.getElementById('bio-text-container'); const aboutHint = document.getElementById('about-hint'); const phrasesContainer = document.getElementById('phrases-container'); const modal = document.getElementById('project-modal'); const modalTitle = document.getElementById('modal-title'); const modalTech = document.getElementById('modal-tech'); const modalDesc = document.getElementById('modal-desc'); const closeBtn = document.getElementById('close-modal-btn'); const heroName = document.getElementById('hero-name'); const nameLine1 = document.getElementById('name-line-1'); const nameLine2 = document.getElementById('name-line-2'); const heroSubtitle = document.getElementById('hero-subtitle'); const bioText = "I avoid definitions; I feel they limit me.\n\nWhenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative.\n\nI seek to make each piece obey an invisible rule and decide to tell a unique story.\n\nI persist in the attempt to compile everything that resonates with me..."; const phrasesList = ["I wrote the code, but you are the one rendering it.", "Careful where you click: some variables are loose.", "As you observe the project, the algorithm observes you.", "Don't be afraid. It is just logic trying to be art.", "Loading fragments of a thought process...", "This is not a website. It is a render of my consciousness.", "Here, gravity is just a syntax suggestion.", "You are not on the internet. You are inside a loop of my creative process.", "Space under construction. The mind, too.", "Don't touch the screen. The digital concrete is still wet.", "Are you the user, or just another parameter?", "Welcome to the backend of my imagination.", "Compiling chaos into structure. Please wait.", "Entry permitted. Exit not guaranteed.", "Everything here is code. Even the void.", "This is a portfolio. This is not a portfolio.", "You are in my mind now. Good luck.", "This page is thinking about you right now.", "Your visit has been logged. My architecture now knows who you are.", "To navigate here is to compile memories that are not yours.", "There is a system error: it has learned to feel."];
+        heroName.addEventListener('mouseenter', () => { scrambleTo(nameLine1, "LEONARDO"); scrambleTo(nameLine2, "DONATI"); }); heroSubtitle.addEventListener('mouseenter', () => { scrambleTo(heroSubtitle, "SCRAMBLED THOUGHTS"); }); heroSubtitle.addEventListener('mouseleave', () => { scrambleTo(heroSubtitle, "ARCHITECTURE STUDENT"); });
+        startBtn.addEventListener('click', () => { introOverlay.style.opacity = '0'; setTimeout(() => { introOverlay.style.display = 'none'; aboutOverlay.style.display = 'flex'; runGhostTypewriter(bioText, bioContainer, () => { aboutHint.style.opacity = '1'; }); }, 1000); });
+        let bioFinished = false; aboutOverlay.addEventListener('click', () => { if (!bioFinished) { bioFinished = true; const spans = bioContainer.querySelectorAll('span'); spans.forEach(s => { s.className = ''; s.innerText = s.dataset.char; s.style.opacity = '1'; }); aboutHint.style.opacity = '1'; return; } aboutOverlay.style.opacity = '0'; setTimeout(() => { aboutOverlay.style.display = 'none'; phrasesOverlay.style.display = 'flex'; phrasesContainer.innerText = ""; runPhrasesLoop(); }, 1000); });
+        let stopPhrasesLoop = false; phrasesOverlay.addEventListener('click', () => { stopPhrasesLoop = true; phrasesOverlay.style.opacity = '0'; document.body.classList.add('active'); setTimeout(() => { phrasesOverlay.style.display = 'none'; }, 1000); });
+        async function runPhrasesLoop() { let index = 0; while (!stopPhrasesLoop) { await scrambleTo(phrasesContainer, phrasesList[index]); if (stopPhrasesLoop) break; await new Promise(r => setTimeout(r, 4000)); if (stopPhrasesLoop) break; index = (index + 1) % phrasesList.length; } }
+        function scrambleTo(element, newText) { return new Promise(resolve => { const oldText = element.innerText; const length = Math.max(oldText.length, newText.length); const queue = []; const chars = '!<>-_\\/[]{}—=+*^?#________'; for (let i = 0; i < length; i++) { const from = oldText[i] || ''; const to = newText[i] || ''; const start = Math.floor(Math.random() * 40); const end = start + Math.floor(Math.random() * 40); queue.push({ from, to, start, end }); } let frame = 0; const update = () => { let output = ''; let complete = 0; for (let i = 0; i < queue.length; i++) { let { from, to, start, end, char } = queue[i]; if (frame >= end) { complete++; output += to; } else if (frame >= start) { if (!char || Math.random() < 0.28) { char = chars[Math.floor(Math.random() * chars.length)]; queue[i].char = char; } output += `<span class="glitch-char">${char}</span>`; } else { output += from; } } element.innerHTML = output; if (complete === queue.length) { resolve(); } else { if (stopPhrasesLoop && element === phrasesContainer) { resolve(); return; } requestAnimationFrame(update); frame++; } }; update(); }); }
+        async function runGhostTypewriter(text, element, callback) { const chars = '!<>-_\\/[]{}—=+*^?#________'; element.innerHTML = ''; const spans = []; for (let i = 0; i < text.length; i++) { const char = text[i]; if (char === '\n') { element.appendChild(document.createElement('br')); spans.push({ isBreak: true }); } else { const span = document.createElement('span'); span.innerText = char; span.dataset.char = char; span.className = 'char-hidden'; element.appendChild(span); spans.push({ dom: span, isBreak: false }); } } for (let i = 0; i < spans.length; i++) { if (bioFinished) break; const item = spans[i]; if (item.isBreak) { await new Promise(r => setTimeout(r, 30)); continue; } const span = item.dom; if (span.innerText === ' ') { span.className = ''; span.innerHTML = '&nbsp;'; span.style.opacity = '1'; await new Promise(r => setTimeout(r, 5)); continue; } span.className = 'glitch-char'; span.style.opacity = '1'; for (let j = 0; j < 3; j++) { span.innerText = chars[Math.floor(Math.random() * chars.length)]; await new Promise(r => setTimeout(r, 10)); } span.innerText = span.dataset.char; span.className = ''; } bioFinished = true; if (callback) callback(); }
+        const cursorDot = document.querySelector('.cursor-dot'); const cursorOutline = document.querySelector('.cursor-outline'); window.addEventListener('mousemove', function (e) { const posX = e.clientX; const posY = e.clientY; cursorDot.style.left = `${posX}px`; cursorDot.style.top = `${posY}px`; cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" }); }); const addHoverEffect = (element) => { element.addEventListener('mouseenter', () => { cursorOutline.style.width = '60px'; cursorOutline.style.height = '60px'; cursorOutline.style.backgroundColor = 'rgba(0, 255, 136, 0.1)'; }); element.addEventListener('mouseleave', () => { cursorOutline.style.width = '40px'; cursorOutline.style.height = '40px'; cursorOutline.style.backgroundColor = 'transparent'; }); }; addHoverEffect(startBtn); addHoverEffect(aboutOverlay); addHoverEffect(phrasesOverlay); addHoverEffect(closeBtn); addHoverEffect(heroName); addHoverEffect(heroSubtitle); document.querySelectorAll('.panel-header').forEach(h => addHoverEffect(h)); document.querySelectorAll('.folder-tab').forEach(i => addHoverEffect(i)); document.getElementById('portfolio-btn').addEventListener('mouseenter', () => { cursorOutline.style.width = '60px'; cursorOutline.style.height = '60px'; cursorOutline.style.backgroundColor = 'rgba(0, 255, 136, 0.1)'; }); document.getElementById('portfolio-btn').addEventListener('mouseleave', () => { cursorOutline.style.width = '40px'; cursorOutline.style.height = '40px'; cursorOutline.style.backgroundColor = 'transparent'; });
+
+        const scene = new THREE.Scene(); scene.fog = new THREE.FogExp2(0x050505, 0.002); const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.set(-10, 5, 10); camera.lookAt(0, 0, 0); const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); renderer.setSize(window.innerWidth, window.innerHeight); document.getElementById('canvas-container').appendChild(renderer.domElement); const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.dampingFactor = 0.05; controls.enableZoom = true; controls.autoRotate = false;
+        const geometry = new THREE.IcosahedronGeometry(4, 2); const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 }); const sphere = new THREE.Mesh(geometry, material); scene.add(sphere); const pGeo = new THREE.BufferGeometry(); const pCount = 2000; const pPos = new Float32Array(pCount * 3); for (let i = 0; i < pCount * 3; i++) pPos[i] = (Math.random() - 0.5) * 30; pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3)); const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff }); const particles = new THREE.Points(pGeo, pMat); scene.add(particles);
+        const raycaster = new THREE.Raycaster(); const mouse = new THREE.Vector2(); const projectNodes = []; fetch('projetos.json').then(r => r.json()).then(projetos => { const projectGroup = new THREE.Group(); scene.add(projectGroup); const radius = 6.5; const goldenAngle = Math.PI * (3 - Math.sqrt(5)); projetos.forEach((proj, i) => { const y = 1 - (i / (projetos.length - 1)) * 2; const radiusAtY = Math.sqrt(1 - y * y); const theta = goldenAngle * i; const x = Math.cos(theta) * radiusAtY; const z = Math.sin(theta) * radiusAtY; const nodeGeo = new THREE.SphereGeometry(0.3, 16, 16); const nodeMat = new THREE.MeshBasicMaterial({ color: 0xffffff }); const node = new THREE.Mesh(nodeGeo, nodeMat); node.position.set(x * radius, y * radius, z * radius); node.userData = { id: i, data: proj }; projectNodes.push(node); projectGroup.add(node); }); }).catch(e => console.error(e));
+        window.addEventListener('click', (event) => {
+            if (!document.body.classList.contains('active')) return;
+            if (event.target.closest('.ui-panel') || event.target.closest('.folder-tab') || event.target.closest('#project-modal') || event.target.closest('.close-modal')) return;
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1; mouse.y = -(event.clientY / window.innerHeight) * 2 + 1; raycaster.setFromCamera(mouse, camera); const intersects = raycaster.intersectObjects(projectNodes); if (intersects.length > 0) { const clickedNode = intersects[0].object; const projectData = clickedNode.userData.data; openModal(projectData); }
+        });
+        function openModal(data) { modalTitle.innerText = data.titulo; modalTech.innerText = "// " + data.tech; modalDesc.innerText = data.descricao; modal.style.display = 'flex'; setTimeout(() => { modal.classList.add('open'); }, 10); }
+        closeBtn.addEventListener('click', () => { modal.classList.remove('open'); setTimeout(() => { modal.style.display = 'none'; }, 500); });
+        function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); } animate(); window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
     </script>
 </body>
 </html>
