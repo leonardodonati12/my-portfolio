@@ -92,7 +92,7 @@
             justify-content: center;
             align-items: center;
             z-index: 4000;
-            padding: 0 32%; /* Texto centralizado e estreito */
+            padding: 0 30%; /* Ajuste de margem */
             box-sizing: border-box;
             transition: opacity 1.5s ease-in-out;
         }
@@ -106,17 +106,16 @@
 
         .about-text {
             font-size: 1.1rem;
-            line-height: 1.8;
+            line-height: 1.6;
             color: #ddd;
-            text-align: justify;
+            text-align: left; /* Melhor para leitura com quebras */
             min-height: 150px;
-            white-space: pre-wrap; /* Mantém parágrafos */
         }
 
-        /* Cor do "Glitch" enquanto digita */
         .glitch-char {
-            color: #444;
+            color: #555;
         }
+        /* Cor do glitch (cinza) */
 
         .continue-hint {
             margin-top: 50px;
@@ -329,7 +328,8 @@
         const bioContainer = document.getElementById('bio-text-container');
         const continueHint = document.getElementById('continue-hint');
 
-        const bioText = "I avoid definitions; I feel they limit me. Whenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative. I seek to make each piece obey an invisible rule and decide to tell a unique story. I persist in the attempt to compile everything that resonates with me...";
+        // AQUI: Usei \n para definir as quebras de linha explicitamente
+        const bioText = "I avoid definitions; I feel they limit me.\n\nWhenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative.\n\nI seek to make each piece obey an invisible rule and decide to tell a unique story.\n\nI persist in the attempt to compile everything that resonates with me...";
 
         // --- 1. TRANSIÇÃO: INTRO -> ABOUT ---
         startBtn.addEventListener('click', () => {
@@ -346,10 +346,10 @@
         let isTypingFinished = false;
 
         aboutOverlay.addEventListener('click', () => {
-            // Se clicar antes de terminar, completa instantaneamente
             if (!isTypingFinished) {
-                isTypingFinished = true; // Força a parada do loop
-                bioContainer.innerText = bioText; // Texto limpo
+                isTypingFinished = true;
+                // Converte os \n em <br> se o usuário pular a animação
+                bioContainer.innerHTML = bioText.replace(/\n/g, '<br>');
                 continueHint.style.opacity = '1';
                 return;
             }
@@ -359,44 +359,51 @@
             setTimeout(() => { aboutOverlay.style.display = 'none'; }, 1500);
         });
 
-        // --- NOVA FUNÇÃO: HYPER TYPEWRITER (LETRA A LETRA + GLITCH) ---
+        // --- FUNÇÃO: HYPER TYPEWRITER (TURBO & LINE BREAKS) ---
         async function hyperTypewriter(text, element) {
             const chars = '!<>-_\\/[]{}—=+*^?#________';
-            element.innerHTML = ''; // Limpa tudo
+            element.innerHTML = '';
 
             for (let i = 0; i < text.length; i++) {
-                if (isTypingFinished) break; // Para se o usuário clicou
+                if (isTypingFinished) break;
 
                 const targetChar = text[i];
-                const span = document.createElement('span');
-                element.appendChild(span);
 
-                // Se for espaço, vai rápido
-                if (targetChar === ' ') {
-                    span.innerHTML = '&nbsp;';
-                    await new Promise(r => setTimeout(r, 20));
+                // TRATAMENTO DE QUEBRA DE LINHA (\n)
+                if (targetChar === '\n') {
+                    element.appendChild(document.createElement('br'));
+                    // Uma pausa minúscula na quebra de linha para dar ritmo
+                    await new Promise(r => setTimeout(r, 50));
                     continue;
                 }
 
-                // Efeito Glitch Rápido na letra atual
-                // Troca de caractere 4 vezes antes de acertar (80ms total por letra)
-                for (let j = 0; j < 4; j++) {
-                    if (isTypingFinished) break;
-                    span.innerText = chars[Math.floor(Math.random() * chars.length)];
-                    span.className = 'glitch-char'; // Cinza escuro
-                    await new Promise(r => setTimeout(r, 20)); // Velocidade do glitch
+                const span = document.createElement('span');
+                element.appendChild(span);
+
+                if (targetChar === ' ') {
+                    span.innerHTML = '&nbsp;';
+                    // Espaço é super rápido
+                    await new Promise(r => setTimeout(r, 5));
+                    continue;
                 }
 
-                // Fixa a letra correta
+                // GLITCH: Reduzi para 3 repetições de 5ms (muito rápido/imperceptível)
+                for (let j = 0; j < 3; j++) {
+                    if (isTypingFinished) break;
+                    span.innerText = chars[Math.floor(Math.random() * chars.length)];
+                    span.className = 'glitch-char';
+                    await new Promise(r => setTimeout(r, 5)); // 5ms = Turbo
+                }
+
                 span.innerText = targetChar;
-                span.className = ''; // Volta a cor normal (Branco/Cinza claro)
+                span.className = '';
             }
 
             isTypingFinished = true;
             continueHint.style.opacity = '1';
         }
 
-        // --- INTRO SCRAMBLE ---
+        // --- RESTO DO CÓDIGO (INTRO SCRAMBLE, 3D, ETC) ---
         const roles = ["URBAN DESIGNER", "ARCHITECTURE STUDENT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND"];
         const el = document.getElementById('scramble-text');
         const chars = '!<>-_\\/[]{}—=+*^?#________';
@@ -410,7 +417,6 @@
         const nextRole = () => { if (document.body.classList.contains('active') || aboutOverlay.style.display === 'flex') return; setText(roles[roleIndex]); roleIndex = (roleIndex + 1) % roles.length; };
         nextRole();
 
-        // --- CURSOR & RESTO ---
         const cursorDot = document.querySelector('.cursor-dot'); const cursorOutline = document.querySelector('.cursor-outline');
         window.addEventListener('mousemove', function (e) { const posX = e.clientX; const posY = e.clientY; cursorDot.style.left = `${posX}px`; cursorDot.style.top = `${posY}px`; cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" }); });
         const addHoverEffect = (element) => { element.addEventListener('mouseenter', () => { cursorOutline.style.width = '60px'; cursorOutline.style.height = '60px'; cursorOutline.style.backgroundColor = 'rgba(0, 255, 136, 0.1)'; }); element.addEventListener('mouseleave', () => { cursorOutline.style.width = '40px'; cursorOutline.style.height = '40px'; cursorOutline.style.backgroundColor = 'transparent'; }); };
