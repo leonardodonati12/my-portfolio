@@ -24,8 +24,8 @@
             z-index: -1;
         }
 
-        /* --- TELA 1: INTRO (MATRIX) --- */
-        #intro-overlay {
+        /* --- TELAS DE OVERLAY (Intro, About, Phrases) --- */
+        .overlay-screen {
             position: fixed;
             top: 0;
             left: 0;
@@ -36,10 +36,29 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 5000;
             transition: opacity 1s ease-in-out;
+            z-index: 5000; /* Base Z-index */
         }
 
+        #intro-overlay {
+            z-index: 5003;
+        }
+
+        #about-overlay {
+            z-index: 5002;
+            display: none;
+            padding: 0 25%;
+            box-sizing: border-box;
+        }
+
+        #phrases-overlay {
+            z-index: 5001;
+            display: none;
+            padding: 0 20%;
+            box-sizing: border-box;
+        }
+
+        /* ESTILOS DE TEXTO */
         .intro-name {
             font-size: 4rem;
             font-weight: 900;
@@ -59,6 +78,33 @@
             font-weight: bold;
         }
 
+        .about-title {
+            font-size: 2rem;
+            color: #00ff88;
+            margin-bottom: 40px;
+            letter-spacing: 3px;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #ddd;
+            text-align: left;
+            width: 100%;
+            white-space: pre-wrap;
+        }
+
+        /* ESTILO DAS FRASES (NOVO) */
+        .phrases-text {
+            font-size: 1.5rem;
+            line-height: 1.5;
+            color: #00ff88;
+            text-align: center;
+            min-height: 100px; /* Evita pulos */
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+        }
+
+        /* BOTÃO E DICAS */
         .enter-btn {
             padding: 15px 40px;
             border: 1px solid #00ff88;
@@ -79,49 +125,6 @@
                 box-shadow: 0 0 20px #00ff88;
             }
 
-        /* --- TELA 2: ABOUT (WHO AM I?) --- */
-        #about-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 4000;
-            padding: 0 25%; /* Margem ajustada para leitura confortável */
-            box-sizing: border-box;
-            transition: opacity 1.5s ease-in-out;
-        }
-
-        .about-title {
-            font-size: 2rem;
-            color: #00ff88;
-            margin-bottom: 40px;
-            letter-spacing: 3px;
-        }
-
-        .about-text {
-            font-size: 1.1rem;
-            line-height: 1.8; /* Espaçamento bom entre linhas */
-            color: #ddd;
-            text-align: left; /* Alinhado à esquerda evita buracos estranhos */
-            width: 100%;
-            white-space: pre-wrap; /* Respeita os parágrafos do texto */
-        }
-
-        /* Classes para o efeito Fantasma */
-        .char-hidden {
-            color: transparent;
-        }
-        /* Ocupa espaço mas não aparece */
-        .glitch-char {
-            color: #555;
-        }
-
         .continue-hint {
             margin-top: 60px;
             font-size: 0.8rem;
@@ -131,6 +134,15 @@
             cursor: none;
             opacity: 0;
             transition: opacity 1s;
+        }
+
+        /* EFEITOS ESPECIAIS */
+        .char-hidden {
+            color: transparent;
+        }
+
+        .glitch-char {
+            color: #555;
         }
 
         @keyframes pulse {
@@ -287,8 +299,12 @@
                 font-size: 2.5rem;
             }
 
-            #about-overlay {
+            #about-overlay, #phrases-overlay {
                 padding: 0 10%;
+            }
+
+            .phrases-text {
+                font-size: 1rem;
             }
 
             body {
@@ -305,16 +321,21 @@
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
 
-    <div id="intro-overlay">
+    <div id="intro-overlay" class="overlay-screen">
         <div class="intro-name">LEONARDO DONATI</div>
         <div class="intro-role" id="scramble-text"></div>
         <button class="enter-btn" id="start-btn">[ ENTER SYSTEM ]</button>
     </div>
 
-    <div id="about-overlay">
+    <div id="about-overlay" class="overlay-screen">
         <div class="about-title">WHO AM I?</div>
         <div class="about-text" id="bio-text-container"></div>
-        <div class="continue-hint" id="continue-hint">[ CLICK ANYWHERE TO CONTINUE ]</div>
+        <div class="continue-hint" id="about-hint">[ CLICK ANYWHERE TO CONTINUE ]</div>
+    </div>
+
+    <div id="phrases-overlay" class="overlay-screen">
+        <div class="phrases-text" id="phrases-container"></div>
+        <div class="continue-hint" style="opacity: 1;">[ CLICK ANYWHERE TO CONTINUE ]</div>
     </div>
 
     <div class="hero">
@@ -327,14 +348,42 @@
     <script type="module">
         import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
 
+        // ELEMENTOS DOM
         const introOverlay = document.getElementById('intro-overlay');
         const aboutOverlay = document.getElementById('about-overlay');
+        const phrasesOverlay = document.getElementById('phrases-overlay');
+
         const startBtn = document.getElementById('start-btn');
         const bioContainer = document.getElementById('bio-text-container');
-        const continueHint = document.getElementById('continue-hint');
+        const aboutHint = document.getElementById('about-hint');
+        const phrasesContainer = document.getElementById('phrases-container');
 
-        // Texto Unificado - Layout travado
+        // DADOS
         const bioText = "I avoid definitions; I feel they limit me.\n\nWhenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative.\n\nI seek to make each piece obey an invisible rule and decide to tell a unique story.\n\nI persist in the attempt to compile everything that resonates with me...";
+
+        const phrasesList = [
+            "I wrote the code, but you are the one rendering it.",
+            "Careful where you click: some variables are loose.",
+            "As you observe the project, the algorithm observes you.",
+            "Don't be afraid. It is just logic trying to be art.",
+            "Loading fragments of a thought process...",
+            "This is not a website. It is a render of my consciousness.",
+            "Here, gravity is just a syntax suggestion.",
+            "You are not on the internet. You are inside a loop of my creative process.",
+            "Space under construction. The mind, too.",
+            "Don't touch the screen. The digital concrete is still wet.",
+            "Are you the user, or just another parameter?",
+            "Welcome to the backend of my imagination.",
+            "Compiling chaos into structure. Please wait.",
+            "Entry permitted. Exit not guaranteed.",
+            "Everything here is code. Even the void.",
+            "This is a portfolio. This is not a portfolio.",
+            "You are in my mind now. Good luck.",
+            "This page is thinking about you right now.",
+            "Your visit has been logged. My architecture now knows who you are.",
+            "To navigate here is to compile memories that are not yours.",
+            "There is a system error: it has learned to feel."
+        ];
 
         // --- 1. TRANSIÇÃO: INTRO -> ABOUT ---
         startBtn.addEventListener('click', () => {
@@ -342,101 +391,127 @@
             setTimeout(() => {
                 introOverlay.style.display = 'none';
                 aboutOverlay.style.display = 'flex';
-
-                // Prepara e Inicia (Técnica Fantasma)
-                runGhostTypewriter(bioText, bioContainer);
+                runGhostTypewriter(bioText, bioContainer, () => {
+                    aboutHint.style.opacity = '1';
+                });
             }, 1000);
         });
 
-        // --- 2. TRANSIÇÃO: ABOUT -> SITE ---
-        let isTypingFinished = false;
-
+        // --- 2. TRANSIÇÃO: ABOUT -> PHRASES ---
+        let bioFinished = false;
         aboutOverlay.addEventListener('click', () => {
-            if (!isTypingFinished) {
-                isTypingFinished = true; // A função de digitação verifica isso e para
-
-                // Revela todo o texto instantaneamente
+            if (!bioFinished) {
+                // Se clicar antes de acabar, revela o texto
+                bioFinished = true;
                 const spans = bioContainer.querySelectorAll('span');
-                spans.forEach(span => {
-                    span.className = ''; // Remove a classe hidden
-                    span.innerText = span.dataset.char; // Garante o caractere certo
-                });
-
-                continueHint.style.opacity = '1';
+                spans.forEach(s => { s.className = ''; s.innerText = s.dataset.char; });
+                aboutHint.style.opacity = '1';
                 return;
             }
 
+            // Vai para as frases
             aboutOverlay.style.opacity = '0';
-            document.body.classList.add('active');
-            setTimeout(() => { aboutOverlay.style.display = 'none'; }, 1500);
+            setTimeout(() => {
+                aboutOverlay.style.display = 'none';
+                phrasesOverlay.style.display = 'flex';
+                // Inicia o Loop Infinito de frases
+                runPhrasesLoop();
+            }, 1000);
         });
 
-        // --- FUNÇÃO: GHOST TYPEWRITER (LAYOUT TRAVADO) ---
-        async function runGhostTypewriter(text, element) {
-            const chars = '!<>-_\\/[]{}—=+*^?#________';
-            element.innerHTML = ''; // Limpa
+        // --- 3. TRANSIÇÃO: PHRASES -> SITE PRINCIPAL ---
+        let stopPhrasesLoop = false;
+        phrasesOverlay.addEventListener('click', () => {
+            stopPhrasesLoop = true; // Para o loop
+            phrasesOverlay.style.opacity = '0';
+            document.body.classList.add('active'); // Revela o site
+            setTimeout(() => { phrasesOverlay.style.display = 'none'; }, 1000);
+        });
 
-            // PASSO 1: CRIAR A ESTRUTURA COMPLETA (INVISÍVEL)
-            // Isso garante que o layout já ocupe o espaço final desde o início
+
+        // --- LÓGICA DO LOOP DE FRASES ---
+        async function runPhrasesLoop() {
+            let index = 0;
+
+            while (!stopPhrasesLoop) {
+                // Pega a frase atual
+                const phrase = phrasesList[index];
+
+                // Escreve a frase (Ghost Effect)
+                await runGhostTypewriter(phrase, phrasesContainer, null, true);
+
+                if (stopPhrasesLoop) break;
+
+                // Espera 3 segundos para ler
+                await new Promise(r => setTimeout(r, 3000));
+
+                if (stopPhrasesLoop) break;
+
+                // Apaga a frase (efeito simples de limpar)
+                phrasesContainer.innerHTML = '';
+
+                // Próxima frase
+                index = (index + 1) % phrasesList.length;
+            }
+        }
+
+
+        // --- FUNÇÃO GHOST TYPEWRITER (GENÉRICA) ---
+        // Agora aceita um callback e um modo "fast" para as frases
+        async function runGhostTypewriter(text, element, callback, isPhraseMode = false) {
+            const chars = '!<>-_\\/[]{}—=+*^?#________';
+            element.innerHTML = '';
+
+            // Passo 1: Layout Invisível
             const spans = [];
             for (let i = 0; i < text.length; i++) {
                 const char = text[i];
-
                 if (char === '\n') {
-                    const br = document.createElement('br'); // Quebra real
-                    element.appendChild(br);
-                    // Adiciona um placeholder no array para mantermos o ritmo de tempo
+                    element.appendChild(document.createElement('br'));
                     spans.push({ isBreak: true });
                 } else {
                     const span = document.createElement('span');
-                    span.innerText = char;
-                    span.dataset.char = char; // Guarda a letra original
-                    span.className = 'char-hidden'; // Começa invisível (transparent)
+                    span.innerText = char; span.dataset.char = char; span.className = 'char-hidden';
                     element.appendChild(span);
                     spans.push({ dom: span, isBreak: false });
                 }
             }
 
-            // PASSO 2: "ACENDER" CADA LETRA COM GLITCH
+            // Passo 2: Revelar
+            // Se for modo Frase, é mais rápido. Se for Bio, é mais lento e dramático.
+            const glitchSpeed = isPhraseMode ? 5 : 10;
+            const letterDelay = isPhraseMode ? 10 : 30;
+
             for (let i = 0; i < spans.length; i++) {
-                if (isTypingFinished) break;
+                // Verifica se deve parar (no caso da Bio quando clica, ou frases quando sai)
+                if (!isPhraseMode && bioFinished) break;
+                if (isPhraseMode && stopPhrasesLoop) break;
 
                 const item = spans[i];
-
-                if (item.isBreak) {
-                    await new Promise(r => setTimeout(r, 30)); // Pausa na quebra de linha
-                    continue;
-                }
+                if (item.isBreak) { await new Promise(r => setTimeout(r, letterDelay)); continue; }
 
                 const span = item.dom;
-
-                // Torna visível, mas começando com glitch
-                // O span já está no lugar certo, então nada muda de posição
-
                 if (span.innerText === ' ') {
-                    span.className = ''; // Espaço aparece direto
-                    await new Promise(r => setTimeout(r, 5));
-                    continue;
+                    span.className = ''; await new Promise(r => setTimeout(r, 5)); continue;
                 }
 
-                // Glitch Turbo (Troca letra no lugar sem mexer layout)
+                // Glitch
                 for (let j = 0; j < 3; j++) {
-                    if (isTypingFinished) break;
                     span.innerText = chars[Math.floor(Math.random() * chars.length)];
                     span.className = 'glitch-char';
-                    await new Promise(r => setTimeout(r, 10));
+                    await new Promise(r => setTimeout(r, glitchSpeed));
                 }
 
-                // Fixa a letra final
                 span.innerText = span.dataset.char;
                 span.className = '';
             }
 
-            isTypingFinished = true;
-            continueHint.style.opacity = '1';
+            if (!isPhraseMode) bioFinished = true;
+            if (callback) callback();
         }
 
-        // --- RESTO DO CÓDIGO ---
+
+        // --- RESTO DO CÓDIGO (INTRO SCRAMBLE, 3D, ETC) ---
         const roles = ["URBAN DESIGNER", "ARCHITECTURE STUDENT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND"];
         const el = document.getElementById('scramble-text');
         const chars = '!<>-_\\/[]{}—=+*^?#________';
@@ -447,13 +522,13 @@
             cancelAnimationFrame(loopInterval); let frame = 0;
             const update = () => { let output = ''; let complete = 0; for (let i = 0, n = queue.length; i < n; i++) { let { from, to, start, end, char } = queue[i]; if (frame >= end) { complete++; output += to; } else if (frame >= start) { if (!char || Math.random() < 0.28) { char = chars[Math.floor(Math.random() * chars.length)]; queue[i].char = char; } output += `<span style="color: #444;">${char}</span>`; } else { output += from; } } el.innerHTML = output; if (complete === queue.length) { setTimeout(nextRole, 2000); } else { loopInterval = requestAnimationFrame(update); frame++; } }; update();
         };
-        const nextRole = () => { if (document.body.classList.contains('active') || aboutOverlay.style.display === 'flex') return; setText(roles[roleIndex]); roleIndex = (roleIndex + 1) % roles.length; };
+        const nextRole = () => { if (document.body.classList.contains('active') || aboutOverlay.style.display === 'flex' || phrasesOverlay.style.display === 'flex') return; setText(roles[roleIndex]); roleIndex = (roleIndex + 1) % roles.length; };
         nextRole();
 
         const cursorDot = document.querySelector('.cursor-dot'); const cursorOutline = document.querySelector('.cursor-outline');
         window.addEventListener('mousemove', function (e) { const posX = e.clientX; const posY = e.clientY; cursorDot.style.left = `${posX}px`; cursorDot.style.top = `${posY}px`; cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" }); });
         const addHoverEffect = (element) => { element.addEventListener('mouseenter', () => { cursorOutline.style.width = '60px'; cursorOutline.style.height = '60px'; cursorOutline.style.backgroundColor = 'rgba(0, 255, 136, 0.1)'; }); element.addEventListener('mouseleave', () => { cursorOutline.style.width = '40px'; cursorOutline.style.height = '40px'; cursorOutline.style.backgroundColor = 'transparent'; }); };
-        addHoverEffect(startBtn); addHoverEffect(aboutOverlay);
+        addHoverEffect(startBtn); addHoverEffect(aboutOverlay); addHoverEffect(phrasesOverlay);
 
         const container = document.getElementById('lista-projetos'); fetch('projetos.json').then(r => r.json()).then(projetos => { projetos.forEach(p => { const card = document.createElement('div'); card.className = 'project-card'; card.innerHTML = `<div class="project-title">${p.titulo}</div><div class="project-tech">// ${p.tech}</div><div class="project-desc">${p.descricao}</div>`; addHoverEffect(card); container.appendChild(card); }); }).catch(e => console.error(e));
         const scene = new THREE.Scene(); scene.fog = new THREE.FogExp2(0x050505, 0.002); const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.set(-10, 5, 10); camera.lookAt(0, 0, 0); const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); renderer.setSize(window.innerWidth, window.innerHeight); document.getElementById('canvas-container').appendChild(renderer.domElement); const geometry = new THREE.IcosahedronGeometry(4, 2); const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 }); const sphere = new THREE.Mesh(geometry, material); scene.add(sphere); const pGeo = new THREE.BufferGeometry(); const pCount = 2000; const pPos = new Float32Array(pCount * 3); for (let i = 0; i < pCount * 3; i++) pPos[i] = (Math.random() - 0.5) * 30; pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3)); const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff }); const particles = new THREE.Points(pGeo, pMat); scene.add(particles); function animate() { requestAnimationFrame(animate); sphere.rotation.y += 0.002; sphere.rotation.x += 0.001; particles.rotation.y -= 0.0005; renderer.render(scene, camera); } animate(); window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
