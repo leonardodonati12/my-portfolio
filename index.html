@@ -7,31 +7,30 @@
     <link rel="stylesheet" href="style.css">
 
     <style>
-        /* --- ARTEFATO BIO-DIGITAL (DARK MODE) --- */
+        /* --- ARTEFATO BIO-DIGITAL (LIGHTER & INTERACTIVE) --- */
         .symbiote-container-home {
             position: fixed;
             bottom: 50px;
             right: 50px;
             z-index: 50;
             /* Visual */
-            filter: drop-shadow(0 0 10px rgba(0, 255, 136, 0.2));
+            filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.15));
             mix-blend-mode: screen;
             /* Interação */
             pointer-events: none; /* O container deixa passar clique */
-            /* [CORREÇÃO 4] Animação de Push Suave */
+            /* Animação de Push Suave */
             transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        /* [CORREÇÃO 4] Lógica de Push (Reimplementada) */
-        /* Quando menu direito abre -> empurra para esquerda */
+        /* Lógica de Push (Reimplementada) */
         body.push-right .symbiote-container-home {
             transform: translateX(-280px);
         }
-        /* Quando menu inferior abre -> empurra para cima */
+
         body.push-bottom .symbiote-container-home {
             transform: translateY(-300px);
         }
-        /* Combo */
+
         body.push-right.push-bottom .symbiote-container-home {
             transform: translate(-280px, -300px);
         }
@@ -40,7 +39,7 @@
             position: relative;
             width: 100px;
             height: 100px;
-            /* Cor Base */
+            /* Cor Base (Mais clara) */
             background: radial-gradient(circle at 30% 30%, #004d1a 0%, #001a05 80%);
             border: 1px solid rgba(0, 255, 136, 0.3);
             /* Forma */
@@ -49,13 +48,12 @@
             animation: spin-cw 30s linear infinite, spike-pulse 4s ease-in-out infinite alternate;
             /* Interação */
             pointer-events: auto; /* O blob pega o mouse */
-            cursor: none !important; /* [CORREÇÃO 1] Garante que não apareça cursor do windows aqui também */
+            cursor: none !important; /* Garante que não apareça cursor do windows */
             transition: background 0.3s;
         }
 
-            /* [CORREÇÃO 3] Hover mais controlado */
+            /* Hover mais controlado */
             .symbiote-blob:hover {
-                /* Acelera mas não muito (de 30s para 8s, e não para 2s como antes) */
                 animation: spin-cw 8s linear infinite, spike-pulse 1s ease-in-out infinite alternate;
                 background: radial-gradient(circle at 30% 30%, #00802b 0%, #002200 80%);
                 border-color: #00ff88;
@@ -73,14 +71,12 @@
                 border: 1px solid rgba(0, 255, 136, 0.5);
                 /* Forma Diferente */
                 clip-path: polygon(50% 0%, 80% 20%, 100% 50%, 80% 80%, 50% 100%, 20% 80%, 0% 50%, 20% 20%);
-                /* [CORREÇÃO 2] Rotação Multidirecional (Efeito 3D simulado) */
-                /* animation: spin-multi 15s linear infinite; */
+                /* Rotação Multidirecional */
                 animation: spin-ccw 15s linear infinite;
             }
 
             /* Hover na camada interna */
             .symbiote-blob:hover::after {
-                /* Acelera proporcionalmente */
                 animation: spin-ccw 4s linear infinite;
                 border-color: #fff;
             }
@@ -103,23 +99,6 @@
 
             to {
                 transform: rotate(0deg);
-            }
-        }
-
-        /* [CORREÇÃO 2] Tentativa de rotação "Multidirecional" (Giro + Leve inclinação) */
-        /* Nota: Clip-path e transform 3D as vezes brigam, mantive o CCW simples pois é mais estável visualmente,
-           mas se quiser tentar o 3D, troque a animação do ::after para 'spin-3d' abaixo */
-        @keyframes spin-3d {
-            0% {
-                transform: rotate(0deg) scale(0.9);
-            }
-
-            50% {
-                transform: rotate(180deg) scale(1.1);
-            }
-            /* Pulsa tamanho enquanto gira */
-            100% {
-                transform: rotate(360deg) scale(0.9);
             }
         }
 
@@ -175,7 +154,7 @@
             <div class="modal-tech" id="modal-tech">// Tech Stack</div>
             <div class="modal-desc" id="modal-desc">Description goes here...</div>
         </div>
-    </div> 
+    </div>
     <div class="interaction-hint">[ DRAG TO ROTATE • CLICK NODES FOR DETAILS ]</div>
 
     <div id="callout-container">
