@@ -1,6 +1,21 @@
 import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
 import { OrbitControls } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls.js';
 
+// --- 1. SKIP INTRO LOGIC (CRUCIAL PARA NAVEGAÇÃO) ---
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('skip') === 'true') {
+    // Adiciona a classe active imediatamente para liberar o site
+    document.body.classList.add('active');
+
+    // Injeta CSS para esconder os overlays instantaneamente
+    const style = document.createElement('style');
+    style.innerHTML = `
+        #intro-overlay, #about-overlay, #phrases-overlay, #system-curtain { display: none !important; opacity: 0 !important; }
+        .hero, .interaction-hint { opacity: 1 !important; }
+    `;
+    document.head.appendChild(style);
+}
+
 // --- DOM ELEMENTS ---
 const introOverlay = document.getElementById('intro-overlay');
 const aboutOverlay = document.getElementById('about-overlay');
@@ -75,7 +90,7 @@ const nextRole = () => {
 nextRole();
 
 
-// --- DATA ---
+// --- DATA (SKILLS) ---
 const mySkills = [
     { name: "REVIT / BIM", level: 95 }, { name: "DYNAMO / PYTHON", level: 85 },
     { name: "RHINO / GRASSHOPPER", level: 80 }, { name: "NAVISWORKS", level: 75 },
@@ -85,7 +100,7 @@ const mySkills = [
     { name: "POWER BI", level: 80 }, { name: "PHOTOSHOP / AI", level: 85 }
 ];
 
-// --- POPULATE PANELS ---
+// --- POPULATE PANELS (SKILLS) ---
 const skillsList = document.getElementById('skills-list');
 mySkills.forEach(skill => {
     const item = document.createElement('div'); item.className = 'skill-item';
@@ -95,7 +110,7 @@ mySkills.forEach(skill => {
     skillsList.appendChild(item);
 });
 
-// --- TRANSLATED CONTENT ---
+// --- POPULATE PANELS (CONTENT - ENGLISH) ---
 document.getElementById('timeline-content').innerHTML = `
     <div class="timeline-item"><div class="time-date">Aug 2024 - Present</div><div class="time-role">Spbim - Architecture Intern</div><div class="time-place">São Paulo - SP</div><div class="time-desc">BIM implementation support, parametric modeling, point cloud (laser scanner), coordination.</div></div>
     <div class="timeline-item"><div class="time-date">Oct 2020 - Apr 2021</div><div class="time-role">Tekno S.A. - Electrical Intern</div><div class="time-place">Guaratinguetá - SP</div><div class="time-desc">Analysis and development of electrical plans, preventive and corrective maintenance.</div></div>
@@ -229,7 +244,7 @@ window.addEventListener('mouseup', (e) => {
 });
 document.querySelectorAll('.close-panel').forEach(btn => btn.addEventListener('click', (e) => closePanel(e.target.closest('.ui-panel'))));
 
-// --- RESTO DO CÓDIGO (INTRO) ---
+// --- RESTO DO CÓDIGO (INTRO - MATRIX EFFECT) ---
 const bioText = "I avoid definitions; I feel they limit me. Whenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative. I seek to make each piece obey an invisible rule and decide to tell a unique story. I persist in the attempt to compile everything that resonates with me...";
 const phrasesList = ["I wrote the code, but you are the one rendering it.", "Careful where you click: some variables are loose.", "As you observe the project, the algorithm observes you.", "Don't be afraid. It is just logic trying to be art.", "Loading fragments of a thought process...", "This is not a website. It is a render of my consciousness.", "Here, gravity is just a syntax suggestion.", "You are not on the internet. You are inside a loop of my creative process.", "Space under construction. The mind, too.", "Don't touch the screen. The digital concrete is still wet.", "Are you the user, or just another parameter?", "Welcome to the backend of my imagination.", "Compiling chaos into structure. Please wait.", "Entry permitted. Exit not guaranteed.", "Everything here is code. Even the void.", "This is a portfolio. This is not a portfolio.", "You are in my mind now. Good luck.", "This page is thinking about you right now.", "Your visit has been logged. My architecture now knows who you are.", "To navigate here is to compile memories that are not yours.", "There is a system error: it has learned to feel."];
 
@@ -242,7 +257,8 @@ startBtn.addEventListener('click', () => {
     setTimeout(() => {
         introOverlay.style.display = 'none';
         aboutOverlay.style.display = 'flex';
-        runGhostTypewriter(bioText, bioContainer, () => { aboutHint.style.opacity = '1'; });
+        // EFEITO HACKER SEM GLITCH
+        matrixReveal(bioContainer, bioText, () => { aboutHint.style.opacity = '1'; });
     }, 1000);
 });
 
@@ -250,8 +266,7 @@ let bioFinished = false;
 aboutOverlay.addEventListener('click', () => {
     if (!bioFinished) {
         bioFinished = true;
-        const spans = bioContainer.querySelectorAll('span');
-        spans.forEach(s => { s.className = ''; s.innerText = s.dataset.char; s.style.opacity = '1'; });
+        bioContainer.innerText = bioText; // Texto final limpo
         aboutHint.style.opacity = '1';
         return;
     }
@@ -268,7 +283,7 @@ let stopPhrasesLoop = false;
 phrasesOverlay.addEventListener('click', () => {
     stopPhrasesLoop = true;
     phrasesOverlay.style.opacity = '0';
-    document.body.classList.add('active');
+    document.body.classList.add('active'); // Cortina sobe aqui
     setTimeout(() => { phrasesOverlay.style.display = 'none'; }, 1000);
 });
 
@@ -281,6 +296,30 @@ async function runPhrasesLoop() {
         if (stopPhrasesLoop) break;
         index = (index + 1) % phrasesList.length;
     }
+}
+
+// FUNÇÃO MATRIX REVEAL (Sem glitch de layout)
+function matrixReveal(element, text, callback) {
+    const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()';
+
+    // Preenche com espaço reservado
+    element.innerText = text.split('').map(c => (c === ' ' || c === '\n') ? c : chars[Math.floor(Math.random() * chars.length)]).join('');
+
+    let iterations = 0;
+
+    const interval = setInterval(() => {
+        element.innerText = text.split('').map((letter, index) => {
+            if (letter === ' ' || letter === '\n') return letter;
+            if (index < iterations) return letter;
+            return chars[Math.floor(Math.random() * chars.length)];
+        }).join('');
+
+        if (iterations >= text.length) {
+            clearInterval(interval);
+            if (callback) callback();
+        }
+        iterations += 2;
+    }, 15);
 }
 
 function scrambleTo(element, newText) {
@@ -328,64 +367,6 @@ function scrambleTo(element, newText) {
     });
 }
 
-async function runGhostTypewriter(text, element, callback) {
-    const chars = '!<>-_\\/[]{}—=+*^?#________';
-    element.innerHTML = '';
-    const spans = [];
-    for (let i = 0; i < text.length; i++) {
-        const char = text[i];
-        if (char === '\n') {
-            element.appendChild(document.createElement('br'));
-            spans.push({ isBreak: true });
-        } else {
-            const span = document.createElement('span');
-            span.innerText = char;
-            span.dataset.char = char;
-            span.className = 'char-hidden';
-            element.appendChild(span);
-            spans.push({ dom: span, isBreak: false });
-        }
-    }
-    for (let i = 0; i < spans.length; i++) {
-        if (bioFinished) break;
-        const item = spans[i];
-        if (item.isBreak) { await new Promise(r => setTimeout(r, 30)); continue; }
-        const span = item.dom;
-        if (span.innerText === ' ') {
-            span.className = '';
-            span.innerHTML = '&nbsp;';
-            span.style.opacity = '1';
-            await new Promise(r => setTimeout(r, 5));
-            continue;
-        }
-        span.className = 'glitch-char';
-        span.style.opacity = '1';
-        for (let j = 0; j < 3; j++) {
-            span.innerText = chars[Math.floor(Math.random() * chars.length)];
-            await new Promise(r => setTimeout(r, 10));
-        }
-        span.innerText = span.dataset.char;
-        span.className = '';
-    }
-    bioFinished = true;
-    if (callback) callback();
-}
-
-/* Adicione ou verifique se já existe */
-.notranslate {
-    transform: translateZ(0); /* Hack para evitar re-render do tradutor */
-}
-
-.cursor - dot, .cursor - outline {
-    pointer - events: none!important; /* Essencial para clicar através dele */
-    z - index: 9999!important;
-}
-
-/* Esconde o cursor padrão do sistema */
-body, a, button {
-    cursor: none!important;
-}
-
 // --- THREE.JS CONFIGURATION ---
 const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x050505, 0.002);
@@ -402,21 +383,19 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 controls.enableZoom = true;
-// 2. e 5. MOVIMENTAÇÃO ORBITAL LENTA
 controls.autoRotate = true;
-controls.autoRotateSpeed = 0.05; // Velocidade reduzida 10x
+controls.autoRotateSpeed = 0.05; // 10x mais lento
 
 // --- OBJECTS ---
 const geometry = new THREE.IcosahedronGeometry(4, 2);
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 });
 const sphere = new THREE.Mesh(geometry, material);
-// Guardar flag para animação de hover do centro
 sphere.userData = { isCenter: true };
 scene.add(sphere);
 
-// 4. AUMENTAR LIMITE DE PONTOS BRANCOS
+// PARTICULAS (10.000)
 const pGeo = new THREE.BufferGeometry();
-const pCount = 10000; // Aumentado para 10k
+const pCount = 10000;
 const pPos = new Float32Array(pCount * 3);
 for (let i = 0; i < pCount * 3; i++) {
     pPos[i] = (Math.random() - 0.5) * 100;
@@ -426,12 +405,12 @@ const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff });
 const particles = new THREE.Points(pGeo, pMat);
 scene.add(particles);
 
-// --- PROJECT NODES (COM SHADER ATMOSFÉRICO) ---
+// --- PROJECT NODES ---
 const projectNodes = [];
 const projectGroup = new THREE.Group();
 scene.add(projectGroup);
 
-// 1. SHADERS PARA O EFEITO ATMOSFÉRICO
+// SHADERS
 const vertexShader = `
     varying vec3 vNormal;
     varying vec3 vViewVector;
@@ -455,7 +434,6 @@ const fragmentShader = `
         float dotProduct = dot( normal, viewVector );
         float rim = 1.0 - max( dotProduct, 0.0 );
         float finalIntensity = glowIntensity * pow( rim, p );
-        // Mix central brightness with strong rim
         gl_FragColor = vec4( c, finalIntensity + (dotProduct*0.2) );
     }
 `;
@@ -470,12 +448,11 @@ fetch('projetos.json').then(r => r.json()).then(projetos => {
         const x = Math.cos(theta) * radiusAtY;
         const z = Math.sin(theta) * radiusAtY;
 
-        // 1. USANDO SHADER MATERIAL EM VEZ DE BASIC
         const nodeMat = new THREE.ShaderMaterial({
             uniforms: {
-                "c": { type: "c", value: new THREE.Color(0xffffff) }, // Cor base branca
-                "p": { type: "f", value: 3.0 }, // Intensidade da borda
-                "glowIntensity": { type: "f", value: 1.5 } // Brilho geral
+                "c": { type: "c", value: new THREE.Color(0xffffff) },
+                "p": { type: "f", value: 3.0 },
+                "glowIntensity": { type: "f", value: 1.5 }
             },
             vertexShader: vertexShader,
             fragmentShader: fragmentShader,
@@ -485,7 +462,7 @@ fetch('projetos.json').then(r => r.json()).then(projetos => {
             depthWrite: false
         });
 
-        const nodeGeo = new THREE.SphereGeometry(0.3, 32, 32); // Mais polígonos para ficar liso
+        const nodeGeo = new THREE.SphereGeometry(0.3, 32, 32);
         const node = new THREE.Mesh(nodeGeo, nodeMat);
 
         node.position.set(x * radius, y * radius, z * radius);
@@ -496,12 +473,11 @@ fetch('projetos.json').then(r => r.json()).then(projetos => {
     });
 }).catch(e => console.error(e));
 
-// --- INTERACTION LOGIC (RAYCASTER & HOVER) ---
+// --- INTERACTION LOGIC ---
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 let hoveredNode = null;
 
-// Rastrear mouse sem clicar
 window.addEventListener('mousemove', (event) => {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -511,7 +487,6 @@ window.addEventListener('click', (event) => {
     if (!document.body.classList.contains('active')) return;
     if (event.target.closest('.ui-panel') || event.target.closest('.folder-tab') || event.target.closest('#project-modal') || event.target.closest('.close-modal')) return;
 
-    // Raycaster click check
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(projectNodes);
     if (intersects.length > 0) {
@@ -533,13 +508,13 @@ closeBtn.addEventListener('click', () => {
     setTimeout(() => { modal.style.display = 'none'; }, 500);
 });
 
-// 3. BOTÃO DOUBLE CLICK NO SCROLL (Aumentado tempo para 500ms)
+// DOUBLE CLICK SCROLL (500ms tolerance)
 let lastMiddleClick = 0;
 window.addEventListener('mousedown', (e) => {
-    if (e.button === 1) { // Botão do meio
+    if (e.button === 1) {
         e.preventDefault();
         const now = Date.now();
-        if (now - lastMiddleClick < 500) { // Tolerância maior
+        if (now - lastMiddleClick < 500) {
             controls.reset();
         }
         lastMiddleClick = now;
@@ -556,27 +531,26 @@ function animate() {
         const intersectsNodes = raycaster.intersectObjects(projectNodes);
         const intersectsCenter = raycaster.intersectObject(sphere);
 
-        // NOVA ÓRBITA DOS PROJETOS (Gira o grupo todo)
-        // Só gira se não estiver com o mouse em cima de uma esfera (para facilitar o clique)
+        // ÓRBITA DO GRUPO (Pausa no hover)
         if (!hoveredNode) {
-            projectGroup.rotation.y -= 0.001; // Velocidade da órbita
-            projectGroup.rotation.z += 0.0005; // Leve inclinação variável
+            projectGroup.rotation.y -= 0.001;
+            projectGroup.rotation.z += 0.0005;
         }
 
-        // 1. & 3. ANIMAÇÃO DE HOVER (Mudança de cor via Uniform do Shader)
+        // HOVER NOS PROJETOS
         if (intersectsNodes.length > 0) {
             const object = intersectsNodes[0].object;
             if (hoveredNode !== object) {
                 if (hoveredNode) {
-                    hoveredNode.material.uniforms.c.value.setHex(0xffffff); // Volta pra branco
+                    hoveredNode.material.uniforms.c.value.setHex(0xffffff);
                 }
                 hoveredNode = object;
-                hoveredNode.material.uniforms.c.value.setHex(0x00ff88); // Fica verde neon
+                hoveredNode.material.uniforms.c.value.setHex(0x00ff88);
                 document.body.style.cursor = 'pointer';
             }
         } else {
             if (hoveredNode) {
-                hoveredNode.material.uniforms.c.value.setHex(0xffffff); // Volta pra branco
+                hoveredNode.material.uniforms.c.value.setHex(0xffffff);
                 hoveredNode = null;
                 document.body.style.cursor = 'none';
             }
@@ -587,9 +561,8 @@ function animate() {
             node.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
         });
 
-        // 4. ANIMAÇÃO DO ICOSAEDRO (Centro) AO PASSAR MOUSE
+        // HOVER NO CENTRO (Rotação lenta)
         if (intersectsCenter.length > 0) {
-            // AJUSTE 3: ROTAÇÃO BEM LENTA NO HOVER
             sphere.rotation.y += 0.001;
             sphere.rotation.x += 0.001;
             sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.5, 0.05);
