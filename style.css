@@ -443,13 +443,13 @@ body.push-bottom #folder-stack {
 	top: 10%;
 	left: 80px;
 	pointer-events: none;
-	opacity: 0;
+	opacity: 1;
 	transition: opacity 2s;
 	z-index: 10;
 }
 
 body.active .hero {
-	opacity: 0 !important;
+	opacity: 1 !important;
 }
 
 .hero h1, .hero .subtitle {
