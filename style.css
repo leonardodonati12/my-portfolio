@@ -67,7 +67,7 @@ body.push-bottom #copyright {
 	top: 10.5%;
 	right: 80px;
 	font-size: 0.8rem;
-	color: #aaa;
+	color: #eee; /* AJUSTE 1: Mais branco/claro */
 	letter-spacing: 2px;
 	text-decoration: none;
 	border: none;
@@ -75,7 +75,7 @@ body.push-bottom #copyright {
 	padding: 8px 15px;
 	z-index: 4000;
 	cursor: pointer;
-	transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), color 0.3s, transform 0.3s;
+	transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), top 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), color 0.3s, transform 0.3s;
 }
 
 	#portfolio-btn:hover {
@@ -89,7 +89,12 @@ body.push-right #portfolio-btn {
 	right: 300px;
 }
 
-/* --- ABAS LATERAIS (GEOMETRIA INVERTIDA & REATIVAS) --- */
+/* AJUSTE 1: Descer quando tiver barra superior */
+body.push-top #portfolio-btn {
+	top: 280px;
+}
+
+/* --- ABAS LATERAIS --- */
 #folder-stack {
 	position: fixed;
 	top: 80px;
@@ -229,7 +234,7 @@ body.push-bottom #folder-stack {
 	}
 }
 
-/* --- TELAS DE OVERLAY --- */
+/* --- OVERLAYS --- */
 .overlay-screen {
 	position: fixed;
 	top: 0;
@@ -357,16 +362,19 @@ body.push-bottom #folder-stack {
 	z-index: 10;
 }
 
-	.hero h1, .hero .subtitle {
-		pointer-events: auto;
-		cursor: help;
-	}
+body.active .hero {
+	opacity: 1 !important;
+}
+
+.hero h1, .hero .subtitle {
+	pointer-events: auto;
+	cursor: help;
+}
 
 h1 {
 	font-size: 3.5rem;
 	margin: 0;
 	color: #fff;
-	mix-blend-mode: overlay;
 	line-height: 1.1;
 }
 
@@ -379,6 +387,7 @@ h1 {
 	padding: 5px 0;
 }
 
+/* AJUSTE 2: Aviso subir com barra inferior */
 .interaction-hint {
 	position: absolute;
 	bottom: 5%;
@@ -389,14 +398,18 @@ h1 {
 	letter-spacing: 1px;
 	pointer-events: none;
 	opacity: 0;
-	transition: opacity 2s;
+	transition: opacity 2s, bottom 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-body.active .hero, body.active .interaction-hint {
+body.active .interaction-hint {
 	opacity: 1;
 }
 
-/* --- SISTEMA DE PAINÉIS --- */
+body.push-bottom .interaction-hint {
+	bottom: 280px;
+}
+
+/* --- PAINÉIS --- */
 .ui-panel {
 	position: fixed;
 	background: rgba(15, 15, 15, 0.95);

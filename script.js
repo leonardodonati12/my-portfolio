@@ -165,7 +165,7 @@ function closePanel(panel) {
     panel.style.display = 'none';
     document.querySelector(`[data-target="${panel.id}"]`)?.classList.remove('active-tab');
     if (!panel.classList.contains('floating')) {
-        body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
+        body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom'); 
     }
 }
 
@@ -613,8 +613,9 @@ function animate() {
 
         // 4. ANIMAÇÃO DO ICOSAEDRO (Centro) AO PASSAR MOUSE
         if (intersectsCenter.length > 0) {
-            sphere.rotation.y += 0.02;
-            sphere.rotation.x += 0.01;
+            // AJUSTE 3: ROTAÇÃO BEM LENTA NO HOVER
+            sphere.rotation.y += 0.001;
+            sphere.rotation.x += 0.001;
             sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.5, 0.05);
         } else {
             sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.15, 0.05);
