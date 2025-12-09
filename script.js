@@ -1,6 +1,21 @@
 import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
 import { OrbitControls } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls.js';
 
+// --- SKIP INTRO LOGIC (NOVO) ---
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('skip') === 'true') {
+    // Adiciona a classe active imediatamente
+    document.body.classList.add('active');
+
+    // Esconde os overlays via CSS inline para garantir
+    const style = document.createElement('style');
+    style.innerHTML = `
+        #intro-overlay, #about-overlay, #phrases-overlay, #system-curtain { display: none !important; opacity: 0 !important; }
+        .hero, .interaction-hint { opacity: 1 !important; }
+    `;
+    document.head.appendChild(style);
+}
+
 // --- DOM ELEMENTS ---
 const introOverlay = document.getElementById('intro-overlay');
 const aboutOverlay = document.getElementById('about-overlay');
@@ -229,7 +244,6 @@ window.addEventListener('mouseup', (e) => {
 });
 document.querySelectorAll('.close-panel').forEach(btn => btn.addEventListener('click', (e) => closePanel(e.target.closest('.ui-panel'))));
 
-// --- RESTO DO CÓDIGO (INTRO) ---
 const bioText = "I avoid definitions; I feel they limit me. Whenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative. I seek to make each piece obey an invisible rule and decide to tell a unique story. I persist in the attempt to compile everything that resonates with me...";
 const phrasesList = ["I wrote the code, but you are the one rendering it.", "Careful where you click: some variables are loose.", "As you observe the project, the algorithm observes you.", "Don't be afraid. It is just logic trying to be art.", "Loading fragments of a thought process...", "This is not a website. It is a render of my consciousness.", "Here, gravity is just a syntax suggestion.", "You are not on the internet. You are inside a loop of my creative process.", "Space under construction. The mind, too.", "Don't touch the screen. The digital concrete is still wet.", "Are you the user, or just another parameter?", "Welcome to the backend of my imagination.", "Compiling chaos into structure. Please wait.", "Entry permitted. Exit not guaranteed.", "Everything here is code. Even the void.", "This is a portfolio. This is not a portfolio.", "You are in my mind now. Good luck.", "This page is thinking about you right now.", "Your visit has been logged. My architecture now knows who you are.", "To navigate here is to compile memories that are not yours.", "There is a system error: it has learned to feel."];
 
@@ -242,7 +256,8 @@ startBtn.addEventListener('click', () => {
     setTimeout(() => {
         introOverlay.style.display = 'none';
         aboutOverlay.style.display = 'flex';
-        runGhostTypewriter(bioText, bioContainer, () => { aboutHint.style.opacity = '1'; });
+        // AQUI ESTÁ O NOVO EFEITO HACKER
+        matrixReveal(bioContainer, bioText, () => { aboutHint.style.opacity = '1'; });
     }, 1000);
 });
 
@@ -250,8 +265,7 @@ let bioFinished = false;
 aboutOverlay.addEventListener('click', () => {
     if (!bioFinished) {
         bioFinished = true;
-        const spans = bioContainer.querySelectorAll('span');
-        spans.forEach(s => { s.className = ''; s.innerText = s.dataset.char; s.style.opacity = '1'; });
+        bioContainer.innerText = bioText; // Garante texto final limpo
         aboutHint.style.opacity = '1';
         return;
     }
@@ -283,6 +297,39 @@ async function runPhrasesLoop() {
     }
 }
 
+// NOVA FUNÇÃO: EFEITO HACKER SEM GLITCH DE TAMANHO
+function matrixReveal(element, text, callback) {
+    const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()';
+
+    // 1. Preenche o layout imediatamente para evitar pulos
+    // Preserva espaços para manter a justificação correta desde o início
+    element.innerText = text.split('').map(c => (c === ' ' || c === '\n') ? c : chars[Math.floor(Math.random() * chars.length)]).join('');
+
+    let iterations = 0;
+
+    const interval = setInterval(() => {
+        element.innerText = text.split('').map((letter, index) => {
+            // Se for espaço, mantém espaço (segura o layout)
+            if (letter === ' ' || letter === '\n') return letter;
+
+            // Se o índice for menor que as iterações, mostra a letra real
+            if (index < iterations) {
+                return letter;
+            }
+
+            // Senão, mostra caractere aleatório (Matrix effect)
+            return chars[Math.floor(Math.random() * chars.length)];
+        }).join('');
+
+        if (iterations >= text.length) {
+            clearInterval(interval);
+            if (callback) callback();
+        }
+
+        // Aumente este número para o efeito ser mais rápido
+        iterations += 2;
+    }, 15); // Intervalo em ms
+}
 function scrambleTo(element, newText) {
     return new Promise(resolve => {
         const oldText = element.innerText;

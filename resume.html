@@ -4,198 +4,222 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leonardo Donati | RESUME</title>
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="cursor.js" defer></script>
     <style>
-        /* Page specific styles */
+        /* --- CLEAN THEME CSS --- */
         body {
+            margin: 0;
+            padding: 60px 20px;
+            background-color: #ffffff; /* Fundo Branco */
+            color: #333; /* Texto Cinza Escuro (Suave) */
+            font-family: 'Inter', sans-serif; /* Fonte leve */
+            line-height: 1.6;
             overflow-y: auto;
-            padding: 50px 10%;
-            background-image: radial-gradient(circle at 50% 50%, #111 0%, #050505 100%);
+        }
+
+        /* Cursor customizado no tema claro (opcional) */
+        .cursor-dot {
+            background-color: #00ff88 !important;
+        }
+
+        .cursor-outline {
+            border-color: #00ff88 !important;
         }
 
         .cv-container {
-            max-width: 900px;
-            margin: 0 auto 50px auto;
-            border-left: 1px solid #333;
-            padding-left: 40px;
-            position: relative;
-            animation: fadeIn 1s ease-out;
+            max-width: 850px;
+            margin: 0 auto;
+            background: #fff;
         }
 
+        /* HEADER */
         .cv-header {
-            margin-bottom: 60px;
+            margin-bottom: 50px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 30px;
         }
 
         .cv-name {
-            font-size: 3rem;
-            color: #fff;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #111;
             margin: 0;
-            line-height: 1;
             letter-spacing: -1px;
         }
 
         .cv-role {
-            font-size: 1.2rem;
-            color: #00ff88;
-            letter-spacing: 3px;
-            margin-top: 10px;
-            font-weight: bold;
+            font-size: 1rem;
+            color: #00b35f; /* Verde um pouco mais escuro para leitura no branco */
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-top: 5px;
+            text-transform: uppercase;
         }
 
         .cv-contact {
-            margin-top: 20px;
-            color: #888;
-            font-size: 0.8rem;
-            line-height: 1.6;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #666;
         }
 
-            .cv-contact span {
-                margin-right: 15px;
-                display: inline-block;
-            }
-
             .cv-contact a {
-                color: #888;
+                color: #666;
                 text-decoration: none;
-                border-bottom: 1px solid transparent;
-                transition: 0.3s;
+                transition: color 0.2s;
+                margin-right: 15px;
             }
 
                 .cv-contact a:hover {
-                    color: #00ff88;
-                    border-color: #00ff88;
+                    color: #00b35f;
                 }
 
+        /* SECTIONS */
         .section-title {
-            font-size: 1rem;
-            color: #00ff88;
-            letter-spacing: 2px;
+            font-size: 0.85rem;
+            color: #999;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            margin: 50px 0 30px 0;
+            margin: 40px 0 20px 0;
+            font-weight: 600;
             display: flex;
             align-items: center;
         }
-
+            /* Linha decorativa verde discreta */
             .section-title::after {
                 content: '';
                 flex: 1;
                 height: 1px;
-                background: #333;
-                margin-left: 20px;
+                background: #e0e0e0;
+                margin-left: 15px;
             }
 
-        .job-item, .edu-item {
-            margin-bottom: 30px;
-            position: relative;
-        }
-
-            .job-item::before {
+            .section-title::before {
                 content: '';
-                position: absolute;
-                left: -46px;
-                top: 5px;
-                width: 11px;
-                height: 11px;
-                background: #050505;
-                border: 1px solid #00ff88;
+                width: 8px;
+                height: 8px;
+                background: #00ff88; /* Detalhe em verde neon */
+                margin-right: 10px;
                 border-radius: 50%;
             }
+
+        /* ITEMS */
+        .item-block {
+            margin-bottom: 30px;
+        }
 
         .item-header {
             display: flex;
             justify-content: space-between;
             align-items: baseline;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
         }
 
         .item-title {
             font-size: 1.1rem;
-            color: #fff;
-            font-weight: bold;
+            font-weight: 600;
+            color: #000;
         }
 
         .item-date {
-            font-size: 0.75rem;
-            color: #555;
-            font-family: monospace;
+            font-size: 0.8rem;
+            color: #888;
+            font-family: 'Inter', monospace;
         }
 
         .item-sub {
-            font-size: 0.9rem;
-            color: #aaa;
-            margin-bottom: 10px;
+            font-size: 0.95rem;
+            color: #555;
             font-style: italic;
+            margin-bottom: 8px;
         }
 
         .item-desc {
-            font-size: 0.9rem;
-            color: #ccc;
-            line-height: 1.6;
-            max-width: 700px;
+            font-size: 0.95rem;
+            color: #444;
             text-align: justify;
+            font-weight: 300;
         }
 
-        .skills-grid {
+        /* SKILLS LIST (Novo Layout) */
+        .skills-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            grid-template-columns: 1fr;
             gap: 15px;
         }
 
-        .skill-tag {
-            border: 1px solid #333;
-            padding: 10px;
-            text-align: center;
-            font-size: 0.8rem;
-            color: #aaa;
-            transition: 0.3s;
-            cursor: default;
+        .skill-row {
+            display: flex;
+            align-items: baseline;
+            border-bottom: 1px solid #f9f9f9;
+            padding-bottom: 10px;
         }
 
-            .skill-tag:hover {
-                border-color: #00ff88;
-                color: #00ff88;
-                background: rgba(0, 255, 136, 0.05);
-            }
+        .skill-name {
+            min-width: 140px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #222;
+        }
 
+        .skill-desc {
+            font-size: 0.9rem;
+            color: #555;
+            font-weight: 300;
+        }
+
+        /* BACK BUTTON */
         #back-btn {
             position: fixed;
             top: 30px;
             right: 40px;
             font-size: 0.8rem;
-            color: #00ff88;
-            letter-spacing: 2px;
+            color: #333;
+            letter-spacing: 1px;
             text-decoration: none;
-            border: 1px solid #00ff88;
-            padding: 8px 15px;
-            border-radius: 20px;
+            border: 1px solid #ddd;
+            padding: 8px 20px;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.9);
             transition: 0.3s;
             z-index: 100;
+            font-weight: 500;
         }
 
             #back-btn:hover {
-                background: #00ff88;
-                color: #000;
+                border-color: #00b35f;
+                color: #00b35f;
+                box-shadow: 0 5px 15px rgba(0, 255, 136, 0.15);
             }
 
         @media (max-width: 768px) {
-            .cv-container {
-                padding-left: 20px;
-                border: none;
+            body {
+                padding: 80px 20px 40px 20px;
             }
 
             .item-header {
                 flex-direction: column;
             }
 
-            .job-item::before {
-                display: none;
+            .skill-row {
+                flex-direction: column;
+            }
+
+            .skill-name {
+                margin-bottom: 5px;
+                color: #00b35f;
+            }
+
+            #back-btn {
+                top: 20px;
+                right: 20px;
             }
         }
     </style>
 </head>
 <body>
 
-    <a href="index.html" id="back-btn">← BACK TO SYSTEM</a>
+    <a href="index.html?skip=true" id="back-btn">← BACK TO HOME</a>
 
     <div class="cv-container">
 
@@ -222,7 +246,7 @@
         <section>
             <div class="section-title">PROFESSIONAL EXPERIENCE</div>
 
-            <div class="job-item">
+            <div class="item-block">
                 <div class="item-header">
                     <span class="item-title">SPBIM</span>
                     <span class="item-date">AUG 2024 - PRESENT</span>
@@ -233,7 +257,7 @@
                 </p>
             </div>
 
-            <div class="job-item">
+            <div class="item-block">
                 <div class="item-header">
                     <span class="item-title">TEKNO S.A.</span>
                     <span class="item-date">OCT 2020 - APR 2021</span>
@@ -248,7 +272,7 @@
         <section>
             <div class="section-title">EDUCATION</div>
 
-            <div class="edu-item">
+            <div class="item-block">
                 <div class="item-header">
                     <span class="item-title">Universidade Anhembi Morumbi</span>
                     <span class="item-date">JAN 2022 - DEC 2026</span>
@@ -256,7 +280,7 @@
                 <div class="item-sub">Bachelor of Architecture and Urbanism</div>
             </div>
 
-            <div class="edu-item">
+            <div class="item-block">
                 <div class="item-header">
                     <span class="item-title">Colégio Técnico Industrial - UNESP</span>
                     <span class="item-date">JAN 2017 - DEC 2019</span>
@@ -267,33 +291,65 @@
 
         <section>
             <div class="section-title">SKILLS & SOFTWARE</div>
-            <div class="skills-grid">
-                <div class="skill-tag">Revit / BIM</div>
-                <div class="skill-tag">Dynamo / Visual Scripting</div>
-                <div class="skill-tag">Navisworks</div>
-                <div class="skill-tag">Archicad</div>
-                <div class="skill-tag">InfraWorks</div>
-                <div class="skill-tag">Recap / Point Cloud</div>
-                <div class="skill-tag">Cloud Compare</div>
-                <div class="skill-tag">SketchUp</div>
-                <div class="skill-tag">Illustrator</div>
-                <div class="skill-tag">Photoshop</div>
-                <div class="skill-tag">Power BI</div>
+            <div class="skills-list">
+                <div class="skill-row">
+                    <div class="skill-name">Revit</div>
+                    <div class="skill-desc">Parametric modeling and BIM project development, family creation, construction detailing, and interdisciplinary coordination.</div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-name">Dynamo</div>
+                    <div class="skill-desc">Process automation in Revit via visual programming, optimizing repetitive tasks, data analysis, and parametric element generation.</div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-name">Navisworks</div>
+                    <div class="skill-desc">Project coordination, clash detection, 4D simulations, and model integration for efficient management.</div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-name">Archicad</div>
+                    <div class="skill-desc">BIM project development focused on architecture and interiors.</div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-name">InfraWorks</div>
+                    <div class="skill-desc">Infrastructure modeling and visualization in real context, feasibility analysis, topographic data integration, and urban simulations.</div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-name">Recap</div>
+                    <div class="skill-desc">Point cloud manipulation and processing for survey-based modeling.</div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-name">Cloud Compare</div>
+                    <div class="skill-desc">Point cloud processing and post-processing.</div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-name">SketchUp</div>
+                    <div class="skill-desc">Agile 3D modeling for form studies, volumetrics, and conceptual architectural models.</div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-name">Illustrator</div>
+                    <div class="skill-desc">Board layout, graphic element vectorization, visual schema creation, and technical presentations.</div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-name">Photoshop</div>
+                    <div class="skill-desc">Image post-production, perspective treatment, digital ambiance, and graphic material creation for project presentation.</div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-name">Power BI</div>
+                    <div class="skill-desc">Data analysis and visualization, BIM workflow integration, project monitoring, and management.</div>
+                </div>
             </div>
         </section>
 
         <section>
             <div class="section-title">EXTRAS & LANGUAGES</div>
-            <p class="item-desc" style="margin-bottom: 10px;">
-                <strong>Projects:</strong> Reconhecendo a Mooca (Urban and architectural survey, photogrammetric techniques for urban flow analysis and heat island mapping).<br>
+            <p class="item-desc">
+                <strong>Projects:</strong> Reconhecendo a Mooca (Urban and architectural survey, photogrammetry, urban flow analysis).<br>
                 <strong>Monitoring:</strong> Spbim Workshop (Laser Scanner - May 2025) and Integration Week Ctig-Unesp (2018-2020).<br>
-                <strong>Awards:</strong> OBA Medalist (Brazilian Astronomy Olympiad) - Gold (2015), Bronze (2016), Silver (2019).<br>
+                <strong>Awards:</strong> OBA Medalist (Gold 2015, Bronze 2016, Silver 2019).<br>
                 <strong>Languages:</strong> Portuguese (Native), English (B1 - Intermediate).
             </p>
         </section>
 
     </div>
 
-    <script src="cursor.js"></script>
 </body>
-</html></html>
+</html>
