@@ -7,72 +7,130 @@
     <link rel="stylesheet" href="style.css">
 
     <style>
-        /* --- ARTEFATO BIO-DIGITAL (LIGHTER & INTERACTIVE) --- */
+        /* --- ARTEFATO BIO-DIGITAL (DARK MODE) --- */
         .symbiote-container-home {
             position: fixed;
             bottom: 50px;
             right: 50px;
             z-index: 50;
-            
-            /* Brilho reduzido (8px) e opacidade suave */
-            filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.15));
+            /* Visual */
+            filter: drop-shadow(0 0 10px rgba(0, 255, 136, 0.2));
             mix-blend-mode: screen;
-            
-            /* Container transparente para cliques */
-            pointer-events: none; 
+            /* Interação */
+            pointer-events: none; /* O container deixa passar clique */
+            /* [CORREÇÃO 4] Animação de Push Suave */
             transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* [CORREÇÃO 4] Lógica de Push (Reimplementada) */
+        /* Quando menu direito abre -> empurra para esquerda */
+        body.push-right .symbiote-container-home {
+            transform: translateX(-280px);
+        }
+        /* Quando menu inferior abre -> empurra para cima */
+        body.push-bottom .symbiote-container-home {
+            transform: translateY(-300px);
+        }
+        /* Combo */
+        body.push-right.push-bottom .symbiote-container-home {
+            transform: translate(-280px, -300px);
         }
 
         .symbiote-blob {
             position: relative;
             width: 100px;
             height: 100px;
-            
-            /* Cor mais clara (Verde Musgo -> Verde Escuro) */
+            /* Cor Base */
             background: radial-gradient(circle at 30% 30%, #004d1a 0%, #001a05 80%);
-            border: 1px solid rgba(0, 255, 136, 0.4); 
-            
-            /* Forma Inicial */
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            /* Forma */
             clip-path: polygon(50% 0%, 65% 45%, 100% 50%, 65% 55%, 50% 100%, 35% 55%, 0% 50%, 35% 45%);
-            
             /* Animação Normal */
             animation: spin-cw 30s linear infinite, spike-pulse 4s ease-in-out infinite alternate;
-            
-            /* Interação Ativada */
-            pointer-events: auto; 
-            cursor: crosshair;
+            /* Interação */
+            pointer-events: auto; /* O blob pega o mouse */
+            cursor: none !important; /* [CORREÇÃO 1] Garante que não apareça cursor do windows aqui também */
             transition: background 0.3s;
         }
 
-        /* Hover: Acelera e Clareia */
-        .symbiote-blob:hover {
-            animation: spin-cw 2s linear infinite, spike-pulse 0.3s ease-in-out infinite alternate;
-            background: radial-gradient(circle at 30% 30%, #00802b 0%, #002200 80%);
-            border-color: #00ff88;
+            /* [CORREÇÃO 3] Hover mais controlado */
+            .symbiote-blob:hover {
+                /* Acelera mas não muito (de 30s para 8s, e não para 2s como antes) */
+                animation: spin-cw 8s linear infinite, spike-pulse 1s ease-in-out infinite alternate;
+                background: radial-gradient(circle at 30% 30%, #00802b 0%, #002200 80%);
+                border-color: #00ff88;
+            }
+
+            /* CAMADA INTERNA */
+            .symbiote-blob::after {
+                content: '';
+                position: absolute;
+                top: 15%;
+                left: 15%;
+                right: 15%;
+                bottom: 15%;
+                background: transparent;
+                border: 1px solid rgba(0, 255, 136, 0.5);
+                /* Forma Diferente */
+                clip-path: polygon(50% 0%, 80% 20%, 100% 50%, 80% 80%, 50% 100%, 20% 80%, 0% 50%, 20% 20%);
+                /* [CORREÇÃO 2] Rotação Multidirecional (Efeito 3D simulado) */
+                /* animation: spin-multi 15s linear infinite; */
+                animation: spin-ccw 15s linear infinite;
+            }
+
+            /* Hover na camada interna */
+            .symbiote-blob:hover::after {
+                /* Acelera proporcionalmente */
+                animation: spin-ccw 4s linear infinite;
+                border-color: #fff;
+            }
+
+        /* KEYFRAMES */
+        @keyframes spin-cw {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
-        /* Camada Interna */
-        .symbiote-blob::after {
-            content: '';
-            position: absolute;
-            top: 10%; left: 10%; right: 10%; bottom: 10%;
-            background: transparent;
-            border: 1px solid rgba(0, 255, 136, 0.6);
-            clip-path: polygon(50% 0%, 80% 20%, 100% 50%, 80% 80%, 50% 100%, 20% 80%, 0% 50%, 20% 20%);
-            animation: spin-ccw 15s linear infinite;
+        @keyframes spin-ccw {
+            from {
+                transform: rotate(360deg);
+            }
+
+            to {
+                transform: rotate(0deg);
+            }
         }
 
-        .symbiote-blob:hover::after {
-            animation: spin-ccw 1s linear infinite;
-            border-color: #fff;
+        /* [CORREÇÃO 2] Tentativa de rotação "Multidirecional" (Giro + Leve inclinação) */
+        /* Nota: Clip-path e transform 3D as vezes brigam, mantive o CCW simples pois é mais estável visualmente,
+           mas se quiser tentar o 3D, troque a animação do ::after para 'spin-3d' abaixo */
+        @keyframes spin-3d {
+            0% {
+                transform: rotate(0deg) scale(0.9);
+            }
+
+            50% {
+                transform: rotate(180deg) scale(1.1);
+            }
+            /* Pulsa tamanho enquanto gira */
+            100% {
+                transform: rotate(360deg) scale(0.9);
+            }
         }
 
-        /* Animações */
-        @keyframes spin-cw { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes spin-ccw { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
         @keyframes spike-pulse {
-            0% { clip-path: polygon(50% 10%, 60% 40%, 90% 50%, 60% 60%, 50% 90%, 40% 60%, 10% 50%, 40% 40%); }
-            100% { clip-path: polygon(50% -20%, 55% 45%, 120% 50%, 55% 55%, 50% 120%, 45% 55%, -20% 50%, 45% 45%); }
+            0% {
+                clip-path: polygon(50% 10%, 60% 40%, 90% 50%, 60% 60%, 50% 90%, 40% 60%, 10% 50%, 40% 40%);
+            }
+
+            100% {
+                clip-path: polygon(50% -20%, 55% 45%, 120% 50%, 55% 55%, 50% 120%, 45% 55%, -20% 50%, 45% 45%);
+            }
         }
     </style>
 </head>

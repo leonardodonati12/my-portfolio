@@ -521,22 +521,19 @@ body.push-bottom .interaction-hint {
 
 /* --- BOTÃO FECHAR (X) ANIMADO --- */
 
+/* --- BOTÃO FECHAR (X) CORRIGIDO --- */
 .close-panel {
-	cursor: pointer;
+	/* [CORREÇÃO 1] Remove a "mãozinha" do Windows para manter seu cursor custom */
+	cursor: none !important;
 	color: #fff;
 	font-size: 1.2rem;
-	/* ADICIONE ISTO: Prepara a animação para ser suave */
-	/* 'transform' anima o giro, 'color' anima a cor */
 	transition: transform 0.4s ease, color 0.3s ease;
-	/* Garante que o eixo do giro seja o centro exato do X */
 	transform-origin: center;
-	display: inline-block; /* Necessário para o transform funcionar bem em spans */
+	display: inline-block;
 }
 
 	.close-panel:hover {
-		color: #00ff88; /* Sua cor verde neon */
-		/* O GIRO DISCRETO: Gira 90 graus (1/4 de volta) */
-		/* Se quiser mais radical, troque por 180deg ou 360deg */
+		color: #00ff88;
 		transform: rotate(90deg);
 	}
 
