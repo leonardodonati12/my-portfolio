@@ -386,7 +386,7 @@ window.addEventListener('mouseup', (e) => {
 
     if (dragPanel) {
         // [CORREÇÃO] Reseta para 'none' em vez de 'grab'
-        dragPanel.querySelector('.panel-header').style.cursor = 'none';
+        dragPanel.querySelector('.panel-header').style.cursor = 'none'; 
         dragPanel.style.borderColor = '#333';
 
         const t = 50;
