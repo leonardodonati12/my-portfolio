@@ -31,7 +31,7 @@ const nameLine1 = document.getElementById('name-line-1');
 const nameLine2 = document.getElementById('name-line-2');
 const heroSubtitle = document.getElementById('hero-subtitle');
 
-// Referências para o Callout (Linha de Chamada)
+// Referências para o Callout
 const calloutContainer = document.getElementById('callout-container');
 const calloutLabel = document.getElementById('callout-label');
 const calloutLine = document.getElementById('callout-line');
@@ -49,52 +49,31 @@ const setText = (newText) => {
     const oldText = roleEl.innerText;
     const length = Math.max(oldText.length, newText.length);
     let queue = [];
-
     for (let i = 0; i < length; i++) {
-        const from = oldText[i] || '';
-        const to = newText[i] || '';
-        const start = Math.floor(Math.random() * 40);
-        const end = start + Math.floor(Math.random() * 40);
+        const from = oldText[i] || ''; const to = newText[i] || '';
+        const start = Math.floor(Math.random() * 40); const end = start + Math.floor(Math.random() * 40);
         queue.push({ from, to, start, end });
     }
-
     let frame = 0;
     const update = () => {
-        let output = '';
-        let complete = 0;
-
+        let output = ''; let complete = 0;
         for (let i = 0; i < queue.length; i++) {
             let { from, to, start, end, char } = queue[i];
-            if (frame >= end) {
-                complete++;
-                output += to;
-            } else if (frame >= start) {
-                if (!char || Math.random() < 0.28) {
-                    char = chars[Math.floor(Math.random() * chars.length)];
-                    queue[i].char = char;
-                }
+            if (frame >= end) { complete++; output += to; }
+            else if (frame >= start) {
+                if (!char || Math.random() < 0.28) { char = chars[Math.floor(Math.random() * chars.length)]; queue[i].char = char; }
                 output += `<span style="color: #444;">${char}</span>`;
-            } else {
-                output += from;
-            }
+            } else { output += from; }
         }
-
         roleEl.innerHTML = output;
-
-        if (complete === queue.length) {
-            loopTimeout = setTimeout(nextRole, 2000);
-        } else {
-            requestAnimationFrame(update);
-            frame++;
-        }
+        if (complete === queue.length) loopTimeout = setTimeout(nextRole, 2000);
+        else { requestAnimationFrame(update); frame++; }
     };
     update();
 };
-
 const nextRole = () => {
     if (document.body.classList.contains('active') || (aboutOverlay && aboutOverlay.style.display === 'flex')) return;
-    setText(roles[roleIndex]);
-    roleIndex = (roleIndex + 1) % roles.length;
+    setText(roles[roleIndex]); roleIndex = (roleIndex + 1) % roles.length;
 };
 if (roleEl) nextRole();
 
@@ -110,15 +89,12 @@ function matrixReveal(element, text, callback) {
             if (index < iterations) return letter;
             return mChars[Math.floor(Math.random() * mChars.length)];
         }).join('');
-        if (iterations >= text.length) {
-            clearInterval(interval);
-            if (callback) callback();
-        }
+        if (iterations >= text.length) { clearInterval(interval); if (callback) callback(); }
         iterations += 2;
     }, 15);
 }
 
-// --- 5. LÓGICA DO BOTÃO ENTER SYSTEM ---
+// --- 5. ENTER SYSTEM ---
 const bioText = "I avoid definitions; I feel they limit me. Whenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative. I seek to make each piece obey an invisible rule and decide to tell a unique story. I persist in the attempt to compile everything that resonates with me...";
 if (startBtn) {
     startBtn.addEventListener('click', () => {
@@ -126,136 +102,84 @@ if (startBtn) {
         setTimeout(() => {
             introOverlay.style.display = 'none';
             aboutOverlay.style.display = 'flex';
-            matrixReveal(bioContainer, bioText, () => {
-                if (aboutHint) aboutHint.style.opacity = '1';
-            });
+            matrixReveal(bioContainer, bioText, () => { if (aboutHint) aboutHint.style.opacity = '1'; });
         }, 1000);
     });
 }
 
-// --- 6. TRANSIÇÃO DA BIO PARA FRASES ---
+// --- 6. ABOUT -> PHRASES ---
 let bioFinished = false;
 if (aboutOverlay) {
     aboutOverlay.addEventListener('click', () => {
-        if (!bioFinished) {
-            bioFinished = true;
-            bioContainer.innerText = bioText;
-            if (aboutHint) aboutHint.style.opacity = '1';
-            return;
-        }
+        if (!bioFinished) { bioFinished = true; bioContainer.innerText = bioText; if (aboutHint) aboutHint.style.opacity = '1'; return; }
         aboutOverlay.style.opacity = '0';
-        setTimeout(() => {
-            aboutOverlay.style.display = 'none';
-            phrasesOverlay.style.display = 'flex';
-            if (phrasesContainer) phrasesContainer.innerText = "";
-            runPhrasesLoop();
-        }, 1000);
+        setTimeout(() => { aboutOverlay.style.display = 'none'; phrasesOverlay.style.display = 'flex'; if (phrasesContainer) phrasesContainer.innerText = ""; runPhrasesLoop(); }, 1000);
     });
 }
 
-// --- 7. TRANSIÇÃO DAS FRASES PARA O SITE ---
+// --- 7. PHRASES -> MAIN SITE ---
 let stopPhrasesLoop = false;
 if (phrasesOverlay) {
     phrasesOverlay.addEventListener('click', () => {
-        stopPhrasesLoop = true;
-        phrasesOverlay.style.opacity = '0';
+        stopPhrasesLoop = true; phrasesOverlay.style.opacity = '0';
         document.body.classList.add('active');
         setTimeout(() => { phrasesOverlay.style.display = 'none'; }, 1000);
     });
 }
 
 const phrasesList = ["I wrote the code, but you are the one rendering it.", "Careful where you click: some variables are loose.", "As you observe the project, the algorithm observes you.", "Don't be afraid. It is just logic trying to be art.", "Loading fragments of a thought process...", "This is not a website. It is a render of my consciousness.", "Here, gravity is just a syntax suggestion.", "You are not on the internet. You are inside a loop of my creative process.", "Space under construction. The mind, too.", "Don't touch the screen. The digital concrete is still wet.", "Are you the user, or just another parameter?", "Welcome to the backend of my imagination.", "Compiling chaos into structure. Please wait.", "Entry permitted. Exit not guaranteed.", "Everything here is code. Even the void.", "This is a portfolio. This is not a portfolio.", "You are in my mind now. Good luck.", "This page is thinking about you right now.", "Your visit has been logged. My architecture now knows who you are.", "To navigate here is to compile memories that are not yours.", "There is a system error: it has learned to feel."];
-
 async function runPhrasesLoop() {
     let index = 0;
     while (!stopPhrasesLoop) {
         if (phrasesContainer) await scrambleTo(phrasesContainer, phrasesList[index]);
-        if (stopPhrasesLoop) break;
-        await new Promise(r => setTimeout(r, 4000));
-        if (stopPhrasesLoop) break;
-        index = (index + 1) % phrasesList.length;
+        if (stopPhrasesLoop) break; await new Promise(r => setTimeout(r, 4000));
+        if (stopPhrasesLoop) break; index = (index + 1) % phrasesList.length;
     }
 }
-
 function scrambleTo(element, newText) {
     return new Promise(resolve => {
-        const oldText = element.innerText;
-        const length = Math.max(oldText.length, newText.length);
-        const queue = [];
-        const chars = '!<>-_\\/[]{}—=+*^?#________';
-        for (let i = 0; i < length; i++) {
-            const from = oldText[i] || '';
-            const to = newText[i] || '';
-            const start = Math.floor(Math.random() * 40);
-            const end = start + Math.floor(Math.random() * 40);
-            queue.push({ from, to, start, end });
-        }
+        const oldText = element.innerText; const length = Math.max(oldText.length, newText.length); const queue = []; const chars = '!<>-_\\/[]{}—=+*^?#________';
+        for (let i = 0; i < length; i++) { const from = oldText[i] || ''; const to = newText[i] || ''; const start = Math.floor(Math.random() * 40); const end = start + Math.floor(Math.random() * 40); queue.push({ from, to, start, end }); }
         let frame = 0;
         const update = () => {
-            let output = '';
-            let complete = 0;
+            let output = ''; let complete = 0;
             for (let i = 0; i < queue.length; i++) {
                 let { from, to, start, end, char } = queue[i];
-                if (frame >= end) {
-                    complete++;
-                    output += to;
-                } else if (frame >= start) {
-                    if (!char || Math.random() < 0.28) {
-                        char = chars[Math.floor(Math.random() * chars.length)];
-                        queue[i].char = char;
-                    }
-                    output += `<span class="glitch-char">${char}</span>`;
-                } else {
-                    output += from;
-                }
+                if (frame >= end) { complete++; output += to; }
+                else if (frame >= start) { if (!char || Math.random() < 0.28) { char = chars[Math.floor(Math.random() * chars.length)]; queue[i].char = char; } output += `<span class="glitch-char">${char}</span>`; }
+                else { output += from; }
             }
             element.innerHTML = output;
-            if (complete === queue.length) {
-                resolve();
-            } else {
-                if (stopPhrasesLoop && element === phrasesContainer) { resolve(); return; }
-                requestAnimationFrame(update);
-                frame++;
-            }
+            if (complete === queue.length) resolve();
+            else { if (stopPhrasesLoop && element === phrasesContainer) { resolve(); return; } requestAnimationFrame(update); frame++; }
         };
         update();
     });
 }
 
-// --- 8. EFEITOS DE HOVER NO NOME (HEADER) ---
+// --- 8. HOVER ON NAME ---
 if (heroName) {
-    heroName.addEventListener('mouseenter', () => {
-        if (nameLine1) scrambleTo(nameLine1, "LEONARDO");
-        if (nameLine2) scrambleTo(nameLine2, "DONATI");
-    });
+    heroName.addEventListener('mouseenter', () => { if (nameLine1) scrambleTo(nameLine1, "LEONARDO"); if (nameLine2) scrambleTo(nameLine2, "DONATI"); });
 }
 if (heroSubtitle) {
     heroSubtitle.addEventListener('mouseenter', () => { scrambleTo(heroSubtitle, "SCRAMBLED THOUGHTS"); });
     heroSubtitle.addEventListener('mouseleave', () => { scrambleTo(heroSubtitle, "ARCHITECTURE STUDENT"); });
 }
 
-// --- 9. DADOS E PAINÉIS LATERAIS ---
+// --- 9. SKILLS & PANELS ---
 const mySkills = [
-    { name: "REVIT / BIM", level: 95 }, { name: "DYNAMO / PYTHON", level: 85 },
-    { name: "RHINO / GRASSHOPPER", level: 80 }, { name: "NAVISWORKS", level: 75 },
-    { name: "ARCHICAD", level: 70 }, { name: "INFRAWORKS / RECAP", level: 75 },
-    { name: "SKETCHUP", level: 90 }, { name: "C# / API DEV", level: 65 },
-    { name: "THREE.JS / WEBGL", level: 60 }, { name: "HTML / CSS / JS", level: 70 },
-    { name: "POWER BI", level: 80 }, { name: "PHOTOSHOP / AI", level: 85 }
+    { name: "REVIT / BIM", level: 95 }, { name: "DYNAMO / PYTHON", level: 85 }, { name: "RHINO / GRASSHOPPER", level: 80 }, { name: "NAVISWORKS", level: 75 },
+    { name: "ARCHICAD", level: 70 }, { name: "INFRAWORKS / RECAP", level: 75 }, { name: "SKETCHUP", level: 90 }, { name: "C# / API DEV", level: 65 },
+    { name: "THREE.JS / WEBGL", level: 60 }, { name: "HTML / CSS / JS", level: 70 }, { name: "POWER BI", level: 80 }, { name: "PHOTOSHOP / AI", level: 85 }
 ];
-
 const skillsList = document.getElementById('skills-list');
 if (skillsList) {
     mySkills.forEach(skill => {
-        const item = document.createElement('div'); item.className = 'skill-item';
-        const totalBlocks = 20; const filledBlocks = Math.round((skill.level / 100) * totalBlocks);
-        let blocksHTML = ''; for (let i = 0; i < totalBlocks; i++) { blocksHTML += `<div class="bar-block ${i < filledBlocks ? 'filled' : ''}"></div>`; }
-        item.innerHTML = `<div class="skill-name"><span>${skill.name}</span><span class="skill-percent">${skill.level}%</span></div><div class="retro-bar">${blocksHTML}</div>`;
-        skillsList.appendChild(item);
+        const item = document.createElement('div'); item.className = 'skill-item'; const totalBlocks = 20; const filledBlocks = Math.round((skill.level / 100) * totalBlocks); let blocksHTML = ''; for (let i = 0; i < totalBlocks; i++) { blocksHTML += `<div class="bar-block ${i < filledBlocks ? 'filled' : ''}"></div>`; } item.innerHTML = `<div class="skill-name"><span>${skill.name}</span><span class="skill-percent">${skill.level}%</span></div><div class="retro-bar">${blocksHTML}</div>`; skillsList.appendChild(item);
     });
 }
 
-// Preenchimento dos painéis (Com HTML Entities para acentos)
+// PREENCHIMENTO DOS PAINÉIS (CORRIGIDO PARA ACENTOS)
 if (document.getElementById('timeline-content')) {
     document.getElementById('timeline-content').innerHTML = `
         <div class="timeline-item"><div class="time-date">Aug 2024 - Present</div><div class="time-role">Spbim - Architecture Intern</div><div class="time-place">S&atilde;o Paulo - SP</div><div class="time-desc">BIM implementation support, parametric modeling, point cloud (laser scanner), coordination.</div></div>
@@ -282,58 +206,43 @@ if (document.getElementById('contact-content')) {
     `;
 }
 
-// --- 10. LÓGICA DAS ABAS (DRAG & DROP) ---
+// --- 10. TABS DRAG & DROP & OPEN PANELS ---
 const folderStack = document.getElementById('folder-stack');
 let draggedTab = null;
-
 if (folderStack) {
     document.querySelectorAll('.folder-tab').forEach(tab => {
         tab.addEventListener('dragstart', (e) => {
-            draggedTab = tab;
-            tab.classList.add('dragging');
-            e.dataTransfer.effectAllowed = 'move';
+            draggedTab = tab; tab.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move';
         });
         tab.addEventListener('dragend', () => {
-            draggedTab = null;
-            tab.classList.remove('dragging');
+            draggedTab = null; tab.classList.remove('dragging');
         });
         tab.addEventListener('click', () => {
             openPanel(tab.getAttribute('data-target'));
         });
     });
-
     folderStack.addEventListener('dragover', (e) => {
         e.preventDefault();
         const afterElement = getDragAfterElement(folderStack, e.clientY);
-        if (afterElement == null) {
-            folderStack.appendChild(draggedTab);
-        } else {
-            folderStack.insertBefore(draggedTab, afterElement);
-        }
+        if (afterElement == null) folderStack.appendChild(draggedTab); else folderStack.insertBefore(draggedTab, afterElement);
     });
 }
-
 function getDragAfterElement(container, y) {
     const draggableElements = [...container.querySelectorAll('.folder-tab:not(.dragging)')];
     return draggableElements.reduce((closest, child) => {
         const box = child.getBoundingClientRect();
         const offset = y - box.top - box.height / 2;
-        if (offset < 0 && offset > closest.offset) {
-            return { offset: offset, element: child };
-        } else {
-            return closest;
-        }
+        if (offset < 0 && offset > closest.offset) return { offset: offset, element: child }; else return closest;
     }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 
-// --- 11. GERENCIADOR DE JANELAS (PANELS) ---
+// --- 11. PANEL MANAGER (ESSENCIAL PARA AS MOVIMENTAÇÕES) ---
 const panels = document.querySelectorAll('.ui-panel');
 
 function closePanel(panel) {
     panel.style.display = 'none';
     const target = document.querySelector(`[data-target="${panel.id}"]`);
     if (target) target.classList.remove('active-tab');
-
     if (!panel.classList.contains('floating')) {
         document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
     }
@@ -342,20 +251,16 @@ function closePanel(panel) {
 function openPanel(panelId) {
     const panel = document.getElementById(panelId);
     if (!panel) return;
-
     panels.forEach(p => { if (p.id !== panelId && !p.classList.contains('floating')) closePanel(p); });
-
     panel.style.display = 'flex';
     const target = document.querySelector(`[data-target="${panelId}"]`);
     if (target) target.classList.add('active-tab');
-
     if (!panel.classList.contains('floating')) dockPanel(panel, 'left');
 }
 
 function dockPanel(panel, side) {
     panel.classList.remove('docked-left', 'docked-right', 'docked-top', 'docked-bottom', 'floating');
     panel.style.top = ''; panel.style.left = ''; panel.style.right = ''; panel.style.bottom = ''; panel.style.height = ''; panel.style.width = '';
-
     if (side !== 'float') {
         panel.classList.add(`docked-${side}`);
         document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
@@ -366,145 +271,53 @@ function dockPanel(panel, side) {
     }
 }
 
-// Arrastar Paineis
+// Arrastar Paineis (Com Cursor Fix)
 let isDragging = false, dragPanel = null, diffX = 0, diffY = 0;
-
 document.querySelectorAll('.panel-header').forEach(h => {
     h.addEventListener('mousedown', (e) => {
-        dragPanel = h.parentElement;
-        isDragging = true;
-        const rect = dragPanel.getBoundingClientRect();
-        diffX = e.clientX - rect.left;
-        diffY = e.clientY - rect.top;
-
+        dragPanel = h.parentElement; isDragging = true;
+        const rect = dragPanel.getBoundingClientRect(); diffX = e.clientX - rect.left; diffY = e.clientY - rect.top;
         if (!dragPanel.classList.contains('floating')) {
-            dockPanel(dragPanel, 'float');
-            dragPanel.style.height = 'auto';
-            dragPanel.style.left = (e.clientX - diffX) + 'px';
-            dragPanel.style.top = (e.clientY - diffY) + 'px';
+            dockPanel(dragPanel, 'float'); dragPanel.style.height = 'auto'; dragPanel.style.left = (e.clientX - diffX) + 'px'; dragPanel.style.top = (e.clientY - diffY) + 'px';
         }
-
-        h.style.cursor = 'none';
-        document.body.style.cursor = 'none';
+        h.style.cursor = 'none'; document.body.style.cursor = 'none';
     });
 });
-
 window.addEventListener('mousemove', (e) => {
     if (!isDragging || !dragPanel) return;
-    dragPanel.style.left = (e.clientX - diffX) + 'px';
-    dragPanel.style.top = (e.clientY - diffY) + 'px';
-
+    dragPanel.style.left = (e.clientX - diffX) + 'px'; dragPanel.style.top = (e.clientY - diffY) + 'px';
     const t = 50;
-    if (e.clientX < t || e.clientX > window.innerWidth - t ||
-        e.clientY < t || e.clientY > window.innerHeight - t) {
-        dragPanel.style.borderColor = '#00ff88';
-    } else {
-        dragPanel.style.borderColor = '#333';
-    }
+    if (e.clientX < t || e.clientX > window.innerWidth - t || e.clientY < t || e.clientY > window.innerHeight - t) dragPanel.style.borderColor = '#00ff88'; else dragPanel.style.borderColor = '#333';
 });
-
 window.addEventListener('mouseup', (e) => {
-    if (!isDragging) return;
-    isDragging = false;
-
+    if (!isDragging) return; isDragging = false;
     if (dragPanel) {
-        dragPanel.querySelector('.panel-header').style.cursor = 'none';
-        dragPanel.style.borderColor = '#333';
-
+        dragPanel.querySelector('.panel-header').style.cursor = 'none'; dragPanel.style.borderColor = '#333';
         const t = 50;
-        if (e.clientX < t) dockPanel(dragPanel, 'left');
-        else if (e.clientX > window.innerWidth - t) dockPanel(dragPanel, 'right');
-        else if (e.clientY < t) dockPanel(dragPanel, 'top');
-        else if (e.clientY > window.innerHeight - t) dockPanel(dragPanel, 'bottom');
-
+        if (e.clientX < t) dockPanel(dragPanel, 'left'); else if (e.clientX > window.innerWidth - t) dockPanel(dragPanel, 'right'); else if (e.clientY < t) dockPanel(dragPanel, 'top'); else if (e.clientY > window.innerHeight - t) dockPanel(dragPanel, 'bottom');
         dragPanel = null;
     }
 });
-
 document.querySelectorAll('.close-panel').forEach(btn => btn.addEventListener('click', (e) => closePanel(e.target.closest('.ui-panel'))));
 
-// --- 12. THREE.JS CONFIGURATION (3D & CALLOUT) ---
-const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x050505, 0.002);
+// --- 12. THREE.JS & CALLOUT ---
+const scene = new THREE.Scene(); scene.fog = new THREE.FogExp2(0x050505, 0.002);
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.set(-10, 5, 10); camera.lookAt(0, 0, 0);
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); renderer.setSize(window.innerWidth, window.innerHeight);
+if (document.getElementById('canvas-container')) document.getElementById('canvas-container').appendChild(renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.dampingFactor = 0.05; controls.enableZoom = true; controls.autoRotate = true; controls.autoRotateSpeed = 0.05;
 
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(-10, 5, 10);
-camera.lookAt(0, 0, 0);
-
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-if (document.getElementById('canvas-container')) {
-    document.getElementById('canvas-container').appendChild(renderer.domElement);
-}
-
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.05;
-controls.enableZoom = true;
-controls.autoRotate = true;
-controls.autoRotateSpeed = 0.05;
-
-// Função Auxiliar de Projeção
 function getScreenPosition(object3D, camera, renderer) {
-    const vector = new THREE.Vector3();
-    const canvas = renderer.domElement;
-    vector.setFromMatrixPosition(object3D.matrixWorld);
-    vector.project(camera);
-    const x = (vector.x * 0.5 + 0.5) * canvas.clientWidth;
-    const y = (vector.y * -0.5 + 0.5) * canvas.clientHeight;
-    return { x, y };
+    const vector = new THREE.Vector3(); const canvas = renderer.domElement; vector.setFromMatrixPosition(object3D.matrixWorld); vector.project(camera);
+    const x = (vector.x * 0.5 + 0.5) * canvas.clientWidth; const y = (vector.y * -0.5 + 0.5) * canvas.clientHeight; return { x, y };
 }
 
-// Esfera Central
-const geometry = new THREE.IcosahedronGeometry(4, 2);
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 });
-const sphere = new THREE.Mesh(geometry, material);
-sphere.userData = { isCenter: true };
-scene.add(sphere);
+const geometry = new THREE.IcosahedronGeometry(4, 2); const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 }); const sphere = new THREE.Mesh(geometry, material); sphere.userData = { isCenter: true }; scene.add(sphere);
+const pGeo = new THREE.BufferGeometry(); const pCount = 10000; const pPos = new Float32Array(pCount * 3); for (let i = 0; i < pCount * 3; i++) { pPos[i] = (Math.random() - 0.5) * 100; } pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3)); const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff }); const particles = new THREE.Points(pGeo, pMat); scene.add(particles);
 
-// Partículas
-const pGeo = new THREE.BufferGeometry();
-const pCount = 10000;
-const pPos = new Float32Array(pCount * 3);
-for (let i = 0; i < pCount * 3; i++) {
-    pPos[i] = (Math.random() - 0.5) * 100;
-}
-pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff });
-const particles = new THREE.Points(pGeo, pMat);
-scene.add(particles);
-
-// Project Nodes
-const projectNodes = [];
-const projectGroup = new THREE.Group();
-scene.add(projectGroup);
-
-const vertexShader = `
-    varying vec3 vNormal;
-    varying vec3 vViewVector;
-    void main() {
-        vNormal = normalize(normalMatrix * normal);
-        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-        vViewVector = -mvPosition.xyz;
-        gl_Position = projectionMatrix * mvPosition;
-    }
-`;
-
-const fragmentShader = `
-    uniform vec3 c;
-    uniform float p;
-    uniform float glowIntensity;
-    varying vec3 vNormal;
-    varying vec3 vViewVector;
-    void main() {
-        vec3 normal = normalize( vNormal );
-        vec3 viewVector = normalize( vViewVector );
-        float dotProduct = dot( normal, viewVector );
-        float rim = 1.0 - max( dotProduct, 0.0 );
-        float finalIntensity = glowIntensity * pow( rim, p );
-        gl_FragColor = vec4( c, finalIntensity + (dotProduct*0.2) );
-    }
-`;
+const projectNodes = []; const projectGroup = new THREE.Group(); scene.add(projectGroup);
+const vertexShader = `varying vec3 vNormal; varying vec3 vViewVector; void main() { vNormal = normalize(normalMatrix * normal); vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 ); vViewVector = -mvPosition.xyz; gl_Position = projectionMatrix * mvPosition; }`;
+const fragmentShader = `uniform vec3 c; uniform float p; uniform float glowIntensity; varying vec3 vNormal; varying vec3 vViewVector; void main() { vec3 normal = normalize( vNormal ); vec3 viewVector = normalize( vViewVector ); float dotProduct = dot( normal, viewVector ); float rim = 1.0 - max( dotProduct, 0.0 ); float finalIntensity = glowIntensity * pow( rim, p ); gl_FragColor = vec4( c, finalIntensity + (dotProduct*0.2) ); }`;
 
 const projetosSimulados = [
     { titulo: "Reconhecendo a Mooca", tech: "Urbanismo / Fotogrametria", descricao: "Levantamento urbano e an&aacute;lise de fluxos." },
@@ -514,177 +327,56 @@ const projetosSimulados = [
 ];
 
 fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(projetos => {
-    const radius = 6.5;
-    const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+    const radius = 6.5; const goldenAngle = Math.PI * (3 - Math.sqrt(5));
     projetos.forEach((proj, i) => {
-        const y = 1 - (i / (projetos.length - 1)) * 2;
-        const radiusAtY = Math.sqrt(1 - y * y);
-        const theta = goldenAngle * i;
-        const x = Math.cos(theta) * radiusAtY;
-        const z = Math.sin(theta) * radiusAtY;
-
-        const nodeMat = new THREE.ShaderMaterial({
-            uniforms: {
-                "c": { type: "c", value: new THREE.Color(0xffffff) },
-                "p": { type: "f", value: 3.0 },
-                "glowIntensity": { type: "f", value: 1.5 }
-            },
-            vertexShader: vertexShader,
-            fragmentShader: fragmentShader,
-            side: THREE.FrontSide,
-            blending: THREE.AdditiveBlending,
-            transparent: true,
-            depthWrite: false
-        });
-
-        const nodeGeo = new THREE.SphereGeometry(0.3, 32, 32);
-        const node = new THREE.Mesh(nodeGeo, nodeMat);
-
-        node.position.set(x * radius, y * radius, z * radius);
-        // Título salvo para o Callout
-        node.userData = { id: i, data: proj, isNode: true, projectName: proj.titulo };
-
-        projectNodes.push(node);
-        projectGroup.add(node);
+        const y = 1 - (i / (projetos.length - 1)) * 2; const radiusAtY = Math.sqrt(1 - y * y); const theta = goldenAngle * i; const x = Math.cos(theta) * radiusAtY; const z = Math.sin(theta) * radiusAtY;
+        const nodeMat = new THREE.ShaderMaterial({ uniforms: { "c": { type: "c", value: new THREE.Color(0xffffff) }, "p": { type: "f", value: 3.0 }, "glowIntensity": { type: "f", value: 1.5 } }, vertexShader: vertexShader, fragmentShader: fragmentShader, side: THREE.FrontSide, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false });
+        const nodeGeo = new THREE.SphereGeometry(0.3, 32, 32); const node = new THREE.Mesh(nodeGeo, nodeMat);
+        node.position.set(x * radius, y * radius, z * radius); node.userData = { id: i, data: proj, isNode: true, projectName: proj.titulo };
+        projectNodes.push(node); projectGroup.add(node);
     });
 });
 
-// --- RAYCASTER (HOVER & CALLOUT) ---
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
-let hoveredNode = null;
-
-window.addEventListener('mousemove', (event) => {
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-});
-
-// Clique para abrir modal
+const raycaster = new THREE.Raycaster(); const mouse = new THREE.Vector2(); let hoveredNode = null;
+window.addEventListener('mousemove', (event) => { mouse.x = (event.clientX / window.innerWidth) * 2 - 1; mouse.y = -(event.clientY / window.innerHeight) * 2 + 1; });
 window.addEventListener('click', (event) => {
     if (!document.body.classList.contains('active')) return;
     if (event.target.closest('.ui-panel') || event.target.closest('.folder-tab') || event.target.closest('#project-modal') || event.target.closest('.close-modal')) return;
-
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(projectNodes);
-    if (intersects.length > 0) {
-        const object = intersects[0].object;
-        openModal(object.userData.data);
-    }
+    raycaster.setFromCamera(mouse, camera); const intersects = raycaster.intersectObjects(projectNodes);
+    if (intersects.length > 0) { const object = intersects[0].object; openModal(object.userData.data); }
 });
+function openModal(data) { if (modalTitle) modalTitle.innerHTML = data.titulo; if (modalTech) modalTech.innerHTML = "// " + data.tech; if (modalDesc) modalDesc.innerHTML = data.descricao; if (modal) { modal.style.display = 'flex'; setTimeout(() => { modal.classList.add('open'); }, 10); } }
+if (closeBtn) closeBtn.addEventListener('click', () => { if (modal) { modal.classList.remove('open'); setTimeout(() => { modal.style.display = 'none'; }, 500); } });
+let lastMiddleClick = 0; window.addEventListener('mousedown', (e) => { if (e.button === 1) { e.preventDefault(); const now = Date.now(); if (now - lastMiddleClick < 500) controls.reset(); lastMiddleClick = now; } });
 
-function openModal(data) {
-    if (modalTitle) modalTitle.innerHTML = data.titulo;
-    if (modalTech) modalTech.innerHTML = "// " + data.tech;
-    if (modalDesc) modalDesc.innerHTML = data.descricao;
-    if (modal) {
-        modal.style.display = 'flex';
-        setTimeout(() => { modal.classList.add('open'); }, 10);
-    }
-}
-if (closeBtn) {
-    closeBtn.addEventListener('click', () => {
-        if (modal) {
-            modal.classList.remove('open');
-            setTimeout(() => { modal.style.display = 'none'; }, 500);
-        }
-    });
-}
-
-let lastMiddleClick = 0;
-window.addEventListener('mousedown', (e) => {
-    if (e.button === 1) {
-        e.preventDefault();
-        const now = Date.now();
-        if (now - lastMiddleClick < 500) { controls.reset(); }
-        lastMiddleClick = now;
-    }
-});
-
-// ANIMATE LOOP (3D + Callout Update)
 function animate() {
-    requestAnimationFrame(animate);
-    controls.update();
-
+    requestAnimationFrame(animate); controls.update();
     if (document.body.classList.contains('active')) {
-        raycaster.setFromCamera(mouse, camera);
-        const intersectsNodes = raycaster.intersectObjects(projectNodes);
-        const intersectsCenter = raycaster.intersectObject(sphere);
-
-        // Rotação automática se não houver hover
-        if (!hoveredNode) {
-            projectGroup.rotation.y -= 0.001;
-            projectGroup.rotation.z += 0.0005;
-        }
-
+        raycaster.setFromCamera(mouse, camera); const intersectsNodes = raycaster.intersectObjects(projectNodes); const intersectsCenter = raycaster.intersectObject(sphere);
+        if (!hoveredNode) { projectGroup.rotation.y -= 0.001; projectGroup.rotation.z += 0.0005; }
         if (intersectsNodes.length > 0) {
-            // --- MOUSE NO NÓ ---
             const object = intersectsNodes[0].object;
-
-            // Desenha a linha de chamada (Callout)
             if (calloutContainer && calloutLabel && calloutLine) {
-                calloutContainer.classList.add('visible');
-                calloutLabel.innerHTML = object.userData.projectName || "Projeto"; // innerHTML para aceitar entities
-
-                const startPoint = getScreenPosition(object, camera, renderer);
-                const endPoint = { x: startPoint.x + 80, y: startPoint.y - 60 };
-
-                calloutLabel.style.left = `${endPoint.x}px`;
-                calloutLabel.style.top = `${endPoint.y - 20}px`;
-
-                const deltaX = endPoint.x - startPoint.x;
-                const deltaY = endPoint.y - startPoint.y;
-                const lineLength = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-                const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
-
-                calloutLine.style.width = `${lineLength}px`;
-                calloutLine.style.left = `${startPoint.x}px`;
-                calloutLine.style.top = `${startPoint.y}px`;
-                calloutLine.style.transform = `rotate(${angle}deg)`;
+                calloutContainer.classList.add('visible'); calloutLabel.innerHTML = object.userData.projectName || "Projeto";
+                const startPoint = getScreenPosition(object, camera, renderer); const endPoint = { x: startPoint.x + 80, y: startPoint.y - 60 };
+                calloutLabel.style.left = `${endPoint.x}px`; calloutLabel.style.top = `${endPoint.y - 20}px`;
+                const deltaX = endPoint.x - startPoint.x; const deltaY = endPoint.y - startPoint.y; const lineLength = Math.sqrt(deltaX * deltaX + deltaY * deltaY); const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+                calloutLine.style.width = `${lineLength}px`; calloutLine.style.left = `${startPoint.x}px`; calloutLine.style.top = `${startPoint.y}px`; calloutLine.style.transform = `rotate(${angle}deg)`;
             }
-
-            if (hoveredNode !== object) {
-                if (hoveredNode) hoveredNode.material.uniforms.c.value.setHex(0xffffff);
-                hoveredNode = object;
-                hoveredNode.material.uniforms.c.value.setHex(0x00ff88);
-                document.body.style.cursor = 'none'; // Garante cursor custom
-            }
+            if (hoveredNode !== object) { if (hoveredNode) hoveredNode.material.uniforms.c.value.setHex(0xffffff); hoveredNode = object; hoveredNode.material.uniforms.c.value.setHex(0x00ff88); document.body.style.cursor = 'none'; }
         } else {
-            // --- MOUSE FORA ---
             if (calloutContainer) calloutContainer.classList.remove('visible');
-
-            if (hoveredNode) {
-                hoveredNode.material.uniforms.c.value.setHex(0xffffff);
-                hoveredNode = null;
-                document.body.style.cursor = 'none';
-            }
+            if (hoveredNode) { hoveredNode.material.uniforms.c.value.setHex(0xffffff); hoveredNode = null; document.body.style.cursor = 'none'; }
         }
-
-        projectNodes.forEach(node => {
-            const targetScale = (node === hoveredNode) ? 1.5 : 1;
-            node.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
-        });
-
-        if (intersectsCenter.length > 0) {
-            sphere.rotation.y += 0.001;
-            sphere.rotation.x += 0.001;
-            sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.5, 0.05);
-        } else {
-            sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.15, 0.05);
-        }
+        projectNodes.forEach(node => { const targetScale = (node === hoveredNode) ? 1.5 : 1; node.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1); });
+        if (intersectsCenter.length > 0) { sphere.rotation.y += 0.001; sphere.rotation.x += 0.001; sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.5, 0.05); } else { sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.15, 0.05); }
     }
-
     renderer.render(scene, camera);
 }
 animate();
+window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); if (canvas) { canvas.width = window.innerWidth; } });
 
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    if (canvas) { canvas.width = window.innerWidth; } // Resize também do canvas de áudio
-});
-
-// --- 13. SISTEMA DE ÁUDIO & VISUALIZADOR ---
+// --- 13. AUDIO SYSTEM & VISUALIZER (ARCTIC MONKEYS STYLE) ---
 const audioEl = document.getElementById('theme-audio');
 const audioBtn = document.getElementById('audio-btn');
 const canvas = document.getElementById('audio-visualizer');
@@ -696,7 +388,7 @@ let animationId;
 
 if (canvas) {
     canvas.width = window.innerWidth;
-    canvas.height = 150;
+    canvas.height = 200; // Altura maior para a onda
 }
 
 function setupAudioContext() {
@@ -715,61 +407,44 @@ function setupAudioContext() {
 
 function drawVisualizer() {
     if (!ctx || !canvas) return;
-
-    // Limpa o canvas anterior
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // ESTÉTICA: Linha Branca e Grossa
-    ctx.lineWidth = 3; // Mais grossa
-    ctx.strokeStyle = '#ffffff'; // Branco puro
-    ctx.shadowBlur = 8; // Glow suave
-    ctx.shadowColor = 'rgba(255, 255, 255, 0.5)'; // Glow branco
+    // Estilo Arctic Monkeys (Branco e Grosso)
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#ffffff';
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
 
     ctx.beginPath();
-
     const width = canvas.width;
     const height = canvas.height;
-
-    // Define a "Linha do Horizonte" da corda (Metade da altura do canvas)
     const centerY = height / 2;
 
     if (isAudioPlaying && analyser) {
         analyser.getByteTimeDomainData(dataArray);
-
         const sliceWidth = width * 1.0 / dataArray.length;
         let x = 0;
-
         for (let i = 0; i < dataArray.length; i++) {
-            const v = dataArray[i] / 128.0; // Normaliza (vai de 0 a 2)
-            let y = (v * height) / 2; // Espalha na altura
+            const v = dataArray[i] / 128.0;
+            let y = (v * height) / 2;
 
-            // --- A MÁGICA DA CORDA PRESA (ENVELOPE) ---
-            // Cria um arco de 0 a PI (0 nas pontas, 1 no meio)
+            // Envelope para prender as pontas
             const envelope = Math.sin((i / dataArray.length) * Math.PI);
-
-            // Aplica o envelope ao deslocamento da onda
-            // Se envelope é 0 (pontas), o y volta para o centerY (linha reta)
             const displacement = y - centerY;
-            y = centerY + (displacement * envelope * 1.5); // 1.5 aumenta a amplitude
+            y = centerY + (displacement * envelope * 1.5);
 
-            if (i === 0) {
-                ctx.moveTo(x, y);
-            } else {
-                ctx.lineTo(x, y);
-            }
+            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
             x += sliceWidth;
         }
     } else {
-        // Estado Desligado: Linha Reta Perfeita no Centro
+        // Linha Reta no meio
         ctx.moveTo(0, centerY);
         ctx.lineTo(width, centerY);
     }
-
     ctx.stroke();
-
-    // Mantém o loop rodando
     animationId = requestAnimationFrame(drawVisualizer);
-} drawVisualizer();
+}
+drawVisualizer();
 
 function toggleAudio() {
     if (!audioEl) return;
@@ -778,12 +453,12 @@ function toggleAudio() {
 
     if (isAudioPlaying) {
         audioEl.pause();
-        audioBtn.innerHTML = '[ SOUND: OFF ]';
+        audioBtn.innerHTML = 'SOUND OFF';
         audioBtn.classList.remove('playing');
         isAudioPlaying = false;
     } else {
         audioEl.play().then(() => {
-            audioBtn.innerHTML = '[ SOUND: ON ]';
+            audioBtn.innerHTML = 'SOUND ON';
             audioBtn.classList.add('playing');
             isAudioPlaying = true;
         }).catch(err => console.log("Áudio bloqueado:", err));
