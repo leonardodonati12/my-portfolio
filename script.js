@@ -1,7 +1,7 @@
 import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
 import { OrbitControls } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls.js';
 
-// --- ELEMENTOS DOM ---
+// --- DOM ELEMENTS ---
 const introOverlay = document.getElementById('intro-overlay');
 const aboutOverlay = document.getElementById('about-overlay');
 const phrasesOverlay = document.getElementById('phrases-overlay');
@@ -20,7 +20,8 @@ const nameLine2 = document.getElementById('name-line-2');
 const heroSubtitle = document.getElementById('hero-subtitle');
 
 // --- ROLE SCRAMBLE EFFECT ---
-const roles = ["ARCHITECTURE STUDENT", "INOVATION ASSISTANT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND"]; const el = document.getElementById('scramble-text');
+const roles = ["INNOVATION ASSISTANT", "ARCHITECTURE STUDENT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND"];
+const el = document.getElementById('scramble-text');
 const chars = '!<>-_\\/[]{}—=+*^?#________';
 let roleIndex = 0; let loopInterval = null;
 
@@ -94,25 +95,26 @@ mySkills.forEach(skill => {
     skillsList.appendChild(item);
 });
 
+// --- TRANSLATED CONTENT ---
 document.getElementById('timeline-content').innerHTML = `
-        <div class="timeline-item"><div class="time-date">Ago 2024 - Present</div><div class="time-role">Spbim - Estágio Arq</div><div class="time-place">São Paulo - SP</div><div class="time-desc">Implementação BIM, modelagem paramétrica, nuvem de pontos (laser scanner), compatibilização.</div></div>
-        <div class="timeline-item"><div class="time-date">Oct 2020 - Apr 2021</div><div class="time-role">Tekno S.A. - Estágio Elétrica</div><div class="time-place">Guaratinguetá - SP</div><div class="time-desc">Análise e desenvolvimento de plantas elétricas, manutenção preventiva e corretiva.</div></div>
-        <div class="timeline-item"><div class="time-date">Jan 2022 - Dec 2026</div><div class="time-role">Universidade Anhembi Morumbi</div><div class="time-desc">Arquitetura e Urbanismo (Superior).</div></div>
-        <div class="timeline-item"><div class="time-date">Jan 2017 - Dec 2019</div><div class="time-role">Colégio Técnico Industrial - Unesp</div><div class="time-desc">Ensino Médio Técnico.</div></div>
-    `;
+    <div class="timeline-item"><div class="time-date">Aug 2024 - Present</div><div class="time-role">Spbim - Architecture Intern</div><div class="time-place">São Paulo - SP</div><div class="time-desc">BIM implementation support, parametric modeling, point cloud (laser scanner), coordination.</div></div>
+    <div class="timeline-item"><div class="time-date">Oct 2020 - Apr 2021</div><div class="time-role">Tekno S.A. - Electrical Intern</div><div class="time-place">Guaratinguetá - SP</div><div class="time-desc">Analysis and development of electrical plans, preventive and corrective maintenance.</div></div>
+    <div class="timeline-item"><div class="time-date">Jan 2022 - Dec 2026</div><div class="time-role">Universidade Anhembi Morumbi</div><div class="time-desc">Bachelor of Architecture and Urbanism.</div></div>
+    <div class="timeline-item"><div class="time-date">Jan 2017 - Dec 2019</div><div class="time-role">Colégio Técnico Industrial - Unesp</div><div class="time-desc">Technical High School.</div></div>
+`;
 document.getElementById('extras-content').innerHTML = `
-        <div class="extra-item"><div class="extra-title">Reconhecendo a Mooca</div><div class="extra-detail">Levantamento urbano/arquitetônico, fotogrametria, análise de fluxos e ilhas de calor.</div></div>
-        <div class="extra-item"><div class="extra-title">Monitoria Workshop Spbim</div><div class="extra-detail">Levantamentos com Laser Scanner (Maio 2025).</div></div>
-        <div class="extra-item"><div class="extra-title">Medalhista OBA</div><div class="extra-detail">Ouro (2015), Bronze (2016), Prata (2019).</div></div>
-        <div class="extra-item"><div class="extra-title">Monitoria Semana Integração</div><div class="extra-detail">Ctig - Unesp (2018, 2019, 2020).</div></div>
-        <div class="extra-item"><div class="extra-title">Languages</div><div class="extra-detail">Portuguese (Native)<br>English (B1 - Intermediate)</div></div>
-    `;
+    <div class="extra-item"><div class="extra-title">Reconhecendo a Mooca</div><div class="extra-detail">Urban/architectural survey, photogrammetry, flow analysis, and heat islands.</div></div>
+    <div class="extra-item"><div class="extra-title">Spbim Workshop Monitor</div><div class="extra-detail">Laser Scanner Surveys (May 2025).</div></div>
+    <div class="extra-item"><div class="extra-title">OBA Medalist</div><div class="extra-detail">Gold (2015), Bronze (2016), Silver (2019).</div></div>
+    <div class="extra-item"><div class="extra-title">Integration Week Monitor</div><div class="extra-detail">Ctig - Unesp (2018, 2019, 2020).</div></div>
+    <div class="extra-item"><div class="extra-title">Languages</div><div class="extra-detail">Portuguese (Native)<br>English (B1 - Intermediate)</div></div>
+`;
 document.getElementById('contact-content').innerHTML = `
-        <div class="contact-item"><div class="contact-label">Phone / WhatsApp</div><div class="contact-val">+55 12 99777 3790</div></div>
-        <div class="contact-item"><div class="contact-label">Email</div><div class="contact-val"><a href="mailto:leonardodonati12@gmail.com">leonardodonati12@gmail.com</a></div></div>
-        <div class="contact-item"><div class="contact-label">LinkedIn</div><div class="contact-val"><a href="https://linkedin.com/in/leonardodonati12/" target="_blank">in/leonardodonati12</a></div></div>
-        <div class="contact-item"><div class="contact-label">GitHub</div><div class="contact-val"><a href="https://github.com/leonardodonati12" target="_blank">@leonardodonati12</a></div></div>
-    `;
+    <div class="contact-item"><div class="contact-label">Phone / WhatsApp</div><div class="contact-val">+55 12 99777 3790</div></div>
+    <div class="contact-item"><div class="contact-label">Email</div><div class="contact-val"><a href="mailto:leonardodonati12@gmail.com">leonardodonati12@gmail.com</a></div></div>
+    <div class="contact-item"><div class="contact-label">LinkedIn</div><div class="contact-val"><a href="https://linkedin.com/in/leonardodonati12/" target="_blank">in/leonardodonati12</a></div></div>
+    <div class="contact-item"><div class="contact-label">GitHub</div><div class="contact-val"><a href="https://github.com/leonardodonati12" target="_blank">@leonardodonati12</a></div></div>
+`;
 
 // --- TAB REORDERING LOGIC ---
 const folderStack = document.getElementById('folder-stack');
@@ -164,7 +166,7 @@ function closePanel(panel) {
     panel.style.display = 'none';
     document.querySelector(`[data-target="${panel.id}"]`)?.classList.remove('active-tab');
     if (!panel.classList.contains('floating')) {
-        body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom'); 
+        body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
     }
 }
 
@@ -228,7 +230,9 @@ window.addEventListener('mouseup', (e) => {
 document.querySelectorAll('.close-panel').forEach(btn => btn.addEventListener('click', (e) => closePanel(e.target.closest('.ui-panel'))));
 
 // --- RESTO DO CÓDIGO (INTRO) ---
-const bioText = "I avoid definitions; I feel they limit me. Whenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative. I seek to make each piece obey an invisible rule and decide to tell a unique story. I persist in the attempt to compile everything that resonates with me..."; const phrasesList = ["I wrote the code, but you are the one rendering it.", "Careful where you click: some variables are loose.", "As you observe the project, the algorithm observes you.", "Don't be afraid. It is just logic trying to be art.", "Loading fragments of a thought process...", "This is not a website. It is a render of my consciousness.", "Here, gravity is just a syntax suggestion.", "You are not on the internet. You are inside a loop of my creative process.", "Space under construction. The mind, too.", "Don't touch the screen. The digital concrete is still wet.", "Are you the user, or just another parameter?", "Welcome to the backend of my imagination.", "Compiling chaos into structure. Please wait.", "Entry permitted. Exit not guaranteed.", "Everything here is code. Even the void.", "This is a portfolio. This is not a portfolio.", "You are in my mind now. Good luck.", "This page is thinking about you right now.", "Your visit has been logged. My architecture now knows who you are.", "To navigate here is to compile memories that are not yours.", "There is a system error: it has learned to feel."];
+const bioText = "I avoid definitions; I feel they limit me. Whenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative. I seek to make each piece obey an invisible rule and decide to tell a unique story. I persist in the attempt to compile everything that resonates with me...";
+const phrasesList = ["I wrote the code, but you are the one rendering it.", "Careful where you click: some variables are loose.", "As you observe the project, the algorithm observes you.", "Don't be afraid. It is just logic trying to be art.", "Loading fragments of a thought process...", "This is not a website. It is a render of my consciousness.", "Here, gravity is just a syntax suggestion.", "You are not on the internet. You are inside a loop of my creative process.", "Space under construction. The mind, too.", "Don't touch the screen. The digital concrete is still wet.", "Are you the user, or just another parameter?", "Welcome to the backend of my imagination.", "Compiling chaos into structure. Please wait.", "Entry permitted. Exit not guaranteed.", "Everything here is code. Even the void.", "This is a portfolio. This is not a portfolio.", "You are in my mind now. Good luck.", "This page is thinking about you right now.", "Your visit has been logged. My architecture now knows who you are.", "To navigate here is to compile memories that are not yours.", "There is a system error: it has learned to feel."];
+
 heroName.addEventListener('mouseenter', () => { scrambleTo(nameLine1, "LEONARDO"); scrambleTo(nameLine2, "DONATI"); });
 heroSubtitle.addEventListener('mouseenter', () => { scrambleTo(heroSubtitle, "SCRAMBLED THOUGHTS"); });
 heroSubtitle.addEventListener('mouseleave', () => { scrambleTo(heroSubtitle, "ARCHITECTURE STUDENT"); });
