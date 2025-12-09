@@ -20,8 +20,7 @@ const nameLine2 = document.getElementById('name-line-2');
 const heroSubtitle = document.getElementById('hero-subtitle');
 
 // --- ROLE SCRAMBLE EFFECT ---
-const roles = ["URBAN DESIGNER", "ARCHITECTURE STUDENT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND"];
-const el = document.getElementById('scramble-text');
+const roles = ["ARCHITECTURE STUDENT", "INOVATION ASSISTANT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND"]; const el = document.getElementById('scramble-text');
 const chars = '!<>-_\\/[]{}—=+*^?#________';
 let roleIndex = 0; let loopInterval = null;
 
@@ -229,9 +228,7 @@ window.addEventListener('mouseup', (e) => {
 document.querySelectorAll('.close-panel').forEach(btn => btn.addEventListener('click', (e) => closePanel(e.target.closest('.ui-panel'))));
 
 // --- RESTO DO CÓDIGO (INTRO) ---
-const bioText = "I avoid definitions; I feel they limit me.\n\nWhenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative.\n\nI seek to make each piece obey an invisible rule and decide to tell a unique story.\n\nI persist in the attempt to compile everything that resonates with me...";
-const phrasesList = ["I wrote the code, but you are the one rendering it.", "Careful where you click: some variables are loose.", "As you observe the project, the algorithm observes you.", "Don't be afraid. It is just logic trying to be art.", "Loading fragments of a thought process...", "This is not a website. It is a render of my consciousness.", "Here, gravity is just a syntax suggestion.", "You are not on the internet. You are inside a loop of my creative process.", "Space under construction. The mind, too.", "Don't touch the screen. The digital concrete is still wet.", "Are you the user, or just another parameter?", "Welcome to the backend of my imagination.", "Compiling chaos into structure. Please wait.", "Entry permitted. Exit not guaranteed.", "Everything here is code. Even the void.", "This is a portfolio. This is not a portfolio.", "You are in my mind now. Good luck.", "This page is thinking about you right now.", "Your visit has been logged. My architecture now knows who you are.", "To navigate here is to compile memories that are not yours.", "There is a system error: it has learned to feel."];
-
+const bioText = "I avoid definitions; I feel they limit me. Whenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative. I seek to make each piece obey an invisible rule and decide to tell a unique story. I persist in the attempt to compile everything that resonates with me..."; const phrasesList = ["I wrote the code, but you are the one rendering it.", "Careful where you click: some variables are loose.", "As you observe the project, the algorithm observes you.", "Don't be afraid. It is just logic trying to be art.", "Loading fragments of a thought process...", "This is not a website. It is a render of my consciousness.", "Here, gravity is just a syntax suggestion.", "You are not on the internet. You are inside a loop of my creative process.", "Space under construction. The mind, too.", "Don't touch the screen. The digital concrete is still wet.", "Are you the user, or just another parameter?", "Welcome to the backend of my imagination.", "Compiling chaos into structure. Please wait.", "Entry permitted. Exit not guaranteed.", "Everything here is code. Even the void.", "This is a portfolio. This is not a portfolio.", "You are in my mind now. Good luck.", "This page is thinking about you right now.", "Your visit has been logged. My architecture now knows who you are.", "To navigate here is to compile memories that are not yours.", "There is a system error: it has learned to feel."];
 heroName.addEventListener('mouseenter', () => { scrambleTo(nameLine1, "LEONARDO"); scrambleTo(nameLine2, "DONATI"); });
 heroSubtitle.addEventListener('mouseenter', () => { scrambleTo(heroSubtitle, "SCRAMBLED THOUGHTS"); });
 heroSubtitle.addEventListener('mouseleave', () => { scrambleTo(heroSubtitle, "ARCHITECTURE STUDENT"); });

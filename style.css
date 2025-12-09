@@ -299,7 +299,8 @@ body.push-bottom #folder-stack {
 	font-size: 1.2rem;
 	letter-spacing: 5px;
 	color: #00ff88;
-	margin-bottom: 50px;
+	/* AJUSTE 1: Diminuí de 50px para 15px para o botão subir */
+	margin-bottom: 15px;
 	text-align: center;
 	height: 30px;
 	font-weight: bold;
@@ -405,7 +406,6 @@ h1 {
 	padding: 5px 0;
 }
 
-/* AJUSTE 2: Aviso subir com barra inferior */
 .interaction-hint {
 	position: absolute;
 	bottom: 5%;
