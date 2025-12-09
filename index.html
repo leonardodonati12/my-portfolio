@@ -57,6 +57,19 @@
         <div class="folder-tab" draggable="true" data-target="contact-panel">CONTACT</div>
     </div>
 
+    <div class="symbiote-container-home">
+        <div class="symbiote-blob"></div>
+    </div>
+
+    <style>
+        .symbiote-container-home {
+            position: fixed;
+            bottom: -30px; /* Levemente cortado para parecer que sai da borda */
+            right: -30px;
+            pointer-events: none; /* Para não atrapalhar cliques */
+        }
+    </style>
+
     <div id="skills-panel" class="ui-panel"><div class="panel-header"><span>:: SYSTEM STATS</span><span class="close-panel">×</span></div><div class="panel-content" id="skills-list"></div></div>
     <div id="timeline-panel" class="ui-panel"><div class="panel-header"><span>:: LOGS / HISTORY</span><span class="close-panel">×</span></div><div class="panel-content" id="timeline-content"></div></div>
     <div id="extras-panel" class="ui-panel"><div class="panel-header"><span>:: ADD-ONS</span><span class="close-panel">×</span></div><div class="panel-content" id="extras-content"></div></div>
