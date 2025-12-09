@@ -27,24 +27,25 @@ body.active #system-curtain {
 	pointer-events: none;
 }
 
-/* GLOBAL CONTAINER */
+/* GLOBAL CONTAINER (Hero, Canvas, etc) */
 #main-wrapper {
 	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
+	/* Padrão de movimento: TRANSFORM */
 	transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 	z-index: 0;
 }
 
+/* Movimentos Padronizados do Container Principal */
 body.push-left #main-wrapper {
 	transform: translateX(240px);
 }
 
-/* [AJUSTE 3] Reduzido o push top para não desalinhar tanto o nome */
 body.push-top #main-wrapper {
-	transform: translateY(140px);
+	transform: translateY(300px); /* Aumentado para 300px conforme pedido */
 }
 
 body.push-right #main-wrapper {
@@ -94,38 +95,37 @@ body.push-bottom #main-wrapper {
 }
 
 /* --- FIXED UI ELEMENTS (COPYRIGHT) --- */
-/* [AJUSTE 2] Copyright alinhado com o Hint, fonte menor e lógica de troca de lado */
 #copyright {
+	/* Posição Inicial */
 	position: fixed;
-	bottom: 5px; /* Alinhado visualmente com a dica de rotação */
+	bottom: 60px; /* Alinhado visualmente com a dica de rotação */
 	left: 20px;
-	font-size: 0.6rem; /* Fonte reduzida */
+	/* Estilo */
+	font-size: 0.6rem;
 	color: #aaa;
 	letter-spacing: 1px;
 	z-index: 100;
 	pointer-events: none;
-	transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); /* Transição suave para tudo */
 	width: fit-content;
+	/* Animação Padronizada */
+	transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* Quando o painel inferior abre */
-body.push-bottom #copyright {
-	bottom: 300px;
-}
-
+/* Movimento: Empurra para a Direita (Simples) */
 body.push-left #copyright {
-	/* Troque o cálculo complexo por um valor fixo simples */
-	/* 260px é a largura do painel + uma folga */
-	right: 280px;
-	/* Garante que o texto continue alinhado à esquerda */
+	transform: translateX(280px);
 	text-align: left;
 }
 
-/* RESUME BUTTON */
-#resume-btn {
+/* Movimento: Empurra para Cima (Negativo sobe) */
+body.push-bottom #copyright {
+	transform: translateY(-240px);
+}
+
+/* BUTTONS (RESUME & PORTFOLIO) */
+#resume-btn, #portfolio-btn {
 	position: fixed;
 	top: 10.5%;
-	right: 190px;
 	font-size: 0.8rem;
 	color: #eee;
 	letter-spacing: 2px;
@@ -135,57 +135,39 @@ body.push-left #copyright {
 	padding: 8px 15px;
 	z-index: 4000;
 	cursor: pointer;
+	/* Usando top/right aqui pois são elementos de UI fixos de canto */
 	transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), top 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), color 0.3s, transform 0.3s;
 }
 
-	#resume-btn:hover {
+#resume-btn {
+	right: 190px;
+}
+
+#portfolio-btn {
+	right: 80px;
+}
+
+	#resume-btn:hover, #portfolio-btn:hover {
 		color: #00ff88;
 		background: transparent;
 		text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
 		transform: translateX(-5px);
 	}
 
+/* Movimentos dos Botões */
 body.push-right #resume-btn {
 	right: 410px;
 }
-
-body.push-top #resume-btn {
-	top: 280px;
-}
-
-/* PORTFOLIO BUTTON */
-#portfolio-btn {
-	position: fixed;
-	top: 10.5%;
-	right: 80px;
-	font-size: 0.8rem;
-	color: #eee;
-	letter-spacing: 2px;
-	text-decoration: none;
-	border: none;
-	background: transparent;
-	padding: 8px 15px;
-	z-index: 4000;
-	cursor: pointer;
-	transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), top 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), color 0.3s, transform 0.3s;
-}
-
-	#portfolio-btn:hover {
-		color: #00ff88;
-		background: transparent;
-		text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
-		transform: translateX(-5px);
-	}
 
 body.push-right #portfolio-btn {
 	right: 300px;
 }
 
-body.push-top #portfolio-btn {
+body.push-top #resume-btn, body.push-top #portfolio-btn {
 	top: 280px;
 }
 
-/* --- SIDE TABS --- */
+/* --- SIDE TABS (FOLDER STACK) --- */
 #folder-stack {
 	position: fixed;
 	top: 80px;
@@ -197,6 +179,7 @@ body.push-top #portfolio-btn {
 	opacity: 0;
 	padding-left: 0;
 	margin-left: 1px;
+	/* Animação Padronizada */
 	transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 1s;
 }
 
@@ -204,13 +187,13 @@ body.active #folder-stack {
 	opacity: 1;
 }
 
+/* Movimentos das Abas */
 body.push-left #folder-stack {
 	transform: translateX(252px);
 }
 
-/* [AJUSTE 3] Sincronizado com o main-wrapper */
 body.push-top #folder-stack {
-	transform: translateY(300px);
+	transform: translateY(300px); /* Sincronizado com o Hero */
 }
 
 body.push-bottom #folder-stack {
@@ -267,69 +250,6 @@ body.push-bottom #folder-stack {
 		opacity: 0.5;
 		cursor: grabbing;
 	}
-
-@media (max-width: 768px) {
-	#folder-stack {
-		top: auto;
-		bottom: 0;
-		left: 0;
-		width: 100%;
-		height: 50px;
-		flex-direction: row;
-		background: #000;
-		border-top: 1px solid #333;
-		margin-left: 0;
-		transform: none !important;
-	}
-
-	.folder-tab {
-		writing-mode: horizontal-tb;
-		transform: none;
-		width: auto;
-		margin: 0;
-		margin-left: -10px;
-		border-radius: 10px 10px 0 0;
-		padding: 10px;
-		flex: 1;
-		text-align: center;
-		border-left: none;
-		background: linear-gradient(to top, #3d3e42, #202124);
-		border-right: none;
-	}
-
-		.folder-tab:hover {
-			transform: none;
-		}
-
-		.folder-tab:first-child {
-			margin-left: 0;
-		}
-
-	.ui-panel {
-		width: 100% !important;
-		height: 60% !important;
-		bottom: 50px !important;
-		top: auto !important;
-		left: 0 !important;
-		border-radius: 20px 20px 0 0;
-		border: none;
-		border-top: 1px solid #00ff88;
-	}
-
-	body[class*="push-"] #main-wrapper {
-		transform: none !important;
-	}
-
-	#portfolio-btn {
-		top: 10px;
-		right: 10px;
-	}
-
-	#resume-btn {
-		top: 10px;
-		right: 120px;
-	}
-}
 
 /* --- OVERLAYS --- */
 .overlay-screen {
@@ -450,7 +370,7 @@ body.push-bottom #folder-stack {
 		box-shadow: 0 0 20px #00ff88;
 	}
 
-/* --- SITE UI (HERO & INTERACTION) --- */
+/* --- SITE UI (HERO & HINT) --- */
 .hero {
 	position: absolute;
 	top: 10%;
@@ -461,17 +381,15 @@ body.push-bottom #folder-stack {
 	z-index: 20;
 }
 
-/* Quando o site ativa, exibe o nome */
 body.active .hero {
 	opacity: 1 !important;
 }
 
-/* Correção de cor do Nome para o modo OS (Branco) */
-.hero h1,
-#hero-name {
+/* Força a cor Branca no Modo OS */
+.hero h1, #hero-name {
 	font-size: 3.5rem;
 	margin: 0;
-	color: #ffffff !important; /* FORÇA O BRANCO */
+	color: #ffffff !important;
 	line-height: 1.1;
 	pointer-events: auto;
 	cursor: help;
@@ -489,42 +407,33 @@ body.active .hero {
 	cursor: help;
 }
 
-/* Aumentando a descida do CONTEÚDO (Hero/Subtitle/Canvas) */
-body.push-top #main-wrapper {
-	/* Aumente este valor conforme necessário */
-	transform: translateY(200px);
-}
-
-/* Aumentando a descida das ABAS LATERAIS (Folder Stack) */
-/* IMPORTANTE: Mantenha o mesmo valor de cima para ficarem sincronizados */
-body.push-top #folder-stack {
-	transform: translateY(200px);
-}
-
-/* [AJUSTE 1] Dica de interação subiu + 20px */
+/* Dica de Interação (Drag to Rotate) */
 .interaction-hint {
 	position: absolute;
-	bottom: 15px;
+	bottom: calc(5% + 20px);
 	left: 50%;
+	/* Base do transform: Centraliza X */
 	transform: translateX(-50%);
 	color: #555;
 	font-size: 0.8rem;
 	letter-spacing: 1px;
 	pointer-events: none;
 	opacity: 0;
-	transition: opacity 2s, bottom 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 	z-index: 10;
+	/* Animação Padronizada */
+	transition: opacity 2s, transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 body.active .interaction-hint {
 	opacity: 1;
 }
 
+/* Movimento: Sobe -350px mantendo o X centralizado */
 body.push-bottom .interaction-hint {
-	bottom: 280px;
+	transform: translate(-50%, -350px);
 }
 
-/* --- PANELS --- */
+/* --- PANELS (UI) --- */
 .ui-panel {
 	position: fixed;
 	background: rgba(15, 15, 15, 0.95);
@@ -621,6 +530,7 @@ body.push-bottom .interaction-hint {
 	flex: 1;
 }
 
+/* Panel Items */
 .skill-item {
 	margin-bottom: 15px;
 }
@@ -752,6 +662,7 @@ body.push-bottom .interaction-hint {
 	line-height: 1.4;
 }
 
+/* MODAL */
 #project-modal {
 	position: fixed;
 	top: 50%;
@@ -812,6 +723,7 @@ body.push-bottom .interaction-hint {
 		color: #00ff88;
 	}
 
+/* SCROLLBAR */
 ::-webkit-scrollbar {
 	width: 4px;
 	height: 4px;
@@ -830,6 +742,7 @@ body.push-bottom .interaction-hint {
 		background: #00ff88;
 	}
 
+/* ANIMATIONS */
 .char-hidden {
 	opacity: 0;
 }
@@ -854,8 +767,7 @@ body.push-bottom .interaction-hint {
 	}
 }
 
-/* --- LÓGICA DO SIMBIONTE (LIQUID CHROME STYLE) --- */
-
+/* --- SYMBIOTE (LOGIC & AVOIDANCE) --- */
 @keyframes morphing {
 	0% {
 		border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
@@ -888,7 +800,92 @@ body.push-bottom .interaction-hint {
 	}
 }
 
-/* CSS DO HEADER CORRIGIDO */
+.symbiote-container-home {
+	/* Animação Padronizada */
+	transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+	z-index: 50;
+}
+
+/* Movimento: Foge para Esquerda */
+body.push-right .symbiote-container-home {
+	transform: translateX(-280px);
+}
+
+/* Movimento: Foge para Cima */
+body.push-bottom .symbiote-container-home {
+	transform: translateY(-300px);
+}
+
+/* Movimento: Foge para Esquerda e Cima (Combo) */
+body.push-right.push-bottom .symbiote-container-home {
+	transform: translate(-280px, -300px);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+	#folder-stack {
+		top: auto;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 50px;
+		flex-direction: row;
+		background: #000;
+		border-top: 1px solid #333;
+		margin-left: 0;
+		transform: none !important;
+	}
+
+	.folder-tab {
+		writing-mode: horizontal-tb;
+		transform: none;
+		width: auto;
+		margin: 0;
+		margin-left: -10px;
+		border-radius: 10px 10px 0 0;
+		padding: 10px;
+		flex: 1;
+		text-align: center;
+		border-left: none;
+		background: linear-gradient(to top, #3d3e42, #202124);
+		border-right: none;
+	}
+
+		.folder-tab:hover {
+			transform: none;
+		}
+
+		.folder-tab:first-child {
+			margin-left: 0;
+		}
+
+	.ui-panel {
+		width: 100% !important;
+		height: 60% !important;
+		bottom: 50px !important;
+		top: auto !important;
+		left: 0 !important;
+		border-radius: 20px 20px 0 0;
+		border: none;
+		border-top: 1px solid #00ff88;
+	}
+
+	body[class*="push-"] #main-wrapper {
+		transform: none !important;
+	}
+
+	#portfolio-btn {
+		top: 10px;
+		right: 10px;
+	}
+
+	#resume-btn {
+		top: 10px;
+		right: 120px;
+	}
+}
+
+/* HEADER (PORTFOLIO SPECIFIC) */
 .header {
 	padding: 40px 60px;
 	display: flex;
@@ -901,14 +898,12 @@ body.push-bottom .interaction-hint {
 	z-index: 100;
 }
 
-/* GRUPO ESQUERDA: Blob + Nome */
 .identity-group {
 	display: flex;
 	align-items: center;
 	gap: 15px;
 }
 
-/* O Blob Pequeno do Header */
 .header-blob {
 	width: 30px;
 	height: 30px;
@@ -924,29 +919,7 @@ h1 {
 	color: #000;
 }
 
-/* GRUPO DIREITA: Menu */
 .nav {
 	display: flex;
 	gap: 30px;
-}
-
-/* SIMBIONTE & MOVIMENTAÇÃO (AVOIDANCE) */
-.symbiote-container-home {
-	transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-	z-index: 50;
-}
-
-/* Quando a Barra Direita abre */
-body.push-right .symbiote-container-home {
-	transform: translateX(-280px);
-}
-
-/* Quando a Barra Inferior abre */
-body.push-bottom .symbiote-container-home {
-	transform: translateY(-300px);
-}
-
-/* Previne bugs se ambas abrirem */
-body.push-right.push-bottom .symbiote-container-home {
-	transform: translate(-280px, -300px);
 }
