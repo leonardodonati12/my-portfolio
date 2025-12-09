@@ -3,68 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leonardo Donati | OS</title>
+    <title>Leonardo Donati</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="system-curtain"></div>
-
-    <div class="cursor-dot"></div>
-    <div class="cursor-outline"></div>
-
     <div id="intro-overlay" class="overlay-screen">
         <div class="intro-name">LEONARDO DONATI</div>
-        <div class="intro-role" id="scramble-text">ARCHITECTURE STUDENT</div>
+        <div class="intro-role notranslate" id="scramble-text">ARCHITECTURE STUDENT</div>
         <button class="enter-btn" id="start-btn">[ ENTER SYSTEM ]</button>
     </div>
 
     <div id="about-overlay" class="overlay-screen">
         <div class="about-title">WHO AM I?</div>
-        <div class="about-text" id="bio-text-container"></div>
+        <div class="about-text notranslate" id="bio-text-container"></div>
         <div class="continue-hint" id="about-hint">[ CLICK ANYWHERE TO CONTINUE ]</div>
     </div>
 
     <div id="phrases-overlay" class="overlay-screen">
-        <div class="phrases-text" id="phrases-container"></div>
+        <div class="phrases-text notranslate" id="phrases-container"></div>
         <div class="continue-hint" style="opacity: 1;">[ CLICK ANYWHERE TO CONTINUE ]</div>
     </div>
 
-    <a href="resume.html" id="resume-btn">RESUME</a>
-    <a href="portfolio.html" id="portfolio-btn">PORTFOLIO</a>
-
-    <div id="copyright">© 2025 Leonardo Donati. All rights reserved.</div>
-
-    <div id="main-wrapper">
-        <div class="hero">
-            <h1 id="hero-name">
-                <div id="name-line-1">LEONARDO</div>
-                <div id="name-line-2">DONATI</div>
-            </h1>
-            <div class="subtitle" id="hero-subtitle">ARCHITECTURE STUDENT</div>
-        </div>
-        <div class="interaction-hint">[ DRAG TO ROTATE • CLICK NODES FOR DETAILS ]</div>
-        <div id="canvas-container"></div>
-
-        <div id="project-modal">
-            <div class="close-modal" id="close-modal-btn">×</div>
-            <div class="modal-title" id="modal-title">Project Name</div>
-            <div class="modal-tech" id="modal-tech">// Tech Stack</div>
-            <div class="modal-desc" id="modal-desc">Description goes here...</div>
-        </div>
-    </div>
-
-    <div id="folder-stack">
-        <div class="folder-tab" draggable="true" data-target="skills-panel">ABILITIES</div>
-        <div class="folder-tab" draggable="true" data-target="timeline-panel">TIMELINE</div>
-        <div class="folder-tab" draggable="true" data-target="extras-panel">EXTRAS</div>
-        <div class="folder-tab" draggable="true" data-target="contact-panel">CONTACT</div>
-    </div>
-
-    <div id="skills-panel" class="ui-panel"><div class="panel-header"><span>:: SYSTEM STATS</span><span class="close-panel">×</span></div><div class="panel-content" id="skills-list"></div></div>
-    <div id="timeline-panel" class="ui-panel"><div class="panel-header"><span>:: LOGS / HISTORY</span><span class="close-panel">×</span></div><div class="panel-content" id="timeline-content"></div></div>
-    <div id="extras-panel" class="ui-panel"><div class="panel-header"><span>:: ADD-ONS</span><span class="close-panel">×</span></div><div class="panel-content" id="extras-content"></div></div>
-    <div id="contact-panel" class="ui-panel"><div class="panel-header"><span>:: CONNECT</span><span class="close-panel">×</span></div><div class="panel-content" id="contact-content"></div></div>
-
+    <script src="cursor.js"></script>
     <script type="module" src="script.js"></script>
+</body>
+</html>
+
+<a href="resume.html" id="resume-btn">RESUME</a>
+<a href="portfolio.html" id="portfolio-btn">PORTFOLIO</a>
+
+<div id="copyright">© 2025 Leonardo Donati. All rights reserved.</div>
+
+<div id="main-wrapper">
+    <div class="hero">
+        <h1 id="hero-name">
+            <div id="name-line-1">LEONARDO</div>
+            <div id="name-line-2">DONATI</div>
+        </h1>
+        <div class="subtitle" id="hero-subtitle">ARCHITECTURE STUDENT</div>
+    </div>
+    <div class="interaction-hint">[ DRAG TO ROTATE • CLICK NODES FOR DETAILS ]</div>
+    <div id="canvas-container"></div>
+
+    <div id="project-modal">
+        <div class="close-modal" id="close-modal-btn">×</div>
+        <div class="modal-title" id="modal-title">Project Name</div>
+        <div class="modal-tech" id="modal-tech">// Tech Stack</div>
+        <div class="modal-desc" id="modal-desc">Description goes here...</div>
+    </div>
+</div>
+
+<div id="folder-stack">
+    <div class="folder-tab" draggable="true" data-target="skills-panel">ABILITIES</div>
+    <div class="folder-tab" draggable="true" data-target="timeline-panel">TIMELINE</div>
+    <div class="folder-tab" draggable="true" data-target="extras-panel">EXTRAS</div>
+    <div class="folder-tab" draggable="true" data-target="contact-panel">CONTACT</div>
+</div>
+
+<div id="skills-panel" class="ui-panel"><div class="panel-header"><span>:: SYSTEM STATS</span><span class="close-panel">×</span></div><div class="panel-content" id="skills-list"></div></div>
+<div id="timeline-panel" class="ui-panel"><div class="panel-header"><span>:: LOGS / HISTORY</span><span class="close-panel">×</span></div><div class="panel-content" id="timeline-content"></div></div>
+<div id="extras-panel" class="ui-panel"><div class="panel-header"><span>:: ADD-ONS</span><span class="close-panel">×</span></div><div class="panel-content" id="extras-content"></div></div>
+<div id="contact-panel" class="ui-panel"><div class="panel-header"><span>:: CONNECT</span><span class="close-panel">×</span></div><div class="panel-content" id="contact-content"></div></div>
+
+<script type="module" src="script.js"></script>
 </body>
 </html>

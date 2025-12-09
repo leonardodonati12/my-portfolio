@@ -371,45 +371,20 @@ async function runGhostTypewriter(text, element, callback) {
     if (callback) callback();
 }
 
-const cursorDot = document.querySelector('.cursor-dot');
-const cursorOutline = document.querySelector('.cursor-outline');
-window.addEventListener('mousemove', function (e) {
-    const posX = e.clientX;
-    const posY = e.clientY;
-    cursorDot.style.left = `${posX}px`;
-    cursorDot.style.top = `${posY}px`;
-    cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" });
-});
-const addHoverEffect = (element) => {
-    element.addEventListener('mouseenter', () => {
-        cursorOutline.style.width = '60px';
-        cursorOutline.style.height = '60px';
-        cursorOutline.style.backgroundColor = 'rgba(0, 255, 136, 0.1)';
-    });
-    element.addEventListener('mouseleave', () => {
-        cursorOutline.style.width = '40px';
-        cursorOutline.style.height = '40px';
-        cursorOutline.style.backgroundColor = 'transparent';
-    });
-};
-addHoverEffect(startBtn);
-addHoverEffect(aboutOverlay);
-addHoverEffect(phrasesOverlay);
-addHoverEffect(closeBtn);
-addHoverEffect(heroName);
-addHoverEffect(heroSubtitle);
-document.querySelectorAll('.panel-header').forEach(h => addHoverEffect(h));
-document.querySelectorAll('.folder-tab').forEach(i => addHoverEffect(i));
-document.getElementById('portfolio-btn').addEventListener('mouseenter', () => {
-    cursorOutline.style.width = '60px';
-    cursorOutline.style.height = '60px';
-    cursorOutline.style.backgroundColor = 'rgba(0, 255, 136, 0.1)';
-});
-document.getElementById('portfolio-btn').addEventListener('mouseleave', () => {
-    cursorOutline.style.width = '40px';
-    cursorOutline.style.height = '40px';
-    cursorOutline.style.backgroundColor = 'transparent';
-});
+/* Adicione ou verifique se já existe */
+.notranslate {
+    transform: translateZ(0); /* Hack para evitar re-render do tradutor */
+}
+
+.cursor - dot, .cursor - outline {
+    pointer - events: none!important; /* Essencial para clicar através dele */
+    z - index: 9999!important;
+}
+
+/* Esconde o cursor padrão do sistema */
+body, a, button {
+    cursor: none!important;
+}
 
 // --- THREE.JS CONFIGURATION ---
 const scene = new THREE.Scene();
