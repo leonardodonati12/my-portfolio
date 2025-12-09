@@ -580,6 +580,13 @@ function animate() {
         const intersectsNodes = raycaster.intersectObjects(projectNodes);
         const intersectsCenter = raycaster.intersectObject(sphere);
 
+        // NOVA ÓRBITA DOS PROJETOS (Gira o grupo todo)
+        // Só gira se não estiver com o mouse em cima de uma esfera (para facilitar o clique)
+        if (!hoveredNode) {
+            projectGroup.rotation.y -= 0.001; // Velocidade da órbita
+            projectGroup.rotation.z += 0.0005; // Leve inclinação variável
+        }
+
         // 1. & 3. ANIMAÇÃO DE HOVER (Mudança de cor via Uniform do Shader)
         if (intersectsNodes.length > 0) {
             const object = intersectsNodes[0].object;
