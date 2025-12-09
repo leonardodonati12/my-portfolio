@@ -663,3 +663,66 @@ window.addEventListener('resize', () => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+// --- 13. SISTEMA DE ÁUDIO (SOUND SYSTEM) ---
+const audioEl = document.getElementById('theme-audio');
+const audioBtn = document.getElementById('audio-btn');
+let isAudioPlaying = false;
+
+// Define volume inicial baixo
+if (audioEl) audioEl.volume = 0.2;
+
+function toggleAudio() {
+    if (!audioEl) return;
+
+    if (isAudioPlaying) {
+        // Pausar
+        audioEl.pause();
+        audioBtn.innerHTML = '[ SOUND: OFF ]';
+        audioBtn.classList.remove('playing');
+        isAudioPlaying = false;
+    } else {
+        // Tocar
+        audioEl.play().then(() => {
+            audioBtn.innerHTML = '[ SOUND: ON ]';
+            audioBtn.classList.add('playing');
+            isAudioPlaying = true;
+        }).catch(err => console.log("Áudio bloqueado:", err));
+    }
+}
+
+// Clique no botão de áudio
+if (audioBtn) {
+    audioBtn.addEventListener('click', toggleAudio);
+}
+
+// --- AUTO-START NO "ENTER SYSTEM" ---
+// O navegador só deixa tocar áudio depois que o usuário interage (clica)
+if (startBtn) {
+    // Adiciona ao listener existente ou cria um novo
+    startBtn.addEventListener('click', () => {
+        if (audioEl && !isAudioPlaying) {
+            // Começa mudo e aumenta o volume gradualmente (Fade In)
+            audioEl.volume = 0;
+            audioEl.play().then(() => {
+                isAudioPlaying = true;
+                audioBtn.innerHTML = '[ SOUND: ON ]';
+                audioBtn.classList.add('playing');
+
+                // Efeito de Fade In
+                let vol = 0;
+                const fadeInterval = setInterval(() => {
+                    if (vol < 0.3) { // Volume máximo de 30% para não atrapalhar
+                        vol += 0.01;
+                        audioEl.volume = vol;
+                    } else {
+                        clearInterval(fadeInterval);
+                    }
+                }, 100); // Aumenta a cada 100ms
+            }).catch(e => {
+                // Se der erro (bloqueio do navegador), fica quieto e espera clique manual
+                console.log("Autoplay de áudio aguardando interação manual.");
+            });
+        }
+    });
+}

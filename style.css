@@ -787,7 +787,7 @@ body.push-bottom .interaction-hint {
 	right: 20px; /* Ajustei para compensar o tamanho maior */
 	z-index: 50;
 	/* AUMENTADO: De 140px para 220px para cobrir qualquer ponta solta */
-	width: 220px;
+	width: 330px;
 	height: 220px;
 	border-radius: 50%;
 	/* Centralização */
@@ -1073,4 +1073,62 @@ h1 {
 /* Extra: Garante que links e botões gerais também não mostrem */
 a, button, .close-panel {
 	cursor: none !important;
+}
+
+/* --- AUDIO CONTROL UI --- */
+.audio-toggle {
+	position: fixed;
+	bottom: 20px;
+	right: 20px; /* Fica no canto oposto ao Copyright/Dica */
+	z-index: 6000; /* Acima de tudo */
+
+	background: transparent;
+	border: 1px solid #333;
+	color: #555;
+	font-family: 'Consolas', monospace;
+	font-size: 0.65rem;
+	padding: 8px 12px;
+	letter-spacing: 1px;
+	/* Mantém seu cursor customizado */
+	cursor: none !important;
+	transition: all 0.3s ease;
+}
+
+	/* Hover Effect */
+	.audio-toggle:hover {
+		border-color: #00ff88;
+		color: #00ff88;
+		box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+	}
+
+	/* Estado Ativo (Tocando) */
+	.audio-toggle.playing {
+		border-color: #00ff88;
+		color: #00ff88;
+		text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+		animation: pulse-audio 3s infinite;
+	}
+
+@keyframes pulse-audio {
+	0%, 100% {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0.6;
+	}
+}
+
+/* Movimentação (Evitar sobreposição com painéis) */
+/* Quando o menu da direita abrir, o botão foge para a esquerda */
+body.push-right .audio-toggle {
+	transform: translateX(-280px);
+}
+/* Quando o menu de baixo abrir, o botão sobe */
+body.push-bottom .audio-toggle {
+	transform: translateY(-240px);
+}
+
+body.push-right.push-bottom .audio-toggle {
+	transform: translate(-280px, -240px);
 }
