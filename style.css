@@ -9,7 +9,7 @@ body {
 	user-select: none;
 }
 
-/* SYSTEM CURTAIN */
+/* SYSTEM CURTAIN (Z-Index 5500) */
 #system-curtain {
 	position: fixed;
 	top: 0;
@@ -27,25 +27,23 @@ body.active #system-curtain {
 	pointer-events: none;
 }
 
-/* GLOBAL CONTAINER (Hero, Canvas, etc) */
+/* MAIN WRAPPER */
 #main-wrapper {
 	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
-	/* Padrão de movimento: TRANSFORM */
 	transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 	z-index: 0;
 }
 
-/* Movimentos Padronizados do Container Principal */
 body.push-left #main-wrapper {
 	transform: translateX(240px);
 }
 
 body.push-top #main-wrapper {
-	transform: translateY(220px); 
+	transform: translateY(300px);
 }
 
 body.push-right #main-wrapper {
@@ -65,7 +63,19 @@ body.push-bottom #main-wrapper {
 	z-index: 0;
 }
 
-/* CURSOR CUSTOMIZADO */
+/* AUDIO VISUALIZER (A CORDA) */
+#audio-visualizer {
+	position: fixed;
+	top: 5%; /* Levemente abaixo do topo */
+	left: 0;
+	width: 100%;
+	height: 150px;
+	z-index: 3000; /* Abaixo dos botões (4000) mas visível */
+	pointer-events: none;
+	opacity: 0.6;
+}
+
+/* CURSOR */
 .cursor-dot {
 	width: 8px;
 	height: 8px;
@@ -89,41 +99,35 @@ body.push-bottom #main-wrapper {
 	transition: width 0.2s, height 0.2s, background-color 0.2s;
 }
 
-/* Tradutor Fix */
 .notranslate {
 	transform: translateZ(0);
 }
 
-/* --- FIXED UI ELEMENTS (COPYRIGHT) --- */
+/* COPYRIGHT */
 #copyright {
-	/* Posição Inicial */
 	position: fixed;
-	bottom: 20px; /* Alinhado visualmente com a dica de rotação */
+	bottom: 60px;
 	left: 20px;
-	/* Estilo */
 	font-size: 0.6rem;
 	color: #aaa;
 	letter-spacing: 1px;
 	z-index: 100;
 	pointer-events: none;
 	width: fit-content;
-	/* Animação Padronizada */
 	transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* Movimento: Empurra para a Direita (Simples) */
 body.push-left #copyright {
 	transform: translateX(280px);
 	text-align: left;
 }
 
-/* Movimento: Empurra para Cima (Negativo sobe) */
 body.push-bottom #copyright {
-	transform: translateY(-300px);
+	transform: translateY(-240px);
 }
 
-/* BUTTONS (RESUME & PORTFOLIO) */
-#resume-btn, #portfolio-btn {
+/* --- BOTÕES DO HEADER (RESUME, PORTFOLIO & AUDIO) --- */
+#resume-btn, #portfolio-btn, .audio-toggle {
 	position: fixed;
 	top: 10.5%;
 	font-size: 0.8rem;
@@ -133,41 +137,83 @@ body.push-bottom #copyright {
 	border: none;
 	background: transparent;
 	padding: 8px 15px;
-	z-index: 4000;
-	cursor: pointer;
-	/* Usando top/right aqui pois são elementos de UI fixos de canto */
-	transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), top 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), color 0.3s, transform 0.3s;
+	z-index: 4000; /* Atrás da cortina (5500) */
+	cursor: none !important;
+	/* Configuração de Animação */
+	transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), top 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 2s ease, /* Fade lento */
+	color 0.3s, text-shadow 0.3s;
+}
+
+/* Posicionamento Horizontal */
+#portfolio-btn {
+	right: 80px;
 }
 
 #resume-btn {
-	right: 170px;
+	right: 190px;
+}
+/* Audio fica à esquerda do Resume (190 + gap) */
+.audio-toggle {
+	right: 300px;
+	opacity: 0;
+	pointer-events: none;
 }
 
-#portfolio-btn {
-	right: 60px;
+/* Quando ativo, Audio aparece com delay */
+body.active .audio-toggle {
+	opacity: 1;
+	pointer-events: auto;
+	transition-delay: 1s;
 }
 
-	#resume-btn:hover, #portfolio-btn:hover {
-		color: #00ff88;
-		background: transparent;
-		text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
-		transform: translateX(-5px);
+/* Estilos Hover (Unificado) */
+#resume-btn:hover, #portfolio-btn:hover, .audio-toggle:hover {
+	color: #00ff88;
+	background: transparent;
+	text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+}
+
+/* Audio Playing State */
+.audio-toggle.playing {
+	color: #00ff88;
+	animation: pulse-text-audio 3s infinite;
+}
+
+@keyframes pulse-text-audio {
+	0%, 100% {
+		text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+		opacity: 1;
 	}
 
-/* Movimentos dos Botões */
-body.push-right #resume-btn {
-	right: 410px;
+	50% {
+		text-shadow: 0 0 15px rgba(0, 255, 136, 0.8);
+		opacity: 0.7;
+	}
 }
 
+/* Movimentação dos Botões (Push) */
+/* Todos se movem juntos para esquerda */
 body.push-right #portfolio-btn {
 	right: 300px;
 }
 
-body.push-top #resume-btn, body.push-top #portfolio-btn {
-	top: 300px;
+body.push-right #resume-btn {
+	right: 410px;
 }
 
-/* --- SIDE TABS (FOLDER STACK) --- */
+body.push-right .audio-toggle {
+	right: 520px;
+}
+
+/* Todos descem juntos */
+body.push-top #portfolio-btn,
+body.push-top #resume-btn,
+body.push-top .audio-toggle {
+	top: 280px;
+}
+
+
+/* --- SIDE TABS --- */
 #folder-stack {
 	position: fixed;
 	top: 80px;
@@ -179,7 +225,6 @@ body.push-top #resume-btn, body.push-top #portfolio-btn {
 	opacity: 0;
 	padding-left: 0;
 	margin-left: 1px;
-	/* Animação Padronizada */
 	transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 1s;
 }
 
@@ -187,13 +232,12 @@ body.active #folder-stack {
 	opacity: 1;
 }
 
-/* Movimentos das Abas */
 body.push-left #folder-stack {
 	transform: translateX(252px);
 }
 
 body.push-top #folder-stack {
-	transform: translateY(220px); /* Sincronizado com o Hero */
+	transform: translateY(300px);
 }
 
 body.push-bottom #folder-stack {
@@ -213,7 +257,7 @@ body.push-bottom #folder-stack {
 	font-size: 0.65rem;
 	letter-spacing: 2px;
 	text-transform: uppercase;
-	cursor: grab;
+	cursor: none !important;
 	margin-top: -5px;
 	position: relative;
 	z-index: 1;
@@ -248,10 +292,10 @@ body.push-bottom #folder-stack {
 
 	.folder-tab.dragging {
 		opacity: 0.5;
-		cursor: grabbing;
+		cursor: none !important;
 	}
 
-/* --- OVERLAYS --- */
+/* OVERLAYS */
 .overlay-screen {
 	position: fixed;
 	top: 0;
@@ -292,6 +336,7 @@ body.push-bottom #folder-stack {
 	color: #fff;
 	margin-bottom: 10px;
 	text-align: center;
+	cursor: none !important;
 }
 
 .intro-role {
@@ -302,6 +347,7 @@ body.push-bottom #folder-stack {
 	text-align: center;
 	height: 30px;
 	font-weight: bold;
+	cursor: none !important;
 }
 
 .about-title {
@@ -370,29 +416,29 @@ body.push-bottom #folder-stack {
 		box-shadow: 0 0 20px #00ff88;
 	}
 
-/* --- SITE UI (HERO & HINT) --- */
+/* HERO UI */
 .hero {
 	position: absolute;
 	top: 10%;
 	left: 80px;
 	pointer-events: none;
-	opacity: 0; /* Começa invisível */
+	opacity: 0;
 	transition: opacity 2s;
 	z-index: 20;
+	cursor: none !important;
 }
 
 body.active .hero {
 	opacity: 1 !important;
 }
 
-/* Força a cor Branca no Modo OS */
 .hero h1, #hero-name {
 	font-size: 3.5rem;
 	margin: 0;
 	color: #ffffff !important;
 	line-height: 1.1;
 	pointer-events: auto;
-	cursor: help;
+	cursor: none !important;
 	text-shadow: 0 0 20px rgba(0,0,0,0.8);
 }
 
@@ -404,25 +450,20 @@ body.active .hero {
 	display: inline-block;
 	padding: 5px 0;
 	pointer-events: auto;
-	cursor: help;
+	cursor: none !important;
 }
 
-/* --- DICA DE INTERAÇÃO (DRAG TO ROTATE) --- */
 .interaction-hint {
-	/* 1. Posição Inicial (Igual ao Copyright) */
-	position: fixed;
-	bottom: 30px; /* Alinhado na mesma linha base do Copyright */
+	position: absolute;
+	bottom: 20px;
 	left: 50%;
-	/* 2. Mantém centralizado no eixo X */
 	transform: translateX(-50%);
-	/* 3. Estilo Visual */
 	color: #555;
 	font-size: 0.8rem;
 	letter-spacing: 1px;
 	pointer-events: none;
 	opacity: 0;
 	z-index: 10;
-	/* 4. Animação Padronizada (Igual ao Copyright) */
 	transition: opacity 2s, transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
@@ -430,15 +471,11 @@ body.active .interaction-hint {
 	opacity: 1;
 }
 
-/* Movimento: Empurra para Cima (Igual ao Copyright) */
 body.push-bottom .interaction-hint {
-	/* Aqui está o pulo do gato:
-       -50% (Eixo X): Mantém centralizado
-    */
-	transform: translate(-50%, -290px);
+	transform: translate(-50%, -240px);
 }
 
-/* --- PANELS (UI) --- */
+/* PANELS */
 .ui-panel {
 	position: fixed;
 	background: rgba(15, 15, 15, 0.95);
@@ -501,7 +538,7 @@ body.push-bottom .interaction-hint {
 	font-size: 0.75rem;
 	letter-spacing: 2px;
 	color: #00ff88;
-	cursor: grab;
+	cursor: none !important;
 	border-bottom: 1px solid rgba(255,255,255,0.1);
 	display: flex;
 	justify-content: space-between;
@@ -515,15 +552,11 @@ body.push-bottom .interaction-hint {
 }
 
 .panel-header:active {
-	cursor: grabbing;
+	cursor: none !important;
 	background: rgba(0,255,136,0.2);
 }
 
-/* --- BOTÃO FECHAR (X) ANIMADO --- */
-
-/* --- BOTÃO FECHAR (X) CORRIGIDO --- */
 .close-panel {
-	/* [CORREÇÃO 1] Remove a "mãozinha" do Windows para manter seu cursor custom */
 	cursor: none !important;
 	color: #fff;
 	font-size: 1.2rem;
@@ -543,7 +576,6 @@ body.push-bottom .interaction-hint {
 	flex: 1;
 }
 
-/* Panel Items */
 .skill-item {
 	margin-bottom: 15px;
 }
@@ -675,7 +707,6 @@ body.push-bottom .interaction-hint {
 	line-height: 1.4;
 }
 
-/* MODAL */
 #project-modal {
 	position: fixed;
 	top: 50%;
@@ -736,7 +767,6 @@ body.push-bottom .interaction-hint {
 		color: #00ff88;
 	}
 
-/* SCROLLBAR */
 ::-webkit-scrollbar {
 	width: 4px;
 	height: 4px;
@@ -755,7 +785,6 @@ body.push-bottom .interaction-hint {
 		background: #00ff88;
 	}
 
-/* ANIMATIONS */
 .char-hidden {
 	opacity: 0;
 }
@@ -780,120 +809,47 @@ body.push-bottom .interaction-hint {
 	}
 }
 
-/* --- ARTEFATO BIO-DIGITAL (HITBOX TURBINADA) --- */
-.symbiote-container-home {
+/* CALLOUT 3D */
+#callout-container {
 	position: fixed;
-	bottom: 20px; /* Ajustei para compensar o tamanho maior */
-	right: 20px; /* Ajustei para compensar o tamanho maior */
-	z-index: 50;
-	/* AUMENTADO: De 140px para 220px para cobrir qualquer ponta solta */
-	width: 200px;
-	height: 200px;
-	border-radius: 50%;
-	/* Centralização */
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	/* Visual */
-	filter: drop-shadow(0 0 10px rgba(0, 255, 136, 0.2));
-	mix-blend-mode: screen;
-	/* Interação */
-	pointer-events: auto;
-	cursor: none !important;
-	/* TRUQUE: Cor transparente quase invisível força a detecção do mouse em toda a área */
-	background-color: rgba(0, 0, 0, 0.01);
-	/* Animação de Push */
-	transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-/* Lógica de Push (Mantida) */
-body.push-right .symbiote-container-home {
-	transform: translateX(-280px);
-}
-
-body.push-bottom .symbiote-container-home {
-	transform: translateY(-300px);
-}
-
-body.push-right.push-bottom .symbiote-container-home {
-	transform: translate(-280px, -300px);
-}
-
-.symbiote-blob {
-	position: relative;
-	width: 100px;
-	height: 100px;
-	/* Cor Base */
-	background: radial-gradient(circle at 30% 30%, #004d1a 0%, #001a05 80%);
-	border: 1px solid rgba(0, 255, 136, 0.3);
-	/* Forma */
-	clip-path: polygon(50% 0%, 65% 45%, 100% 50%, 65% 55%, 50% 100%, 35% 55%, 0% 50%, 35% 45%);
-	/* Animação Normal */
-	animation: spin-cw 30s linear infinite, spike-pulse 4s ease-in-out infinite alternate;
-	/* [NOVO] Removemos interação do blob, deixamos pro pai */
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
 	pointer-events: none;
-	transition: background 0.3s;
+	z-index: 30;
+	opacity: 0;
+	transition: opacity 0.3s ease;
 }
 
-/* [NOVO] O Hover acontece no PAI, mas afeta o FILHO */
-.symbiote-container-home:hover .symbiote-blob {
-	animation: spin-cw 8s linear infinite, spike-pulse 1s ease-in-out infinite alternate;
-	background: radial-gradient(circle at 30% 30%, #00802b 0%, #002200 80%);
-	border-color: #00ff88;
-}
+	#callout-container.visible {
+		opacity: 1;
+	}
 
-/* CAMADA INTERNA */
-.symbiote-blob::after {
-	content: '';
+#callout-label {
 	position: absolute;
-	top: 15%;
-	left: 15%;
-	right: 15%;
-	bottom: 15%;
-	background: transparent;
-	border: 1px solid rgba(0, 255, 136, 0.5);
-	clip-path: polygon(50% 0%, 80% 20%, 100% 50%, 80% 80%, 50% 100%, 20% 80%, 0% 50%, 20% 20%);
-	animation: spin-ccw 15s linear infinite;
+	color: #fff;
+	font-family: 'Consolas', monospace;
+	font-size: 0.9rem;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	white-space: nowrap;
+	text-shadow: 0 0 5px rgba(0,0,0,0.5);
 }
 
-/* Hover no pai afeta o after do filho */
-.symbiote-container-home:hover .symbiote-blob::after {
-	animation: spin-ccw 4s linear infinite;
-	border-color: #fff;
+#callout-line {
+	position: absolute;
+	height: 1px;
+	background-color: #fff;
+	transform-origin: 0 50%;
+	box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
 
-/* KEYFRAMES (Mantidos) */
-@keyframes spin-cw {
-	from {
-		transform: rotate(0deg);
-	}
-
-	to {
-		transform: rotate(360deg);
-	}
+/* GLOBAL CURSOR RESET */
+a, button, .close-panel {
+	cursor: none !important;
 }
 
-@keyframes spin-ccw {
-	from {
-		transform: rotate(360deg);
-	}
-
-	to {
-		transform: rotate(0deg);
-	}
-}
-
-@keyframes spike-pulse {
-	0% {
-		clip-path: polygon(50% 10%, 60% 40%, 90% 50%, 60% 60%, 50% 90%, 40% 60%, 10% 50%, 40% 40%);
-	}
-
-	100% {
-		clip-path: polygon(50% -20%, 55% 45%, 120% 50%, 55% 55%, 50% 120%, 45% 55%, -20% 50%, 45% 45%);
-	}
-}
-
-/* RESPONSIVE */
 @media (max-width: 768px) {
 	#folder-stack {
 		top: auto;
@@ -956,8 +912,7 @@ body.push-right.push-bottom .symbiote-container-home {
 		right: 120px;
 	}
 }
-
-/* HEADER (PORTFOLIO SPECIFIC) */
+/* Header Portfolio */
 .header {
 	padding: 40px 60px;
 	display: flex;
@@ -984,7 +939,7 @@ body.push-right.push-bottom .symbiote-container-home {
 	animation: spin 10s linear infinite;
 }
 
-h1 {
+.header h1 {
 	font-size: 1.5rem;
 	margin: 0;
 	line-height: 1;
@@ -995,175 +950,3 @@ h1 {
 	display: flex;
 	gap: 30px;
 }
-
-/* --- 3D CALLOUT (LINHA DE CHAMADA) --- */
-#callout-container {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	pointer-events: none; /* O mouse passa direto por ele */
-	z-index: 30; /* Fica acima do canvas, mas abaixo dos painéis da UI */
-	/* Começa escondido, o JS vai mostrar quando precisar */
-	opacity: 0;
-	transition: opacity 0.3s ease;
-}
-
-	/* Quando tiver a classe 'visible', ele aparece */
-	#callout-container.visible {
-		opacity: 1;
-	}
-
-#callout-label {
-	position: absolute;
-	color: #fff;
-	font-family: 'Consolas', monospace;
-	font-size: 0.9rem;
-	letter-spacing: 1px;
-	text-transform: uppercase;
-	white-space: nowrap; /* Texto não quebra linha */
-	text-shadow: 0 0 5px rgba(0,0,0,0.5); /* Sombrainha pra ler melhor */
-	/* O posicionamento exato será feito via JS */
-}
-
-#callout-line {
-	position: absolute;
-	height: 1px; /* Espessura da linha */
-	background-color: #fff;
-	/* O ponto de origem da rotação é a ponta esquerda da linha */
-	transform-origin: 0 50%;
-	box-shadow: 0 0 5px rgba(0,0,0,0.3);
-	/* A largura e a rotação serão calculadas via JS */
-}
-
-/* --- CURSOR FIX (REMOVE WINDOWS CURSOR) --- */
-
-/* 1. Botões Resume e Portfolio */
-#resume-btn,
-#portfolio-btn,
-#resume-btn:hover,
-#portfolio-btn:hover {
-	cursor: none !important;
-}
-
-/* 2. Hero e Subtitle (Antes estava 'help') */
-.hero,
-.hero h1,
-#hero-name,
-.hero .subtitle,
-.intro-role,
-.intro-name {
-	cursor: none !important;
-}
-
-/* 3. Abas Laterais (Antes estava 'grab') */
-.folder-tab,
-.folder-tab:hover,
-.folder-tab.dragging {
-	cursor: none !important;
-}
-
-/* 4. Cabeçalhos dos Painéis (Antes estava 'grab/grabbing') */
-.panel-header,
-.panel-header:active {
-	cursor: none !important;
-}
-
-/* Extra: Garante que links e botões gerais também não mostrem */
-a, button, .close-panel {
-	cursor: none !important;
-}
-
-/* --- AUDIO CONTROL UI (HEADER STYLE) --- */
-.audio-toggle {
-	/* POSICIONAMENTO */
-	position: fixed;
-	top: 10.5%;
-	right: 300px;
-	bottom: auto;
-	/* [CORREÇÃO 1] Z-Index menor que a cortina (que é 5500) */
-	z-index: 4000;
-	/* ESTILO VISUAL */
-	background: transparent;
-	border: none;
-	color: #eee;
-	font-family: 'Consolas', monospace;
-	font-size: 0.8rem;
-	letter-spacing: 2px;
-	padding: 8px 15px;
-	text-decoration: none;
-	/* ESTADO INICIAL (Escondido) */
-	cursor: none !important;
-	opacity: 0;
-	pointer-events: none;
-	/* [CORREÇÃO 2] Adicionei '1s' de delay na Opacidade */
-	/* Isso faz ele esperar a cortina subir antes de começar a brilhar */
-	transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), top 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 2s ease 1s, /* <--- O '1s' aqui é o delay */
-	color 0.3s, text-shadow 0.3s;
-}
-
-/* O restante continua igual... */
-body.active .audio-toggle {
-	opacity: 1;
-	pointer-events: auto;
-}
-
-.audio-toggle:hover {
-	color: #00ff88;
-	background: transparent;
-	text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
-}
-
-.audio-toggle.playing {
-	color: #00ff88;
-	animation: pulse-text-audio 3s infinite;
-}
-
-@keyframes pulse-text-audio {
-	0%, 100% {
-		text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
-		opacity: 1;
-	}
-
-	50% {
-		text-shadow: 0 0 15px rgba(0, 255, 136, 0.8);
-		opacity: 0.7;
-	}
-}
-
-/* --- MOVIMENTAÇÃO SINCRONIZADA --- */
-body.push-right .audio-toggle {
-	right: 520px;
-}
-
-body.push-top .audio-toggle {
-	top: 280px;
-}
-
-/* --- MOVIMENTAÇÃO SINCRONIZADA (PUSH) --- */
-
-/* 1. Quando Painel DIREITO abre (Empurra para esquerda) */
-/* Cálculo: 300px (base) + 220px (deslocamento padrão) = 520px */
-body.push-right .audio-toggle {
-	right: 520px;
-}
-
-/* 2. Quando Painel SUPERIOR abre (Desce junto com os outros) */
-body.push-top .audio-toggle {
-	top: 280px;
-}
-
-/* --- AUDIO VISUALIZER (A CORDA SONORA) --- */
-#audio-visualizer {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 150px; /* Altura da área de vibração */
-	z-index: 3000; /* Acima do fundo, abaixo dos botões (4000) */
-	pointer-events: none; /* Mouse passa direto */
-	opacity: 0.8;
-	/* Não adicionamos transition de transform aqui, 
-       pois você pediu para ele NÃO se mover com as barras */
-} 

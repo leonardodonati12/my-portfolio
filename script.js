@@ -8,7 +8,7 @@ if (urlParams.get('skip') === 'true') {
     const style = document.createElement('style');
     style.innerHTML = `
         #intro-overlay, #about-overlay, #phrases-overlay, #system-curtain { display: none !important; opacity: 0 !important; }
-        .hero, .interaction-hint { opacity: 1 !important; }
+        .hero, .interaction-hint, .audio-toggle { opacity: 1 !important; transition-delay: 0s !important; }
     `;
     document.head.appendChild(style);
 }
@@ -255,12 +255,13 @@ if (skillsList) {
     });
 }
 
+// Preenchimento dos painéis (Com HTML Entities para acentos)
 if (document.getElementById('timeline-content')) {
     document.getElementById('timeline-content').innerHTML = `
-        <div class="timeline-item"><div class="time-date">Aug 2024 - Present</div><div class="time-role">Spbim - Architecture Intern</div><div class="time-place">São Paulo - SP</div><div class="time-desc">BIM implementation support, parametric modeling, point cloud (laser scanner), coordination.</div></div>
-        <div class="timeline-item"><div class="time-date">Oct 2020 - Apr 2021</div><div class="time-role">Tekno S.A. - Electrical Intern</div><div class="time-place">Guaratinguetá - SP</div><div class="time-desc">Analysis and development of electrical plans, preventive and corrective maintenance.</div></div>
+        <div class="timeline-item"><div class="time-date">Aug 2024 - Present</div><div class="time-role">Spbim - Architecture Intern</div><div class="time-place">S&atilde;o Paulo - SP</div><div class="time-desc">BIM implementation support, parametric modeling, point cloud (laser scanner), coordination.</div></div>
+        <div class="timeline-item"><div class="time-date">Oct 2020 - Apr 2021</div><div class="time-role">Tekno S.A. - Electrical Intern</div><div class="time-place">Guaratinguet&aacute; - SP</div><div class="time-desc">Analysis and development of electrical plans, preventive and corrective maintenance.</div></div>
         <div class="timeline-item"><div class="time-date">Jan 2022 - Dec 2026</div><div class="time-role">Universidade Anhembi Morumbi</div><div class="time-desc">Bachelor of Architecture and Urbanism.</div></div>
-        <div class="timeline-item"><div class="time-date">Jan 2017 - Dec 2019</div><div class="time-role">Colégio Técnico Industrial - Unesp</div><div class="time-desc">Technical High School.</div></div>
+        <div class="timeline-item"><div class="time-date">Jan 2017 - Dec 2019</div><div class="time-role">Col&eacute;gio T&eacute;cnico Industrial - Unesp</div><div class="time-desc">Technical High School.</div></div>
     `;
 }
 if (document.getElementById('extras-content')) {
@@ -284,53 +285,77 @@ if (document.getElementById('contact-content')) {
 // --- 10. LÓGICA DAS ABAS (DRAG & DROP) ---
 const folderStack = document.getElementById('folder-stack');
 let draggedTab = null;
+
 if (folderStack) {
     document.querySelectorAll('.folder-tab').forEach(tab => {
         tab.addEventListener('dragstart', (e) => {
-            draggedTab = tab; tab.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move';
+            draggedTab = tab;
+            tab.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
         });
         tab.addEventListener('dragend', () => {
-            draggedTab = null; tab.classList.remove('dragging');
+            draggedTab = null;
+            tab.classList.remove('dragging');
         });
         tab.addEventListener('click', () => {
             openPanel(tab.getAttribute('data-target'));
         });
     });
+
     folderStack.addEventListener('dragover', (e) => {
         e.preventDefault();
         const afterElement = getDragAfterElement(folderStack, e.clientY);
-        if (afterElement == null) folderStack.appendChild(draggedTab); else folderStack.insertBefore(draggedTab, afterElement);
+        if (afterElement == null) {
+            folderStack.appendChild(draggedTab);
+        } else {
+            folderStack.insertBefore(draggedTab, afterElement);
+        }
     });
 }
+
 function getDragAfterElement(container, y) {
     const draggableElements = [...container.querySelectorAll('.folder-tab:not(.dragging)')];
     return draggableElements.reduce((closest, child) => {
         const box = child.getBoundingClientRect();
         const offset = y - box.top - box.height / 2;
-        if (offset < 0 && offset > closest.offset) return { offset: offset, element: child }; else return closest;
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+        } else {
+            return closest;
+        }
     }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 
 // --- 11. GERENCIADOR DE JANELAS (PANELS) ---
 const panels = document.querySelectorAll('.ui-panel');
+
 function closePanel(panel) {
     panel.style.display = 'none';
     const target = document.querySelector(`[data-target="${panel.id}"]`);
     if (target) target.classList.remove('active-tab');
-    if (!panel.classList.contains('floating')) document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
+
+    if (!panel.classList.contains('floating')) {
+        document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
+    }
 }
+
 function openPanel(panelId) {
     const panel = document.getElementById(panelId);
     if (!panel) return;
+
     panels.forEach(p => { if (p.id !== panelId && !p.classList.contains('floating')) closePanel(p); });
+
     panel.style.display = 'flex';
     const target = document.querySelector(`[data-target="${panelId}"]`);
     if (target) target.classList.add('active-tab');
+
     if (!panel.classList.contains('floating')) dockPanel(panel, 'left');
 }
+
 function dockPanel(panel, side) {
     panel.classList.remove('docked-left', 'docked-right', 'docked-top', 'docked-bottom', 'floating');
     panel.style.top = ''; panel.style.left = ''; panel.style.right = ''; panel.style.bottom = ''; panel.style.height = ''; panel.style.width = '';
+
     if (side !== 'float') {
         panel.classList.add(`docked-${side}`);
         document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
@@ -359,9 +384,8 @@ document.querySelectorAll('.panel-header').forEach(h => {
             dragPanel.style.top = (e.clientY - diffY) + 'px';
         }
 
-        // [CORREÇÃO] Antes era 'grabbing', agora é 'none' para manter seu cursor custom
         h.style.cursor = 'none';
-        document.body.style.cursor = 'none'; // Garante no body também
+        document.body.style.cursor = 'none';
     });
 });
 
@@ -371,7 +395,6 @@ window.addEventListener('mousemove', (e) => {
     dragPanel.style.top = (e.clientY - diffY) + 'px';
 
     const t = 50;
-    // Lógica de borda verde
     if (e.clientX < t || e.clientX > window.innerWidth - t ||
         e.clientY < t || e.clientY > window.innerHeight - t) {
         dragPanel.style.borderColor = '#00ff88';
@@ -385,8 +408,7 @@ window.addEventListener('mouseup', (e) => {
     isDragging = false;
 
     if (dragPanel) {
-        // [CORREÇÃO] Reseta para 'none' em vez de 'grab'
-        dragPanel.querySelector('.panel-header').style.cursor = 'none'; 
+        dragPanel.querySelector('.panel-header').style.cursor = 'none';
         dragPanel.style.borderColor = '#333';
 
         const t = 50;
@@ -401,7 +423,7 @@ window.addEventListener('mouseup', (e) => {
 
 document.querySelectorAll('.close-panel').forEach(btn => btn.addEventListener('click', (e) => closePanel(e.target.closest('.ui-panel'))));
 
-// --- 12. THREE.JS CONFIGURATION (3D) ---
+// --- 12. THREE.JS CONFIGURATION (3D & CALLOUT) ---
 const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x050505, 0.002);
 
@@ -422,7 +444,7 @@ controls.enableZoom = true;
 controls.autoRotate = true;
 controls.autoRotateSpeed = 0.05;
 
-// --- FUNÇÃO AUXILIAR: Converte posição 3D para 2D (Pixels na tela) ---
+// Função Auxiliar de Projeção
 function getScreenPosition(object3D, camera, renderer) {
     const vector = new THREE.Vector3();
     const canvas = renderer.domElement;
@@ -433,13 +455,14 @@ function getScreenPosition(object3D, camera, renderer) {
     return { x, y };
 }
 
-// Objetos
+// Esfera Central
 const geometry = new THREE.IcosahedronGeometry(4, 2);
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 });
 const sphere = new THREE.Mesh(geometry, material);
 sphere.userData = { isCenter: true };
 scene.add(sphere);
 
+// Partículas
 const pGeo = new THREE.BufferGeometry();
 const pCount = 10000;
 const pPos = new Float32Array(pCount * 3);
@@ -484,10 +507,10 @@ const fragmentShader = `
 `;
 
 const projetosSimulados = [
-    { titulo: "Reconhecendo a Mooca", tech: "Urbanismo / Fotogrametria", descricao: "Levantamento urbano e análise de fluxos." },
+    { titulo: "Reconhecendo a Mooca", tech: "Urbanismo / Fotogrametria", descricao: "Levantamento urbano e an&aacute;lise de fluxos." },
     { titulo: "Spbim Workshop", tech: "BIM / Laser Scan", descricao: "Monitoria de levantamento com nuvem de pontos." },
-    { titulo: "Plugin Automation", tech: "C# / Revit API", descricao: "Desenvolvimento de automação para arquitetura." },
-    { titulo: "Pavilhão Paramétrico", tech: "Grasshopper / Rhino", descricao: "Estudos de forma e fabricação digital." }
+    { titulo: "Plugin Automation", tech: "C# / Revit API", descricao: "Desenvolvimento de automa&ccedil;&atilde;o para arquitetura." },
+    { titulo: "Pavilh&atilde;o Param&eacute;trico", tech: "Grasshopper / Rhino", descricao: "Estudos de forma e fabrica&ccedil;&atilde;o digital." }
 ];
 
 fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(projetos => {
@@ -518,7 +541,7 @@ fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(p
         const node = new THREE.Mesh(nodeGeo, nodeMat);
 
         node.position.set(x * radius, y * radius, z * radius);
-        // Salva o título no userData para usar no callout
+        // Título salvo para o Callout
         node.userData = { id: i, data: proj, isNode: true, projectName: proj.titulo };
 
         projectNodes.push(node);
@@ -526,7 +549,7 @@ fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(p
     });
 });
 
-// --- INTERACTION 3D & CALLOUT LOGIC ---
+// --- RAYCASTER (HOVER & CALLOUT) ---
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 let hoveredNode = null;
@@ -550,9 +573,9 @@ window.addEventListener('click', (event) => {
 });
 
 function openModal(data) {
-    if (modalTitle) modalTitle.innerText = data.titulo;
-    if (modalTech) modalTech.innerText = "// " + data.tech;
-    if (modalDesc) modalDesc.innerText = data.descricao;
+    if (modalTitle) modalTitle.innerHTML = data.titulo;
+    if (modalTech) modalTech.innerHTML = "// " + data.tech;
+    if (modalDesc) modalDesc.innerHTML = data.descricao;
     if (modal) {
         modal.style.display = 'flex';
         setTimeout(() => { modal.classList.add('open'); }, 10);
@@ -577,6 +600,7 @@ window.addEventListener('mousedown', (e) => {
     }
 });
 
+// ANIMATE LOOP (3D + Callout Update)
 function animate() {
     requestAnimationFrame(animate);
     controls.update();
@@ -586,29 +610,27 @@ function animate() {
         const intersectsNodes = raycaster.intersectObjects(projectNodes);
         const intersectsCenter = raycaster.intersectObject(sphere);
 
-        // Rotação automática quando não há hover
+        // Rotação automática se não houver hover
         if (!hoveredNode) {
             projectGroup.rotation.y -= 0.001;
             projectGroup.rotation.z += 0.0005;
         }
 
         if (intersectsNodes.length > 0) {
-            // --- MOUSE SOBRE NÓ (CALLOUT ATIVO) ---
+            // --- MOUSE NO NÓ ---
             const object = intersectsNodes[0].object;
 
-            // Lógica do Callout
+            // Desenha a linha de chamada (Callout)
             if (calloutContainer && calloutLabel && calloutLine) {
                 calloutContainer.classList.add('visible');
-                calloutLabel.textContent = object.userData.projectName || "Projeto";
+                calloutLabel.innerHTML = object.userData.projectName || "Projeto"; // innerHTML para aceitar entities
 
                 const startPoint = getScreenPosition(object, camera, renderer);
-                const endPoint = { x: startPoint.x + 80, y: startPoint.y - 60 }; // Distância fixa da linha
+                const endPoint = { x: startPoint.x + 80, y: startPoint.y - 60 };
 
-                // Posiciona Texto
                 calloutLabel.style.left = `${endPoint.x}px`;
                 calloutLabel.style.top = `${endPoint.y - 20}px`;
 
-                // Desenha Linha
                 const deltaX = endPoint.x - startPoint.x;
                 const deltaY = endPoint.y - startPoint.y;
                 const lineLength = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
@@ -620,15 +642,14 @@ function animate() {
                 calloutLine.style.transform = `rotate(${angle}deg)`;
             }
 
-            // Efeitos Visuais do Nó
             if (hoveredNode !== object) {
                 if (hoveredNode) hoveredNode.material.uniforms.c.value.setHex(0xffffff);
                 hoveredNode = object;
                 hoveredNode.material.uniforms.c.value.setHex(0x00ff88);
-                document.body.style.cursor = 'pointer';
+                document.body.style.cursor = 'none'; // Garante cursor custom
             }
         } else {
-            // --- MOUSE FORA (CALLOUT INATIVO) ---
+            // --- MOUSE FORA ---
             if (calloutContainer) calloutContainer.classList.remove('visible');
 
             if (hoveredNode) {
@@ -638,13 +659,11 @@ function animate() {
             }
         }
 
-        // Efeito de escala nos nós
         projectNodes.forEach(node => {
             const targetScale = (node === hoveredNode) ? 1.5 : 1;
             node.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
         });
 
-        // Efeito na esfera central
         if (intersectsCenter.length > 0) {
             sphere.rotation.y += 0.001;
             sphere.rotation.x += 0.001;
@@ -662,6 +681,7 @@ window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    if (canvas) { canvas.width = window.innerWidth; } // Resize também do canvas de áudio
 });
 
 // --- 13. SISTEMA DE ÁUDIO & VISUALIZADOR ---
@@ -674,94 +694,59 @@ let isAudioPlaying = false;
 let audioContext, analyser, dataArray, source;
 let animationId;
 
-// Configuração inicial do Canvas
 if (canvas) {
     canvas.width = window.innerWidth;
     canvas.height = 150;
 }
 
-// Função para iniciar o contexto de áudio (Navegadores exigem interação do usuário)
 function setupAudioContext() {
     if (!audioContext && audioEl) {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         audioContext = new AudioContext();
         analyser = audioContext.createAnalyser();
-
-        // Conecta o áudio HTML ao Analisador
         source = audioContext.createMediaElementSource(audioEl);
         source.connect(analyser);
         analyser.connect(audioContext.destination);
-
-        // Configurações da "Corda"
-        analyser.fftSize = 2048; // Detalhe da onda
+        analyser.fftSize = 2048;
         const bufferLength = analyser.fftSize;
         dataArray = new Uint8Array(bufferLength);
     }
 }
 
-// Função de Desenho (Loop)
 function drawVisualizer() {
     if (!ctx || !canvas) return;
-
-    // Limpa o canvas anterior
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Configura o estilo da linha (Neon Green)
     ctx.lineWidth = 2;
     ctx.strokeStyle = '#00ff88';
     ctx.shadowBlur = 5;
     ctx.shadowColor = '#00ff88';
-
     ctx.beginPath();
-
     const width = canvas.width;
     const height = canvas.height;
 
-    // Se estiver tocando, pega os dados. Se não, desenha linha reta.
     if (isAudioPlaying && analyser) {
         analyser.getByteTimeDomainData(dataArray);
-
         const sliceWidth = width * 1.0 / dataArray.length;
         let x = 0;
-
         for (let i = 0; i < dataArray.length; i++) {
-            const v = dataArray[i] / 128.0; // Normaliza
-            const y = (v * height) / 2; // Centraliza e define amplitude
-
-            if (i === 0) {
-                ctx.moveTo(x, y);
-            } else {
-                ctx.lineTo(x, y);
-            }
+            const v = dataArray[i] / 128.0;
+            const y = (v * height) / 2;
+            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
             x += sliceWidth;
         }
     } else {
-        // Estado Desligado: Linha Reta no topo (ou meio)
-        // Vamos colocar levemente abaixo do topo para parecer uma corda tensa
         ctx.moveTo(0, 30);
         ctx.lineTo(width, 30);
     }
-
     ctx.stroke();
-
-    // Mantém o loop rodando
     animationId = requestAnimationFrame(drawVisualizer);
 }
-
-// Inicia o desenho (mesmo parado, para desenhar a linha reta)
 drawVisualizer();
 
-// Função Toggle (Liga/Desliga Som)
 function toggleAudio() {
     if (!audioEl) return;
-
-    // Garante que o contexto existe
     setupAudioContext();
-
-    // Retoma o contexto se estiver suspenso (comum no Chrome)
-    if (audioContext.state === 'suspended') {
-        audioContext.resume();
-    }
+    if (audioContext.state === 'suspended') audioContext.resume();
 
     if (isAudioPlaying) {
         audioEl.pause();
@@ -777,41 +762,20 @@ function toggleAudio() {
     }
 }
 
-if (audioBtn) {
-    audioBtn.addEventListener('click', toggleAudio);
-}
+if (audioBtn) audioBtn.addEventListener('click', toggleAudio);
 
-// Atualiza tamanho do canvas se redimensionar a tela
-window.addEventListener('resize', () => {
-    if (canvas) {
-        canvas.width = window.innerWidth;
-        // O height é fixo no CSS, mas bom garantir aqui se quiser responsivo
-    }
-});
-
-// --- AUTO-START NO "ENTER SYSTEM" ---
 if (startBtn) {
     startBtn.addEventListener('click', () => {
-        // Configura o contexto no primeiro clique do usuário
         setupAudioContext();
-
         if (audioEl && !isAudioPlaying) {
             audioEl.volume = 0;
-            // Tenta tocar
             audioEl.play().then(() => {
                 isAudioPlaying = true;
                 audioBtn.innerHTML = '[ SOUND: ON ]';
                 audioBtn.classList.add('playing');
-
-                // Fade In
                 let vol = 0;
                 const fade = setInterval(() => {
-                    if (vol < 0.2) {
-                        vol += 0.01;
-                        audioEl.volume = vol;
-                    } else {
-                        clearInterval(fade);
-                    }
+                    if (vol < 0.2) { vol += 0.01; audioEl.volume = vol; } else { clearInterval(fade); }
                 }, 100);
             }).catch(e => console.log("Autoplay aguardando interação."));
         }
