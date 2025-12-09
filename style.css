@@ -210,7 +210,7 @@ body.push-left #folder-stack {
 
 /* [AJUSTE 3] Sincronizado com o main-wrapper */
 body.push-top #folder-stack {
-	transform: translateY(140px);
+	transform: translateY(300px);
 }
 
 body.push-bottom #folder-stack {
