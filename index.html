@@ -7,26 +7,30 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="intro-overlay" class="overlay-screen">
-        <div class="intro-name">LEONARDO DONATI</div>
-        <div class="intro-role notranslate" id="scramble-text">ARCHITECTURE STUDENT</div>
-        <button class="enter-btn" id="start-btn">[ ENTER SYSTEM ]</button>
-    </div>
+        <div id="system-curtain"></div>
 
-    <div id="about-overlay" class="overlay-screen">
-        <div class="about-title">WHO AM I?</div>
-        <div class="about-text notranslate" id="bio-text-container"></div>
-        <div class="continue-hint" id="about-hint">[ CLICK ANYWHERE TO CONTINUE ]</div>
-    </div>
+        <div class="cursor-dot"></div>
+        <div class="cursor-outline"></div>
+        <div id="intro-overlay" class="overlay-screen">
+            <div class="intro-name">LEONARDO DONATI</div>
+            <div class="intro-role notranslate" id="scramble-text">ARCHITECTURE STUDENT</div>
+            <button class="enter-btn" id="start-btn">[ ENTER SYSTEM ]</button>
+        </div>
 
-    <div id="phrases-overlay" class="overlay-screen">
-        <div class="phrases-text notranslate" id="phrases-container"></div>
-        <div class="continue-hint" style="opacity: 1;">[ CLICK ANYWHERE TO CONTINUE ]</div>
-    </div>
+        <div id="about-overlay" class="overlay-screen">
+            <div class="about-title">WHO AM I?</div>
+            <div class="about-text notranslate" id="bio-text-container"></div>
+            <div class="continue-hint" id="about-hint">[ CLICK ANYWHERE TO CONTINUE ]</div>
+        </div>
 
-    <script src="cursor.js"></script>
-    <script type="module" src="script.js"></script>
-</body>
+        <div id="phrases-overlay" class="overlay-screen">
+            <div class="phrases-text notranslate" id="phrases-container"></div>
+            <div class="continue-hint" style="opacity: 1;">[ CLICK ANYWHERE TO CONTINUE ]</div>
+        </div>
+
+        <script src="cursor.js"></script>
+        <script type="module" src="script.js"></script>
+    </body>
 </html>
 
 <a href="resume.html" id="resume-btn">RESUME</a>
