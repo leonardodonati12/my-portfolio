@@ -98,7 +98,7 @@ body.push-bottom #main-wrapper {
 #copyright {
 	/* Posição Inicial */
 	position: fixed;
-	bottom: 60px; /* Alinhado visualmente com a dica de rotação */
+	bottom: 15px; /* Alinhado visualmente com a dica de rotação */
 	left: 20px;
 	/* Estilo */
 	font-size: 0.6rem;
@@ -430,7 +430,7 @@ body.active .interaction-hint {
 
 /* Movimento: Sobe -350px mantendo o X centralizado */
 body.push-bottom .interaction-hint {
-	transform: translate(-50%, -350px);
+	transform: translate(-50%, -300px);
 }
 
 /* --- PANELS (UI) --- */
