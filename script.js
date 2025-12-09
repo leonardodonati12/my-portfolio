@@ -436,6 +436,30 @@ controls.enableZoom = true;
 controls.autoRotate = true;
 controls.autoRotateSpeed = 0.05;
 
+// Referências para o Callout
+const calloutContainer = document.getElementById('callout-container');
+const calloutLabel = document.getElementById('callout-label');
+const calloutLine = document.getElementById('callout-line');
+let currentlyHoveredSphere = null; // Para guardar qual esfera estamos mirando
+
+// --- FUNÇÃO AUXILIAR: Converte posição 3D para 2D (Pixels na tela) ---
+function getScreenPosition(object3D, camera, renderer) {
+    const vector = new THREE.Vector3();
+    const canvas = renderer.domElement;
+
+    // 1. Pega a posição central do objeto no mundo 3D
+    vector.setFromMatrixPosition(object3D.matrixWorld);
+
+    // 2. Projeta essa posição usando a câmera (vira coordenadas normalizadas entre -1 e 1)
+    vector.project(camera);
+
+    // 3. Converte de normalizado para pixels da tela
+    const x = (vector.x * 0.5 + 0.5) * canvas.clientWidth;
+    const y = (vector.y * -0.5 + 0.5) * canvas.clientHeight;
+
+    return { x, y };
+}
+
 // Objetos
 const geometry = new THREE.IcosahedronGeometry(4, 2);
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 });
@@ -546,9 +570,56 @@ window.addEventListener('click', (event) => {
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(projectNodes);
     if (intersects.length > 0) {
-        const clickedNode = intersects[0].object;
-        const projectData = clickedNode.userData.data;
-        openModal(projectData);
+        // --- MOUSE ESTÁ SOBRE UMA ESFERA ---
+
+        // Pega a primeira esfera atingida
+        const hoveredObject = intersects[0].object;
+        currentlyHoveredSphere = hoveredObject;
+
+        // 1. Mostra o container
+        calloutContainer.classList.add('visible');
+
+        // 2. Define o texto (supondo que você guardou o nome no 'userData' da esfera)
+        // Se você guardou o nome de outro jeito, ajuste aqui.
+        calloutLabel.textContent = hoveredObject.userData.projectName || "Projeto Sem Nome";
+
+        // 3. Calcula as posições
+        // Posição da esfera na tela (Ponto Inicial da linha)
+        const startPoint = getScreenPosition(hoveredObject, camera, renderer);
+
+        // Define onde o texto vai ficar.
+        // Exemplo: 100px para a direita e 60px para cima da esfera.
+        const endPoint = {
+            x: startPoint.x + 100,
+            y: startPoint.y - 60
+        };
+
+        // 4. Posiciona o Texto
+        // O texto fica exatamente no ponto final, um pouco acima da linha
+        calloutLabel.style.left = `${endPoint.x}px`;
+        calloutLabel.style.top = `${endPoint.y - 20}px`; // Sobe 20px para ficar sobre a linha
+
+        // 5. Calcula e desenha a linha (Matemática básica de triângulo)
+        const deltaX = endPoint.x - startPoint.x;
+        const deltaY = endPoint.y - startPoint.y;
+        // Teorema de Pitágoras para achar o comprimento
+        const lineLength = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        // Arco tangente para achar o ângulo de rotação
+        const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+
+        // Aplica os estilos na linha
+        calloutLine.style.width = `${lineLength}px`;
+        calloutLine.style.left = `${startPoint.x}px`;
+        calloutLine.style.top = `${startPoint.y}px`;
+        calloutLine.style.transform = `rotate(${angle}deg)`;
+
+
+    } else {
+        // --- MOUSE NÃO ESTÁ SOBRE NENHUMA ESFERA ---
+        if (currentlyHoveredSphere) {
+            calloutContainer.classList.remove('visible');
+            currentlyHoveredSphere = null;
+        }
     }
 });
 
