@@ -299,7 +299,6 @@ body.push-bottom #folder-stack {
 	font-size: 1.2rem;
 	letter-spacing: 5px;
 	color: #00ff88;
-	/* AJUSTE 1: Diminuí de 50px para 15px para o botão subir */
 	margin-bottom: 15px;
 	text-align: center;
 	height: 30px;
@@ -317,9 +316,11 @@ body.push-bottom #folder-stack {
 	font-size: 1.1rem;
 	line-height: 1.8;
 	color: #ddd;
-	text-align: left;
+	text-align: justify;
 	width: 100%;
-	white-space: pre-wrap;
+	max-width: 800px;
+	white-space: normal; 
+	word-wrap: break-word;
 }
 
 .phrases-text {
