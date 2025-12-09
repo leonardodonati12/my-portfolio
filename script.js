@@ -715,33 +715,61 @@ function setupAudioContext() {
 
 function drawVisualizer() {
     if (!ctx || !canvas) return;
+
+    // Limpa o canvas anterior
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = '#00ff88';
-    ctx.shadowBlur = 5;
-    ctx.shadowColor = '#00ff88';
+
+    // ESTÉTICA: Linha Branca e Grossa
+    ctx.lineWidth = 3; // Mais grossa
+    ctx.strokeStyle = '#ffffff'; // Branco puro
+    ctx.shadowBlur = 8; // Glow suave
+    ctx.shadowColor = 'rgba(255, 255, 255, 0.5)'; // Glow branco
+
     ctx.beginPath();
+
     const width = canvas.width;
     const height = canvas.height;
 
+    // Define a "Linha do Horizonte" da corda (Metade da altura do canvas)
+    const centerY = height / 2;
+
     if (isAudioPlaying && analyser) {
         analyser.getByteTimeDomainData(dataArray);
+
         const sliceWidth = width * 1.0 / dataArray.length;
         let x = 0;
+
         for (let i = 0; i < dataArray.length; i++) {
-            const v = dataArray[i] / 128.0;
-            const y = (v * height) / 2;
-            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            const v = dataArray[i] / 128.0; // Normaliza (vai de 0 a 2)
+            let y = (v * height) / 2; // Espalha na altura
+
+            // --- A MÁGICA DA CORDA PRESA (ENVELOPE) ---
+            // Cria um arco de 0 a PI (0 nas pontas, 1 no meio)
+            const envelope = Math.sin((i / dataArray.length) * Math.PI);
+
+            // Aplica o envelope ao deslocamento da onda
+            // Se envelope é 0 (pontas), o y volta para o centerY (linha reta)
+            const displacement = y - centerY;
+            y = centerY + (displacement * envelope * 1.5); // 1.5 aumenta a amplitude
+
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
             x += sliceWidth;
         }
     } else {
-        ctx.moveTo(0, 30);
-        ctx.lineTo(width, 30);
+        // Estado Desligado: Linha Reta Perfeita no Centro
+        ctx.moveTo(0, centerY);
+        ctx.lineTo(width, centerY);
     }
+
     ctx.stroke();
+
+    // Mantém o loop rodando
     animationId = requestAnimationFrame(drawVisualizer);
-}
-drawVisualizer();
+} drawVisualizer();
 
 function toggleAudio() {
     if (!audioEl) return;
@@ -771,7 +799,7 @@ if (startBtn) {
             audioEl.volume = 0;
             audioEl.play().then(() => {
                 isAudioPlaying = true;
-                audioBtn.innerHTML = '[ SOUND: ON ]';
+                audioBtn.innerHTML = 'SOUND ON';
                 audioBtn.classList.add('playing');
                 let vol = 0;
                 const fade = setInterval(() => {
