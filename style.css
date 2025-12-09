@@ -140,11 +140,11 @@ body.push-bottom #copyright {
 }
 
 #resume-btn {
-	right: 190px;
+	right: 170px;
 }
 
 #portfolio-btn {
-	right: 80px;
+	right: 60px;
 }
 
 	#resume-btn:hover, #portfolio-btn:hover {
@@ -519,14 +519,25 @@ body.push-bottom .interaction-hint {
 	background: rgba(0,255,136,0.2);
 }
 
+/* --- BOTÃO FECHAR (X) ANIMADO --- */
+
 .close-panel {
 	cursor: pointer;
 	color: #fff;
 	font-size: 1.2rem;
+	/* ADICIONE ISTO: Prepara a animação para ser suave */
+	/* 'transform' anima o giro, 'color' anima a cor */
+	transition: transform 0.4s ease, color 0.3s ease;
+	/* Garante que o eixo do giro seja o centro exato do X */
+	transform-origin: center;
+	display: inline-block; /* Necessário para o transform funcionar bem em spans */
 }
 
 	.close-panel:hover {
-		color: #00ff88;
+		color: #00ff88; /* Sua cor verde neon */
+		/* O GIRO DISCRETO: Gira 90 graus (1/4 de volta) */
+		/* Se quiser mais radical, troque por 180deg ou 360deg */
+		transform: rotate(90deg);
 	}
 
 .panel-content {
@@ -772,59 +783,69 @@ body.push-bottom .interaction-hint {
 	}
 }
 
-/* --- SYMBIOTE (LOGIC & AVOIDANCE) --- */
-@keyframes morphing {
-	0% {
-		border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-	}
-
-	25% {
-		border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%;
-	}
-
-	50% {
-		border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%;
-	}
-
-	75% {
-		border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%;
-	}
-
-	100% {
-		border-radius: 70% 30% 30% 70% / 60% 40% 60% 40%;
-	}
-}
-
-@keyframes spin {
-	from {
-		transform: rotate(0deg);
-	}
-
-	to {
-		transform: rotate(360deg);
-	}
-}
+/* --- ARTEFATO BIO-DIGITAL (LIGHTER & INTERACTIVE) --- */
 
 .symbiote-container-home {
-	/* Animação Padronizada */
+	/* ... (propriedades de posição e transição mantidas) ... */
 	transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 	z-index: 50;
+	/* [ALTERADO] Reduzi o brilho externo (Glow) */
+	filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.15));
+	mix-blend-mode: screen;
+	/* IMPORTANTE: Container deixa passar o clique... */
+	pointer-events: none;
 }
 
-/* Movimento: Foge para Esquerda */
-body.push-right .symbiote-container-home {
-	transform: translateX(-280px);
+.symbiote-blob {
+	position: relative;
+	width: 100px;
+	height: 100px;
+	/* [ALTERADO] Cor mais clara */
+	/* Antes era preto no centro. Agora tem um brilho verde (Highlight) */
+	background: radial-gradient(circle at 30% 30%, #004d1a 0%, #001a05 80%);
+	border: 1px solid rgba(0, 255, 136, 0.4);
+	/* Forma Inicial */
+	clip-path: polygon(50% 0%, 65% 45%, 100% 50%, 65% 55%, 50% 100%, 35% 55%, 0% 50%, 35% 45%);
+	/* Animação Normal (Lenta) */
+	animation: spin-cw 30s linear infinite, spike-pulse 4s ease-in-out infinite alternate;
+	/* IMPORTANTE: O objeto em si captura o mouse para o hover funcionar */
+	pointer-events: auto;
+	cursor: crosshair; /* Cursor legal para interação */
+	/* Transição suave de cor se quiser mudar no hover */
+	transition: background 0.3s;
 }
 
-/* Movimento: Foge para Cima */
-body.push-bottom .symbiote-container-home {
-	transform: translateY(-300px);
-}
+	/* CAMADA INTERNA */
+	.symbiote-blob::after {
+		content: '';
+		position: absolute;
+		top: 10%;
+		left: 10%;
+		right: 10%;
+		bottom: 10%;
+		background: transparent;
+		border: 1px solid rgba(0, 255, 136, 0.6); /* Borda interna mais visível */
+		clip-path: polygon(50% 0%, 80% 20%, 100% 50%, 80% 80%, 50% 100%, 20% 80%, 0% 50%, 20% 20%);
+		/* Animação Normal Interna */
+		animation: spin-ccw 15s linear infinite;
+	}
 
-/* Movimento: Foge para Esquerda e Cima (Combo) */
-body.push-right.push-bottom .symbiote-container-home {
-	transform: translate(-280px, -300px);
-}
+	/* --- INTERAÇÃO (HOVER) --- */
+	/* Quando passar o mouse EM CIMA do blob */
+	.symbiote-blob:hover {
+		/* [ALTERADO] Acelera TUDO drasticamente */
+		/* Rotação cai de 30s para 2s / Pulso cai de 4s para 0.5s (frenético) */
+		animation: spin-cw 2s linear infinite, spike-pulse 0.3s ease-in-out infinite alternate;
+		/* Opcional: Fica um pouco mais brilhante/claro ao tocar */
+		background: radial-gradient(circle at 30% 30%, #00802b 0%, #002200 80%);
+		border-color: #00ff88;
+	}
+
+		/* Acelera também o núcleo interno no hover */
+		.symbiote-blob:hover::after {
+			animation: spin-ccw 1s linear infinite;
+			border-color: #fff;
+		}
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
@@ -927,4 +948,45 @@ h1 {
 .nav {
 	display: flex;
 	gap: 30px;
+}
+
+/* --- 3D CALLOUT (LINHA DE CHAMADA) --- */
+#callout-container {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none; /* O mouse passa direto por ele */
+	z-index: 30; /* Fica acima do canvas, mas abaixo dos painéis da UI */
+	/* Começa escondido, o JS vai mostrar quando precisar */
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+	/* Quando tiver a classe 'visible', ele aparece */
+	#callout-container.visible {
+		opacity: 1;
+	}
+
+#callout-label {
+	position: absolute;
+	color: #fff;
+	font-family: 'Consolas', monospace;
+	font-size: 0.9rem;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	white-space: nowrap; /* Texto não quebra linha */
+	text-shadow: 0 0 5px rgba(0,0,0,0.5); /* Sombrainha pra ler melhor */
+	/* O posicionamento exato será feito via JS */
+}
+
+#callout-line {
+	position: absolute;
+	height: 1px; /* Espessura da linha */
+	background-color: #fff;
+	/* O ponto de origem da rotação é a ponta esquerda da linha */
+	transform-origin: 0 50%;
+	box-shadow: 0 0 5px rgba(0,0,0,0.3);
+	/* A largura e a rotação serão calculadas via JS */
 }

@@ -117,7 +117,7 @@
             </h1>
             <div class="subtitle" id="hero-subtitle">ARCHITECTURE STUDENT</div>
         </div>
-        <div class="interaction-hint">[ DRAG TO ROTATE • CLICK NODES FOR DETAILS ]</div>
+
         <div id="canvas-container"></div>
 
         <div id="project-modal">
@@ -126,6 +126,14 @@
             <div class="modal-tech" id="modal-tech">// Tech Stack</div>
             <div class="modal-desc" id="modal-desc">Description goes here...</div>
         </div>
+    </div>
+    <div class="interaction-hint">[ DRAG TO ROTATE • CLICK NODES FOR DETAILS ]</div>
+
+    </div>
+
+    <div id="callout-container">
+        <div id="callout-line"></div>
+        <div id="callout-label">Nome do Projeto</div>
     </div>
 
     <div id="folder-stack">
@@ -142,32 +150,5 @@
     <div id="skills-panel" class="ui-panel"><div class="panel-header"><span>:: SYSTEM STATS</span><span class="close-panel">×</span></div><div class="panel-content" id="skills-list"></div></div>
     <div id="timeline-panel" class="ui-panel"><div class="panel-header"><span>:: LOGS / HISTORY</span><span class="close-panel">×</span></div><div class="panel-content" id="timeline-content"></div></div>
     <div id="extras-panel" class="ui-panel"><div class="panel-header"><span>:: ADD-ONS</span><span class="close-panel">×</span></div><div class="panel-content" id="extras-content"></div></div>
-    <div id="contact-panel" class="ui-panel"><div class="panel-header"><span>:: CONNECT</span><span class="close-panel">×</span></div><div class="panel-content" id="contact-content"></div></div>
+    <div
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            // Se tiver ?skip=true na URL
-            if (urlParams.get('skip') === 'true') {
-                console.log("Skipping Intro...");
-
-                // 1. Remove as telas de overlay imediatamente
-                const curtain = document.getElementById('system-curtain');
-                const intro = document.getElementById('intro-overlay');
-
-                if (curtain) curtain.style.display = 'none';
-                if (intro) intro.style.display = 'none';
-
-                // 2. Ativa o corpo do site (mostra o nome e habilita interação)
-                document.body.classList.add('active');
-
-                // 3. Limpa a URL para ficar bonita de novo (remove o ?skip=true)
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-        });
-    </script>
-
-    <script src="cursor.js"></script>
-    <script type="module" src="script.js"></script>
-</body>
-</html>
