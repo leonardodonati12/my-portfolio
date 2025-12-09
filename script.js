@@ -426,24 +426,23 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 controls.enableZoom = true;
-// 5. MOVIMENTAÇÃO ORBITAL (Camera lenta)
+// 2. e 5. MOVIMENTAÇÃO ORBITAL LENTA
 controls.autoRotate = true;
-controls.autoRotateSpeed = 0.5; // Velocidade lenta
+controls.autoRotateSpeed = 0.05; // Velocidade reduzida 10x
 
 // --- OBJECTS ---
 const geometry = new THREE.IcosahedronGeometry(4, 2);
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 });
 const sphere = new THREE.Mesh(geometry, material);
-// Guardar ID para animação de hover
+// Guardar flag para animação de hover do centro
 sphere.userData = { isCenter: true };
 scene.add(sphere);
 
-// 1. AUMENTAR LIMITE DE PONTOS BRANCOS E ESPAÇAMENTO
+// 4. AUMENTAR LIMITE DE PONTOS BRANCOS
 const pGeo = new THREE.BufferGeometry();
-const pCount = 6000; // Aumentado de 2000
+const pCount = 10000; // Aumentado para 10k
 const pPos = new Float32Array(pCount * 3);
 for (let i = 0; i < pCount * 3; i++) {
-    // Aumentado range de 30 para 100 para espalhar mais
     pPos[i] = (Math.random() - 0.5) * 100;
 }
 pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
@@ -451,10 +450,39 @@ const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff });
 const particles = new THREE.Points(pGeo, pMat);
 scene.add(particles);
 
-// --- PROJECT NODES ---
+// --- PROJECT NODES (COM SHADER ATMOSFÉRICO) ---
 const projectNodes = [];
 const projectGroup = new THREE.Group();
 scene.add(projectGroup);
+
+// 1. SHADERS PARA O EFEITO ATMOSFÉRICO
+const vertexShader = `
+    varying vec3 vNormal;
+    varying vec3 vViewVector;
+    void main() {
+        vNormal = normalize(normalMatrix * normal);
+        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+        vViewVector = -mvPosition.xyz;
+        gl_Position = projectionMatrix * mvPosition;
+    }
+`;
+
+const fragmentShader = `
+    uniform vec3 c;
+    uniform float p;
+    uniform float glowIntensity;
+    varying vec3 vNormal;
+    varying vec3 vViewVector;
+    void main() {
+        vec3 normal = normalize( vNormal );
+        vec3 viewVector = normalize( vViewVector );
+        float dotProduct = dot( normal, viewVector );
+        float rim = 1.0 - max( dotProduct, 0.0 );
+        float finalIntensity = glowIntensity * pow( rim, p );
+        // Mix central brightness with strong rim
+        gl_FragColor = vec4( c, finalIntensity + (dotProduct*0.2) );
+    }
+`;
 
 fetch('projetos.json').then(r => r.json()).then(projetos => {
     const radius = 6.5;
@@ -466,9 +494,22 @@ fetch('projetos.json').then(r => r.json()).then(projetos => {
         const x = Math.cos(theta) * radiusAtY;
         const z = Math.sin(theta) * radiusAtY;
 
-        // 3. ESTILIZAÇÃO DAS ESFERAS (Para animação)
-        const nodeGeo = new THREE.SphereGeometry(0.3, 16, 16);
-        const nodeMat = new THREE.MeshBasicMaterial({ color: 0xffffff }); // Começa branco
+        // 1. USANDO SHADER MATERIAL EM VEZ DE BASIC
+        const nodeMat = new THREE.ShaderMaterial({
+            uniforms: {
+                "c": { type: "c", value: new THREE.Color(0xffffff) }, // Cor base branca
+                "p": { type: "f", value: 3.0 }, // Intensidade da borda
+                "glowIntensity": { type: "f", value: 1.5 } // Brilho geral
+            },
+            vertexShader: vertexShader,
+            fragmentShader: fragmentShader,
+            side: THREE.FrontSide,
+            blending: THREE.AdditiveBlending,
+            transparent: true,
+            depthWrite: false
+        });
+
+        const nodeGeo = new THREE.SphereGeometry(0.3, 32, 32); // Mais polígonos para ficar liso
         const node = new THREE.Mesh(nodeGeo, nodeMat);
 
         node.position.set(x * radius, y * radius, z * radius);
@@ -483,7 +524,6 @@ fetch('projetos.json').then(r => r.json()).then(projetos => {
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 let hoveredNode = null;
-let hoveredCenter = null;
 
 // Rastrear mouse sem clicar
 window.addEventListener('mousemove', (event) => {
@@ -517,16 +557,14 @@ closeBtn.addEventListener('click', () => {
     setTimeout(() => { modal.style.display = 'none'; }, 500);
 });
 
-// 2. BOTÃO DOUBLE CLICK NO SCROLL (MIDDLE BUTTON)
+// 3. BOTÃO DOUBLE CLICK NO SCROLL (Aumentado tempo para 500ms)
 let lastMiddleClick = 0;
 window.addEventListener('mousedown', (e) => {
-    // e.button === 1 é o botão do meio (scroll wheel click)
-    if (e.button === 1) {
-        e.preventDefault(); // Previne scroll padrão
+    if (e.button === 1) { // Botão do meio
+        e.preventDefault();
         const now = Date.now();
-        if (now - lastMiddleClick < 300) {
-            // Double click detectado
-            controls.reset(); // Reseta a câmera para a posição inicial
+        if (now - lastMiddleClick < 500) { // Tolerância maior
+            controls.reset();
         }
         lastMiddleClick = now;
     }
@@ -537,49 +575,42 @@ function animate() {
     requestAnimationFrame(animate);
     controls.update();
 
-    // Lógica de Hover (Animações 3 e 4)
     if (document.body.classList.contains('active')) {
         raycaster.setFromCamera(mouse, camera);
-
-        // Verifica interseção com Nodes e com o Centro
         const intersectsNodes = raycaster.intersectObjects(projectNodes);
         const intersectsCenter = raycaster.intersectObject(sphere);
 
-        // 3. ANIMAÇÃO DE HOVER NOS NODES (Projetos)
+        // 1. & 3. ANIMAÇÃO DE HOVER (Mudança de cor via Uniform do Shader)
         if (intersectsNodes.length > 0) {
             const object = intersectsNodes[0].object;
             if (hoveredNode !== object) {
-                // Reset anterior
                 if (hoveredNode) {
-                    hoveredNode.material.color.setHex(0xffffff);
+                    hoveredNode.material.uniforms.c.value.setHex(0xffffff); // Volta pra branco
                 }
                 hoveredNode = object;
-                // Deixa verde neon
-                hoveredNode.material.color.setHex(0x00ff88);
+                hoveredNode.material.uniforms.c.value.setHex(0x00ff88); // Fica verde neon
                 document.body.style.cursor = 'pointer';
             }
         } else {
             if (hoveredNode) {
-                hoveredNode.material.color.setHex(0xffffff);
+                hoveredNode.material.uniforms.c.value.setHex(0xffffff); // Volta pra branco
                 hoveredNode = null;
-                document.body.style.cursor = 'none'; // Volta pro cursor customizado
+                document.body.style.cursor = 'none';
             }
         }
 
-        // Animação suave de escala (Lerp)
         projectNodes.forEach(node => {
-            const targetScale = (node === hoveredNode) ? 2 : 1; // Dobra tamanho se hover
+            const targetScale = (node === hoveredNode) ? 1.5 : 1;
             node.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
         });
 
-        // 4. ANIMAÇÃO DO ICOSAEDRO (Centro)
+        // 4. ANIMAÇÃO DO ICOSAEDRO (Centro) AO PASSAR MOUSE
         if (intersectsCenter.length > 0) {
-            sphere.rotation.y += 0.02; // Gira mais rápido
-            sphere.rotation.x += 0.02;
-            sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.6, 0.05); // Mais visível
+            sphere.rotation.y += 0.02;
+            sphere.rotation.x += 0.01;
+            sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.5, 0.05);
         } else {
-            // Rotação padrão lenta (já acontece no else abaixo se quiser somar)
-            sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.15, 0.05); // Volta ao normal
+            sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.15, 0.05);
         }
     }
 
