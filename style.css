@@ -119,7 +119,7 @@ body.push-left #copyright {
 
 /* Movimento: Empurra para Cima (Negativo sobe) */
 body.push-bottom #copyright {
-	transform: translateY(-240px);
+	transform: translateY(-300px);
 }
 
 /* BUTTONS (RESUME & PORTFOLIO) */
@@ -411,7 +411,7 @@ body.active .hero {
 .interaction-hint {
 	/* 1. Posição Inicial (Igual ao Copyright) */
 	position: fixed;
-	bottom: 20px; /* Alinhado na mesma linha base do Copyright */
+	bottom: 30px; /* Alinhado na mesma linha base do Copyright */
 	left: 50%;
 	/* 2. Mantém centralizado no eixo X */
 	transform: translateX(-50%);
@@ -434,9 +434,8 @@ body.active .interaction-hint {
 body.push-bottom .interaction-hint {
 	/* Aqui está o pulo do gato:
        -50% (Eixo X): Mantém centralizado
-       -240px (Eixo Y): Sobe a mesma altura que o Copyright
     */
-	transform: translate(-50%, -240px);
+	transform: translate(-50%, -290px);
 }
 
 /* --- PANELS (UI) --- */
