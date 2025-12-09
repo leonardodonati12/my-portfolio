@@ -97,7 +97,7 @@ body.push-bottom #main-wrapper {
 /* [AJUSTE 2] Copyright alinhado com o Hint, fonte menor e lógica de troca de lado */
 #copyright {
 	position: fixed;
-	bottom: 10px; /* Alinhado visualmente com a dica de rotação */
+	bottom: 5px; /* Alinhado visualmente com a dica de rotação */
 	left: 20px;
 	font-size: 0.6rem; /* Fonte reduzida */
 	color: #aaa;
