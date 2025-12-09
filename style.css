@@ -45,7 +45,7 @@ body.push-left #main-wrapper {
 }
 
 body.push-top #main-wrapper {
-	transform: translateY(240px); 
+	transform: translateY(220px); 
 }
 
 body.push-right #main-wrapper {
@@ -98,7 +98,7 @@ body.push-bottom #main-wrapper {
 #copyright {
 	/* Posição Inicial */
 	position: fixed;
-	bottom: 10px; /* Alinhado visualmente com a dica de rotação */
+	bottom: 20px; /* Alinhado visualmente com a dica de rotação */
 	left: 20px;
 	/* Estilo */
 	font-size: 0.6rem;
@@ -193,7 +193,7 @@ body.push-left #folder-stack {
 }
 
 body.push-top #folder-stack {
-	transform: translateY(240px); /* Sincronizado com o Hero */
+	transform: translateY(220px); /* Sincronizado com o Hero */
 }
 
 body.push-bottom #folder-stack {
@@ -407,20 +407,22 @@ body.active .hero {
 	cursor: help;
 }
 
-/* Dica de Interação (Drag to Rotate) */
+/* --- DICA DE INTERAÇÃO (DRAG TO ROTATE) --- */
 .interaction-hint {
-	position: absolute;
-	bottom: calc(5% + 20px);
+	/* 1. Posição Inicial (Igual ao Copyright) */
+	position: fixed;
+	bottom: 20px; /* Alinhado na mesma linha base do Copyright */
 	left: 50%;
-	/* Base do transform: Centraliza X */
+	/* 2. Mantém centralizado no eixo X */
 	transform: translateX(-50%);
+	/* 3. Estilo Visual */
 	color: #555;
 	font-size: 0.8rem;
 	letter-spacing: 1px;
 	pointer-events: none;
 	opacity: 0;
 	z-index: 10;
-	/* Animação Padronizada */
+	/* 4. Animação Padronizada (Igual ao Copyright) */
 	transition: opacity 2s, transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
@@ -428,9 +430,13 @@ body.active .interaction-hint {
 	opacity: 1;
 }
 
-/* Movimento: Sobe -350px mantendo o X centralizado */
+/* Movimento: Empurra para Cima (Igual ao Copyright) */
 body.push-bottom .interaction-hint {
-	transform: translate(-50%, -200px);
+	/* Aqui está o pulo do gato:
+       -50% (Eixo X): Mantém centralizado
+       -240px (Eixo Y): Sobe a mesma altura que o Copyright
+    */
+	transform: translate(-50%, -240px);
 }
 
 /* --- PANELS (UI) --- */
