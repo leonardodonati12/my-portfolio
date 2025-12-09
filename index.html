@@ -7,80 +7,72 @@
     <link rel="stylesheet" href="style.css">
 
     <style>
-        /* --- ARTEFATO BIO-DIGITAL (DARK MODE) --- */
+        /* --- ARTEFATO BIO-DIGITAL (LIGHTER & INTERACTIVE) --- */
         .symbiote-container-home {
             position: fixed;
             bottom: 50px;
             right: 50px;
             z-index: 50;
-            pointer-events: none;
-            /* Brilho reduzido e mais difuso */
-            filter: drop-shadow(0 0 10px rgba(0, 255, 136, 0.2));
-            mix-blend-mode: screen; /* Ajuda a integrar com o fundo preto */
+            
+            /* Brilho reduzido (8px) e opacidade suave */
+            filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.15));
+            mix-blend-mode: screen;
+            
+            /* Container transparente para cliques */
+            pointer-events: none; 
+            transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .symbiote-blob {
             position: relative;
             width: 100px;
             height: 100px;
-            /* Gradiente escuro: Preto para Verde Escuro */
-            background: radial-gradient(circle at center, #000000 40%, #003311 100%);
-            border: 1px solid rgba(0, 255, 136, 0.3); /* Borda fina tecnológica */
+            
+            /* Cor mais clara (Verde Musgo -> Verde Escuro) */
+            background: radial-gradient(circle at 30% 30%, #004d1a 0%, #001a05 80%);
+            border: 1px solid rgba(0, 255, 136, 0.4); 
+            
             /* Forma Inicial */
             clip-path: polygon(50% 0%, 65% 45%, 100% 50%, 65% 55%, 50% 100%, 35% 55%, 0% 50%, 35% 45%);
-            /* Animações: Gira devagar (30s) e Pulsa as pontas (4s) */
+            
+            /* Animação Normal */
             animation: spin-cw 30s linear infinite, spike-pulse 4s ease-in-out infinite alternate;
+            
+            /* Interação Ativada */
+            pointer-events: auto; 
+            cursor: crosshair;
+            transition: background 0.3s;
         }
 
-            /* CAMADA INTERNA (GIRA AO CONTRÁRIO) */
-            .symbiote-blob::after {
-                content: '';
-                position: absolute;
-                top: 10%;
-                left: 10%;
-                right: 10%;
-                bottom: 10%;
-                background: transparent;
-                border: 1px solid rgba(0, 255, 136, 0.5);
-                /* Forma diferente para criar complexidade visual */
-                clip-path: polygon(50% 0%, 80% 20%, 100% 50%, 80% 80%, 50% 100%, 20% 80%, 0% 50%, 20% 20%);
-                /* Gira rápido no sentido anti-horário */
-                animation: spin-ccw 15s linear infinite;
-            }
-
-        /* Rotação Horária */
-        @keyframes spin-cw {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
+        /* Hover: Acelera e Clareia */
+        .symbiote-blob:hover {
+            animation: spin-cw 2s linear infinite, spike-pulse 0.3s ease-in-out infinite alternate;
+            background: radial-gradient(circle at 30% 30%, #00802b 0%, #002200 80%);
+            border-color: #00ff88;
         }
 
-        /* Rotação Anti-Horária */
-        @keyframes spin-ccw {
-            from {
-                transform: rotate(360deg);
-            }
-
-            to {
-                transform: rotate(0deg);
-            }
+        /* Camada Interna */
+        .symbiote-blob::after {
+            content: '';
+            position: absolute;
+            top: 10%; left: 10%; right: 10%; bottom: 10%;
+            background: transparent;
+            border: 1px solid rgba(0, 255, 136, 0.6);
+            clip-path: polygon(50% 0%, 80% 20%, 100% 50%, 80% 80%, 50% 100%, 20% 80%, 0% 50%, 20% 20%);
+            animation: spin-ccw 15s linear infinite;
         }
 
-        /* Animação de "Respiração" das Pontas (Aumenta e Diminui) */
+        .symbiote-blob:hover::after {
+            animation: spin-ccw 1s linear infinite;
+            border-color: #fff;
+        }
+
+        /* Animações */
+        @keyframes spin-cw { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes spin-ccw { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
         @keyframes spike-pulse {
-            0% {
-                /* Pontas curtas e gordas */
-                clip-path: polygon(50% 10%, 60% 40%, 90% 50%, 60% 60%, 50% 90%, 40% 60%, 10% 50%, 40% 40%);
-            }
-
-            100% {
-                /* Pontas longas e finas (Agressivo) */
-                clip-path: polygon(50% -20%, 55% 45%, 120% 50%, 55% 55%, 50% 120%, 45% 55%, -20% 50%, 45% 45%);
-            }
+            0% { clip-path: polygon(50% 10%, 60% 40%, 90% 50%, 60% 60%, 50% 90%, 40% 60%, 10% 50%, 40% 40%); }
+            100% { clip-path: polygon(50% -20%, 55% 45%, 120% 50%, 55% 55%, 50% 120%, 45% 55%, -20% 50%, 45% 45%); }
         }
     </style>
 </head>
@@ -106,7 +98,6 @@
 
     <a href="resume.html" id="resume-btn">RESUME</a>
     <a href="portfolio.html" id="portfolio-btn">PORTFOLIO</a>
-
     <div id="copyright">© 2025 Leonardo Donati. All rights reserved.</div>
 
     <div id="main-wrapper">
@@ -126,10 +117,8 @@
             <div class="modal-tech" id="modal-tech">// Tech Stack</div>
             <div class="modal-desc" id="modal-desc">Description goes here...</div>
         </div>
-    </div>
+    </div> 
     <div class="interaction-hint">[ DRAG TO ROTATE • CLICK NODES FOR DETAILS ]</div>
-
-    </div>
 
     <div id="callout-container">
         <div id="callout-line"></div>
@@ -150,5 +139,32 @@
     <div id="skills-panel" class="ui-panel"><div class="panel-header"><span>:: SYSTEM STATS</span><span class="close-panel">×</span></div><div class="panel-content" id="skills-list"></div></div>
     <div id="timeline-panel" class="ui-panel"><div class="panel-header"><span>:: LOGS / HISTORY</span><span class="close-panel">×</span></div><div class="panel-content" id="timeline-content"></div></div>
     <div id="extras-panel" class="ui-panel"><div class="panel-header"><span>:: ADD-ONS</span><span class="close-panel">×</span></div><div class="panel-content" id="extras-content"></div></div>
-    <div
+    <div id="contact-panel" class="ui-panel"><div class="panel-header"><span>:: CONNECT</span><span class="close-panel">×</span></div><div class="panel-content" id="contact-content"></div></div>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            // Se tiver ?skip=true na URL
+            if (urlParams.get('skip') === 'true') {
+                console.log("Skipping Intro...");
+
+                // 1. Remove as telas de overlay imediatamente
+                const curtain = document.getElementById('system-curtain');
+                const intro = document.getElementById('intro-overlay');
+
+                if (curtain) curtain.style.display = 'none';
+                if (intro) intro.style.display = 'none';
+
+                // 2. Ativa o corpo do site (mostra o nome e habilita interação)
+                document.body.classList.add('active');
+
+                // 3. Limpa a URL para ficar bonita de novo (remove o ?skip=true)
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        });
+    </script>
+
+    <script src="cursor.js"></script>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
