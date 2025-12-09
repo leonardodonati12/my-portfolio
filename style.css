@@ -113,10 +113,12 @@ body.push-bottom #copyright {
 	bottom: 300px;
 }
 
-/* Quando o painel ESQUERDO abre: Copyright vai para a DIREITA */
 body.push-left #copyright {
+	/* Troque o cálculo complexo por um valor fixo simples */
+	/* 260px é a largura do painel + uma folga */
 	right: 280px;
-	text-align: right;
+	/* Garante que o texto continue alinhado à esquerda */
+	text-align: left;
 }
 
 /* RESUME BUTTON */
@@ -487,10 +489,22 @@ body.active .hero {
 	cursor: help;
 }
 
+/* Aumentando a descida do CONTEÚDO (Hero/Subtitle/Canvas) */
+body.push-top #main-wrapper {
+	/* Aumente este valor conforme necessário */
+	transform: translateY(200px);
+}
+
+/* Aumentando a descida das ABAS LATERAIS (Folder Stack) */
+/* IMPORTANTE: Mantenha o mesmo valor de cima para ficarem sincronizados */
+body.push-top #folder-stack {
+	transform: translateY(200px);
+}
+
 /* [AJUSTE 1] Dica de interação subiu + 20px */
 .interaction-hint {
 	position: absolute;
-	bottom: calc(5%);
+	bottom: 15px;
 	left: 50%;
 	transform: translateX(-50%);
 	color: #555;
@@ -507,7 +521,7 @@ body.active .interaction-hint {
 }
 
 body.push-bottom .interaction-hint {
-	bottom: 260px;
+	bottom: 280px;
 }
 
 /* --- PANELS --- */
