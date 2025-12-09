@@ -194,7 +194,7 @@ body.push-bottom #folder-stack {
 		cursor: grabbing;
 	}
 
-@media (max-width: 768px) {
+	@media (max-width: 768px) {
 	#folder-stack {
 		top: auto;
 		bottom: 0;
@@ -319,7 +319,7 @@ body.push-bottom #folder-stack {
 	text-align: justify;
 	width: 100%;
 	max-width: 800px;
-	white-space: normal; 
+	white-space: normal !important;
 	word-wrap: break-word;
 }
 
