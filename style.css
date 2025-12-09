@@ -987,3 +987,41 @@ h1 {
 	box-shadow: 0 0 5px rgba(0,0,0,0.3);
 	/* A largura e a rotação serão calculadas via JS */
 }
+
+/* --- CURSOR FIX (REMOVE WINDOWS CURSOR) --- */
+
+/* 1. Botões Resume e Portfolio */
+#resume-btn,
+#portfolio-btn,
+#resume-btn:hover,
+#portfolio-btn:hover {
+	cursor: none !important;
+}
+
+/* 2. Hero e Subtitle (Antes estava 'help') */
+.hero,
+.hero h1,
+#hero-name,
+.hero .subtitle,
+.intro-role,
+.intro-name {
+	cursor: none !important;
+}
+
+/* 3. Abas Laterais (Antes estava 'grab') */
+.folder-tab,
+.folder-tab:hover,
+.folder-tab.dragging {
+	cursor: none !important;
+}
+
+/* 4. Cabeçalhos dos Painéis (Antes estava 'grab/grabbing') */
+.panel-header,
+.panel-header:active {
+	cursor: none !important;
+}
+
+/* Extra: Garante que links e botões gerais também não mostrem */
+a, button, .close-panel {
+	cursor: none !important;
+}
