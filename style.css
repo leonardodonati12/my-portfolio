@@ -9,27 +9,21 @@ body {
 	user-select: none;
 }
 
-/* --- SYSTEM CURTAIN --- */
+/* SYSTEM CURTAIN */
 #system-curtain {
 	position: fixed;
 	top: 0;
 	left: 0;
-	width: 100vw;
-	height: 100vh;
+	width: 100%;
+	height: 100%;
 	background-color: #050505;
-	/* Z-Index Estratégico: 
-       5500 fica ACIMA do site 3D (Z=0) e Botões (Z=4000)
-       Mas fica ABAIXO dos Overlays de texto (Z=6000) */
 	z-index: 5500;
-	opacity: 1; /* Garante que começa visível (preto) */
 	transition: opacity 3s ease-in-out;
-	pointer-events: auto; /* Bloqueia cliques no site enquanto está ativo */
+	pointer-events: none;
 }
 
-/* Quando o JS ativa o site, a cortina some */
 body.active #system-curtain {
-	opacity: 0 !important;
-	pointer-events: none; /* Deixa você clicar no site depois que sumir */
+	opacity: 0;
 }
 
 /* GLOBAL CONTAINER */
