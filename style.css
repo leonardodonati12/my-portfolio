@@ -780,69 +780,118 @@ body.push-bottom .interaction-hint {
 	}
 }
 
-/* --- ARTEFATO BIO-DIGITAL (LIGHTER & INTERACTIVE) --- */
-
+/* --- ARTEFATO BIO-DIGITAL (COM HITBOX ESTÁVEL) --- */
 .symbiote-container-home {
-	/* ... (propriedades de posição e transição mantidas) ... */
-	transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+	position: fixed;
+	bottom: 50px;
+	right: 50px;
 	z-index: 50;
-	/* [ALTERADO] Reduzi o brilho externo (Glow) */
-	filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.15));
+	/* [NOVO] Tamanho Fixo e Maior para criar a "Cápsula" */
+	width: 140px; /* Maior que o blob de 100px */
+	height: 140px;
+	border-radius: 50%; /* Hitbox circular perfeita */
+	/* Centraliza o blob visualmente dentro da hitbox */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	/* Visual */
+	filter: drop-shadow(0 0 10px rgba(0, 255, 136, 0.2));
 	mix-blend-mode: screen;
-	/* IMPORTANTE: Container deixa passar o clique... */
-	pointer-events: none;
+	/* [NOVO] O Container é quem interage agora */
+	pointer-events: auto;
+	cursor: none !important; /* Garante cursor custom na área toda */
+	/* Animação de Push Suave */
+	transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+	/* Debug: Descomente para ver a área vermelha */
+	/* background: rgba(255, 0, 0, 0.2); */
+}
+
+/* Lógica de Push (Mantida) */
+body.push-right .symbiote-container-home {
+	transform: translateX(-280px);
+}
+
+body.push-bottom .symbiote-container-home {
+	transform: translateY(-300px);
+}
+
+body.push-right.push-bottom .symbiote-container-home {
+	transform: translate(-280px, -300px);
 }
 
 .symbiote-blob {
 	position: relative;
 	width: 100px;
 	height: 100px;
-	/* [ALTERADO] Cor mais clara */
-	/* Antes era preto no centro. Agora tem um brilho verde (Highlight) */
+	/* Cor Base */
 	background: radial-gradient(circle at 30% 30%, #004d1a 0%, #001a05 80%);
-	border: 1px solid rgba(0, 255, 136, 0.4);
-	/* Forma Inicial */
+	border: 1px solid rgba(0, 255, 136, 0.3);
+	/* Forma */
 	clip-path: polygon(50% 0%, 65% 45%, 100% 50%, 65% 55%, 50% 100%, 35% 55%, 0% 50%, 35% 45%);
-	/* Animação Normal (Lenta) */
+	/* Animação Normal */
 	animation: spin-cw 30s linear infinite, spike-pulse 4s ease-in-out infinite alternate;
-	/* IMPORTANTE: O objeto em si captura o mouse para o hover funcionar */
-	pointer-events: auto;
-	cursor: crosshair; /* Cursor legal para interação */
-	/* Transição suave de cor se quiser mudar no hover */
+	/* [NOVO] Removemos interação do blob, deixamos pro pai */
+	pointer-events: none;
 	transition: background 0.3s;
 }
 
-	/* CAMADA INTERNA */
-	.symbiote-blob::after {
-		content: '';
-		position: absolute;
-		top: 10%;
-		left: 10%;
-		right: 10%;
-		bottom: 10%;
-		background: transparent;
-		border: 1px solid rgba(0, 255, 136, 0.6); /* Borda interna mais visível */
-		clip-path: polygon(50% 0%, 80% 20%, 100% 50%, 80% 80%, 50% 100%, 20% 80%, 0% 50%, 20% 20%);
-		/* Animação Normal Interna */
-		animation: spin-ccw 15s linear infinite;
+/* [NOVO] O Hover acontece no PAI, mas afeta o FILHO */
+.symbiote-container-home:hover .symbiote-blob {
+	animation: spin-cw 8s linear infinite, spike-pulse 1s ease-in-out infinite alternate;
+	background: radial-gradient(circle at 30% 30%, #00802b 0%, #002200 80%);
+	border-color: #00ff88;
+}
+
+/* CAMADA INTERNA */
+.symbiote-blob::after {
+	content: '';
+	position: absolute;
+	top: 15%;
+	left: 15%;
+	right: 15%;
+	bottom: 15%;
+	background: transparent;
+	border: 1px solid rgba(0, 255, 136, 0.5);
+	clip-path: polygon(50% 0%, 80% 20%, 100% 50%, 80% 80%, 50% 100%, 20% 80%, 0% 50%, 20% 20%);
+	animation: spin-ccw 15s linear infinite;
+}
+
+/* Hover no pai afeta o after do filho */
+.symbiote-container-home:hover .symbiote-blob::after {
+	animation: spin-ccw 4s linear infinite;
+	border-color: #fff;
+}
+
+/* KEYFRAMES (Mantidos) */
+@keyframes spin-cw {
+	from {
+		transform: rotate(0deg);
 	}
 
-	/* --- INTERAÇÃO (HOVER) --- */
-	/* Quando passar o mouse EM CIMA do blob */
-	.symbiote-blob:hover {
-		/* [ALTERADO] Acelera TUDO drasticamente */
-		/* Rotação cai de 30s para 2s / Pulso cai de 4s para 0.5s (frenético) */
-		animation: spin-cw 2s linear infinite, spike-pulse 0.3s ease-in-out infinite alternate;
-		/* Opcional: Fica um pouco mais brilhante/claro ao tocar */
-		background: radial-gradient(circle at 30% 30%, #00802b 0%, #002200 80%);
-		border-color: #00ff88;
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes spin-ccw {
+	from {
+		transform: rotate(360deg);
 	}
 
-		/* Acelera também o núcleo interno no hover */
-		.symbiote-blob:hover::after {
-			animation: spin-ccw 1s linear infinite;
-			border-color: #fff;
-		}
+	to {
+		transform: rotate(0deg);
+	}
+}
+
+@keyframes spike-pulse {
+	0% {
+		clip-path: polygon(50% 10%, 60% 40%, 90% 50%, 60% 60%, 50% 90%, 40% 60%, 10% 50%, 40% 40%);
+	}
+
+	100% {
+		clip-path: polygon(50% -20%, 55% 45%, 120% 50%, 55% 55%, 50% 120%, 45% 55%, -20% 50%, 45% 45%);
+	}
+}
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
