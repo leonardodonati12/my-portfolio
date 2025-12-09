@@ -5,6 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leonardo Donati | OS</title>
     <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* --- ARTEFATO CROMADO (SPIKY CHROME) --- */
+        .symbiote-container-home {
+            position: fixed;
+            bottom: 40px; /* Distância da borda inferior */
+            right: 40px; /* Distância da borda direita */
+            z-index: 50;
+            pointer-events: none; /* Permite clicar através dele */
+            filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.6)); /* Glow Verde */
+        }
+
+        .symbiote-blob {
+            width: 80px; /* Tamanho pequeno/detalhe */
+            height: 80px;
+            background: linear-gradient(135deg, #e0ffe0 0%, #003300 100%); /* Metal Verde */
+            /* Forma de Estrela Irregular */
+            clip-path: polygon(50% 0%, 65% 45%, 100% 50%, 65% 55%, 50% 100%, 35% 55%, 0% 50%, 35% 45%);
+            animation: spin 4s linear infinite, distort 2s ease-in-out infinite alternate;
+        }
+
+        /* Animação de Rotação */
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Animação de "Respiração" das pontas */
+        @keyframes distort {
+            0% {
+                clip-path: polygon(50% 0%, 65% 45%, 100% 50%, 65% 55%, 50% 100%, 35% 55%, 0% 50%, 35% 45%);
+            }
+
+            100% {
+                clip-path: polygon(50% 10%, 60% 40%, 90% 50%, 60% 60%, 50% 90%, 40% 60%, 10% 50%, 40% 40%);
+            }
+        }
+
+        /* Núcleo Brilhante (Highlight) */
+        .symbiote-blob::after {
+            content: '';
+            position: absolute;
+            top: 25%;
+            left: 25%;
+            right: 25%;
+            bottom: 25%;
+            background: #fff;
+            opacity: 0.8;
+            filter: blur(4px);
+            border-radius: 50%;
+        }
+    </style>
 </head>
 <body>
     <div id="system-curtain"></div>
@@ -57,74 +114,9 @@
         <div class="folder-tab" draggable="true" data-target="contact-panel">CONTACT</div>
     </div>
 
-    <style>
-        /* --- ARTEFATO CROMADO (SPIKY CHROME) --- */
-
-        .symbiote-container-home {
-            position: fixed;
-            bottom: 40px; /* Mais para cima para não colar na borda */
-            right: 40px;
-            z-index: 50;
-            pointer-events: none;
-            /* O drop-shadow cria o brilho neon verde em volta */
-            filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.6));
-        }
-
-        .symbiote-blob {
-            width: 80px; /* BEM PEQUENO, como um detalhe */
-            height: 80px;
-            background: linear-gradient(135deg, #e0ffe0 0%, #003300 100%); /* Efeito metálico */
-            /* Aqui criamos os PONTOS (Forma de estrela de 4 pontas irregular) */
-            clip-path: polygon(50% 0%, 65% 45%, 100% 50%, 65% 55%, 50% 100%, 35% 55%, 0% 50%, 35% 45%);
-            /* Animações simultâneas */
-            animation: spin 4s linear infinite, /* Gira rápido */
-            distort 2s ease-in-out infinite alternate; /* Respira/Distorce */
-        }
-
-        /* Rotação constante */
-        @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Distorção das pontas (faz parecer líquido/afiado) */
-        @keyframes distort {
-            0% {
-                clip-path: polygon(50% 0%, 65% 45%, 100% 50%, 65% 55%, 50% 100%, 35% 55%, 0% 50%, 35% 45%);
-            }
-
-            100% {
-                clip-path: polygon(50% 10%, 60% 40%, 90% 50%, 60% 60%, 50% 90%, 40% 60%, 10% 50%, 40% 40%);
-            }
-        }
-
-        /* Um núcleo brilhante no centro para parecer uma joia/chip */
-        .symbiote-blob::after {
-            content: '';
-            position: absolute;
-            top: 25%;
-            left: 25%;
-            right: 25%;
-            bottom: 25%;
-            background: #fff;
-            opacity: 0.8;
-            filter: blur(4px);
-            border-radius: 50%;
-        }
-    </style>
-    <style>
-        .symbiote-container-home {
-            position: fixed;
-            bottom: -30px; /* Levemente cortado para parecer que sai da borda */
-            right: -30px;
-            pointer-events: none; /* Para não atrapalhar cliques */
-        }
-    </style>
+    <div class="symbiote-container-home">
+        <div class="symbiote-blob"></div>
+    </div>
 
     <div id="skills-panel" class="ui-panel"><div class="panel-header"><span>:: SYSTEM STATS</span><span class="close-panel">×</span></div><div class="panel-content" id="skills-list"></div></div>
     <div id="timeline-panel" class="ui-panel"><div class="panel-header"><span>:: LOGS / HISTORY</span><span class="close-panel">×</span></div><div class="panel-content" id="timeline-content"></div></div>

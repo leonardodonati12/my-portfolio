@@ -12,65 +12,38 @@
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             background-color: #fff;
             color: #000;
-            overflow-x: hidden; /* Evita rolagem horizontal se o blob crescer demais */
-        }
-
-
-        /* --- LÓGICA DO SIMBIONTE (MORPHING) --- */
-        @keyframes morphing {
-            0% {
-                border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            }
-
-            25% {
-                border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%;
-            }
-
-            50% {
-                border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%;
-            }
-
-            75% {
-                border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%;
-            }
-
-            100% {
-                border-radius: 70% 30% 30% 70% / 60% 40% 60% 40%;
-            }
-        }
-
-        .symbiote-blob {
-            background: #000;
-            /* Se quiser um efeito mais "oleoso", descomente a linha abaixo: */
-            /* background: radial-gradient(circle at 30% 30%, #4a4a4a, #000000); */
-            animation: morphing 8s ease-in-out infinite alternate;
-            flex-shrink: 0; /* Garante que o blob não amasse */
+            overflow-x: hidden;
         }
 
         /* --- HEADER --- */
         .header {
-            /* Aumentei o padding lateral de 40px para 60px (ajuste sutil) */
             padding: 40px 60px;
             display: flex;
             justify-content: space-between;
-            align-items: center; /* Centraliza verticalmente botão e nome */
+            align-items: center;
             position: sticky;
             top: 0;
             background: rgba(255,255,255,0.95);
             backdrop-filter: blur(8px);
             z-index: 100;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
-        /* Container para alinhar Blob + Nome */
-        .identity-wrapper {
+        /* Grupo Esquerda: Blob + Nome */
+        .identity-group {
             display: flex;
             align-items: center;
-            gap: 20px; /* Espaço entre o simbionte e o nome */
+            gap: 15px;
         }
 
+        /* O "Bicho" Pequeno do Header (Spiky Style) */
         .header-blob {
-            width: 50px;
-            height: 50px;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #000 0%, #333 100%);
+            /* Forma pontiaguda simplificada */
+            clip-path: polygon(50% 0%, 65% 45%, 100% 50%, 65% 55%, 50% 100%, 35% 55%, 0% 50%, 35% 45%);
+            animation: spin 6s linear infinite;
         }
 
         h1 {
@@ -88,7 +61,7 @@
 
             .nav a {
                 color: #000;
-                text-decoration: none; /* Garante sem sublinhado */
+                text-decoration: none;
                 margin-left: 30px;
                 font-size: 0.9rem;
                 transition: opacity 0.2s;
@@ -98,12 +71,11 @@
                     opacity: 0.6;
                 }
 
-                /* Estilo específico para o botão Home */
                 .nav a.back-btn {
-                    font-weight: 400; /* Regular (sem negrito) */
+                    font-weight: 400;
                     display: inline-flex;
                     align-items: center;
-                    gap: 5px; /* Espacinho entre a seta e o texto */
+                    gap: 5px;
                 }
 
         /* --- GRID DE PROJETOS --- */
@@ -111,7 +83,6 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
             gap: 40px;
-            /* Aumentei o padding lateral aqui também para alinhar com o header */
             padding: 40px 60px;
         }
 
@@ -134,7 +105,7 @@
             justify-content: center;
             color: #aaa;
             font-size: 0.8rem;
-            border-radius: 4px; /* Um leve toque de acabamento */
+            border-radius: 4px;
         }
 
         .p-title {
@@ -150,10 +121,21 @@
             letter-spacing: 0.5px;
         }
 
+        /* Animação de Rotação */
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
         /* --- RESPONSIVIDADE --- */
         @media (max-width: 768px) {
             .header, .grid {
-                padding: 30px 20px; /* Reduz margens em celular para aproveitar espaço */
+                padding: 30px 20px;
             }
 
             .grid {
@@ -184,15 +166,6 @@
         <div class="identity-group">
             <div class="header-blob"></div>
             <h1>Leonardo Donati</h1>
-        </div>
-
-        <div class="nav">
-            <a href="#">Projects</a>
-            <a href="#">About</a>
-            <a href="index.html" class="back-btn">← Home</a>
-        </div>
-    </div>
-        <h1>Leonardo Donati</h1>
         </div>
 
         <div class="nav">
