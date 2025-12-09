@@ -7,27 +7,49 @@
     <link rel="stylesheet" href="style.css">
 
     <style>
-        /* --- ARTEFATO CROMADO (SPIKY CHROME) --- */
+        /* --- ARTEFATO BIO-DIGITAL (DARK MODE) --- */
         .symbiote-container-home {
             position: fixed;
-            bottom: 40px; /* Distância da borda inferior */
-            right: 40px; /* Distância da borda direita */
+            bottom: 50px;
+            right: 50px;
             z-index: 50;
-            pointer-events: none; /* Permite clicar através dele */
-            filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.6)); /* Glow Verde */
+            pointer-events: none;
+            /* Brilho reduzido e mais difuso */
+            filter: drop-shadow(0 0 10px rgba(0, 255, 136, 0.2));
+            mix-blend-mode: screen; /* Ajuda a integrar com o fundo preto */
         }
 
         .symbiote-blob {
-            width: 80px; /* Tamanho pequeno/detalhe */
-            height: 80px;
-            background: linear-gradient(135deg, #e0ffe0 0%, #003300 100%); /* Metal Verde */
-            /* Forma de Estrela Irregular */
+            position: relative;
+            width: 100px;
+            height: 100px;
+            /* Gradiente escuro: Preto para Verde Escuro */
+            background: radial-gradient(circle at center, #000000 40%, #003311 100%);
+            border: 1px solid rgba(0, 255, 136, 0.3); /* Borda fina tecnológica */
+            /* Forma Inicial */
             clip-path: polygon(50% 0%, 65% 45%, 100% 50%, 65% 55%, 50% 100%, 35% 55%, 0% 50%, 35% 45%);
-            animation: spin 4s linear infinite, distort 2s ease-in-out infinite alternate;
+            /* Animações: Gira devagar (30s) e Pulsa as pontas (4s) */
+            animation: spin-cw 30s linear infinite, spike-pulse 4s ease-in-out infinite alternate;
         }
 
-        /* Animação de Rotação */
-        @keyframes spin {
+            /* CAMADA INTERNA (GIRA AO CONTRÁRIO) */
+            .symbiote-blob::after {
+                content: '';
+                position: absolute;
+                top: 10%;
+                left: 10%;
+                right: 10%;
+                bottom: 10%;
+                background: transparent;
+                border: 1px solid rgba(0, 255, 136, 0.5);
+                /* Forma diferente para criar complexidade visual */
+                clip-path: polygon(50% 0%, 80% 20%, 100% 50%, 80% 80%, 50% 100%, 20% 80%, 0% 50%, 20% 20%);
+                /* Gira rápido no sentido anti-horário */
+                animation: spin-ccw 15s linear infinite;
+            }
+
+        /* Rotação Horária */
+        @keyframes spin-cw {
             from {
                 transform: rotate(0deg);
             }
@@ -37,29 +59,28 @@
             }
         }
 
-        /* Animação de "Respiração" das pontas */
-        @keyframes distort {
-            0% {
-                clip-path: polygon(50% 0%, 65% 45%, 100% 50%, 65% 55%, 50% 100%, 35% 55%, 0% 50%, 35% 45%);
+        /* Rotação Anti-Horária */
+        @keyframes spin-ccw {
+            from {
+                transform: rotate(360deg);
             }
 
-            100% {
-                clip-path: polygon(50% 10%, 60% 40%, 90% 50%, 60% 60%, 50% 90%, 40% 60%, 10% 50%, 40% 40%);
+            to {
+                transform: rotate(0deg);
             }
         }
 
-        /* Núcleo Brilhante (Highlight) */
-        .symbiote-blob::after {
-            content: '';
-            position: absolute;
-            top: 25%;
-            left: 25%;
-            right: 25%;
-            bottom: 25%;
-            background: #fff;
-            opacity: 0.8;
-            filter: blur(4px);
-            border-radius: 50%;
+        /* Animação de "Respiração" das Pontas (Aumenta e Diminui) */
+        @keyframes spike-pulse {
+            0% {
+                /* Pontas curtas e gordas */
+                clip-path: polygon(50% 10%, 60% 40%, 90% 50%, 60% 60%, 50% 90%, 40% 60%, 10% 50%, 40% 40%);
+            }
+
+            100% {
+                /* Pontas longas e finas (Agressivo) */
+                clip-path: polygon(50% -20%, 55% 45%, 120% 50%, 55% 55%, 50% 120%, 45% 55%, -20% 50%, 45% 45%);
+            }
         }
     </style>
 </head>

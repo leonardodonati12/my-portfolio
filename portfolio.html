@@ -36,21 +36,36 @@
             gap: 15px;
         }
 
-        /* O "Bicho" Pequeno do Header (Spiky Style) */
+        /* O "Bicho" Pequeno do Header (Versão Miniatura Dark) */
         .header-blob {
+            position: relative;
             width: 30px;
             height: 30px;
-            background: linear-gradient(135deg, #000 0%, #333 100%);
-            /* Forma pontiaguda simplificada */
+            /* Fundo escuro para contraste no papel branco */
+            background: #0a1a0a;
             clip-path: polygon(50% 0%, 65% 45%, 100% 50%, 65% 55%, 50% 100%, 35% 55%, 0% 50%, 35% 45%);
-            animation: spin 6s linear infinite;
+            animation: spin-cw 20s linear infinite, spike-pulse 5s ease-in-out infinite alternate;
         }
+
+            /* Efeito de núcleo girando ao contrário no header também (detalhe sutil) */
+            .header-blob::after {
+                content: '';
+                position: absolute;
+                top: 20%;
+                left: 20%;
+                right: 20%;
+                bottom: 20%;
+                border: 1px solid #00ff88;
+                clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+                animation: spin-ccw 10s linear infinite;
+            }
 
         h1 {
             font-size: 1.5rem;
             margin: 0;
             letter-spacing: -1px;
             line-height: 1;
+            color: #000; /* Preto sólido aqui */
         }
 
         /* --- NAVEGAÇÃO --- */
@@ -121,14 +136,34 @@
             letter-spacing: 0.5px;
         }
 
-        /* Animação de Rotação */
-        @keyframes spin {
+        /* Animações Compartilhadas */
+        @keyframes spin-cw {
             from {
                 transform: rotate(0deg);
             }
 
             to {
                 transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin-ccw {
+            from {
+                transform: rotate(360deg);
+            }
+
+            to {
+                transform: rotate(0deg);
+            }
+        }
+
+        @keyframes spike-pulse {
+            0% {
+                clip-path: polygon(50% 10%, 60% 40%, 90% 50%, 60% 60%, 50% 90%, 40% 60%, 10% 50%, 40% 40%);
+            }
+
+            100% {
+                clip-path: polygon(50% -20%, 55% 45%, 120% 50%, 55% 55%, 50% 120%, 45% 55%, -20% 50%, 45% 45%);
             }
         }
 
