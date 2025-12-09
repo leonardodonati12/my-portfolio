@@ -1166,4 +1166,4 @@ body.push-top .audio-toggle {
 	opacity: 0.8;
 	/* Não adicionamos transition de transform aqui, 
        pois você pediu para ele NÃO se mover com as barras */
-}
+} 
