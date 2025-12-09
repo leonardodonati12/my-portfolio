@@ -343,39 +343,62 @@ function dockPanel(panel, side) {
 
 // Arrastar Paineis
 let isDragging = false, dragPanel = null, diffX = 0, diffY = 0;
+
 document.querySelectorAll('.panel-header').forEach(h => {
     h.addEventListener('mousedown', (e) => {
-        dragPanel = h.parentElement; isDragging = true;
-        const rect = dragPanel.getBoundingClientRect(); diffX = e.clientX - rect.left; diffY = e.clientY - rect.top;
+        dragPanel = h.parentElement;
+        isDragging = true;
+        const rect = dragPanel.getBoundingClientRect();
+        diffX = e.clientX - rect.left;
+        diffY = e.clientY - rect.top;
+
         if (!dragPanel.classList.contains('floating')) {
-            dockPanel(dragPanel, 'float'); dragPanel.style.height = 'auto';
-            dragPanel.style.left = (e.clientX - diffX) + 'px'; dragPanel.style.top = (e.clientY - diffY) + 'px';
+            dockPanel(dragPanel, 'float');
+            dragPanel.style.height = 'auto';
+            dragPanel.style.left = (e.clientX - diffX) + 'px';
+            dragPanel.style.top = (e.clientY - diffY) + 'px';
         }
-        h.style.cursor = 'grabbing';
+
+        // [CORREÇÃO] Antes era 'grabbing', agora é 'none' para manter seu cursor custom
+        h.style.cursor = 'none';
+        document.body.style.cursor = 'none'; // Garante no body também
     });
 });
+
 window.addEventListener('mousemove', (e) => {
     if (!isDragging || !dragPanel) return;
-    dragPanel.style.left = (e.clientX - diffX) + 'px'; dragPanel.style.top = (e.clientY - diffY) + 'px';
+    dragPanel.style.left = (e.clientX - diffX) + 'px';
+    dragPanel.style.top = (e.clientY - diffY) + 'px';
+
     const t = 50;
-    if (e.clientX < t) dragPanel.style.borderColor = '#00ff88';
-    else if (e.clientX > window.innerWidth - t) dragPanel.style.borderColor = '#00ff88';
-    else if (e.clientY < t) dragPanel.style.borderColor = '#00ff88';
-    else if (e.clientY > window.innerHeight - t) dragPanel.style.borderColor = '#00ff88';
-    else dragPanel.style.borderColor = '#333';
+    // Lógica de borda verde
+    if (e.clientX < t || e.clientX > window.innerWidth - t ||
+        e.clientY < t || e.clientY > window.innerHeight - t) {
+        dragPanel.style.borderColor = '#00ff88';
+    } else {
+        dragPanel.style.borderColor = '#333';
+    }
 });
+
 window.addEventListener('mouseup', (e) => {
-    if (!isDragging) return; isDragging = false;
+    if (!isDragging) return;
+    isDragging = false;
+
     if (dragPanel) {
-        dragPanel.querySelector('.panel-header').style.cursor = 'grab'; dragPanel.style.borderColor = '#333';
+        // [CORREÇÃO] Reseta para 'none' em vez de 'grab'
+        dragPanel.querySelector('.panel-header').style.cursor = 'none';
+        dragPanel.style.borderColor = '#333';
+
         const t = 50;
         if (e.clientX < t) dockPanel(dragPanel, 'left');
         else if (e.clientX > window.innerWidth - t) dockPanel(dragPanel, 'right');
         else if (e.clientY < t) dockPanel(dragPanel, 'top');
         else if (e.clientY > window.innerHeight - t) dockPanel(dragPanel, 'bottom');
+
         dragPanel = null;
     }
 });
+
 document.querySelectorAll('.close-panel').forEach(btn => btn.addEventListener('click', (e) => closePanel(e.target.closest('.ui-panel'))));
 
 // --- 12. THREE.JS CONFIGURATION (3D) ---
