@@ -780,30 +780,30 @@ body.push-bottom .interaction-hint {
 	}
 }
 
-/* --- ARTEFATO BIO-DIGITAL (COM HITBOX ESTÁVEL) --- */
+/* --- ARTEFATO BIO-DIGITAL (HITBOX TURBINADA) --- */
 .symbiote-container-home {
 	position: fixed;
-	bottom: 50px;
-	right: 50px;
+	bottom: 20px; /* Ajustei para compensar o tamanho maior */
+	right: 20px; /* Ajustei para compensar o tamanho maior */
 	z-index: 50;
-	/* [NOVO] Tamanho Fixo e Maior para criar a "Cápsula" */
-	width: 140px; /* Maior que o blob de 100px */
-	height: 140px;
-	border-radius: 50%; /* Hitbox circular perfeita */
-	/* Centraliza o blob visualmente dentro da hitbox */
+	/* AUMENTADO: De 140px para 220px para cobrir qualquer ponta solta */
+	width: 220px;
+	height: 220px;
+	border-radius: 50%;
+	/* Centralização */
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	/* Visual */
 	filter: drop-shadow(0 0 10px rgba(0, 255, 136, 0.2));
 	mix-blend-mode: screen;
-	/* [NOVO] O Container é quem interage agora */
+	/* Interação */
 	pointer-events: auto;
-	cursor: none !important; /* Garante cursor custom na área toda */
-	/* Animação de Push Suave */
+	cursor: none !important;
+	/* TRUQUE: Cor transparente quase invisível força a detecção do mouse em toda a área */
+	background-color: rgba(0, 0, 0, 0.01);
+	/* Animação de Push */
 	transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-	/* Debug: Descomente para ver a área vermelha */
-	/* background: rgba(255, 0, 0, 0.2); */
 }
 
 /* Lógica de Push (Mantida) */
