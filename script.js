@@ -32,7 +32,7 @@ const nameLine2 = document.getElementById('name-line-2');
 const heroSubtitle = document.getElementById('hero-subtitle');
 
 // --- 3. EFEITO DE TROCA DE CARGO (ROLE SCRAMBLE) ---
-const roles = ["INNOVATION ASSISTANT", "ARCHITECTURE STUDENT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND"];
+const roles = ["ARCHITECTURE STUDENT", "INNOVATION ASSISTANT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND"];
 const roleEl = document.getElementById('scramble-text');
 const chars = '!<>-_\\/[]{}—=+*^?#________';
 let roleIndex = 0;

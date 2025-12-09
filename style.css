@@ -42,8 +42,9 @@ body.push-left #main-wrapper {
 	transform: translateX(240px);
 }
 
+/* [AJUSTE 3] Reduzido o push top para não desalinhar tanto o nome */
 body.push-top #main-wrapper {
-	transform: translateY(240px);
+	transform: translateY(140px);
 }
 
 body.push-right #main-wrapper {
@@ -92,39 +93,29 @@ body.push-bottom #main-wrapper {
 	transform: translateZ(0);
 }
 
-/* --- FIXED UI ELEMENTS --- */
+/* --- FIXED UI ELEMENTS (COPYRIGHT) --- */
+/* [AJUSTE 2] Copyright alinhado com o Hint, fonte menor e lógica de troca de lado */
 #copyright {
 	position: fixed;
-	bottom: 20px;
+	bottom: 60px; /* Alinhado visualmente com a dica de rotação */
 	left: 20px;
-	font-size: 0.7rem;
+	font-size: 0.6rem; /* Fonte reduzida */
 	color: #aaa;
 	letter-spacing: 1px;
 	z-index: 100;
 	pointer-events: none;
-	transition: bottom 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+	transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); /* Transição suave para tudo */
+	width: fit-content;
 }
 
+/* Quando o painel inferior abre */
 body.push-bottom #copyright {
-	bottom: 280px;
+	bottom: 300px;
 }
 
-#copyright {
-	/* Adicione estas propriedades para garantir o movimento suave */
-	transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-	width: fit-content; /* Essencial para o cálculo funcionar */
-	/* Garante que ele fique acima de elementos decorativos mas abaixo de painéis */
-	z-index: 100;
-}
-
-/* Quando o corpo tiver a classe 'push-left' (Menu Esquerdo Aberto) */
+/* Quando o painel ESQUERDO abre: Copyright vai para a DIREITA */
 body.push-left #copyright {
-	/* A MÁGICA MATEMÁTICA:
-       Move o elemento no eixo X.
-       Cálculo: Largura da Tela (100vw) - Largura do Texto (100%) - 60px (Margem de segurança)
-    */
 	transform: translateX(calc(100vw - 100% - 60px));
-	/* Opcional: Alinha o texto à direita se tiver múltiplas linhas */
 	text-align: right;
 }
 
@@ -215,8 +206,9 @@ body.push-left #folder-stack {
 	transform: translateX(252px);
 }
 
+/* [AJUSTE 3] Sincronizado com o main-wrapper */
 body.push-top #folder-stack {
-	transform: translateY(220px);
+	transform: translateY(140px);
 }
 
 body.push-bottom #folder-stack {
@@ -456,36 +448,36 @@ body.push-bottom #folder-stack {
 		box-shadow: 0 0 20px #00ff88;
 	}
 
-/* --- SITE UI --- */
+/* --- SITE UI (HERO & INTERACTION) --- */
 .hero {
 	position: absolute;
 	top: 10%;
 	left: 80px;
 	pointer-events: none;
-	opacity: 0; /* Começa invisível para a animação funcionar */
+	opacity: 0; /* Começa invisível */
 	transition: opacity 2s;
-	z-index: 20; /* Aumentei o Z-index para garantir que fique acima do Canvas */
+	z-index: 20;
 }
 
-/* Quando o JS ativa o site, ele aparece */
+/* Quando o site ativa, exibe o nome */
 body.active .hero {
 	opacity: 1 !important;
 }
 
-/* Correção de Cores e Interação */
+/* Correção de cor do Nome para o modo OS (Branco) */
 .hero h1,
-#hero-name { /* Usar ID garante prioridade sobre o CSS do portfolio */
+#hero-name {
 	font-size: 3.5rem;
 	margin: 0;
-	color: #ffffff !important; /* !important FORÇA o branco */
+	color: #ffffff !important; /* FORÇA O BRANCO */
 	line-height: 1.1;
-	pointer-events: auto; /* Permite selecionar o texto */
+	pointer-events: auto;
 	cursor: help;
-	text-shadow: 0 0 20px rgba(0,0,0,0.8); /* Sombra para destacar do fundo */
+	text-shadow: 0 0 20px rgba(0,0,0,0.8);
 }
 
 .hero .subtitle {
-	color: #00ff88 !important; /* !important FORÇA o verde neon */
+	color: #00ff88 !important;
 	letter-spacing: 3px;
 	font-size: 1rem;
 	margin-top: 15px;
@@ -495,10 +487,10 @@ body.active .hero {
 	cursor: help;
 }
 
-/* Dica de interação (Drag/Click) */
+/* [AJUSTE 1] Dica de interação subiu + 20px */
 .interaction-hint {
 	position: absolute;
-	bottom: 5%;
+	bottom: calc(5% + 20px); /* Sobe 20px além dos 5% */
 	left: 50%;
 	transform: translateX(-50%);
 	color: #555;
@@ -850,7 +842,6 @@ body.push-bottom .interaction-hint {
 
 /* --- LÓGICA DO SIMBIONTE (LIQUID CHROME STYLE) --- */
 
-/* Animação de deformação (Morphing) */
 @keyframes morphing {
 	0% {
 		border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
@@ -873,7 +864,6 @@ body.push-bottom .interaction-hint {
 	}
 }
 
-/* Animação de Rotação */
 @keyframes spin {
 	from {
 		transform: rotate(0deg);
@@ -888,7 +878,7 @@ body.push-bottom .interaction-hint {
 .header {
 	padding: 40px 60px;
 	display: flex;
-	justify-content: space-between; /* Empurra os grupos para os extremos */
+	justify-content: space-between;
 	align-items: center;
 	position: sticky;
 	top: 0;
@@ -899,17 +889,16 @@ body.push-bottom .interaction-hint {
 
 /* GRUPO ESQUERDA: Blob + Nome */
 .identity-group {
-	display: flex; /* Alinha Blob e Nome lado a lado */
-	align-items: center; /* Centraliza verticalmente */
-	gap: 15px; /* Espaço entre o blob e o nome */
+	display: flex;
+	align-items: center;
+	gap: 15px;
 }
 
 /* O Blob Pequeno do Header */
 .header-blob {
-	width: 30px; /* Bem pequeno para o header */
+	width: 30px;
 	height: 30px;
-	background: #000; /* Preto para contraste no fundo branco */
-	/* Mantendo a forma pontiaguda, mas estática ou girando devagar */
+	background: #000;
 	clip-path: polygon(50% 0%, 70% 40%, 100% 50%, 70% 60%, 50% 100%, 30% 60%, 0% 50%, 30% 40%);
 	animation: spin 10s linear infinite;
 }
@@ -924,29 +913,26 @@ h1 {
 /* GRUPO DIREITA: Menu */
 .nav {
 	display: flex;
-	gap: 30px; /* Espaço entre os links */
+	gap: 30px;
 }
 
+/* SIMBIONTE & MOVIMENTAÇÃO (AVOIDANCE) */
 .symbiote-container-home {
-	/* 1. Adicione a transição para ele deslizar suave, não teleportar */
 	transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-	/* Garante que ele fique acima do canvas, mas abaixo dos painéis se eles passarem por cima */
 	z-index: 50;
 }
 
-/* 2. Quando a Barra Direita (Extras/Contact) abre: Empurra para a Esquerda */
-/* O painel tem uns 260px, então empurramos -280px para dar folga */
+/* Quando a Barra Direita abre */
 body.push-right .symbiote-container-home {
 	transform: translateX(-280px);
 }
 
-/* 3. Quando a Barra Inferior (Timeline/Logs) abre: Empurra para Cima */
-/* O painel tem uns 280px de altura, empurramos -300px para cima */
+/* Quando a Barra Inferior abre */
 body.push-bottom .symbiote-container-home {
 	transform: translateY(-300px);
 }
 
-/* (Opcional) Se quiser garantir que ele não bugue se as duas abrirem juntas (se seu script permitir) */
+/* Previne bugs se ambas abrirem */
 body.push-right.push-bottom .symbiote-container-home {
 	transform: translate(-280px, -300px);
 }
