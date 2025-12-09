@@ -1,7 +1,7 @@
 import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
 import { OrbitControls } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls.js';
 
-// --- 1. LÓGICA DE PULAR INTRO (SKIP) ---
+// --- 1. LÃ“GICA DE PULAR INTRO (SKIP) ---
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get('skip') === 'true') {
     document.body.classList.add('active');
@@ -13,7 +13,7 @@ if (urlParams.get('skip') === 'true') {
     document.head.appendChild(style);
 }
 
-// --- 2. SELEÇÃO DE ELEMENTOS DOM ---
+// --- 2. SELEÃ‡ÃƒO DE ELEMENTOS DOM ---
 const introOverlay = document.getElementById('intro-overlay');
 const aboutOverlay = document.getElementById('about-overlay');
 const phrasesOverlay = document.getElementById('phrases-overlay');
@@ -31,7 +31,7 @@ const nameLine1 = document.getElementById('name-line-1');
 const nameLine2 = document.getElementById('name-line-2');
 const heroSubtitle = document.getElementById('hero-subtitle');
 
-// Referências para o Callout (Linha de Chamada)
+// ReferÃªncias para o Callout (Linha de Chamada)
 const calloutContainer = document.getElementById('callout-container');
 const calloutLabel = document.getElementById('callout-label');
 const calloutLine = document.getElementById('callout-line');
@@ -40,7 +40,7 @@ let currentlyHoveredSphere = null;
 // --- 3. EFEITO DE TROCA DE CARGO (ROLE SCRAMBLE) ---
 const roles = ["ARCHITECTURE STUDENT", "INNOVATION ASSISTANT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND"];
 const roleEl = document.getElementById('scramble-text');
-const chars = '!<>-_\\/[]{}—=+*^?#________';
+const chars = '!<>-_\\/[]{}â€”=+*^?#________';
 let roleIndex = 0;
 let loopTimeout = null;
 
@@ -98,7 +98,7 @@ const nextRole = () => {
 };
 if (roleEl) nextRole();
 
-// --- 4. FUNÇÃO MATRIX REVEAL ---
+// --- 4. FUNÃ‡ÃƒO MATRIX REVEAL ---
 function matrixReveal(element, text, callback) {
     if (!element) return;
     const mChars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()';
@@ -118,7 +118,7 @@ function matrixReveal(element, text, callback) {
     }, 15);
 }
 
-// --- 5. LÓGICA DO BOTÃO ENTER SYSTEM ---
+// --- 5. LÃ“GICA DO BOTÃƒO ENTER SYSTEM ---
 const bioText = "I avoid definitions; I feel they limit me. Whenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative. I seek to make each piece obey an invisible rule and decide to tell a unique story. I persist in the attempt to compile everything that resonates with me...";
 if (startBtn) {
     startBtn.addEventListener('click', () => {
@@ -133,7 +133,7 @@ if (startBtn) {
     });
 }
 
-// --- 6. TRANSIÇÃO DA BIO PARA FRASES ---
+// --- 6. TRANSIÃ‡ÃƒO DA BIO PARA FRASES ---
 let bioFinished = false;
 if (aboutOverlay) {
     aboutOverlay.addEventListener('click', () => {
@@ -153,7 +153,7 @@ if (aboutOverlay) {
     });
 }
 
-// --- 7. TRANSIÇÃO DAS FRASES PARA O SITE ---
+// --- 7. TRANSIÃ‡ÃƒO DAS FRASES PARA O SITE ---
 let stopPhrasesLoop = false;
 if (phrasesOverlay) {
     phrasesOverlay.addEventListener('click', () => {
@@ -182,7 +182,7 @@ function scrambleTo(element, newText) {
         const oldText = element.innerText;
         const length = Math.max(oldText.length, newText.length);
         const queue = [];
-        const chars = '!<>-_\\/[]{}—=+*^?#________';
+        const chars = '!<>-_\\/[]{}â€”=+*^?#________';
         for (let i = 0; i < length; i++) {
             const from = oldText[i] || '';
             const to = newText[i] || '';
@@ -234,7 +234,7 @@ if (heroSubtitle) {
     heroSubtitle.addEventListener('mouseleave', () => { scrambleTo(heroSubtitle, "ARCHITECTURE STUDENT"); });
 }
 
-// --- 9. DADOS E PAINÉIS LATERAIS ---
+// --- 9. DADOS E PAINÃ‰IS LATERAIS ---
 const mySkills = [
     { name: "REVIT / BIM", level: 95 }, { name: "DYNAMO / PYTHON", level: 85 },
     { name: "RHINO / GRASSHOPPER", level: 80 }, { name: "NAVISWORKS", level: 75 },
@@ -257,10 +257,10 @@ if (skillsList) {
 
 if (document.getElementById('timeline-content')) {
     document.getElementById('timeline-content').innerHTML = `
-        <div class="timeline-item"><div class="time-date">Aug 2024 - Present</div><div class="time-role">Spbim - Architecture Intern</div><div class="time-place">São Paulo - SP</div><div class="time-desc">BIM implementation support, parametric modeling, point cloud (laser scanner), coordination.</div></div>
-        <div class="timeline-item"><div class="time-date">Oct 2020 - Apr 2021</div><div class="time-role">Tekno S.A. - Electrical Intern</div><div class="time-place">Guaratinguetá - SP</div><div class="time-desc">Analysis and development of electrical plans, preventive and corrective maintenance.</div></div>
+        <div class="timeline-item"><div class="time-date">Aug 2024 - Present</div><div class="time-role">Spbim - Architecture Intern</div><div class="time-place">SÃ£o Paulo - SP</div><div class="time-desc">BIM implementation support, parametric modeling, point cloud (laser scanner), coordination.</div></div>
+        <div class="timeline-item"><div class="time-date">Oct 2020 - Apr 2021</div><div class="time-role">Tekno S.A. - Electrical Intern</div><div class="time-place">GuaratinguetÃ¡ - SP</div><div class="time-desc">Analysis and development of electrical plans, preventive and corrective maintenance.</div></div>
         <div class="timeline-item"><div class="time-date">Jan 2022 - Dec 2026</div><div class="time-role">Universidade Anhembi Morumbi</div><div class="time-desc">Bachelor of Architecture and Urbanism.</div></div>
-        <div class="timeline-item"><div class="time-date">Jan 2017 - Dec 2019</div><div class="time-role">Colégio Técnico Industrial - Unesp</div><div class="time-desc">Technical High School.</div></div>
+        <div class="timeline-item"><div class="time-date">Jan 2017 - Dec 2019</div><div class="time-role">ColÃ©gio TÃ©cnico Industrial - Unesp</div><div class="time-desc">Technical High School.</div></div>
     `;
 }
 if (document.getElementById('extras-content')) {
@@ -281,7 +281,7 @@ if (document.getElementById('contact-content')) {
     `;
 }
 
-// --- 10. LÓGICA DAS ABAS (DRAG & DROP) ---
+// --- 10. LÃ“GICA DAS ABAS (DRAG & DROP) ---
 const folderStack = document.getElementById('folder-stack');
 let draggedTab = null;
 if (folderStack) {
@@ -399,7 +399,7 @@ controls.enableZoom = true;
 controls.autoRotate = true;
 controls.autoRotateSpeed = 0.05;
 
-// --- FUNÇÃO AUXILIAR: Converte posição 3D para 2D (Pixels na tela) ---
+// --- FUNÃ‡ÃƒO AUXILIAR: Converte posiÃ§Ã£o 3D para 2D (Pixels na tela) ---
 function getScreenPosition(object3D, camera, renderer) {
     const vector = new THREE.Vector3();
     const canvas = renderer.domElement;
@@ -461,10 +461,10 @@ const fragmentShader = `
 `;
 
 const projetosSimulados = [
-    { titulo: "Reconhecendo a Mooca", tech: "Urbanismo / Fotogrametria", descricao: "Levantamento urbano e análise de fluxos." },
+    { titulo: "Reconhecendo a Mooca", tech: "Urbanismo / Fotogrametria", descricao: "Levantamento urbano e anÃ¡lise de fluxos." },
     { titulo: "Spbim Workshop", tech: "BIM / Laser Scan", descricao: "Monitoria de levantamento com nuvem de pontos." },
-    { titulo: "Plugin Automation", tech: "C# / Revit API", descricao: "Desenvolvimento de automação para arquitetura." },
-    { titulo: "Pavilhão Paramétrico", tech: "Grasshopper / Rhino", descricao: "Estudos de forma e fabricação digital." }
+    { titulo: "Plugin Automation", tech: "C# / Revit API", descricao: "Desenvolvimento de automaÃ§Ã£o para arquitetura." },
+    { titulo: "PavilhÃ£o ParamÃ©trico", tech: "Grasshopper / Rhino", descricao: "Estudos de forma e fabricaÃ§Ã£o digital." }
 ];
 
 fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(projetos => {
@@ -495,7 +495,7 @@ fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(p
         const node = new THREE.Mesh(nodeGeo, nodeMat);
 
         node.position.set(x * radius, y * radius, z * radius);
-        // Salva o título no userData para usar no callout
+        // Salva o tÃ­tulo no userData para usar no callout
         node.userData = { id: i, data: proj, isNode: true, projectName: proj.titulo };
 
         projectNodes.push(node);
@@ -563,23 +563,23 @@ function animate() {
         const intersectsNodes = raycaster.intersectObjects(projectNodes);
         const intersectsCenter = raycaster.intersectObject(sphere);
 
-        // Rotação automática quando não há hover
+        // RotaÃ§Ã£o automÃ¡tica quando nÃ£o hÃ¡ hover
         if (!hoveredNode) {
             projectGroup.rotation.y -= 0.001;
             projectGroup.rotation.z += 0.0005;
         }
 
         if (intersectsNodes.length > 0) {
-            // --- MOUSE SOBRE NÓ (CALLOUT ATIVO) ---
+            // --- MOUSE SOBRE NÃ“ (CALLOUT ATIVO) ---
             const object = intersectsNodes[0].object;
 
-            // Lógica do Callout
+            // LÃ³gica do Callout
             if (calloutContainer && calloutLabel && calloutLine) {
                 calloutContainer.classList.add('visible');
                 calloutLabel.textContent = object.userData.projectName || "Projeto";
 
                 const startPoint = getScreenPosition(object, camera, renderer);
-                const endPoint = { x: startPoint.x + 80, y: startPoint.y - 60 }; // Distância fixa da linha
+                const endPoint = { x: startPoint.x + 80, y: startPoint.y - 60 }; // DistÃ¢ncia fixa da linha
 
                 // Posiciona Texto
                 calloutLabel.style.left = `${endPoint.x}px`;
@@ -597,7 +597,7 @@ function animate() {
                 calloutLine.style.transform = `rotate(${angle}deg)`;
             }
 
-            // Efeitos Visuais do Nó
+            // Efeitos Visuais do NÃ³
             if (hoveredNode !== object) {
                 if (hoveredNode) hoveredNode.material.uniforms.c.value.setHex(0xffffff);
                 hoveredNode = object;
@@ -615,7 +615,7 @@ function animate() {
             }
         }
 
-        // Efeito de escala nos nós
+        // Efeito de escala nos nÃ³s
         projectNodes.forEach(node => {
             const targetScale = (node === hoveredNode) ? 1.5 : 1;
             node.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
