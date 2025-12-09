@@ -780,3 +780,51 @@ body.push-bottom .interaction-hint {
 		opacity: 1;
 	}
 }
+
+/* --- BOTÃO RESUME --- */
+#resume-btn {
+	position: fixed;
+	top: 10.5%;
+	right: 190px; /* Posicionado à esquerda do botão Portfolio (que está em 80px) */
+
+	font-size: 0.8rem;
+	color: #eee;
+	letter-spacing: 2px;
+	text-decoration: none;
+	border: none;
+	background: transparent;
+	padding: 8px 15px;
+	z-index: 4000;
+	cursor: pointer;
+	/* Mesmas transições de movimento */
+	transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), top 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), color 0.3s, transform 0.3s;
+}
+
+#resume-btn:hover {
+		color: #00ff88;
+		background: transparent;
+		text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+		transform: translateX(-5px);
+}
+
+/* MOVIMENTAÇÕES CONJUNTAS */
+
+/* Se abrir painel na direita, ambos se movem */
+body.push-right #resume-btn {
+	right: 410px;
+}
+/* 300px (portfolio) + 110px de gap */
+
+/* Se abrir painel no topo, ambos descem */
+body.push-top #resume-btn {
+	top: 280px;
+}
+
+/* Mobile Adjustment */
+@media (max-width: 768px) {
+	#resume-btn {
+		top: 10px;
+		right: 120px;
+	}
+	/* Ajuste para mobile ao lado do portfolio */
+}

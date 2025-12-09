@@ -1,0 +1,298 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leonardo Donati | RESUME</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos específicos desta página para não poluir o style.css principal */
+        body {
+            overflow-y: auto; /* Permite scroll nesta página */
+            padding: 50px 10%;
+            background-image: radial-gradient(circle at 50% 50%, #111 0%, #050505 100%);
+        }
+
+        .cv-container {
+            max-width: 900px;
+            margin: 0 auto 50px auto;
+            border-left: 1px solid #333;
+            padding-left: 40px;
+            position: relative;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .cv-header {
+            margin-bottom: 60px;
+        }
+
+        .cv-name {
+            font-size: 3rem;
+            color: #fff;
+            margin: 0;
+            line-height: 1;
+            letter-spacing: -1px;
+        }
+
+        .cv-role {
+            font-size: 1.2rem;
+            color: #00ff88;
+            letter-spacing: 3px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .cv-contact {
+            margin-top: 20px;
+            color: #888;
+            font-size: 0.8rem;
+            line-height: 1.6;
+        }
+
+            .cv-contact span {
+                margin-right: 15px;
+                display: inline-block;
+            }
+
+            .cv-contact a {
+                color: #888;
+                text-decoration: none;
+                border-bottom: 1px solid transparent;
+                transition: 0.3s;
+            }
+
+                .cv-contact a:hover {
+                    color: #00ff88;
+                    border-color: #00ff88;
+                }
+
+        .section-title {
+            font-size: 1rem;
+            color: #00ff88;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin: 50px 0 30px 0;
+            display: flex;
+            align-items: center;
+        }
+
+            .section-title::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                background: #333;
+                margin-left: 20px;
+            }
+
+        .job-item, .edu-item {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+            .job-item::before {
+                content: '';
+                position: absolute;
+                left: -46px;
+                top: 5px;
+                width: 11px;
+                height: 11px;
+                background: #050505;
+                border: 1px solid #00ff88;
+                border-radius: 50%;
+            }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 5px;
+        }
+
+        .item-title {
+            font-size: 1.1rem;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .item-date {
+            font-size: 0.75rem;
+            color: #555;
+            font-family: monospace;
+        }
+
+        .item-sub {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .item-desc {
+            font-size: 0.9rem;
+            color: #ccc;
+            line-height: 1.6;
+            max-width: 700px;
+            text-align: justify;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+        }
+
+        .skill-tag {
+            border: 1px solid #333;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #aaa;
+            transition: 0.3s;
+            cursor: default;
+        }
+
+            .skill-tag:hover {
+                border-color: #00ff88;
+                color: #00ff88;
+                background: rgba(0, 255, 136, 0.05);
+            }
+
+        #back-btn {
+            position: fixed;
+            top: 30px;
+            right: 40px;
+            font-size: 0.8rem;
+            color: #00ff88;
+            letter-spacing: 2px;
+            text-decoration: none;
+            border: 1px solid #00ff88;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: 0.3s;
+            z-index: 100;
+        }
+
+            #back-btn:hover {
+                background: #00ff88;
+                color: #000;
+            }
+
+        @media (max-width: 768px) {
+            .cv-container {
+                padding-left: 20px;
+                border: none;
+            }
+
+            .item-header {
+                flex-direction: column;
+            }
+
+            .job-item::before {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" id="back-btn">← BACK TO SYSTEM</a>
+
+    <div class="cv-container">
+
+        <header class="cv-header">
+            <h1 class="cv-name">LEONARDO DONATI</h1>
+            <div class="cv-role">INOVATION ASSISTANT</div>
+            <div class="cv-contact">
+                <span>São Paulo, SP - Brasil</span>
+                <span>+55 12 99777 3790</span>
+                <br>
+                <a href="mailto:leonardodonati12@gmail.com">leonardodonati12@gmail.com</a>
+                <span>•</span>
+                <a href="https://linkedin.com/in/leonardodonati12/" target="_blank">linkedin.com/in/leonardodonati12</a>
+            </div>
+        </header>
+
+        <section>
+            <div class="section-title">RESUMO PROFISSIONAL</div>
+            <p class="item-desc">
+                Estudante de Arquitetura e Urbanismo com experiência em BIM, modelagem paramétrica e compatibilização de projetos. Atuação na implementação de fluxos de trabalho digitais, incluindo levantamento de nuvem de pontos com laser scanner, fotogrametria e coordenação interdisciplinar de modelos BIM. Domínio de softwares como Revit, Navisworks e AutoCAD, com amplo interesse em inovação tecnológica e automatização de processos aplicados à arquitetura e eficiência construtiva.
+            </p>
+        </section>
+
+        <section>
+            <div class="section-title">EXPERIÊNCIA PROFISSIONAL</div>
+
+            <div class="job-item">
+                <div class="item-header">
+                    <span class="item-title">SPBIM</span>
+                    <span class="item-date">AGO 2024 - ATUAL</span>
+                </div>
+                <div class="item-sub">Estágio de Arquitetura | São Paulo - SP</div>
+                <p class="item-desc">
+                    Auxílio em implementações BIM. Responsável por modelagem paramétrica, compatibilização de projetos e organização de fluxos de trabalho integrados. Experiência em levantamento de nuvem de pontos com laser scanner. Atuação na otimização de projetos utilizando tecnologias digitais para maior precisão e eficiência.
+                </p>
+            </div>
+
+            <div class="job-item">
+                <div class="item-header">
+                    <span class="item-title">TEKNO S.A.</span>
+                    <span class="item-date">OUT 2020 - ABR 2021</span>
+                </div>
+                <div class="item-sub">Estágio de Elétrica | Guaratinguetá - SP</div>
+                <p class="item-desc">
+                    Responsável por auxiliar nas análises e o desenvolvimento de plantas elétricas. Auxílio na certificação e execução de manutenções preventivas e corretivas dos equipamentos e acompanhamento na execução das instalações.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-title">FORMAÇÃO ACADÊMICA</div>
+
+            <div class="edu-item">
+                <div class="item-header">
+                    <span class="item-title">Universidade Anhembi Morumbi</span>
+                    <span class="item-date">JAN 2022 - DEZ 2026</span>
+                </div>
+                <div class="item-sub">Arquitetura e Urbanismo (Superior)</div>
+            </div>
+
+            <div class="edu-item">
+                <div class="item-header">
+                    <span class="item-title">Colégio Técnico Industrial - UNESP</span>
+                    <span class="item-date">JAN 2017 - DEZ 2019</span>
+                </div>
+                <div class="item-sub">Ensino Médio Técnico</div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-title">HABILIDADES & SOFTWARES</div>
+            <div class="skills-grid">
+                <div class="skill-tag">Revit / BIM</div>
+                <div class="skill-tag">Dynamo / Visual Scripting</div>
+                <div class="skill-tag">Navisworks</div>
+                <div class="skill-tag">Archicad</div>
+                <div class="skill-tag">InfraWorks</div>
+                <div class="skill-tag">Recap / Point Cloud</div>
+                <div class="skill-tag">Cloud Compare</div>
+                <div class="skill-tag">SketchUp</div>
+                <div class="skill-tag">Illustrator</div>
+                <div class="skill-tag">Photoshop</div>
+                <div class="skill-tag">Power BI</div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-title">EXTRAS & IDIOMAS</div>
+            <p class="item-desc" style="margin-bottom: 10px;">
+                <strong>Projetos:</strong> Reconhecendo a Mooca (Levantamento urbano, fotogrametria e análise de fluxos).<br>
+                <strong>Monitoria:</strong> Workshop Spbim (Laser Scanner - Maio 2025) e Semana de Integração Ctig-Unesp.<br>
+                <strong>Prêmios:</strong> Medalhista OBA (Ouro 2015, Bronze 2016, Prata 2019).<br>
+                <strong>Idiomas:</strong> Português (Nativo), Inglês (B1 - Intermediário).
+            </p>
+        </section>
+
+    </div>
+
+</body>
+</html>
