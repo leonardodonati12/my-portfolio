@@ -97,7 +97,7 @@ body.push-bottom #main-wrapper {
 /* [AJUSTE 2] Copyright alinhado com o Hint, fonte menor e lógica de troca de lado */
 #copyright {
 	position: fixed;
-	bottom: 60px; /* Alinhado visualmente com a dica de rotação */
+	bottom: 10px; /* Alinhado visualmente com a dica de rotação */
 	left: 20px;
 	font-size: 0.6rem; /* Fonte reduzida */
 	color: #aaa;
@@ -115,7 +115,7 @@ body.push-bottom #copyright {
 
 /* Quando o painel ESQUERDO abre: Copyright vai para a DIREITA */
 body.push-left #copyright {
-	transform: translateX(calc(100vw - 100% - 60px));
+	right: 280px;
 	text-align: right;
 }
 
@@ -490,7 +490,7 @@ body.active .hero {
 /* [AJUSTE 1] Dica de interação subiu + 20px */
 .interaction-hint {
 	position: absolute;
-	bottom: calc(5% + 20px); /* Sobe 20px além dos 5% */
+	bottom: calc(5%);
 	left: 50%;
 	transform: translateX(-50%);
 	color: #555;
@@ -507,7 +507,7 @@ body.active .interaction-hint {
 }
 
 body.push-bottom .interaction-hint {
-	bottom: 280px;
+	bottom: 260px;
 }
 
 /* --- PANELS --- */
