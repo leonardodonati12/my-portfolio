@@ -824,22 +824,9 @@ body.push-bottom .interaction-hint {
 	}
 }
 
-.symbiote-blob {
-	width: 150px;
-	height: 150px;
-	background: #000; /* Cor do simbionte (preto profundo) */
-	/* Dica: Para parecer mais "líquido", podemos usar um gradiente sutil */
-	background: radial-gradient(circle at 30% 30%, #4a4a4a, #000000);
-	/* A mágica acontece aqui: 8 valores de raio para criar formas orgânicas */
-	border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-	/* Animação contínua */
-	animation: morphing 10s ease-in-out infinite alternate;
-	/* Para posicionamento absoluto (canto da tela) */
-	position: absolute;
-	z-index: 10;
-}
+/* --- LÓGICA DO SIMBIONTE (LIQUID CHROME STYLE) --- */
 
-/* Keyframes: definem a deformação ao longo do tempo */
+/* Animação de deformação (Morphing) */
 @keyframes morphing {
 	0% {
 		border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
@@ -861,3 +848,61 @@ body.push-bottom .interaction-hint {
 		border-radius: 70% 30% 30% 70% / 60% 40% 60% 40%;
 	}
 }
+
+/* Animação de Rotação */
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.symbiote-container-home {
+	position: fixed;
+	bottom: -60px;
+	right: -60px;
+	z-index: 50;
+	pointer-events: none;
+	/* Adiciona um brilho externo (Glow) verde radioativo */
+	filter: drop-shadow(0 0 20px rgba(0, 255, 0, 0.4));
+}
+
+.symbiote-blob {
+	position: relative;
+	width: 220px;
+	height: 220px;
+	/* A COR BASE: Um verde bem escuro, quase preto */
+	background-color: #0a1a0a;
+	/* O SEGREDO DO 3D (Reflexos Falsos) */
+	/* Sombra interna branca dura = brilho especular (metal) */
+	/* Sombra interna verde = luz ambiente */
+	box-shadow: inset 10px 10px 20px rgba(0, 255, 0, 0.5), /* Brilho Verde Superior */
+	inset -10px -20px 30px rgba(0, 0, 0, 0.9), /* Sombra Profunda Inferior */
+	inset 4px 4px 5px rgba(255, 255, 255, 0.7), /* Highlight Branco (Cromo) */
+	inset 0px 0px 40px rgba(0, 255, 0, 0.3); /* Glow interno */
+	/* Aplica a deformação */
+	animation: morphing 8s ease-in-out infinite alternate, spin 20s linear infinite;
+	will-change: border-radius, transform;
+}
+
+	/* CAMADA SECUNDÁRIA (Para dar complexidade visual) */
+	/* Isso cria aquela sensação de "buraco" ou distorção interna da sua imagem de referência */
+	.symbiote-blob::after {
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 80%;
+		height: 80%;
+		transform: translate(-50%, -50%);
+		/* Cores invertidas para contraste */
+		background: transparent;
+		border: 1px solid rgba(0, 255, 0, 0.3);
+		box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.5);
+		/* Deforma e gira ao contrário */
+		border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+		animation: morphing 6s ease-in-out infinite alternate-reverse, spin 10s linear infinite reverse;
+	}
