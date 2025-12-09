@@ -94,19 +94,28 @@ body.push-bottom #main-wrapper {
 
 /* --- FIXED UI ELEMENTS --- */
 #copyright {
-	position: fixed;
-	bottom: 20px;
-	left: 20px;
-	font-size: 0.7rem;
-	color: #aaa;
-	letter-spacing: 1px;
+	/* Adicione estas propriedades para garantir o movimento suave */
+	transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+	width: fit-content; /* Essencial para o cálculo funcionar */
+	/* Garante que ele fique acima de elementos decorativos mas abaixo de painéis */
 	z-index: 100;
-	pointer-events: none;
-	transition: bottom 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
+/* Quando o corpo tiver a classe 'push-left' (Menu Esquerdo Aberto) */
+body.push-left #copyright {
+	/* A MÁGICA MATEMÁTICA:
+       Move o elemento no eixo X.
+       Cálculo: Largura da Tela (100vw) - Largura do Texto (100%) - 60px (Margem de segurança)
+    */
+	transform: translateX(calc(100vw - 100% - 60px));
+	/* Opcional: Alinha o texto à direita se tiver múltiplas linhas */
+	text-align: right;
+}
+
+/* Opcional: Se abrir o painel de baixo (push-bottom), o copyright sobe */
+/* (Já deve ter algo assim, mas garante que ele não suma) */
 body.push-bottom #copyright {
-	bottom: 280px;
+	bottom: 300px; /* Ajuste conforme a altura do seu painel inferior */
 }
 
 /* RESUME BUTTON */
@@ -184,7 +193,7 @@ body.push-top #portfolio-btn {
 	z-index: 4000;
 	opacity: 0;
 	padding-left: 0;
-	margin-left: 8px;
+	margin-left: 1px;
 	transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 1s;
 }
 
@@ -197,7 +206,7 @@ body.push-left #folder-stack {
 }
 
 body.push-top #folder-stack {
-	transform: translateY(200px);
+	transform: translateY(220px);
 }
 
 body.push-bottom #folder-stack {
@@ -443,36 +452,40 @@ body.push-bottom #folder-stack {
 	top: 10%;
 	left: 80px;
 	pointer-events: none;
-	opacity: 1;
+	opacity: 0; /* Começa invisível para a animação funcionar */
 	transition: opacity 2s;
-	z-index: 10;
+	z-index: 20; /* Aumentei o Z-index para garantir que fique acima do Canvas */
 }
 
+/* Quando o JS ativa o site, ele aparece */
 body.active .hero {
 	opacity: 1 !important;
 }
 
-.hero h1, .hero .subtitle {
-	pointer-events: auto;
-	cursor: help;
-}
-
-h1 {
+/* Correção de Cores e Interação */
+.hero h1,
+#hero-name { /* Usar ID garante prioridade sobre o CSS do portfolio */
 	font-size: 3.5rem;
 	margin: 0;
-	color: #fff;
+	color: #ffffff !important; /* !important FORÇA o branco */
 	line-height: 1.1;
+	pointer-events: auto; /* Permite selecionar o texto */
+	cursor: help;
+	text-shadow: 0 0 20px rgba(0,0,0,0.8); /* Sombra para destacar do fundo */
 }
 
-.subtitle {
-	color: #00ff88;
+.hero .subtitle {
+	color: #00ff88 !important; /* !important FORÇA o verde neon */
 	letter-spacing: 3px;
 	font-size: 1rem;
 	margin-top: 15px;
 	display: inline-block;
 	padding: 5px 0;
+	pointer-events: auto;
+	cursor: help;
 }
 
+/* Dica de interação (Drag/Click) */
 .interaction-hint {
 	position: absolute;
 	bottom: 5%;
@@ -484,6 +497,7 @@ h1 {
 	pointer-events: none;
 	opacity: 0;
 	transition: opacity 2s, bottom 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+	z-index: 10;
 }
 
 body.active .interaction-hint {
@@ -901,4 +915,28 @@ h1 {
 .nav {
 	display: flex;
 	gap: 30px; /* Espaço entre os links */
+}
+
+.symbiote-container-home {
+	/* 1. Adicione a transição para ele deslizar suave, não teleportar */
+	transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+	/* Garante que ele fique acima do canvas, mas abaixo dos painéis se eles passarem por cima */
+	z-index: 50;
+}
+
+/* 2. Quando a Barra Direita (Extras/Contact) abre: Empurra para a Esquerda */
+/* O painel tem uns 260px, então empurramos -280px para dar folga */
+body.push-right .symbiote-container-home {
+	transform: translateX(-280px);
+}
+
+/* 3. Quando a Barra Inferior (Timeline/Logs) abre: Empurra para Cima */
+/* O painel tem uns 280px de altura, empurramos -300px para cima */
+body.push-bottom .symbiote-container-home {
+	transform: translateY(-300px);
+}
+
+/* (Opcional) Se quiser garantir que ele não bugue se as duas abrirem juntas (se seu script permitir) */
+body.push-right.push-bottom .symbiote-container-home {
+	transform: translate(-280px, -300px);
 }
