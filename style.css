@@ -164,7 +164,7 @@ body.push-right #portfolio-btn {
 }
 
 body.push-top #resume-btn, body.push-top #portfolio-btn {
-	top: 280px;
+	top: 300px;
 }
 
 /* --- SIDE TABS (FOLDER STACK) --- */
