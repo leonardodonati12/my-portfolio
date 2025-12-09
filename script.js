@@ -31,6 +31,12 @@ const nameLine1 = document.getElementById('name-line-1');
 const nameLine2 = document.getElementById('name-line-2');
 const heroSubtitle = document.getElementById('hero-subtitle');
 
+// Referências para o Callout (Linha de Chamada)
+const calloutContainer = document.getElementById('callout-container');
+const calloutLabel = document.getElementById('callout-label');
+const calloutLine = document.getElementById('callout-line');
+let currentlyHoveredSphere = null;
+
 // --- 3. EFEITO DE TROCA DE CARGO (ROLE SCRAMBLE) ---
 const roles = ["ARCHITECTURE STUDENT", "INNOVATION ASSISTANT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND"];
 const roleEl = document.getElementById('scramble-text');
@@ -38,9 +44,8 @@ const chars = '!<>-_\\/[]{}—=+*^?#________';
 let roleIndex = 0;
 let loopTimeout = null;
 
-// Função para embaralhar e trocar o texto
 const setText = (newText) => {
-    if (!roleEl) return; // Proteção
+    if (!roleEl) return;
     const oldText = roleEl.innerText;
     const length = Math.max(oldText.length, newText.length);
     let queue = [];
@@ -77,7 +82,6 @@ const setText = (newText) => {
         roleEl.innerHTML = output;
 
         if (complete === queue.length) {
-            // Agenda a próxima troca
             loopTimeout = setTimeout(nextRole, 2000);
         } else {
             requestAnimationFrame(update);
@@ -88,26 +92,17 @@ const setText = (newText) => {
 };
 
 const nextRole = () => {
-    // Para se o site já estiver ativo ou na tela de Bio
     if (document.body.classList.contains('active') || (aboutOverlay && aboutOverlay.style.display === 'flex')) return;
-
     setText(roles[roleIndex]);
     roleIndex = (roleIndex + 1) % roles.length;
 };
-
-// Inicia o loop apenas se o elemento existir
 if (roleEl) nextRole();
 
-
-// --- 4. FUNÇÃO MATRIX REVEAL (Efeito Hacker do Bio) ---
-// Definida antes do uso para evitar erros
+// --- 4. FUNÇÃO MATRIX REVEAL ---
 function matrixReveal(element, text, callback) {
     if (!element) return;
     const mChars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()';
-
-    // Preenche inicial
     element.innerText = text.split('').map(c => (c === ' ' || c === '\n') ? c : mChars[Math.floor(Math.random() * mChars.length)]).join('');
-
     let iterations = 0;
     const interval = setInterval(() => {
         element.innerText = text.split('').map((letter, index) => {
@@ -115,7 +110,6 @@ function matrixReveal(element, text, callback) {
             if (index < iterations) return letter;
             return mChars[Math.floor(Math.random() * mChars.length)];
         }).join('');
-
         if (iterations >= text.length) {
             clearInterval(interval);
             if (callback) callback();
@@ -124,19 +118,14 @@ function matrixReveal(element, text, callback) {
     }, 15);
 }
 
-// --- 5. LOGICA DO BOTÃO ENTER SYSTEM ---
+// --- 5. LÓGICA DO BOTÃO ENTER SYSTEM ---
 const bioText = "I avoid definitions; I feel they limit me. Whenever I attempt to organize space, I end up rewriting the syntax of the place to create a narrative. I seek to make each piece obey an invisible rule and decide to tell a unique story. I persist in the attempt to compile everything that resonates with me...";
-
 if (startBtn) {
     startBtn.addEventListener('click', () => {
         introOverlay.style.opacity = '0';
-
-        // Espera a transição de opacidade (1s)
         setTimeout(() => {
             introOverlay.style.display = 'none';
             aboutOverlay.style.display = 'flex';
-
-            // Dispara o efeito Matrix no texto da Bio
             matrixReveal(bioContainer, bioText, () => {
                 if (aboutHint) aboutHint.style.opacity = '1';
             });
@@ -150,7 +139,7 @@ if (aboutOverlay) {
     aboutOverlay.addEventListener('click', () => {
         if (!bioFinished) {
             bioFinished = true;
-            bioContainer.innerText = bioText; // Mostra texto final imediatamente
+            bioContainer.innerText = bioText;
             if (aboutHint) aboutHint.style.opacity = '1';
             return;
         }
@@ -170,7 +159,7 @@ if (phrasesOverlay) {
     phrasesOverlay.addEventListener('click', () => {
         stopPhrasesLoop = true;
         phrasesOverlay.style.opacity = '0';
-        document.body.classList.add('active'); // AQUI A CORTINA SOBE
+        document.body.classList.add('active');
         setTimeout(() => { phrasesOverlay.style.display = 'none'; }, 1000);
     });
 }
@@ -266,7 +255,6 @@ if (skillsList) {
     });
 }
 
-// Preenchimento dos painéis (Inglês)
 if (document.getElementById('timeline-content')) {
     document.getElementById('timeline-content').innerHTML = `
         <div class="timeline-item"><div class="time-date">Aug 2024 - Present</div><div class="time-role">Spbim - Architecture Intern</div><div class="time-place">São Paulo - SP</div><div class="time-desc">BIM implementation support, parametric modeling, point cloud (laser scanner), coordination.</div></div>
@@ -296,77 +284,53 @@ if (document.getElementById('contact-content')) {
 // --- 10. LÓGICA DAS ABAS (DRAG & DROP) ---
 const folderStack = document.getElementById('folder-stack');
 let draggedTab = null;
-
 if (folderStack) {
     document.querySelectorAll('.folder-tab').forEach(tab => {
         tab.addEventListener('dragstart', (e) => {
-            draggedTab = tab;
-            tab.classList.add('dragging');
-            e.dataTransfer.effectAllowed = 'move';
+            draggedTab = tab; tab.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move';
         });
         tab.addEventListener('dragend', () => {
-            draggedTab = null;
-            tab.classList.remove('dragging');
+            draggedTab = null; tab.classList.remove('dragging');
         });
         tab.addEventListener('click', () => {
             openPanel(tab.getAttribute('data-target'));
         });
     });
-
     folderStack.addEventListener('dragover', (e) => {
         e.preventDefault();
         const afterElement = getDragAfterElement(folderStack, e.clientY);
-        if (afterElement == null) {
-            folderStack.appendChild(draggedTab);
-        } else {
-            folderStack.insertBefore(draggedTab, afterElement);
-        }
+        if (afterElement == null) folderStack.appendChild(draggedTab); else folderStack.insertBefore(draggedTab, afterElement);
     });
 }
-
 function getDragAfterElement(container, y) {
     const draggableElements = [...container.querySelectorAll('.folder-tab:not(.dragging)')];
     return draggableElements.reduce((closest, child) => {
         const box = child.getBoundingClientRect();
         const offset = y - box.top - box.height / 2;
-        if (offset < 0 && offset > closest.offset) {
-            return { offset: offset, element: child };
-        } else {
-            return closest;
-        }
+        if (offset < 0 && offset > closest.offset) return { offset: offset, element: child }; else return closest;
     }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 
 // --- 11. GERENCIADOR DE JANELAS (PANELS) ---
 const panels = document.querySelectorAll('.ui-panel');
-
 function closePanel(panel) {
     panel.style.display = 'none';
     const target = document.querySelector(`[data-target="${panel.id}"]`);
     if (target) target.classList.remove('active-tab');
-
-    if (!panel.classList.contains('floating')) {
-        document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
-    }
+    if (!panel.classList.contains('floating')) document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
 }
-
 function openPanel(panelId) {
     const panel = document.getElementById(panelId);
     if (!panel) return;
-
     panels.forEach(p => { if (p.id !== panelId && !p.classList.contains('floating')) closePanel(p); });
-
     panel.style.display = 'flex';
     const target = document.querySelector(`[data-target="${panelId}"]`);
     if (target) target.classList.add('active-tab');
-
     if (!panel.classList.contains('floating')) dockPanel(panel, 'left');
 }
-
 function dockPanel(panel, side) {
     panel.classList.remove('docked-left', 'docked-right', 'docked-top', 'docked-bottom', 'floating');
     panel.style.top = ''; panel.style.left = ''; panel.style.right = ''; panel.style.bottom = ''; panel.style.height = ''; panel.style.width = '';
-
     if (side !== 'float') {
         panel.classList.add(`docked-${side}`);
         document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
@@ -424,7 +388,6 @@ camera.lookAt(0, 0, 0);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
-// Verifica se o container existe antes de dar append
 if (document.getElementById('canvas-container')) {
     document.getElementById('canvas-container').appendChild(renderer.domElement);
 }
@@ -436,27 +399,14 @@ controls.enableZoom = true;
 controls.autoRotate = true;
 controls.autoRotateSpeed = 0.05;
 
-// Referências para o Callout
-const calloutContainer = document.getElementById('callout-container');
-const calloutLabel = document.getElementById('callout-label');
-const calloutLine = document.getElementById('callout-line');
-let currentlyHoveredSphere = null; // Para guardar qual esfera estamos mirando
-
 // --- FUNÇÃO AUXILIAR: Converte posição 3D para 2D (Pixels na tela) ---
 function getScreenPosition(object3D, camera, renderer) {
     const vector = new THREE.Vector3();
     const canvas = renderer.domElement;
-
-    // 1. Pega a posição central do objeto no mundo 3D
     vector.setFromMatrixPosition(object3D.matrixWorld);
-
-    // 2. Projeta essa posição usando a câmera (vira coordenadas normalizadas entre -1 e 1)
     vector.project(camera);
-
-    // 3. Converte de normalizado para pixels da tela
     const x = (vector.x * 0.5 + 0.5) * canvas.clientWidth;
     const y = (vector.y * -0.5 + 0.5) * canvas.clientHeight;
-
     return { x, y };
 }
 
@@ -510,7 +460,6 @@ const fragmentShader = `
     }
 `;
 
-// Simulação de dados se o fetch falhar ou não houver arquivo
 const projetosSimulados = [
     { titulo: "Reconhecendo a Mooca", tech: "Urbanismo / Fotogrametria", descricao: "Levantamento urbano e análise de fluxos." },
     { titulo: "Spbim Workshop", tech: "BIM / Laser Scan", descricao: "Monitoria de levantamento com nuvem de pontos." },
@@ -546,14 +495,15 @@ fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(p
         const node = new THREE.Mesh(nodeGeo, nodeMat);
 
         node.position.set(x * radius, y * radius, z * radius);
-        node.userData = { id: i, data: proj, isNode: true };
+        // Salva o título no userData para usar no callout
+        node.userData = { id: i, data: proj, isNode: true, projectName: proj.titulo };
 
         projectNodes.push(node);
         projectGroup.add(node);
     });
 });
 
-// --- INTERACTION 3D ---
+// --- INTERACTION 3D & CALLOUT LOGIC ---
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 let hoveredNode = null;
@@ -563,6 +513,7 @@ window.addEventListener('mousemove', (event) => {
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 });
 
+// Clique para abrir modal
 window.addEventListener('click', (event) => {
     if (!document.body.classList.contains('active')) return;
     if (event.target.closest('.ui-panel') || event.target.closest('.folder-tab') || event.target.closest('#project-modal') || event.target.closest('.close-modal')) return;
@@ -570,56 +521,8 @@ window.addEventListener('click', (event) => {
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(projectNodes);
     if (intersects.length > 0) {
-        // --- MOUSE ESTÁ SOBRE UMA ESFERA ---
-
-        // Pega a primeira esfera atingida
-        const hoveredObject = intersects[0].object;
-        currentlyHoveredSphere = hoveredObject;
-
-        // 1. Mostra o container
-        calloutContainer.classList.add('visible');
-
-        // 2. Define o texto (supondo que você guardou o nome no 'userData' da esfera)
-        // Se você guardou o nome de outro jeito, ajuste aqui.
-        calloutLabel.textContent = hoveredObject.userData.projectName || "Projeto Sem Nome";
-
-        // 3. Calcula as posições
-        // Posição da esfera na tela (Ponto Inicial da linha)
-        const startPoint = getScreenPosition(hoveredObject, camera, renderer);
-
-        // Define onde o texto vai ficar.
-        // Exemplo: 100px para a direita e 60px para cima da esfera.
-        const endPoint = {
-            x: startPoint.x + 100,
-            y: startPoint.y - 60
-        };
-
-        // 4. Posiciona o Texto
-        // O texto fica exatamente no ponto final, um pouco acima da linha
-        calloutLabel.style.left = `${endPoint.x}px`;
-        calloutLabel.style.top = `${endPoint.y - 20}px`; // Sobe 20px para ficar sobre a linha
-
-        // 5. Calcula e desenha a linha (Matemática básica de triângulo)
-        const deltaX = endPoint.x - startPoint.x;
-        const deltaY = endPoint.y - startPoint.y;
-        // Teorema de Pitágoras para achar o comprimento
-        const lineLength = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-        // Arco tangente para achar o ângulo de rotação
-        const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
-
-        // Aplica os estilos na linha
-        calloutLine.style.width = `${lineLength}px`;
-        calloutLine.style.left = `${startPoint.x}px`;
-        calloutLine.style.top = `${startPoint.y}px`;
-        calloutLine.style.transform = `rotate(${angle}deg)`;
-
-
-    } else {
-        // --- MOUSE NÃO ESTÁ SOBRE NENHUMA ESFERA ---
-        if (currentlyHoveredSphere) {
-            calloutContainer.classList.remove('visible');
-            currentlyHoveredSphere = null;
-        }
+        const object = intersects[0].object;
+        openModal(object.userData.data);
     }
 });
 
@@ -646,9 +549,7 @@ window.addEventListener('mousedown', (e) => {
     if (e.button === 1) {
         e.preventDefault();
         const now = Date.now();
-        if (now - lastMiddleClick < 500) {
-            controls.reset();
-        }
+        if (now - lastMiddleClick < 500) { controls.reset(); }
         lastMiddleClick = now;
     }
 });
@@ -662,22 +563,51 @@ function animate() {
         const intersectsNodes = raycaster.intersectObjects(projectNodes);
         const intersectsCenter = raycaster.intersectObject(sphere);
 
+        // Rotação automática quando não há hover
         if (!hoveredNode) {
             projectGroup.rotation.y -= 0.001;
             projectGroup.rotation.z += 0.0005;
         }
 
         if (intersectsNodes.length > 0) {
+            // --- MOUSE SOBRE NÓ (CALLOUT ATIVO) ---
             const object = intersectsNodes[0].object;
+
+            // Lógica do Callout
+            if (calloutContainer && calloutLabel && calloutLine) {
+                calloutContainer.classList.add('visible');
+                calloutLabel.textContent = object.userData.projectName || "Projeto";
+
+                const startPoint = getScreenPosition(object, camera, renderer);
+                const endPoint = { x: startPoint.x + 80, y: startPoint.y - 60 }; // Distância fixa da linha
+
+                // Posiciona Texto
+                calloutLabel.style.left = `${endPoint.x}px`;
+                calloutLabel.style.top = `${endPoint.y - 20}px`;
+
+                // Desenha Linha
+                const deltaX = endPoint.x - startPoint.x;
+                const deltaY = endPoint.y - startPoint.y;
+                const lineLength = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+
+                calloutLine.style.width = `${lineLength}px`;
+                calloutLine.style.left = `${startPoint.x}px`;
+                calloutLine.style.top = `${startPoint.y}px`;
+                calloutLine.style.transform = `rotate(${angle}deg)`;
+            }
+
+            // Efeitos Visuais do Nó
             if (hoveredNode !== object) {
-                if (hoveredNode) {
-                    hoveredNode.material.uniforms.c.value.setHex(0xffffff);
-                }
+                if (hoveredNode) hoveredNode.material.uniforms.c.value.setHex(0xffffff);
                 hoveredNode = object;
                 hoveredNode.material.uniforms.c.value.setHex(0x00ff88);
                 document.body.style.cursor = 'pointer';
             }
         } else {
+            // --- MOUSE FORA (CALLOUT INATIVO) ---
+            if (calloutContainer) calloutContainer.classList.remove('visible');
+
             if (hoveredNode) {
                 hoveredNode.material.uniforms.c.value.setHex(0xffffff);
                 hoveredNode = null;
@@ -685,11 +615,13 @@ function animate() {
             }
         }
 
+        // Efeito de escala nos nós
         projectNodes.forEach(node => {
             const targetScale = (node === hoveredNode) ? 1.5 : 1;
             node.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
         });
 
+        // Efeito na esfera central
         if (intersectsCenter.length > 0) {
             sphere.rotation.y += 0.001;
             sphere.rotation.x += 0.001;
