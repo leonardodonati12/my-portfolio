@@ -94,6 +94,22 @@ body.push-bottom #main-wrapper {
 
 /* --- FIXED UI ELEMENTS --- */
 #copyright {
+	position: fixed;
+	bottom: 20px;
+	left: 20px;
+	font-size: 0.7rem;
+	color: #aaa;
+	letter-spacing: 1px;
+	z-index: 100;
+	pointer-events: none;
+	transition: bottom 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+body.push-bottom #copyright {
+	bottom: 280px;
+}
+
+#copyright {
 	/* Adicione estas propriedades para garantir o movimento suave */
 	transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 	width: fit-content; /* Essencial para o cálculo funcionar */
@@ -110,12 +126,6 @@ body.push-left #copyright {
 	transform: translateX(calc(100vw - 100% - 60px));
 	/* Opcional: Alinha o texto à direita se tiver múltiplas linhas */
 	text-align: right;
-}
-
-/* Opcional: Se abrir o painel de baixo (push-bottom), o copyright sobe */
-/* (Já deve ter algo assim, mas garante que ele não suma) */
-body.push-bottom #copyright {
-	bottom: 300px; /* Ajuste conforme a altura do seu painel inferior */
 }
 
 /* RESUME BUTTON */
