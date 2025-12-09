@@ -193,7 +193,7 @@ body.active #folder-stack {
 }
 
 body.push-left #folder-stack {
-	transform: translateX(232px);
+	transform: translateX(252px);
 }
 
 body.push-top #folder-stack {
@@ -449,7 +449,7 @@ body.push-bottom #folder-stack {
 }
 
 body.active .hero {
-	opacity: 1 !important;
+	opacity: 0 !important;
 }
 
 .hero h1, .hero .subtitle {
