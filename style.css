@@ -1075,67 +1075,95 @@ a, button, .close-panel {
 	cursor: none !important;
 }
 
-/* --- AUDIO CONTROL UI (ESCONDIDO NA INTRO) --- */
+/* --- AUDIO CONTROL UI (HEADER STYLE) --- */
 .audio-toggle {
+	/* POSICIONAMENTO */
 	position: fixed;
-	bottom: 20px;
-	right: 20px;
-	z-index: 6000;
+	top: 10.5%;
+	right: 300px;
+	bottom: auto;
+	/* [CORREÇÃO 1] Z-Index menor que a cortina (que é 5500) */
+	z-index: 4000;
+	/* ESTILO VISUAL */
 	background: transparent;
-	border: 1px solid #333;
-	color: #555;
+	border: none;
+	color: #eee;
 	font-family: 'Consolas', monospace;
-	font-size: 0.65rem;
-	padding: 8px 12px;
-	letter-spacing: 1px;
-	/* Configuração padrão: ESCONDIDO */
-	opacity: 0;
-	pointer-events: none; /* Não clicável enquanto invisível */
+	font-size: 0.8rem;
+	letter-spacing: 2px;
+	padding: 8px 15px;
+	text-decoration: none;
+	/* ESTADO INICIAL (Escondido) */
 	cursor: none !important;
-	/* Adicionei 'opacity' na transição para o fade-in suave */
-	transition: opacity 2s ease, transform 0.3s ease, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+	opacity: 0;
+	pointer-events: none;
+	/* [CORREÇÃO 2] Adicionei '1s' de delay na Opacidade */
+	/* Isso faz ele esperar a cortina subir antes de começar a brilhar */
+	transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), top 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 2s ease 1s, /* <--- O '1s' aqui é o delay */
+	color 0.3s, text-shadow 0.3s;
 }
 
-/* QUANDO O SISTEMA ATIVA (OS MODE) -> O BOTÃO APARECE */
+/* O restante continua igual... */
 body.active .audio-toggle {
 	opacity: 1;
-	pointer-events: auto; /* Agora pode clicar */
+	pointer-events: auto;
 }
 
-/* Hover Effect */
 .audio-toggle:hover {
-	border-color: #00ff88;
 	color: #00ff88;
-	box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+	background: transparent;
+	text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
 }
 
-/* Estado Ativo (Tocando) */
 .audio-toggle.playing {
-	border-color: #00ff88;
 	color: #00ff88;
-	text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
-	animation: pulse-audio 3s infinite;
+	animation: pulse-text-audio 3s infinite;
 }
 
-@keyframes pulse-audio {
+@keyframes pulse-text-audio {
 	0%, 100% {
+		text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
 		opacity: 1;
 	}
 
 	50% {
-		opacity: 0.6;
+		text-shadow: 0 0 15px rgba(0, 255, 136, 0.8);
+		opacity: 0.7;
 	}
 }
 
-/* Movimentação (Evitar sobreposição) */
+/* --- MOVIMENTAÇÃO SINCRONIZADA --- */
 body.push-right .audio-toggle {
-	transform: translateX(-280px);
+	right: 520px;
 }
 
-body.push-bottom .audio-toggle {
-	transform: translateY(-240px);
+body.push-top .audio-toggle {
+	top: 280px;
 }
 
-body.push-right.push-bottom .audio-toggle {
-	transform: translate(-280px, -240px);
+/* --- MOVIMENTAÇÃO SINCRONIZADA (PUSH) --- */
+
+/* 1. Quando Painel DIREITO abre (Empurra para esquerda) */
+/* Cálculo: 300px (base) + 220px (deslocamento padrão) = 520px */
+body.push-right .audio-toggle {
+	right: 520px;
+}
+
+/* 2. Quando Painel SUPERIOR abre (Desce junto com os outros) */
+body.push-top .audio-toggle {
+	top: 280px;
+}
+
+/* --- AUDIO VISUALIZER (A CORDA SONORA) --- */
+#audio-visualizer {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 150px; /* Altura da área de vibração */
+	z-index: 3000; /* Acima do fundo, abaixo dos botões (4000) */
+	pointer-events: none; /* Mouse passa direto */
+	opacity: 0.8;
+	/* Não adicionamos transition de transform aqui, 
+       pois você pediu para ele NÃO se mover com as barras */
 }

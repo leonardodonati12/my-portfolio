@@ -664,25 +664,111 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// --- 13. SISTEMA DE ÁUDIO (SOUND SYSTEM) ---
+// --- 13. SISTEMA DE ÁUDIO & VISUALIZADOR ---
 const audioEl = document.getElementById('theme-audio');
 const audioBtn = document.getElementById('audio-btn');
+const canvas = document.getElementById('audio-visualizer');
+const ctx = canvas ? canvas.getContext('2d') : null;
+
 let isAudioPlaying = false;
+let audioContext, analyser, dataArray, source;
+let animationId;
 
-// Define volume inicial baixo
-if (audioEl) audioEl.volume = 0.2;
+// Configuração inicial do Canvas
+if (canvas) {
+    canvas.width = window.innerWidth;
+    canvas.height = 150;
+}
 
+// Função para iniciar o contexto de áudio (Navegadores exigem interação do usuário)
+function setupAudioContext() {
+    if (!audioContext && audioEl) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioContext = new AudioContext();
+        analyser = audioContext.createAnalyser();
+
+        // Conecta o áudio HTML ao Analisador
+        source = audioContext.createMediaElementSource(audioEl);
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+
+        // Configurações da "Corda"
+        analyser.fftSize = 2048; // Detalhe da onda
+        const bufferLength = analyser.fftSize;
+        dataArray = new Uint8Array(bufferLength);
+    }
+}
+
+// Função de Desenho (Loop)
+function drawVisualizer() {
+    if (!ctx || !canvas) return;
+
+    // Limpa o canvas anterior
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Configura o estilo da linha (Neon Green)
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#00ff88';
+    ctx.shadowBlur = 5;
+    ctx.shadowColor = '#00ff88';
+
+    ctx.beginPath();
+
+    const width = canvas.width;
+    const height = canvas.height;
+
+    // Se estiver tocando, pega os dados. Se não, desenha linha reta.
+    if (isAudioPlaying && analyser) {
+        analyser.getByteTimeDomainData(dataArray);
+
+        const sliceWidth = width * 1.0 / dataArray.length;
+        let x = 0;
+
+        for (let i = 0; i < dataArray.length; i++) {
+            const v = dataArray[i] / 128.0; // Normaliza
+            const y = (v * height) / 2; // Centraliza e define amplitude
+
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+            x += sliceWidth;
+        }
+    } else {
+        // Estado Desligado: Linha Reta no topo (ou meio)
+        // Vamos colocar levemente abaixo do topo para parecer uma corda tensa
+        ctx.moveTo(0, 30);
+        ctx.lineTo(width, 30);
+    }
+
+    ctx.stroke();
+
+    // Mantém o loop rodando
+    animationId = requestAnimationFrame(drawVisualizer);
+}
+
+// Inicia o desenho (mesmo parado, para desenhar a linha reta)
+drawVisualizer();
+
+// Função Toggle (Liga/Desliga Som)
 function toggleAudio() {
     if (!audioEl) return;
 
+    // Garante que o contexto existe
+    setupAudioContext();
+
+    // Retoma o contexto se estiver suspenso (comum no Chrome)
+    if (audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+
     if (isAudioPlaying) {
-        // Pausar
         audioEl.pause();
         audioBtn.innerHTML = '[ SOUND: OFF ]';
         audioBtn.classList.remove('playing');
         isAudioPlaying = false;
     } else {
-        // Tocar
         audioEl.play().then(() => {
             audioBtn.innerHTML = '[ SOUND: ON ]';
             audioBtn.classList.add('playing');
@@ -691,38 +777,43 @@ function toggleAudio() {
     }
 }
 
-// Clique no botão de áudio
 if (audioBtn) {
     audioBtn.addEventListener('click', toggleAudio);
 }
 
+// Atualiza tamanho do canvas se redimensionar a tela
+window.addEventListener('resize', () => {
+    if (canvas) {
+        canvas.width = window.innerWidth;
+        // O height é fixo no CSS, mas bom garantir aqui se quiser responsivo
+    }
+});
+
 // --- AUTO-START NO "ENTER SYSTEM" ---
-// O navegador só deixa tocar áudio depois que o usuário interage (clica)
 if (startBtn) {
-    // Adiciona ao listener existente ou cria um novo
     startBtn.addEventListener('click', () => {
+        // Configura o contexto no primeiro clique do usuário
+        setupAudioContext();
+
         if (audioEl && !isAudioPlaying) {
-            // Começa mudo e aumenta o volume gradualmente (Fade In)
             audioEl.volume = 0;
+            // Tenta tocar
             audioEl.play().then(() => {
                 isAudioPlaying = true;
                 audioBtn.innerHTML = '[ SOUND: ON ]';
                 audioBtn.classList.add('playing');
 
-                // Efeito de Fade In
+                // Fade In
                 let vol = 0;
-                const fadeInterval = setInterval(() => {
-                    if (vol < 0.3) { // Volume máximo de 30% para não atrapalhar
+                const fade = setInterval(() => {
+                    if (vol < 0.2) {
                         vol += 0.01;
                         audioEl.volume = vol;
                     } else {
-                        clearInterval(fadeInterval);
+                        clearInterval(fade);
                     }
-                }, 100); // Aumenta a cada 100ms
-            }).catch(e => {
-                // Se der erro (bloqueio do navegador), fica quieto e espera clique manual
-                console.log("Autoplay de áudio aguardando interação manual.");
-            });
+                }, 100);
+            }).catch(e => console.log("Autoplay aguardando interação."));
         }
     });
 }
