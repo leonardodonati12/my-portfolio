@@ -469,7 +469,7 @@ function drawVisualizer() {
             ctx.lineTo(x, y);
         }
     }
-
+     
     ctx.stroke();
 
     // Desenha uma linha reta fina no centro para dar acabamento (opcional, igual capa do AM)
