@@ -405,18 +405,18 @@ function setupAudioContext() {
     }
 }
 
-// Função de Desenho (Versão 2.0: Organic Chaos)
+// Função de Desenho (Estilo AM - Volumoso & Denso)
 function drawVisualizer() {
     if (!ctx || !canvas) return;
 
     // Limpa o canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // ESTÉTICA
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = '#ffffff'; // Branco
-    ctx.shadowBlur = 10;
-    ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+    // ESTÉTICA: Linha grossa e branca
+    ctx.lineWidth = 4; // Mais espessa para dar volume
+    ctx.strokeStyle = '#ffffff';
+    ctx.shadowBlur = 15; // Glow mais forte
+    ctx.shadowColor = 'rgba(255, 255, 255, 0.6)';
 
     const width = canvas.width;
     const height = canvas.height;
@@ -424,46 +424,44 @@ function drawVisualizer() {
 
     let amplitude = 0;
 
-    // Se estiver tocando, calcula volume e AJUSTA A VELOCIDADE
+    // Captura o volume do som
     if (isAudioPlaying && analyser) {
         analyser.getByteFrequencyData(dataArray);
-
         let sum = 0;
-        // Foca nos graves (primeiros 30% do array) para pegar a batida
+        // Pega uma faixa maior de graves e médios
         const sampleSize = Math.floor(dataArray.length * 0.5);
         for (let i = 0; i < sampleSize; i++) {
             sum += dataArray[i];
         }
-
-        // Sensibilidade
         const average = sum / sampleSize;
-        amplitude = average * 3; // Ajuste a altura aqui
+
+        // AUMENTO DE VOLUME VISUAL
+        // Multiplicador 2.5 faz a onda ficar bem alta (volumosa) quando o som bate
+        amplitude = average * 2.5;
     }
 
-    // A MÁGICA DO CAOS:
-    // A variável 'time' agora corre mais rápido se a amplitude for alta
-    // Usei uma variável global ou atributo do window para acumular o tempo
+    // Controle de Tempo (Velocidade)
     if (!window.waveTime) window.waveTime = 0;
-    // Se a música estiver alta, o tempo passa rápido (onda agitada). Se silêncio, passa devagar.
+    // Se tiver som, corre mais rápido. Se não, fica num balanço lento.
     window.waveTime += 0.02 + (amplitude * 0.0005);
-
     const t = window.waveTime;
 
     ctx.beginPath();
 
     for (let x = 0; x < width; x++) {
-        // ENVELOPE (Mantém as pontas presas nas laterais)
-        // Elevado ao quadrado para deixar as pontas mais "tensas" e o meio mais solto
+        // 1. O ENVELOPE (Formato da "Corda")
+        // Math.PI * 1 = Um arco único (formato de banana/corda)
+        // Se quiser aquele visual de "dois gomos" do AM, mude para Math.PI * 2
         const envelope = Math.sin((x / width) * Math.PI);
 
-        // ONDA 1: A base (Larga e Lenta)
-        const wave1 = Math.sin(x * 0.09 + t);
+        // 2. A ONDA DE ALTA FREQUÊNCIA (O "Recheio")
+        // 0.03 é uma frequência mais alta -> cria mais zig-zags, dando a sensação de volume/densidade
+        // Somamos uma segunda onda (0.07) para criar uma interferência harmônica bonita
+        const carrier = Math.sin(x * 0.03 + t) + (Math.sin(x * 0.07 + t) * 0.5);
 
-        // ONDA 2: O detalhe (Média e Rápida)
-        const wave2 = Math.sin(x * 0.02 + t * 2.5) * 0.5;
-
-        // Aplica amplitude e envelope
-        const y = centerY + (combinedWave * amplitude * envelope * 0.5);
+        // Cálculo Final do Y
+        // Normalizamos a onda e aplicamos a amplitude gigante
+        const y = centerY + (carrier * amplitude * envelope * 0.5);
 
         if (x === 0) {
             ctx.moveTo(x, y);
@@ -473,6 +471,16 @@ function drawVisualizer() {
     }
 
     ctx.stroke();
+
+    // Desenha uma linha reta fina no centro para dar acabamento (opcional, igual capa do AM)
+    /* ctx.lineWidth = 1;
+    ctx.globalAlpha = 0.3;
+    ctx.beginPath();
+    ctx.moveTo(0, centerY);
+    ctx.lineTo(width, centerY);
+    ctx.stroke();
+    ctx.globalAlpha = 1.0;
+    */
 
     animationId = requestAnimationFrame(drawVisualizer);
 }
