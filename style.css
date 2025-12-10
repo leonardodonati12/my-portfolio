@@ -43,7 +43,7 @@ body.push-left #main-wrapper {
 }
 
 body.push-top #main-wrapper {
-	transform: translateY(220px);
+	transform: translateY(300px);
 }
 
 body.push-right #main-wrapper {
@@ -66,10 +66,10 @@ body.push-bottom #main-wrapper {
 /* --- AUDIO VISUALIZER (ESTILO AM) --- */
 #audio-visualizer {
 	position: fixed;
-	top: 20px;
+	top: 120px; /* Abaixo dos botões */
 	left: 0;
 	width: 100%;
-	height: 50px;
+	height: 200px;
 	z-index: 3000;
 	pointer-events: none;
 	opacity: 1;
@@ -126,50 +126,47 @@ body.push-bottom #copyright {
 	transform: translateY(-280px);
 }
 
-/* --- BOTÕES DO HEADER (RESUME, PORTFOLIO & AUDIO) --- */
+/* --- BOTÕES DO HEADER (PADRONIZADOS) --- */
 #resume-btn, #portfolio-btn, .audio-toggle {
 	position: fixed;
-	top: 10.5%;
-	font-size: 0.8rem;
+	top: 50px; /* Altura fixa para todos */
+	font-size: 0.75rem;
 	color: #eee;
+	font-family: 'Consolas', monospace;
 	letter-spacing: 2px;
 	text-decoration: none;
 	border: none;
 	background: transparent;
-	padding: 8px 15px;
+	padding: 10px 15px;
 	z-index: 4000; /* Atrás da cortina (5500) */
 	cursor: none !important;
-	/* Configuração de Animação */
-	transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), top 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 2s ease, /* Fade lento */
-	color 0.3s, text-shadow 0.3s;
+	transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), top 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 2s ease, color 0.3s, text-shadow 0.3s;
 }
 
-/* Posicionamento Horizontal */
+/* Posicionamento Horizontal (Gap ~120px) */
 #portfolio-btn {
-	right: 80px;
+	right: 40px;
 }
 
 #resume-btn {
-	right: 190px;
+	right: 160px;
 }
-/* Audio fica à esquerda do Resume (190 + gap) */
+
 .audio-toggle {
 	right: 280px;
 	opacity: 0;
 	pointer-events: none;
 }
 
-/* Quando ativo, Audio aparece com delay */
+/* Audio aparece quando ativo */
 body.active .audio-toggle {
 	opacity: 1;
 	pointer-events: auto;
-	transition-delay: 0s;
 }
 
-/* Estilos Hover (Unificado) */
+/* Hover Unificado */
 #resume-btn:hover, #portfolio-btn:hover, .audio-toggle:hover {
 	color: #00ff88;
-	background: transparent;
 	text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
 }
 
@@ -184,34 +181,33 @@ body.active .audio-toggle {
 		text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
 		opacity: 1;
 	}
-	 
+
 	50% {
 		text-shadow: 0 0 15px rgba(0, 255, 136, 0.8);
 		opacity: 0.7;
 	}
 }
 
-/* Movimentação dos Botões (Push) */
-/* Todos se movem juntos para esquerda */
+/* Movimentação PUSH (Lateral) */
 body.push-right #portfolio-btn {
 	right: 300px;
 }
 
 body.push-right #resume-btn {
-	right: 410px;
+	right: 420px;
 }
 
 body.push-right .audio-toggle {
-	right: 500px;
+	right: 540px;
 }
 
-/* Todos descem juntos */
+/* Movimentação PUSH (Vertical - Descida) */
 body.push-top #portfolio-btn,
 body.push-top #resume-btn,
 body.push-top .audio-toggle {
 	top: 310px;
 }
- 
+
 
 /* --- SIDE TABS --- */
 #folder-stack {
@@ -224,7 +220,7 @@ body.push-top .audio-toggle {
 	z-index: 4000;
 	opacity: 0;
 	padding-left: 0;
-	margin-left: 1px;
+	margin-left: 0; /* Colado na borda */
 	transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 1s;
 }
 
@@ -237,7 +233,7 @@ body.push-left #folder-stack {
 }
 
 body.push-top #folder-stack {
-	transform: translateY(220px);
+	transform: translateY(300px);
 }
 
 body.push-bottom #folder-stack {
@@ -279,7 +275,7 @@ body.push-bottom #folder-stack {
 		z-index: 10;
 		transform: rotate(180deg) translateX(5px);
 	}
-
+	/* Sem borda fina na direita */
 	.folder-tab.active-tab {
 		background: #0f0f0f;
 		color: #00ff88;
@@ -287,7 +283,7 @@ body.push-bottom #folder-stack {
 		z-index: 20;
 		border-radius: 12px 0 0 12px;
 		box-shadow: 0 0 15px rgba(0,0,0,0.8);
-		border-right: 1px solid #333;
+		border-right: none;
 	}
 
 	.folder-tab.dragging {
@@ -416,11 +412,11 @@ body.push-bottom #folder-stack {
 		box-shadow: 0 0 20px #00ff88;
 	}
 
-/* HERO UI */
+/* HERO UI (Ajustado para esquerda) */
 .hero {
 	position: absolute;
-	top: 10%;
-	left: 80px;
+	top: 18%;
+	left: 40px;
 	pointer-events: none;
 	opacity: 0;
 	transition: opacity 2s;
@@ -436,21 +432,24 @@ body.active .hero {
 	font-size: 3.5rem;
 	margin: 0;
 	color: #ffffff !important;
-	line-height: 1.1;
+	line-height: 1;
 	pointer-events: auto;
 	cursor: none !important;
 	text-shadow: 0 0 20px rgba(0,0,0,0.8);
+	text-align: left;
 }
 
 .hero .subtitle {
 	color: #00ff88 !important;
 	letter-spacing: 3px;
 	font-size: 1rem;
-	margin-top: 15px;
+	margin-top: 10px;
 	display: inline-block;
 	padding: 5px 0;
 	pointer-events: auto;
 	cursor: none !important;
+	margin-left: 2px;
+	text-align: left;
 }
 
 .interaction-hint {
@@ -472,7 +471,7 @@ body.active .interaction-hint {
 }
 
 body.push-bottom .interaction-hint {
-	transform: translate(-50%, -280px);
+	transform: translate(-50%, -240px);
 }
 
 /* PANELS */
@@ -845,11 +844,49 @@ body.push-bottom .interaction-hint {
 	box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
 
+/* --- ARTEFATO BIO-DIGITAL (3D CONTAINER) --- */
+.symbiote-container-home {
+	position: fixed;
+	bottom: -20px;
+	right: -40px;
+	z-index: 50;
+	width: 220px;
+	height: 220px;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	pointer-events: auto;
+	cursor: none !important;
+	background-color: rgba(0, 0, 0, 0.01);
+	transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+#symbiote-canvas {
+	width: 100%;
+	height: 100%;
+	outline: none;
+	filter: drop-shadow(0 0 15px rgba(0, 255, 136, 0.3));
+}
+
+body.push-right .symbiote-container-home {
+	transform: translateX(-280px);
+}
+
+body.push-bottom .symbiote-container-home {
+	transform: translateY(-300px);
+}
+
+body.push-right.push-bottom .symbiote-container-home {
+	transform: translate(-280px, -300px);
+}
+
 /* GLOBAL CURSOR RESET */
 a, button, .close-panel {
 	cursor: none !important;
 }
 
+/* RESPONSIVE */
 @media (max-width: 768px) {
 	#folder-stack {
 		top: auto;
@@ -902,38 +939,42 @@ a, button, .close-panel {
 		transform: none !important;
 	}
 
+	/* Mobile Header */
 	#portfolio-btn {
-		top: 10px;
-		right: 10px;
+		top: 20px;
+		right: 20px;
 	}
 
 	#resume-btn {
-		top: 10px;
-		right: 120px;
+		top: 20px;
+		right: 110px;
 	}
 
 	.audio-toggle {
-		top: 10px !important; /* Alinha no topo junto com os outros */
-		right: 220px !important; /* Joga para a esquerda do Resume */
+		top: 20px !important;
+		right: 200px !important;
 		padding: 10px !important;
+		font-size: 0.6rem !important;
 	}
 
-	.hero .subtitle {
-		margin-left: -20px; /* Puxa para a esquerda. Aumente o negativo se precisar mais. */
-		/* Se ele estiver centralizado, talvez precise de: text-align: left; */
+	/* Mobile Hero */
+	.hero {
+		left: 20px;
+		top: 15%;
 	}
 
+		.hero .subtitle {
+			margin-left: -20px;
+		}
+
+	/* Mobile Symbiote */
 	.symbiote-container-home {
-		/* Joga ele para fora da tela (negativo) para não cobrir o texto */
 		right: -60px !important;
 		bottom: 10px !important;
-		/* Opcional: Reduzir um pouco o tamanho no celular para não atrapalhar */
-		/* transform: scale(0.8); */
 	}
 }
- 
-}
-/* Header Portfolio */
+
+/* Header Portfolio (Page Specific) */
 .header {
 	padding: 40px 60px;
 	display: flex;
@@ -942,7 +983,7 @@ a, button, .close-panel {
 	position: sticky;
 	top: 0;
 	background: rgba(255,255,255,0.95);
-	backdrop-filter: blur(8px); 
+	backdrop-filter: blur(8px);
 	z-index: 100;
 }
 
@@ -970,51 +1011,4 @@ a, button, .close-panel {
 .nav {
 	display: flex;
 	gap: 30px;
-}
-
-/* --- ARTEFATO BIO-DIGITAL (3D CONTAINER) --- */
-.symbiote-container-home {
-	position: fixed;
-	bottom: 10px;
-	right: 20px;
-	z-index: 50;
-	/* Hitbox Grande (Mantida) */
-	width: 220px;
-	height: 220px;
-	border-radius: 50%;
-	/* Centralização */
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	/* Não precisa mais de mix-blend-mode se quiser cor real, 
-       mas 'screen' ajuda a integrar o glow */
-	/* mix-blend-mode: screen; */
-
-	pointer-events: auto;
-	cursor: none !important;
-	/* Debug Hitbox (apague depois) */
-	background-color: rgba(0, 0, 0, 0.01);
-	transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-/* O Canvas 3D */
-#symbiote-canvas {
-	width: 100%;
-	height: 100%;
-	outline: none;
-	/* Filtro leve para integrar com o tema neon */
-	filter: drop-shadow(0 0 15px rgba(0, 255, 136, 0.3));
-}
-
-/* Lógica de Push (Mantida) */
-body.push-right .symbiote-container-home {
-	transform: translateX(-280px);
-}
-
-body.push-bottom .symbiote-container-home {
-	transform: translateY(-300px);
-}
-
-body.push-right.push-bottom .symbiote-container-home {
-	transform: translate(-280px, -300px);
 }
