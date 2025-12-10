@@ -413,7 +413,7 @@ function drawVisualizer() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // ESTÉTICA
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 4;
     ctx.strokeStyle = '#ffffff'; // Branco
     ctx.shadowBlur = 10;
     ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
@@ -430,14 +430,14 @@ function drawVisualizer() {
 
         let sum = 0;
         // Foca nos graves (primeiros 30% do array) para pegar a batida
-        const sampleSize = Math.floor(dataArray.length * 0.3);
+        const sampleSize = Math.floor(dataArray.length * 0.5);
         for (let i = 0; i < sampleSize; i++) {
             sum += dataArray[i];
         }
 
         // Sensibilidade
         const average = sum / sampleSize;
-        amplitude = average * 0.6; // Ajuste a altura aqui
+        amplitude = average * 3; // Ajuste a altura aqui
     }
 
     // A MÁGICA DO CAOS:
@@ -445,7 +445,7 @@ function drawVisualizer() {
     // Usei uma variável global ou atributo do window para acumular o tempo
     if (!window.waveTime) window.waveTime = 0;
     // Se a música estiver alta, o tempo passa rápido (onda agitada). Se silêncio, passa devagar.
-    window.waveTime += 0.005 + (amplitude * 0.0002);
+    window.waveTime += 0.02 + (amplitude * 0.0005);
 
     const t = window.waveTime;
 
@@ -454,22 +454,16 @@ function drawVisualizer() {
     for (let x = 0; x < width; x++) {
         // ENVELOPE (Mantém as pontas presas nas laterais)
         // Elevado ao quadrado para deixar as pontas mais "tensas" e o meio mais solto
-        const envelope = Math.pow(Math.sin((x / width) * Math.PI), 1.5);
+        const envelope = Math.sin((x / width) * Math.PI);
 
         // ONDA 1: A base (Larga e Lenta)
-        const wave1 = Math.sin(x * 0.008 + t);
+        const wave1 = Math.sin(x * 0.09 + t);
 
         // ONDA 2: O detalhe (Média e Rápida)
         const wave2 = Math.sin(x * 0.02 + t * 2.5) * 0.5;
 
-        // ONDA 3: O "Ruído" (Curta e Irregular) - Quebra a perfeição da senoide
-        const wave3 = Math.sin(x * 0.05 + t * 4) * 0.2;
-
-        // Soma tudo
-        const combinedWave = wave1 + wave2 + wave3;
-
         // Aplica amplitude e envelope
-        const y = centerY + (combinedWave * amplitude * envelope);
+        const y = centerY + (combinedWave * amplitude * envelope * 0.5);
 
         if (x === 0) {
             ctx.moveTo(x, y);
