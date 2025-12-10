@@ -426,7 +426,7 @@ function drawVisualizer() {
         const average = sum / sampleSize;
         // Amplitude exagerada para criar o "volume" da corda
         amplitude = average * 5;
-    }
+    } 
 
     if (!window.waveTime) window.waveTime = 0;
     window.waveTime += 0.02 + (amplitude * 0.0005);
