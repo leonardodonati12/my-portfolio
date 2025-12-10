@@ -469,14 +469,14 @@ if (startBtn) {
 
     // [AJUSTE 1] Tamanho reduzido (Raio 0.9)
     // Mantive alto detalhe (20) para os spikes ficarem definidos
-    const geometry = new THREE.IcosahedronGeometry(0.9, 20);
+    const geometry = new THREE.IcosahedronGeometry(0.5, 30);
 
     // [AJUSTE 2] Verde Reduzido na base
     const material = new THREE.MeshPhongMaterial({
-        color: 0x000000,      // Preto base
-        emissive: 0x001105,   // Brilho interno MUITO fraco (quase preto)
-        specular: 0x00ff88,   // Reflexos pontuais continuam neon
-        shininess: 60,        // Mais brilhante/molhado
+        color: 0x01b963,      // Preto base
+        emissive: 0x006134,   // Brilho interno MUITO fraco (quase preto)
+        specular: 0x00de76,   // Reflexos pontuais continuam neon
+        shininess: 10,        // Mais brilhante/molhado
         wireframe: false,
         flatShading: false
     }); 
@@ -495,7 +495,7 @@ if (startBtn) {
     const count = geometry.attributes.position.count;
 
     let time = 0;
-    let spikeAmount = 0.2; // Começa mais baixo
+    let spikeAmount = 0.5; // Começa mais baixo
     let speed = 0.005;
     let isHovering = false;
 
@@ -515,7 +515,7 @@ if (startBtn) {
             speed = THREE.MathUtils.lerp(speed, 0.005, 0.1);
             spikeAmount = THREE.MathUtils.lerp(spikeAmount, 0.2, 0.1);
             // [AJUSTE 2] Volta para o quase preto
-            blob.material.emissive.setHex(0x001105);
+            blob.material.emissive.setHex(0x006134);
         }
 
         time += speed;
@@ -531,7 +531,7 @@ if (startBtn) {
             // [AJUSTE 3] Frequências mais altas = Spikes mais finos/pontiagudos
             // Antes era (ox * 2.5), agora é (ox * 5.0), etc.
             const noise =
-                Math.sin(ox * 5.0 + time) * Math.cos(oy * 4.5 + time) * Math.sin(oz * 5.5 + time);
+                Math.sin(ox * 8.0 + time) * Math.cos(oy * 5 + time) * Math.sin(oz * 6 + time);
 
             // O fator eleva o ruído ao quadrado para deixar os vales mais planos e os picos mais agudos
             // Math.sign mantém a direção (para dentro ou para fora)
