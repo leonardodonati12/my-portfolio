@@ -453,7 +453,7 @@ if (startBtn) {
     });
 }
 
-// --- 14. SYMBIOTE 3D (FERROFLUID SPIKES) ---
+// --- 14. SYMBIOTE 3D (FERROFLUID SPIKES - TWEAKED) ---
 (function initSymbiote3D() {
     const container = document.getElementById('symbiote-container');
     const canvas = document.getElementById('symbiote-canvas');
@@ -467,21 +467,35 @@ if (startBtn) {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(220, 220);
 
-    const geometry = new THREE.IcosahedronGeometry(1.2, 20);
-    const material = new THREE.MeshPhongMaterial({ color: 0x000000, emissive: 0x003311, specular: 0x00ff88, shininess: 50, wireframe: false, flatShading: false });
+    // [AJUSTE 1] Tamanho reduzido (Raio 0.9)
+    // Mantive alto detalhe (20) para os spikes ficarem definidos
+    const geometry = new THREE.IcosahedronGeometry(0.9, 20);
+
+    // [AJUSTE 2] Verde Reduzido na base
+    const material = new THREE.MeshPhongMaterial({
+        color: 0x000000,      // Preto base
+        emissive: 0x001105,   // Brilho interno MUITO fraco (quase preto)
+        specular: 0x00ff88,   // Reflexos pontuais continuam neon
+        shininess: 60,        // Mais brilhante/molhado
+        wireframe: false,
+        flatShading: false
+    });
+
     const blob = new THREE.Mesh(geometry, material);
     scene.add(blob);
 
-    const light = new THREE.DirectionalLight(0xffffff, 1);
+    // Iluminação ajustada para destacar os spikes
+    const light = new THREE.DirectionalLight(0xffffff, 1.2);
     light.position.set(2, 2, 5);
     scene.add(light);
-    const ambientLight = new THREE.AmbientLight(0x004400, 0.5);
+    const ambientLight = new THREE.AmbientLight(0x002200, 0.3); // Luz ambiente mais fraca
     scene.add(ambientLight);
 
     const originalPositions = geometry.attributes.position.array.slice();
     const count = geometry.attributes.position.count;
+
     let time = 0;
-    let spikeAmount = 0.3;
+    let spikeAmount = 0.2; // Começa mais baixo
     let speed = 0.005;
     let isHovering = false;
 
@@ -490,15 +504,20 @@ if (startBtn) {
 
     function animateSymbiote() {
         requestAnimationFrame(animateSymbiote);
+
         if (isHovering) {
-            speed = THREE.MathUtils.lerp(speed, 0.02, 0.1);
-            spikeAmount = THREE.MathUtils.lerp(spikeAmount, 0.8, 0.1);
-            blob.material.emissive.setHex(0x00ff88);
+            speed = THREE.MathUtils.lerp(speed, 0.025, 0.1); // Um pouco mais rápido
+            // Spikes crescem mais no hover
+            spikeAmount = THREE.MathUtils.lerp(spikeAmount, 1.0, 0.1);
+            // [AJUSTE 2] Verde do hover menos intenso que o original
+            blob.material.emissive.setHex(0x00cc66);
         } else {
             speed = THREE.MathUtils.lerp(speed, 0.005, 0.1);
             spikeAmount = THREE.MathUtils.lerp(spikeAmount, 0.2, 0.1);
-            blob.material.emissive.setHex(0x003311);
+            // [AJUSTE 2] Volta para o quase preto
+            blob.material.emissive.setHex(0x001105);
         }
+
         time += speed;
         blob.rotation.y += 0.01;
         blob.rotation.z += 0.005;
@@ -508,12 +527,22 @@ if (startBtn) {
             const ox = originalPositions[i * 3];
             const oy = originalPositions[i * 3 + 1];
             const oz = originalPositions[i * 3 + 2];
-            const noise = Math.sin(ox * 2.5 + time) * Math.cos(oy * 2.3 + time) * Math.sin(oz * 2.7 + time);
-            const factor = 1 + (noise * spikeAmount);
+
+            // [AJUSTE 3] Frequências mais altas = Spikes mais finos/pontiagudos
+            // Antes era (ox * 2.5), agora é (ox * 5.0), etc.
+            const noise =
+                Math.sin(ox * 5.0 + time) * Math.cos(oy * 4.5 + time) * Math.sin(oz * 5.5 + time);
+
+            // O fator eleva o ruído ao quadrado para deixar os vales mais planos e os picos mais agudos
+            // Math.sign mantém a direção (para dentro ou para fora)
+            const sharpNoise = Math.sign(noise) * Math.pow(Math.abs(noise), 1.5);
+
+            const factor = 1 + (sharpNoise * spikeAmount);
             positions.setXYZ(i, ox * factor, oy * factor, oz * factor);
         }
+
         positions.needsUpdate = true;
-        geometry.computeVertexNormals();
+        geometry.computeVertexNormals(); // Essencial para a sombra ficar correta nos spikes novos
         renderer.render(scene, camera);
     }
     animateSymbiote();
