@@ -393,7 +393,7 @@ function drawVisualizer() {
         const sampleSize = Math.floor(dataArray.length * 0.5);
         for (let i = 0; i < sampleSize; i++) sum += dataArray[i];
         const average = sum / sampleSize;
-        amplitude = average * 2.5; // Gorda/Volumosa
+        amplitude = average * 5; // Gorda/Volumosa
     }
 
     if (!window.waveTime) window.waveTime = 0;
@@ -405,7 +405,7 @@ function drawVisualizer() {
         // Envelope: pontas presas
         const envelope = Math.sin((x / width) * Math.PI);
         // Alta frequência (recheio denso)
-        const carrier = Math.sin(x * 0.05 + t) + (Math.sin(x * 0.1 + t) * 0.5);
+        const carrier = Math.sin(x * 0.1 + t) + (Math.sin(x * 0.2 + t) * 1);
 
         const y = centerY + (carrier * amplitude * envelope * 0.4);
         if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
