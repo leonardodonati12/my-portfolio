@@ -425,7 +425,7 @@ function drawVisualizer() {
         for (let i = 0; i < sampleSize; i++) sum += dataArray[i];
         const average = sum / sampleSize;
         // Amplitude exagerada para criar o "volume" da corda
-        amplitude = average * 2.5;
+        amplitude = average * 5;
     }
 
     if (!window.waveTime) window.waveTime = 0;
@@ -439,7 +439,7 @@ function drawVisualizer() {
 
         // Alta Frequência (Recheio denso)
         // 0.05 e 0.1 criam muitas "cobrinhas" dentro da forma maior
-        const carrier = Math.sin(x * 0.05 + t) + (Math.sin(x * 0.1 + t) * 0.5);
+        const carrier = Math.sin(x * 0.1 + t) + (Math.sin(x * 0.2 + t) * 1);
 
         const y = centerY + (carrier * amplitude * envelope * 0.4);
 
@@ -463,12 +463,12 @@ function toggleAudio() {
 
     if (isAudioPlaying) {
         audioEl.pause();
-        audioBtn.innerHTML = '[ SOUND: OFF ]';
+        audioBtn.innerHTML = 'SOUND OFF';
         audioBtn.classList.remove('playing');
         isAudioPlaying = false;
     } else {
         audioEl.play().then(() => {
-            audioBtn.innerHTML = '[ SOUND: ON ]';
+            audioBtn.innerHTML = 'SOUND ON';
             audioBtn.classList.add('playing');
             isAudioPlaying = true;
         }).catch(err => console.log("Áudio bloqueado:", err));
@@ -484,7 +484,7 @@ if (startBtn) {
             audioEl.volume = 0;
             audioEl.play().then(() => {
                 isAudioPlaying = true;
-                audioBtn.innerHTML = '[ SOUND: ON ]';
+                audioBtn.innerHTML = 'SOUND ON';
                 audioBtn.classList.add('playing');
                 let vol = 0;
                 const fade = setInterval(() => {
