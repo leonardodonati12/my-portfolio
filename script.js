@@ -410,9 +410,9 @@ function drawVisualizer() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Estilo Arctic Monkeys (Branco e Grosso)
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 1;
     ctx.strokeStyle = '#ffffff';
-    ctx.shadowBlur = 8;
+    ctx.shadowBlur = 2;
     ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
 
     ctx.beginPath();
