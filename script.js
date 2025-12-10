@@ -1,7 +1,7 @@
 import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
 import { OrbitControls } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls.js';
 
-// --- 1. CONFIGURAÇÃO INICIAL (SKIP INTRO) ---
+// --- 1. LÓGICA DE PULAR INTRO (SKIP) ---
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get('skip') === 'true') {
     document.body.classList.add('active');
@@ -13,7 +13,7 @@ if (urlParams.get('skip') === 'true') {
     document.head.appendChild(style);
 }
 
-// --- 2. ELEMENTOS DO DOM ---
+// --- 2. SELEÇÃO DE ELEMENTOS DOM ---
 const introOverlay = document.getElementById('intro-overlay');
 const aboutOverlay = document.getElementById('about-overlay');
 const phrasesOverlay = document.getElementById('phrases-overlay');
@@ -37,7 +37,7 @@ const calloutLabel = document.getElementById('callout-label');
 const calloutLine = document.getElementById('callout-line');
 let currentlyHoveredSphere = null;
 
-// --- 3. SCRAMBLE TEXT (CARGOS) ---
+// --- 3. SCRAMBLE TEXT ---
 const roles = ["ARCHITECTURE STUDENT", "INNOVATION ASSISTANT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND"];
 const roleEl = document.getElementById('scramble-text');
 const chars = '!<>-_\\/[]{}—=+*^?#________';
@@ -107,7 +107,7 @@ if (startBtn) {
     });
 }
 
-// --- 6. FLOW: ABOUT -> PHRASES -> SITE ---
+// --- 6. ABOUT -> PHRASES ---
 let bioFinished = false;
 if (aboutOverlay) {
     aboutOverlay.addEventListener('click', () => {
@@ -117,6 +117,7 @@ if (aboutOverlay) {
     });
 }
 
+// --- 7. PHRASES -> MAIN SITE ---
 let stopPhrasesLoop = false;
 if (phrasesOverlay) {
     phrasesOverlay.addEventListener('click', () => {
@@ -178,7 +179,6 @@ if (skillsList) {
     });
 }
 
-// CONTEÚDO DOS PAINÉIS (COM ACENTOS FIXADOS)
 if (document.getElementById('timeline-content')) {
     document.getElementById('timeline-content').innerHTML = `
         <div class="timeline-item"><div class="time-date">Aug 2024 - Present</div><div class="time-role">Spbim - Architecture Intern</div><div class="time-place">S&atilde;o Paulo - SP</div><div class="time-desc">BIM implementation support, parametric modeling, point cloud (laser scanner), coordination.</div></div>
@@ -205,7 +205,7 @@ if (document.getElementById('contact-content')) {
     `;
 }
 
-// --- 10. DRAG & DROP & PAINÉIS ---
+// --- 10. DRAG & DROP & PANELS ---
 const folderStack = document.getElementById('folder-stack');
 let draggedTab = null;
 if (folderStack) {
@@ -223,17 +223,13 @@ function getDragAfterElement(container, y) {
 
 const panels = document.querySelectorAll('.ui-panel');
 function closePanel(panel) {
-    panel.style.display = 'none';
-    const target = document.querySelector(`[data-target="${panel.id}"]`);
-    if (target) target.classList.remove('active-tab');
-    if (!panel.classList.contains('floating')) document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
+    panel.style.display = 'none'; const target = document.querySelector(`[data-target="${panel.id}"]`); if (target) target.classList.remove('active-tab');
+    if (!panel.classList.contains('floating')) { document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom'); }
 }
 function openPanel(panelId) {
     const panel = document.getElementById(panelId); if (!panel) return;
     panels.forEach(p => { if (p.id !== panelId && !p.classList.contains('floating')) closePanel(p); });
-    panel.style.display = 'flex';
-    const target = document.querySelector(`[data-target="${panelId}"]`);
-    if (target) target.classList.add('active-tab');
+    panel.style.display = 'flex'; const target = document.querySelector(`[data-target="${panelId}"]`); if (target) target.classList.add('active-tab');
     if (!panel.classList.contains('floating')) dockPanel(panel, 'left');
 }
 function dockPanel(panel, side) {
@@ -255,36 +251,24 @@ document.querySelectorAll('.panel-header').forEach(h => {
 window.addEventListener('mousemove', (e) => {
     if (!isDragging || !dragPanel) return;
     dragPanel.style.left = (e.clientX - diffX) + 'px'; dragPanel.style.top = (e.clientY - diffY) + 'px';
-    const t = 50;
-    if (e.clientX < t || e.clientX > window.innerWidth - t || e.clientY < t || e.clientY > window.innerHeight - t) dragPanel.style.borderColor = '#00ff88'; else dragPanel.style.borderColor = '#333';
+    const t = 50; if (e.clientX < t || e.clientX > window.innerWidth - t || e.clientY < t || e.clientY > window.innerHeight - t) dragPanel.style.borderColor = '#00ff88'; else dragPanel.style.borderColor = '#333';
 });
 window.addEventListener('mouseup', (e) => {
     if (!isDragging) return; isDragging = false;
     if (dragPanel) {
         dragPanel.querySelector('.panel-header').style.cursor = 'none'; dragPanel.style.borderColor = '#333';
-        const t = 50;
-        if (e.clientX < t) dockPanel(dragPanel, 'left'); else if (e.clientX > window.innerWidth - t) dockPanel(dragPanel, 'right'); else if (e.clientY < t) dockPanel(dragPanel, 'top'); else if (e.clientY > window.innerHeight - t) dockPanel(dragPanel, 'bottom');
+        const t = 50; if (e.clientX < t) dockPanel(dragPanel, 'left'); else if (e.clientX > window.innerWidth - t) dockPanel(dragPanel, 'right'); else if (e.clientY < t) dockPanel(dragPanel, 'top'); else if (e.clientY > window.innerHeight - t) dockPanel(dragPanel, 'bottom');
         dragPanel = null;
     }
 });
 document.querySelectorAll('.close-panel').forEach(btn => btn.addEventListener('click', (e) => closePanel(e.target.closest('.ui-panel'))));
 
-// --- 12. THREE.JS CONFIGURATION (3D & CALLOUT) ---
-const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x050505, 0.002);
-
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(-10, 5, 10);
-camera.lookAt(0, 0, 0);
-
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-if (document.getElementById('canvas-container')) {
-    document.getElementById('canvas-container').appendChild(renderer.domElement);
-}
-
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true; controls.dampingFactor = 0.05; controls.enableZoom = true; controls.autoRotate = true; controls.autoRotateSpeed = 0.05;
+// --- 12. THREE.JS MAIN SCENE ---
+const scene = new THREE.Scene(); scene.fog = new THREE.FogExp2(0x050505, 0.002);
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.set(-10, 5, 10); camera.lookAt(0, 0, 0);
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); renderer.setSize(window.innerWidth, window.innerHeight);
+if (document.getElementById('canvas-container')) document.getElementById('canvas-container').appendChild(renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.dampingFactor = 0.05; controls.enableZoom = true; controls.autoRotate = true; controls.autoRotateSpeed = 0.05;
 
 function getScreenPosition(object3D, camera, renderer) {
     const vector = new THREE.Vector3(); const canvas = renderer.domElement;
@@ -293,19 +277,10 @@ function getScreenPosition(object3D, camera, renderer) {
     return { x, y };
 }
 
-const geometry = new THREE.IcosahedronGeometry(4, 2);
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 });
-const sphere = new THREE.Mesh(geometry, material);
-sphere.userData = { isCenter: true };
-scene.add(sphere);
-
-const pGeo = new THREE.BufferGeometry();
-const pCount = 10000; const pPos = new Float32Array(pCount * 3);
+const geometry = new THREE.IcosahedronGeometry(4, 2); const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 }); const sphere = new THREE.Mesh(geometry, material); sphere.userData = { isCenter: true }; scene.add(sphere);
+const pGeo = new THREE.BufferGeometry(); const pCount = 10000; const pPos = new Float32Array(pCount * 3);
 for (let i = 0; i < pCount * 3; i++) { pPos[i] = (Math.random() - 0.5) * 100; }
-pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff });
-const particles = new THREE.Points(pGeo, pMat);
-scene.add(particles);
+pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3)); const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff }); const particles = new THREE.Points(pGeo, pMat); scene.add(particles);
 
 const projectNodes = []; const projectGroup = new THREE.Group(); scene.add(projectGroup);
 const vertexShader = `varying vec3 vNormal; varying vec3 vViewVector; void main() { vNormal = normalize(normalMatrix * normal); vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 ); vViewVector = -mvPosition.xyz; gl_Position = projectionMatrix * mvPosition; }`;
@@ -341,7 +316,6 @@ function openModal(data) { if (modalTitle) modalTitle.innerHTML = data.titulo; i
 if (closeBtn) closeBtn.addEventListener('click', () => { if (modal) { modal.classList.remove('open'); setTimeout(() => { modal.style.display = 'none'; }, 500); } });
 let lastMiddleClick = 0; window.addEventListener('mousedown', (e) => { if (e.button === 1) { e.preventDefault(); const now = Date.now(); if (now - lastMiddleClick < 500) controls.reset(); lastMiddleClick = now; } });
 
-// --- ANIMATION LOOP (3D + CALLOUT) ---
 function animate() {
     requestAnimationFrame(animate); controls.update();
     if (document.body.classList.contains('active')) {
@@ -367,12 +341,9 @@ function animate() {
     renderer.render(scene, camera);
 }
 animate();
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight);
-    if (canvas) canvas.width = window.innerWidth; // Resize do Visualizer
-});
+window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); if (canvas) canvas.width = window.innerWidth; });
 
-// --- 13. AUDIO SYSTEM & VISUALIZER (VOLUMINOUS WAVE) ---
+// --- 13. AUDIO SYSTEM (VISUALIZER AM STYLE) ---
 const audioEl = document.getElementById('theme-audio');
 const audioBtn = document.getElementById('audio-btn');
 const canvas = document.getElementById('audio-visualizer');
@@ -401,32 +372,29 @@ function setupAudioContext() {
     }
 }
 
-// ONDA ESTILO "AM" (ARCTIC MONKEYS / DENSIDADE DE VOLUME)
 function drawVisualizer() {
     if (!ctx || !canvas) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Estilo: Branco, Grosso e Brilhante
+    // Arctic Monkeys Style: White, Thick, Glowing
     ctx.lineWidth = 4;
     ctx.strokeStyle = '#ffffff';
-    ctx.shadowBlur = 10;
-    ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = 'rgba(255, 255, 255, 0.6)';
 
     const width = canvas.width;
     const height = canvas.height;
     const centerY = height / 2;
 
     let amplitude = 0;
-
     if (isAudioPlaying && analyser) {
         analyser.getByteFrequencyData(dataArray);
         let sum = 0;
         const sampleSize = Math.floor(dataArray.length * 0.5);
         for (let i = 0; i < sampleSize; i++) sum += dataArray[i];
         const average = sum / sampleSize;
-        // Amplitude exagerada para criar o "volume" da corda
-        amplitude = average * 5;
-    } 
+        amplitude = average * 2.5; // Gorda/Volumosa
+    }
 
     if (!window.waveTime) window.waveTime = 0;
     window.waveTime += 0.02 + (amplitude * 0.0005);
@@ -434,24 +402,15 @@ function drawVisualizer() {
 
     ctx.beginPath();
     for (let x = 0; x < width; x++) {
-        // Envelope: Prende as pontas no centro
+        // Envelope: pontas presas
         const envelope = Math.sin((x / width) * Math.PI);
-
-        // Alta Frequência (Recheio denso)
-        // 0.05 e 0.1 criam muitas "cobrinhas" dentro da forma maior
-        const carrier = Math.sin(x * 0.1 + t) + (Math.sin(x * 0.2 + t) * 1);
+        // Alta frequência (recheio denso)
+        const carrier = Math.sin(x * 0.05 + t) + (Math.sin(x * 0.1 + t) * 0.5);
 
         const y = centerY + (carrier * amplitude * envelope * 0.4);
-
         if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     }
     ctx.stroke();
-
-    // Opcional: Linha central fina para acabamento
-    ctx.lineWidth = 1; ctx.globalAlpha = 0.3;
-    ctx.beginPath(); ctx.moveTo(0, centerY); ctx.lineTo(width, centerY); ctx.stroke();
-    ctx.globalAlpha = 1.0;
-
     animationId = requestAnimationFrame(drawVisualizer);
 }
 drawVisualizer();
@@ -474,7 +433,6 @@ function toggleAudio() {
         }).catch(err => console.log("Áudio bloqueado:", err));
     }
 }
-
 if (audioBtn) audioBtn.addEventListener('click', toggleAudio);
 
 if (startBtn) {
@@ -499,123 +457,64 @@ if (startBtn) {
 (function initSymbiote3D() {
     const container = document.getElementById('symbiote-container');
     const canvas = document.getElementById('symbiote-canvas');
-
     if (!container || !canvas) return;
 
-    // 1. Cena Independente
     const scene = new THREE.Scene();
-    // (Sem fog na cena pequena para o preto ser transparente real)
-
-    // 2. Câmera
-    // Campo de visão pequeno para focar no objeto
     const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
     camera.position.z = 4;
 
-    // 3. Renderer (Transparente)
-    const renderer = new THREE.WebGLRenderer({
-        canvas: canvas,
-        alpha: true,
-        antialias: true
-    });
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(220, 220); // Tamanho fixo do container
+    renderer.setSize(220, 220);
 
-    // 4. Objeto (A Esfera Mutante)
-    // Icosaedro com bastante detalhe (radius 1.2, detail 20)
-    // Se ficar lento, diminua o detalhe para 10 ou 5
     const geometry = new THREE.IcosahedronGeometry(1.2, 20);
-
-    // Material "Alien"
-    const material = new THREE.MeshPhongMaterial({
-        color: 0x000000,      // Base preta
-        emissive: 0x003311,   // Brilho interno verde escuro
-        specular: 0x00ff88,   // Reflexo verde neon
-        shininess: 50,        // Muito brilhante (molhado)
-        wireframe: false,
-        flatShading: false
-    });
-
+    const material = new THREE.MeshPhongMaterial({ color: 0x000000, emissive: 0x003311, specular: 0x00ff88, shininess: 50, wireframe: false, flatShading: false });
     const blob = new THREE.Mesh(geometry, material);
     scene.add(blob);
 
-    // 5. Iluminação (Para dar volume aos espinhos)
     const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(2, 2, 5);
     scene.add(light);
-
-    const ambientLight = new THREE.AmbientLight(0x004400, 0.5); // Luz verde ambiente
+    const ambientLight = new THREE.AmbientLight(0x004400, 0.5);
     scene.add(ambientLight);
 
-    // Salva a posição original dos vértices para poder deformar
     const originalPositions = geometry.attributes.position.array.slice();
     const count = geometry.attributes.position.count;
-
-    // Variáveis de Estado
     let time = 0;
-    let spikeAmount = 0.3; // Altura padrão dos espinhos
-    let speed = 0.005;     // Velocidade padrão
+    let spikeAmount = 0.3;
+    let speed = 0.005;
     let isHovering = false;
 
-    // 6. Interação (Hover no Container Pai)
-    container.addEventListener('mouseenter', () => {
-        isHovering = true;
-        document.body.style.cursor = 'none'; // Garante cursor
-    });
-    container.addEventListener('mouseleave', () => {
-        isHovering = false;
-        document.body.style.cursor = 'none';
-    });
+    container.addEventListener('mouseenter', () => { isHovering = true; document.body.style.cursor = 'none'; });
+    container.addEventListener('mouseleave', () => { isHovering = false; document.body.style.cursor = 'none'; });
 
-    // 7. Loop de Animação
     function animateSymbiote() {
         requestAnimationFrame(animateSymbiote);
-
-        // Controle de "Humor" (Calmo vs Bravo)
         if (isHovering) {
-            // Acelera e aumenta espinhos
             speed = THREE.MathUtils.lerp(speed, 0.02, 0.1);
             spikeAmount = THREE.MathUtils.lerp(spikeAmount, 0.8, 0.1);
-            blob.material.emissive.setHex(0x00ff88); // Fica verde claro
+            blob.material.emissive.setHex(0x00ff88);
         } else {
-            // Acalma
             speed = THREE.MathUtils.lerp(speed, 0.005, 0.1);
             spikeAmount = THREE.MathUtils.lerp(spikeAmount, 0.2, 0.1);
-            blob.material.emissive.setHex(0x003311); // Volta pro verde escuro
+            blob.material.emissive.setHex(0x003311);
         }
-
         time += speed;
-
-        // Rotação Constante
         blob.rotation.y += 0.01;
         blob.rotation.z += 0.005;
 
-        // --- A MÁGICA DOS ESPINHOS (Vertex Displacement) ---
         const positions = geometry.attributes.position;
-
         for (let i = 0; i < count; i++) {
-            // Pega a posição original deste vértice
             const ox = originalPositions[i * 3];
             const oy = originalPositions[i * 3 + 1];
             const oz = originalPositions[i * 3 + 2];
-
-            // Cria um "ruído" usando seno/cosseno baseado na posição e tempo
-            // Isso simula o Perlin Noise sem importar biblioteca pesada
-            const noise =
-                Math.sin(ox * 2.5 + time) * Math.cos(oy * 2.3 + time) * Math.sin(oz * 2.7 + time);
-
-            // Normaliza o vetor (direção do centro pra fora)
-            // (Para esfera, a posição já é quase a direção normal)
+            const noise = Math.sin(ox * 2.5 + time) * Math.cos(oy * 2.3 + time) * Math.sin(oz * 2.7 + time);
             const factor = 1 + (noise * spikeAmount);
-
-            // Aplica a nova posição
             positions.setXYZ(i, ox * factor, oy * factor, oz * factor);
         }
-
-        positions.needsUpdate = true;      // Avisa o Three.js que mudou
-        geometry.computeVertexNormals();   // Recalcula as sombras (caro, mas necessário para ficar bonito)
-
+        positions.needsUpdate = true;
+        geometry.computeVertexNormals();
         renderer.render(scene, camera);
     }
-
     animateSymbiote();
 })();
