@@ -501,7 +501,7 @@ function toggleAudio() {
             isAudioPlaying = true;
         }).catch(err => console.log("Áudio bloqueado:", err));
     }
-}
+} 
 
 if (audioBtn) audioBtn.addEventListener('click', toggleAudio);
 
