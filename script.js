@@ -394,7 +394,7 @@ function drawVisualizer() {
         for (let i = 0; i < sampleSize; i++) sum += dataArray[i];
         const average = sum / sampleSize;
         amplitude = average * 7; // Gorda/Volumosa
-    }
+    } 
 
     if (!window.waveTime) window.waveTime = 0;
     window.waveTime += 0.02 + (amplitude * 0.0005);
