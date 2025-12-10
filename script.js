@@ -479,7 +479,7 @@ if (startBtn) {
         shininess: 60,        // Mais brilhante/molhado
         wireframe: false,
         flatShading: false
-    });
+    }); 
 
     const blob = new THREE.Mesh(geometry, material);
     scene.add(blob);
