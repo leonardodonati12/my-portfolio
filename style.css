@@ -43,7 +43,7 @@ body.push-left #main-wrapper {
 }
 
 body.push-top #main-wrapper {
-	transform: translateY(300px);
+	transform: translateY(220px);
 }
 
 body.push-right #main-wrapper {
@@ -66,10 +66,10 @@ body.push-bottom #main-wrapper {
 /* --- AUDIO VISUALIZER (ESTILO AM) --- */
 #audio-visualizer {
 	position: fixed;
-	top: 120px; /* Abaixo dos botões */
+	top: 20px;
 	left: 0;
 	width: 100%;
-	height: 200px;
+	height: 50px;
 	z-index: 3000;
 	pointer-events: none;
 	opacity: 1;
@@ -129,21 +129,23 @@ body.push-bottom #copyright {
 /* --- BOTÕES DO HEADER (PADRONIZADOS) --- */
 #resume-btn, #portfolio-btn, .audio-toggle {
 	position: fixed;
-	top: 50px; /* Altura fixa para todos */
+	/* [AJUSTE] Posição vertical fixa para todos ficarem na mesma linha */
+	top: 50px;
+	font-family: 'Consolas', monospace; /* Garante a mesma fonte */
 	font-size: 0.75rem;
 	color: #eee;
-	font-family: 'Consolas', monospace;
 	letter-spacing: 2px;
 	text-decoration: none;
 	border: none;
 	background: transparent;
-	padding: 10px 15px;
-	z-index: 4000; /* Atrás da cortina (5500) */
+	padding: 10px 15px; /* Padding igual para área de clique igual */
+	z-index: 4000;
 	cursor: none !important;
+	/* Transições */
 	transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), top 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 2s ease, color 0.3s, text-shadow 0.3s;
 }
 
-/* Posicionamento Horizontal (Gap ~120px) */
+/* POSICIONAMENTO HORIZONTAL (Matemática: Botão + 30px de Gap) */
 #portfolio-btn {
 	right: 40px;
 }
@@ -153,7 +155,7 @@ body.push-bottom #copyright {
 }
 
 .audio-toggle {
-	right: 280px;
+	right: 260px;
 	opacity: 0;
 	pointer-events: none;
 }
@@ -170,22 +172,10 @@ body.active .audio-toggle {
 	text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
 }
 
-/* Audio Playing State */
+/* Estado Playing */
 .audio-toggle.playing {
 	color: #00ff88;
 	animation: pulse-text-audio 3s infinite;
-}
-
-@keyframes pulse-text-audio {
-	0%, 100% {
-		text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
-		opacity: 1;
-	}
-
-	50% {
-		text-shadow: 0 0 15px rgba(0, 255, 136, 0.8);
-		opacity: 0.7;
-	}
 }
 
 /* Movimentação PUSH (Lateral) */
@@ -198,7 +188,7 @@ body.push-right #resume-btn {
 }
 
 body.push-right .audio-toggle {
-	right: 540px;
+	right: 520px;
 }
 
 /* Movimentação PUSH (Vertical - Descida) */
@@ -208,6 +198,39 @@ body.push-top .audio-toggle {
 	top: 310px;
 }
 
+@keyframes pulse-text-audio {
+	0%, 100% {
+		text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+		opacity: 1;
+	}
+	 
+	50% {
+		text-shadow: 0 0 15px rgba(0, 255, 136, 0.8);
+		opacity: 0.7;
+	}
+}
+
+/* Movimentação dos Botões (Push) */
+/* Todos se movem juntos para esquerda */
+body.push-right #portfolio-btn {
+	right: 300px;
+}
+
+body.push-right #resume-btn {
+	right: 410px;
+}
+
+body.push-right .audio-toggle {
+	right: 500px;
+}
+
+/* Todos descem juntos */
+body.push-top #portfolio-btn,
+body.push-top #resume-btn,
+body.push-top .audio-toggle {
+	top: 310px;
+}
+ 
 
 /* --- SIDE TABS --- */
 #folder-stack {
@@ -220,7 +243,7 @@ body.push-top .audio-toggle {
 	z-index: 4000;
 	opacity: 0;
 	padding-left: 0;
-	margin-left: 0; /* Colado na borda */
+	margin-left: 1px;
 	transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 1s;
 }
 
@@ -233,7 +256,7 @@ body.push-left #folder-stack {
 }
 
 body.push-top #folder-stack {
-	transform: translateY(300px);
+	transform: translateY(220px);
 }
 
 body.push-bottom #folder-stack {
@@ -275,7 +298,7 @@ body.push-bottom #folder-stack {
 		z-index: 10;
 		transform: rotate(180deg) translateX(5px);
 	}
-	/* Sem borda fina na direita */
+
 	.folder-tab.active-tab {
 		background: #0f0f0f;
 		color: #00ff88;
@@ -412,11 +435,11 @@ body.push-bottom #folder-stack {
 		box-shadow: 0 0 20px #00ff88;
 	}
 
-/* HERO UI (Ajustado para esquerda) */
+/* HERO UI */
 .hero {
 	position: absolute;
-	top: 18%;
-	left: 40px;
+	top: 10%;
+	left: 80px;
 	pointer-events: none;
 	opacity: 0;
 	transition: opacity 2s;
@@ -432,7 +455,7 @@ body.active .hero {
 	font-size: 3.5rem;
 	margin: 0;
 	color: #ffffff !important;
-	line-height: 1;
+	line-height: 1.1;
 	pointer-events: auto;
 	cursor: none !important;
 	text-shadow: 0 0 20px rgba(0,0,0,0.8);
@@ -443,7 +466,7 @@ body.active .hero {
 	color: #00ff88 !important;
 	letter-spacing: 3px;
 	font-size: 1rem;
-	margin-top: 10px;
+	margin-top: 15px;
 	display: inline-block;
 	padding: 5px 0;
 	pointer-events: auto;
@@ -471,7 +494,7 @@ body.active .interaction-hint {
 }
 
 body.push-bottom .interaction-hint {
-	transform: translate(-50%, -240px);
+	transform: translate(-50%, -280px);
 }
 
 /* PANELS */
@@ -844,49 +867,11 @@ body.push-bottom .interaction-hint {
 	box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
 
-/* --- ARTEFATO BIO-DIGITAL (3D CONTAINER) --- */
-.symbiote-container-home {
-	position: fixed;
-	bottom: -20px;
-	right: -40px;
-	z-index: 50;
-	width: 220px;
-	height: 220px;
-	border-radius: 50%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	pointer-events: auto;
-	cursor: none !important;
-	background-color: rgba(0, 0, 0, 0.01);
-	transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-#symbiote-canvas {
-	width: 100%;
-	height: 100%;
-	outline: none;
-	filter: drop-shadow(0 0 15px rgba(0, 255, 136, 0.3));
-}
-
-body.push-right .symbiote-container-home {
-	transform: translateX(-280px);
-}
-
-body.push-bottom .symbiote-container-home {
-	transform: translateY(-300px);
-}
-
-body.push-right.push-bottom .symbiote-container-home {
-	transform: translate(-280px, -300px);
-}
-
 /* GLOBAL CURSOR RESET */
 a, button, .close-panel {
 	cursor: none !important;
 }
 
-/* RESPONSIVE */
 @media (max-width: 768px) {
 	#folder-stack {
 		top: auto;
@@ -939,42 +924,38 @@ a, button, .close-panel {
 		transform: none !important;
 	}
 
-	/* Mobile Header */
 	#portfolio-btn {
-		top: 20px;
-		right: 20px;
+		top: 10px;
+		right: 10px;
 	}
 
 	#resume-btn {
-		top: 20px;
-		right: 110px;
+		top: 10px;
+		right: 120px;
 	}
 
 	.audio-toggle {
-		top: 20px !important;
-		right: 200px !important;
+		top: 10px !important; /* Alinha no topo junto com os outros */
+		right: 220px !important; /* Joga para a esquerda do Resume */
 		padding: 10px !important;
-		font-size: 0.6rem !important;
 	}
 
-	/* Mobile Hero */
-	.hero {
-		left: 20px;
-		top: 15%;
+	.hero .subtitle {
+		left: 10px; /* Puxa para a esquerda. Aumente o negativo se precisar mais. */
+		text-align: left;
 	}
 
-		.hero .subtitle {
-			margin-left: -20px;
-		}
-
-	/* Mobile Symbiote */
 	.symbiote-container-home {
+		/* Joga ele para fora da tela (negativo) para não cobrir o texto */
 		right: -60px !important;
 		bottom: 10px !important;
+		/* Opcional: Reduzir um pouco o tamanho no celular para não atrapalhar */
+		/* transform: scale(0.8); */
 	}
 }
-
-/* Header Portfolio (Page Specific) */
+ 
+}
+/* Header Portfolio */
 .header {
 	padding: 40px 60px;
 	display: flex;
@@ -983,7 +964,7 @@ a, button, .close-panel {
 	position: sticky;
 	top: 0;
 	background: rgba(255,255,255,0.95);
-	backdrop-filter: blur(8px);
+	backdrop-filter: blur(8px); 
 	z-index: 100;
 }
 
@@ -1011,4 +992,51 @@ a, button, .close-panel {
 .nav {
 	display: flex;
 	gap: 30px;
+}
+
+/* --- ARTEFATO BIO-DIGITAL (3D CONTAINER) --- */
+.symbiote-container-home {
+	position: fixed;
+	bottom: 10px;
+	right: 20px;
+	z-index: 50;
+	/* Hitbox Grande (Mantida) */
+	width: 220px;
+	height: 220px;
+	border-radius: 50%;
+	/* Centralização */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	/* Não precisa mais de mix-blend-mode se quiser cor real, 
+       mas 'screen' ajuda a integrar o glow */
+	/* mix-blend-mode: screen; */
+
+	pointer-events: auto;
+	cursor: none !important;
+	/* Debug Hitbox (apague depois) */
+	background-color: rgba(0, 0, 0, 0.01);
+	transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* O Canvas 3D */
+#symbiote-canvas {
+	width: 100%;
+	height: 100%;
+	outline: none;
+	/* Filtro leve para integrar com o tema neon */
+	filter: drop-shadow(0 0 15px rgba(0, 255, 136, 0.3));
+}
+
+/* Lógica de Push (Mantida) */
+body.push-right .symbiote-container-home {
+	transform: translateX(-280px);
+}
+
+body.push-bottom .symbiote-container-home {
+	transform: translateY(-300px);
+}
+
+body.push-right.push-bottom .symbiote-container-home {
+	transform: translate(-280px, -300px);
 }
