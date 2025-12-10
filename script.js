@@ -494,3 +494,128 @@ if (startBtn) {
         }
     });
 }
+
+// --- 14. SYMBIOTE 3D (FERROFLUID SPIKES) ---
+(function initSymbiote3D() {
+    const container = document.getElementById('symbiote-container');
+    const canvas = document.getElementById('symbiote-canvas');
+
+    if (!container || !canvas) return;
+
+    // 1. Cena Independente
+    const scene = new THREE.Scene();
+    // (Sem fog na cena pequena para o preto ser transparente real)
+
+    // 2. Câmera
+    // Campo de visão pequeno para focar no objeto
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+    camera.position.z = 4;
+
+    // 3. Renderer (Transparente)
+    const renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        alpha: true,
+        antialias: true
+    });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(220, 220); // Tamanho fixo do container
+
+    // 4. Objeto (A Esfera Mutante)
+    // Icosaedro com bastante detalhe (radius 1.2, detail 20)
+    // Se ficar lento, diminua o detalhe para 10 ou 5
+    const geometry = new THREE.IcosahedronGeometry(1.2, 20);
+
+    // Material "Alien"
+    const material = new THREE.MeshPhongMaterial({
+        color: 0x000000,      // Base preta
+        emissive: 0x003311,   // Brilho interno verde escuro
+        specular: 0x00ff88,   // Reflexo verde neon
+        shininess: 50,        // Muito brilhante (molhado)
+        wireframe: false,
+        flatShading: false
+    });
+
+    const blob = new THREE.Mesh(geometry, material);
+    scene.add(blob);
+
+    // 5. Iluminação (Para dar volume aos espinhos)
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(2, 2, 5);
+    scene.add(light);
+
+    const ambientLight = new THREE.AmbientLight(0x004400, 0.5); // Luz verde ambiente
+    scene.add(ambientLight);
+
+    // Salva a posição original dos vértices para poder deformar
+    const originalPositions = geometry.attributes.position.array.slice();
+    const count = geometry.attributes.position.count;
+
+    // Variáveis de Estado
+    let time = 0;
+    let spikeAmount = 0.3; // Altura padrão dos espinhos
+    let speed = 0.005;     // Velocidade padrão
+    let isHovering = false;
+
+    // 6. Interação (Hover no Container Pai)
+    container.addEventListener('mouseenter', () => {
+        isHovering = true;
+        document.body.style.cursor = 'none'; // Garante cursor
+    });
+    container.addEventListener('mouseleave', () => {
+        isHovering = false;
+        document.body.style.cursor = 'none';
+    });
+
+    // 7. Loop de Animação
+    function animateSymbiote() {
+        requestAnimationFrame(animateSymbiote);
+
+        // Controle de "Humor" (Calmo vs Bravo)
+        if (isHovering) {
+            // Acelera e aumenta espinhos
+            speed = THREE.MathUtils.lerp(speed, 0.02, 0.1);
+            spikeAmount = THREE.MathUtils.lerp(spikeAmount, 0.8, 0.1);
+            blob.material.emissive.setHex(0x00ff88); // Fica verde claro
+        } else {
+            // Acalma
+            speed = THREE.MathUtils.lerp(speed, 0.005, 0.1);
+            spikeAmount = THREE.MathUtils.lerp(spikeAmount, 0.2, 0.1);
+            blob.material.emissive.setHex(0x003311); // Volta pro verde escuro
+        }
+
+        time += speed;
+
+        // Rotação Constante
+        blob.rotation.y += 0.01;
+        blob.rotation.z += 0.005;
+
+        // --- A MÁGICA DOS ESPINHOS (Vertex Displacement) ---
+        const positions = geometry.attributes.position;
+
+        for (let i = 0; i < count; i++) {
+            // Pega a posição original deste vértice
+            const ox = originalPositions[i * 3];
+            const oy = originalPositions[i * 3 + 1];
+            const oz = originalPositions[i * 3 + 2];
+
+            // Cria um "ruído" usando seno/cosseno baseado na posição e tempo
+            // Isso simula o Perlin Noise sem importar biblioteca pesada
+            const noise =
+                Math.sin(ox * 2.5 + time) * Math.cos(oy * 2.3 + time) * Math.sin(oz * 2.7 + time);
+
+            // Normaliza o vetor (direção do centro pra fora)
+            // (Para esfera, a posição já é quase a direção normal)
+            const factor = 1 + (noise * spikeAmount);
+
+            // Aplica a nova posição
+            positions.setXYZ(i, ox * factor, oy * factor, oz * factor);
+        }
+
+        positions.needsUpdate = true;      // Avisa o Three.js que mudou
+        geometry.computeVertexNormals();   // Recalcula as sombras (caro, mas necessário para ficar bonito)
+
+        renderer.render(scene, camera);
+    }
+
+    animateSymbiote();
+})();

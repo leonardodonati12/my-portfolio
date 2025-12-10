@@ -950,4 +950,50 @@ a, button, .close-panel {
 	display: flex;
 	gap: 30px;
 }
- 
+
+/* --- ARTEFATO BIO-DIGITAL (3D CONTAINER) --- */
+.symbiote-container-home {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	z-index: 50;
+	/* Hitbox Grande (Mantida) */
+	width: 220px;
+	height: 220px;
+	border-radius: 50%;
+	/* Centralização */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	/* Não precisa mais de mix-blend-mode se quiser cor real, 
+       mas 'screen' ajuda a integrar o glow */
+	/* mix-blend-mode: screen; */
+
+	pointer-events: auto;
+	cursor: none !important;
+	/* Debug Hitbox (apague depois) */
+	background-color: rgba(0, 0, 0, 0.01);
+	transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* O Canvas 3D */
+#symbiote-canvas {
+	width: 100%;
+	height: 100%;
+	outline: none;
+	/* Filtro leve para integrar com o tema neon */
+	filter: drop-shadow(0 0 15px rgba(0, 255, 136, 0.3));
+}
+
+/* Lógica de Push (Mantida) */
+body.push-right .symbiote-container-home {
+	transform: translateX(-280px);
+}
+
+body.push-bottom .symbiote-container-home {
+	transform: translateY(-300px);
+}
+
+body.push-right.push-bottom .symbiote-container-home {
+	transform: translate(-280px, -300px);
+}

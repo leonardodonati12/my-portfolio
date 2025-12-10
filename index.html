@@ -3,138 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leonardo Donati | Home</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Leonardo Donati | OS</title>
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%2300ff88' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M32 4 L56 18 V46 L32 60 L8 46 V18 Z'/><path d='M32 4 L32 32 M56 18 L32 32 M56 46 L32 32 M32 60 L32 32 M8 46 L32 32 M8 18 L32 32'/></g></svg>" type="image/svg+xml">
 
     <link rel="stylesheet" href="style.css">
-
-    <style>
-        /* --- ARTEFATO BIO-DIGITAL (FERROFLUID MODE) --- */
-        .symbiote-container-home {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 50;
-            width: 220px;
-            height: 220px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            /* Ambiência Tóxica */
-            filter: drop-shadow(0 0 15px rgba(0, 255, 136, 0.4));
-            mix-blend-mode: screen;
-            pointer-events: auto;
-            cursor: none !important;
-            background-color: rgba(0, 0, 0, 0.01);
-            transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-
-        /* Lógica de Push */
-        body.push-right .symbiote-container-home {
-            transform: translateX(-280px);
-        }
-
-        body.push-bottom .symbiote-container-home {
-            transform: translateY(-300px);
-        }
-
-        body.push-right.push-bottom .symbiote-container-home {
-            transform: translate(-280px, -300px);
-        }
-
-        .symbiote-blob {
-            position: relative;
-            width: 100px;
-            height: 100px;
-            /* Cor "Venom" */
-            background: radial-gradient(circle at 40% 40%, #00ff88 0%, #004d1a 60%, #000000 100%);
-            border: 1px solid rgba(0, 255, 136, 0.5);
-            /* 1. Forma Base (Muitas pontas para permitir morphing complexo) */
-            clip-path: polygon(50% 0%, 60% 20%, 80% 10%, 70% 30%, 100% 40%, 80% 50%, 100% 60%, 70% 70%, 80% 90%, 60% 80%, 50% 100%, 40% 80%, 20% 90%, 30% 70%, 0% 60%, 20% 50%, 0% 40%, 30% 30%, 20% 10%, 40% 20%);
-            /* 2. Animação Unificada (Sem conflito de Transform) */
-            /* Gira, Deforma e "Respira" ao mesmo tempo de forma fluida */
-            animation: organic-spin 20s linear infinite, ferrofluid-morph 4s ease-in-out infinite alternate;
-            pointer-events: none;
-            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-
-        /* Hover no PAI (Aceleração Suave) */
-        .symbiote-container-home:hover .symbiote-blob {
-            /* Acelera a rotação e deixa o morphing frenético */
-            animation: organic-spin 2s linear infinite, ferrofluid-morph 0.4s ease-in-out infinite alternate;
-            filter: brightness(1.3);
-            border-color: #fff;
-            /* Aumenta levemente para parecer que vai atacar */
-            transform: scale(1.1);
-        }
-
-        /* NÚCLEO (Interferência Visual) */
-        .symbiote-blob::after {
-            content: '';
-            position: absolute;
-            top: 10%;
-            left: 10%;
-            right: 10%;
-            bottom: 10%;
-            background: rgba(0, 255, 136, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            /* Forma diferente */
-            clip-path: polygon(50% 0%, 70% 30%, 100% 50%, 70% 70%, 50% 100%, 30% 70%, 0% 50%, 30% 30%);
-            /* Gira ao contrário */
-            animation: organic-spin-reverse 10s linear infinite;
-        }
-
-        .symbiote-container-home:hover .symbiote-blob::after {
-            animation: organic-spin-reverse 1s linear infinite;
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        /* --- ANIMAÇÕES FLUIDAS --- */
-
-        /* Rotação Orgânica (Varia a escala levemente enquanto gira) */
-        @keyframes organic-spin {
-            0% {
-                transform: rotate(0deg) scale(1);
-            }
-
-            50% {
-                transform: rotate(180deg) scale(0.9);
-            }
-            /* Contrai */
-            100% {
-                transform: rotate(360deg) scale(1);
-            }
-        }
-
-        /* Rotação Reversa */
-        @keyframes organic-spin-reverse {
-            from {
-                transform: rotate(360deg);
-            }
-
-            to {
-                transform: rotate(0deg);
-            }
-        }
-
-        /* O EFEITO "FERROFLUIDO" (Spikes que crescem e encolhem) */
-        /* Mantém o mesmo número de vértices (20) para o navegador não se perder */
-        @keyframes ferrofluid-morph {
-            0% {
-                /* Estado "Redondo com Espinhos Curtos" */
-                clip-path: polygon(50% 5%, 60% 25%, 85% 15%, 75% 35%, 95% 45%, 80% 55%, 95% 65%, 75% 75%, 85% 85%, 60% 75%, 50% 95%, 40% 75%, 15% 85%, 25% 75%, 5% 65%, 20% 55%, 5% 45%, 25% 35%, 15% 15%, 40% 25%);
-            }
-
-            100% {
-                /* Estado "Explosão de Espinhos Longos" */
-                /* Puxamos os pontos pares para FORA (negativos e >100%) e os ímpares para DENTRO */
-                clip-path: polygon(50% -20%, 55% 40%, 120% 20%, 60% 50%, 120% 80%, 55% 60%, 80% 120%, 50% 70%, 20% 120%, 45% 60%, -20% 80%, 40% 50%, -20% 20%, 45% 40%, 20% -20%, 50% 30%, 80% -20%, 60% 30%, 50% 10%, 50% 20%);
-            }
-        }
-    </style>
 </head>
 <body>
     <canvas id="audio-visualizer"></canvas>
@@ -157,8 +30,8 @@
         <div class="phrases-text notranslate" id="phrases-container"></div>
         <div class="continue-hint" style="opacity: 1;">[ CLICK ANYWHERE TO CONTINUE ]</div>
     </div>
-     
-    <button id="audio-btn" class="audio-toggle">SOUND OFF</button>
+
+    <button id="audio-btn" class="audio-toggle">[ SOUND: OFF ]</button>
     <a href="resume.html" id="resume-btn">RESUME</a>
     <a href="portfolio.html" id="portfolio-btn">PORTFOLIO</a>
 
@@ -197,8 +70,8 @@
         <div class="folder-tab" draggable="true" data-target="contact-panel">CONTACT</div>
     </div>
 
-    <div class="symbiote-container-home">
-        <div class="symbiote-blob"></div>
+    <div class="symbiote-container-home" id="symbiote-container">
+        <canvas id="symbiote-canvas"></canvas>
     </div>
 
     <div id="skills-panel" class="ui-panel"><div class="panel-header"><span>:: SYSTEM STATS</span><span class="close-panel">×</span></div><div class="panel-content" id="skills-list"></div></div>
