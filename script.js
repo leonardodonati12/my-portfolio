@@ -1,7 +1,7 @@
 import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
 import { OrbitControls } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls.js';
 
-// --- 1. LÓGICA DE PULAR INTRO (SKIP) ---
+// --- 1. CONFIGURAÇÃO INICIAL (SKIP INTRO) ---
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get('skip') === 'true') {
     document.body.classList.add('active');
@@ -13,7 +13,7 @@ if (urlParams.get('skip') === 'true') {
     document.head.appendChild(style);
 }
 
-// --- 2. SELEÇÃO DE ELEMENTOS DOM ---
+// --- 2. ELEMENTOS DO DOM ---
 const introOverlay = document.getElementById('intro-overlay');
 const aboutOverlay = document.getElementById('about-overlay');
 const phrasesOverlay = document.getElementById('phrases-overlay');
@@ -31,13 +31,13 @@ const nameLine1 = document.getElementById('name-line-1');
 const nameLine2 = document.getElementById('name-line-2');
 const heroSubtitle = document.getElementById('hero-subtitle');
 
-// Referências para o Callout
+// Callout Elements
 const calloutContainer = document.getElementById('callout-container');
 const calloutLabel = document.getElementById('callout-label');
 const calloutLine = document.getElementById('callout-line');
 let currentlyHoveredSphere = null;
 
-// --- 3. EFEITO DE TROCA DE CARGO (ROLE SCRAMBLE) ---
+// --- 3. SCRAMBLE TEXT (CARGOS) ---
 const roles = ["ARCHITECTURE STUDENT", "INNOVATION ASSISTANT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND"];
 const roleEl = document.getElementById('scramble-text');
 const chars = '!<>-_\\/[]{}—=+*^?#________';
@@ -77,7 +77,7 @@ const nextRole = () => {
 };
 if (roleEl) nextRole();
 
-// --- 4. FUNÇÃO MATRIX REVEAL ---
+// --- 4. MATRIX REVEAL ---
 function matrixReveal(element, text, callback) {
     if (!element) return;
     const mChars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()';
@@ -107,7 +107,7 @@ if (startBtn) {
     });
 }
 
-// --- 6. ABOUT -> PHRASES ---
+// --- 6. FLOW: ABOUT -> PHRASES -> SITE ---
 let bioFinished = false;
 if (aboutOverlay) {
     aboutOverlay.addEventListener('click', () => {
@@ -117,7 +117,6 @@ if (aboutOverlay) {
     });
 }
 
-// --- 7. PHRASES -> MAIN SITE ---
 let stopPhrasesLoop = false;
 if (phrasesOverlay) {
     phrasesOverlay.addEventListener('click', () => {
@@ -179,7 +178,7 @@ if (skillsList) {
     });
 }
 
-// PREENCHIMENTO DOS PAINÉIS (CORRIGIDO PARA ACENTOS)
+// CONTEÚDO DOS PAINÉIS (COM ACENTOS FIXADOS)
 if (document.getElementById('timeline-content')) {
     document.getElementById('timeline-content').innerHTML = `
         <div class="timeline-item"><div class="time-date">Aug 2024 - Present</div><div class="time-role">Spbim - Architecture Intern</div><div class="time-place">S&atilde;o Paulo - SP</div><div class="time-desc">BIM implementation support, parametric modeling, point cloud (laser scanner), coordination.</div></div>
@@ -206,80 +205,50 @@ if (document.getElementById('contact-content')) {
     `;
 }
 
-// --- 10. TABS DRAG & DROP & OPEN PANELS ---
+// --- 10. DRAG & DROP & PAINÉIS ---
 const folderStack = document.getElementById('folder-stack');
 let draggedTab = null;
 if (folderStack) {
     document.querySelectorAll('.folder-tab').forEach(tab => {
-        tab.addEventListener('dragstart', (e) => {
-            draggedTab = tab; tab.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move';
-        });
-        tab.addEventListener('dragend', () => {
-            draggedTab = null; tab.classList.remove('dragging');
-        });
-        tab.addEventListener('click', () => {
-            openPanel(tab.getAttribute('data-target'));
-        });
+        tab.addEventListener('dragstart', (e) => { draggedTab = tab; tab.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
+        tab.addEventListener('dragend', () => { draggedTab = null; tab.classList.remove('dragging'); });
+        tab.addEventListener('click', () => { openPanel(tab.getAttribute('data-target')); });
     });
-    folderStack.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        const afterElement = getDragAfterElement(folderStack, e.clientY);
-        if (afterElement == null) folderStack.appendChild(draggedTab); else folderStack.insertBefore(draggedTab, afterElement);
-    });
+    folderStack.addEventListener('dragover', (e) => { e.preventDefault(); const afterElement = getDragAfterElement(folderStack, e.clientY); if (afterElement == null) folderStack.appendChild(draggedTab); else folderStack.insertBefore(draggedTab, afterElement); });
 }
 function getDragAfterElement(container, y) {
     const draggableElements = [...container.querySelectorAll('.folder-tab:not(.dragging)')];
-    return draggableElements.reduce((closest, child) => {
-        const box = child.getBoundingClientRect();
-        const offset = y - box.top - box.height / 2;
-        if (offset < 0 && offset > closest.offset) return { offset: offset, element: child }; else return closest;
-    }, { offset: Number.NEGATIVE_INFINITY }).element;
+    return draggableElements.reduce((closest, child) => { const box = child.getBoundingClientRect(); const offset = y - box.top - box.height / 2; if (offset < 0 && offset > closest.offset) return { offset: offset, element: child }; else return closest; }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 
-// --- 11. PANEL MANAGER (ESSENCIAL PARA AS MOVIMENTAÇÕES) ---
 const panels = document.querySelectorAll('.ui-panel');
-
 function closePanel(panel) {
     panel.style.display = 'none';
     const target = document.querySelector(`[data-target="${panel.id}"]`);
     if (target) target.classList.remove('active-tab');
-    if (!panel.classList.contains('floating')) {
-        document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
-    }
+    if (!panel.classList.contains('floating')) document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
 }
-
 function openPanel(panelId) {
-    const panel = document.getElementById(panelId);
-    if (!panel) return;
+    const panel = document.getElementById(panelId); if (!panel) return;
     panels.forEach(p => { if (p.id !== panelId && !p.classList.contains('floating')) closePanel(p); });
     panel.style.display = 'flex';
     const target = document.querySelector(`[data-target="${panelId}"]`);
     if (target) target.classList.add('active-tab');
     if (!panel.classList.contains('floating')) dockPanel(panel, 'left');
 }
-
 function dockPanel(panel, side) {
     panel.classList.remove('docked-left', 'docked-right', 'docked-top', 'docked-bottom', 'floating');
     panel.style.top = ''; panel.style.left = ''; panel.style.right = ''; panel.style.bottom = ''; panel.style.height = ''; panel.style.width = '';
-    if (side !== 'float') {
-        panel.classList.add(`docked-${side}`);
-        document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
-        document.body.classList.add(`push-${side}`);
-    } else {
-        panel.classList.add('floating');
-        document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
-    }
+    if (side !== 'float') { panel.classList.add(`docked-${side}`); document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom'); document.body.classList.add(`push-${side}`); }
+    else { panel.classList.add('floating'); document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom'); }
 }
 
-// Arrastar Paineis (Com Cursor Fix)
 let isDragging = false, dragPanel = null, diffX = 0, diffY = 0;
 document.querySelectorAll('.panel-header').forEach(h => {
     h.addEventListener('mousedown', (e) => {
         dragPanel = h.parentElement; isDragging = true;
         const rect = dragPanel.getBoundingClientRect(); diffX = e.clientX - rect.left; diffY = e.clientY - rect.top;
-        if (!dragPanel.classList.contains('floating')) {
-            dockPanel(dragPanel, 'float'); dragPanel.style.height = 'auto'; dragPanel.style.left = (e.clientX - diffX) + 'px'; dragPanel.style.top = (e.clientY - diffY) + 'px';
-        }
+        if (!dragPanel.classList.contains('floating')) { dockPanel(dragPanel, 'float'); dragPanel.style.height = 'auto'; dragPanel.style.left = (e.clientX - diffX) + 'px'; dragPanel.style.top = (e.clientY - diffY) + 'px'; }
         h.style.cursor = 'none'; document.body.style.cursor = 'none';
     });
 });
@@ -300,20 +269,43 @@ window.addEventListener('mouseup', (e) => {
 });
 document.querySelectorAll('.close-panel').forEach(btn => btn.addEventListener('click', (e) => closePanel(e.target.closest('.ui-panel'))));
 
-// --- 12. THREE.JS & CALLOUT ---
-const scene = new THREE.Scene(); scene.fog = new THREE.FogExp2(0x050505, 0.002);
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.set(-10, 5, 10); camera.lookAt(0, 0, 0);
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); renderer.setSize(window.innerWidth, window.innerHeight);
-if (document.getElementById('canvas-container')) document.getElementById('canvas-container').appendChild(renderer.domElement);
-const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.dampingFactor = 0.05; controls.enableZoom = true; controls.autoRotate = true; controls.autoRotateSpeed = 0.05;
+// --- 12. THREE.JS CONFIGURATION (3D & CALLOUT) ---
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x050505, 0.002);
 
-function getScreenPosition(object3D, camera, renderer) {
-    const vector = new THREE.Vector3(); const canvas = renderer.domElement; vector.setFromMatrixPosition(object3D.matrixWorld); vector.project(camera);
-    const x = (vector.x * 0.5 + 0.5) * canvas.clientWidth; const y = (vector.y * -0.5 + 0.5) * canvas.clientHeight; return { x, y };
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(-10, 5, 10);
+camera.lookAt(0, 0, 0);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+if (document.getElementById('canvas-container')) {
+    document.getElementById('canvas-container').appendChild(renderer.domElement);
 }
 
-const geometry = new THREE.IcosahedronGeometry(4, 2); const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 }); const sphere = new THREE.Mesh(geometry, material); sphere.userData = { isCenter: true }; scene.add(sphere);
-const pGeo = new THREE.BufferGeometry(); const pCount = 10000; const pPos = new Float32Array(pCount * 3); for (let i = 0; i < pCount * 3; i++) { pPos[i] = (Math.random() - 0.5) * 100; } pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3)); const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff }); const particles = new THREE.Points(pGeo, pMat); scene.add(particles);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true; controls.dampingFactor = 0.05; controls.enableZoom = true; controls.autoRotate = true; controls.autoRotateSpeed = 0.05;
+
+function getScreenPosition(object3D, camera, renderer) {
+    const vector = new THREE.Vector3(); const canvas = renderer.domElement;
+    vector.setFromMatrixPosition(object3D.matrixWorld); vector.project(camera);
+    const x = (vector.x * 0.5 + 0.5) * canvas.clientWidth; const y = (vector.y * -0.5 + 0.5) * canvas.clientHeight;
+    return { x, y };
+}
+
+const geometry = new THREE.IcosahedronGeometry(4, 2);
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 });
+const sphere = new THREE.Mesh(geometry, material);
+sphere.userData = { isCenter: true };
+scene.add(sphere);
+
+const pGeo = new THREE.BufferGeometry();
+const pCount = 10000; const pPos = new Float32Array(pCount * 3);
+for (let i = 0; i < pCount * 3; i++) { pPos[i] = (Math.random() - 0.5) * 100; }
+pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff });
+const particles = new THREE.Points(pGeo, pMat);
+scene.add(particles);
 
 const projectNodes = []; const projectGroup = new THREE.Group(); scene.add(projectGroup);
 const vertexShader = `varying vec3 vNormal; varying vec3 vViewVector; void main() { vNormal = normalize(normalMatrix * normal); vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 ); vViewVector = -mvPosition.xyz; gl_Position = projectionMatrix * mvPosition; }`;
@@ -349,6 +341,7 @@ function openModal(data) { if (modalTitle) modalTitle.innerHTML = data.titulo; i
 if (closeBtn) closeBtn.addEventListener('click', () => { if (modal) { modal.classList.remove('open'); setTimeout(() => { modal.style.display = 'none'; }, 500); } });
 let lastMiddleClick = 0; window.addEventListener('mousedown', (e) => { if (e.button === 1) { e.preventDefault(); const now = Date.now(); if (now - lastMiddleClick < 500) controls.reset(); lastMiddleClick = now; } });
 
+// --- ANIMATION LOOP (3D + CALLOUT) ---
 function animate() {
     requestAnimationFrame(animate); controls.update();
     if (document.body.classList.contains('active')) {
@@ -374,9 +367,12 @@ function animate() {
     renderer.render(scene, camera);
 }
 animate();
-window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); if (canvas) { canvas.width = window.innerWidth; } });
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight);
+    if (canvas) canvas.width = window.innerWidth; // Resize do Visualizer
+});
 
-// --- 13. AUDIO SYSTEM & VISUALIZER (ARCTIC MONKEYS STYLE) ---
+// --- 13. AUDIO SYSTEM & VISUALIZER (VOLUMINOUS WAVE) ---
 const audioEl = document.getElementById('theme-audio');
 const audioBtn = document.getElementById('audio-btn');
 const canvas = document.getElementById('audio-visualizer');
@@ -388,7 +384,7 @@ let animationId;
 
 if (canvas) {
     canvas.width = window.innerWidth;
-    canvas.height = 200; // Altura maior para a onda
+    canvas.height = 200;
 }
 
 function setupAudioContext() {
@@ -405,18 +401,16 @@ function setupAudioContext() {
     }
 }
 
-// Função de Desenho (Estilo AM - Volumoso & Denso)
+// ONDA ESTILO "AM" (ARCTIC MONKEYS / DENSIDADE DE VOLUME)
 function drawVisualizer() {
     if (!ctx || !canvas) return;
-
-    // Limpa o canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // ESTÉTICA: Linha grossa e branca
-    ctx.lineWidth = 4; // Mais espessa para dar volume
+    // Estilo: Branco, Grosso e Brilhante
+    ctx.lineWidth = 4;
     ctx.strokeStyle = '#ffffff';
-    ctx.shadowBlur = 15; // Glow mais forte
-    ctx.shadowColor = 'rgba(255, 255, 255, 0.6)';
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
 
     const width = canvas.width;
     const height = canvas.height;
@@ -424,63 +418,39 @@ function drawVisualizer() {
 
     let amplitude = 0;
 
-    // Captura o volume do som
     if (isAudioPlaying && analyser) {
         analyser.getByteFrequencyData(dataArray);
         let sum = 0;
-        // Pega uma faixa maior de graves e médios
         const sampleSize = Math.floor(dataArray.length * 0.5);
-        for (let i = 0; i < sampleSize; i++) {
-            sum += dataArray[i];
-        }
+        for (let i = 0; i < sampleSize; i++) sum += dataArray[i];
         const average = sum / sampleSize;
-
-        // AUMENTO DE VOLUME VISUAL
-        // Multiplicador 2.5 faz a onda ficar bem alta (volumosa) quando o som bate
+        // Amplitude exagerada para criar o "volume" da corda
         amplitude = average * 2.5;
     }
 
-    // Controle de Tempo (Velocidade)
     if (!window.waveTime) window.waveTime = 0;
-    // Se tiver som, corre mais rápido. Se não, fica num balanço lento.
     window.waveTime += 0.02 + (amplitude * 0.0005);
     const t = window.waveTime;
 
     ctx.beginPath();
-
     for (let x = 0; x < width; x++) {
-        // 1. O ENVELOPE (Formato da "Corda")
-        // Math.PI * 1 = Um arco único (formato de banana/corda)
-        // Se quiser aquele visual de "dois gomos" do AM, mude para Math.PI * 2
+        // Envelope: Prende as pontas no centro
         const envelope = Math.sin((x / width) * Math.PI);
 
-        // 2. A ONDA DE ALTA FREQUÊNCIA (O "Recheio")
-        // 0.03 é uma frequência mais alta -> cria mais zig-zags, dando a sensação de volume/densidade
-        // Somamos uma segunda onda (0.07) para criar uma interferência harmônica bonita
-        const carrier = Math.sin(x * 0.03 + t) + (Math.sin(x * 0.07 + t) * 0.5);
+        // Alta Frequência (Recheio denso)
+        // 0.05 e 0.1 criam muitas "cobrinhas" dentro da forma maior
+        const carrier = Math.sin(x * 0.05 + t) + (Math.sin(x * 0.1 + t) * 0.5);
 
-        // Cálculo Final do Y
-        // Normalizamos a onda e aplicamos a amplitude gigante
-        const y = centerY + (carrier * amplitude * envelope * 0.5);
+        const y = centerY + (carrier * amplitude * envelope * 0.4);
 
-        if (x === 0) {
-            ctx.moveTo(x, y);
-        } else {
-            ctx.lineTo(x, y);
-        }
+        if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     }
-     
     ctx.stroke();
 
-    // Desenha uma linha reta fina no centro para dar acabamento (opcional, igual capa do AM)
-    /* ctx.lineWidth = 1;
-    ctx.globalAlpha = 0.3;
-    ctx.beginPath();
-    ctx.moveTo(0, centerY);
-    ctx.lineTo(width, centerY);
-    ctx.stroke();
+    // Opcional: Linha central fina para acabamento
+    ctx.lineWidth = 1; ctx.globalAlpha = 0.3;
+    ctx.beginPath(); ctx.moveTo(0, centerY); ctx.lineTo(width, centerY); ctx.stroke();
     ctx.globalAlpha = 1.0;
-    */
 
     animationId = requestAnimationFrame(drawVisualizer);
 }
@@ -493,17 +463,17 @@ function toggleAudio() {
 
     if (isAudioPlaying) {
         audioEl.pause();
-        audioBtn.innerHTML = 'SOUND OFF';
+        audioBtn.innerHTML = '[ SOUND: OFF ]';
         audioBtn.classList.remove('playing');
         isAudioPlaying = false;
     } else {
         audioEl.play().then(() => {
-            audioBtn.innerHTML = 'SOUND ON';
+            audioBtn.innerHTML = '[ SOUND: ON ]';
             audioBtn.classList.add('playing');
             isAudioPlaying = true;
         }).catch(err => console.log("Áudio bloqueado:", err));
     }
-} 
+}
 
 if (audioBtn) audioBtn.addEventListener('click', toggleAudio);
 
@@ -514,7 +484,7 @@ if (startBtn) {
             audioEl.volume = 0;
             audioEl.play().then(() => {
                 isAudioPlaying = true;
-                audioBtn.innerHTML = 'SOUND ON';
+                audioBtn.innerHTML = '[ SOUND: ON ]';
                 audioBtn.classList.add('playing');
                 let vol = 0;
                 const fade = setInterval(() => {
