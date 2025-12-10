@@ -405,43 +405,81 @@ function setupAudioContext() {
     }
 }
 
+// Função de Desenho (Versão 2.0: Organic Chaos)
 function drawVisualizer() {
     if (!ctx || !canvas) return;
+
+    // Limpa o canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Estilo Arctic Monkeys (Branco e Grosso)
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = '#ffffff';
-    ctx.shadowBlur = 2;
-    ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
+    // ESTÉTICA
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#ffffff'; // Branco
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
 
-    ctx.beginPath();
     const width = canvas.width;
     const height = canvas.height;
     const centerY = height / 2;
 
+    let amplitude = 0;
+
+    // Se estiver tocando, calcula volume e AJUSTA A VELOCIDADE
     if (isAudioPlaying && analyser) {
-        analyser.getByteTimeDomainData(dataArray);
-        const sliceWidth = width * 1.0 / dataArray.length;
-        let x = 0;
-        for (let i = 0; i < dataArray.length; i++) {
-            const v = dataArray[i] / 128.0;
-            let y = (v * height) / 2;
+        analyser.getByteFrequencyData(dataArray);
 
-            // Envelope para prender as pontas
-            const envelope = Math.sin((i / dataArray.length) * Math.PI);
-            const displacement = y - centerY;
-            y = centerY + (displacement * envelope * 1.5);
-
-            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-            x += sliceWidth;
+        let sum = 0;
+        // Foca nos graves (primeiros 30% do array) para pegar a batida
+        const sampleSize = Math.floor(dataArray.length * 0.3);
+        for (let i = 0; i < sampleSize; i++) {
+            sum += dataArray[i];
         }
-    } else {
-        // Linha Reta no meio
-        ctx.moveTo(0, centerY);
-        ctx.lineTo(width, centerY);
+
+        // Sensibilidade
+        const average = sum / sampleSize;
+        amplitude = average * 0.6; // Ajuste a altura aqui
     }
+
+    // A MÁGICA DO CAOS:
+    // A variável 'time' agora corre mais rápido se a amplitude for alta
+    // Usei uma variável global ou atributo do window para acumular o tempo
+    if (!window.waveTime) window.waveTime = 0;
+    // Se a música estiver alta, o tempo passa rápido (onda agitada). Se silêncio, passa devagar.
+    window.waveTime += 0.005 + (amplitude * 0.0002);
+
+    const t = window.waveTime;
+
+    ctx.beginPath();
+
+    for (let x = 0; x < width; x++) {
+        // ENVELOPE (Mantém as pontas presas nas laterais)
+        // Elevado ao quadrado para deixar as pontas mais "tensas" e o meio mais solto
+        const envelope = Math.pow(Math.sin((x / width) * Math.PI), 1.5);
+
+        // ONDA 1: A base (Larga e Lenta)
+        const wave1 = Math.sin(x * 0.008 + t);
+
+        // ONDA 2: O detalhe (Média e Rápida)
+        const wave2 = Math.sin(x * 0.02 + t * 2.5) * 0.5;
+
+        // ONDA 3: O "Ruído" (Curta e Irregular) - Quebra a perfeição da senoide
+        const wave3 = Math.sin(x * 0.05 + t * 4) * 0.2;
+
+        // Soma tudo
+        const combinedWave = wave1 + wave2 + wave3;
+
+        // Aplica amplitude e envelope
+        const y = centerY + (combinedWave * amplitude * envelope);
+
+        if (x === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
+        }
+    }
+
     ctx.stroke();
+
     animationId = requestAnimationFrame(drawVisualizer);
 }
 drawVisualizer();
