@@ -914,11 +914,23 @@ a, button, .close-panel {
 
 	.audio-toggle {
 		top: 10px !important; /* Alinha no topo junto com os outros */
-		right: 200px !important; /* Joga para a esquerda do Resume */
-		/* Se a tela for muito pequena, talvez precise diminuir a fonte: */
-		font-size: 0.6rem !important;
-		padding: 8px 5px !important;
+		right: 220px !important; /* Joga para a esquerda do Resume */
+		padding: 10px !important;
 	}
+
+	.hero .subtitle {
+		margin-left: -20px; /* Puxa para a esquerda. Aumente o negativo se precisar mais. */
+		/* Se ele estiver centralizado, talvez precise de: text-align: left; */
+	}
+
+	.symbiote-container-home {
+		/* Joga ele para fora da tela (negativo) para não cobrir o texto */
+		right: -60px !important;
+		bottom: 10px !important;
+		/* Opcional: Reduzir um pouco o tamanho no celular para não atrapalhar */
+		/* transform: scale(0.8); */
+	}
+}
 
 }
 /* Header Portfolio */
