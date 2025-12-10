@@ -11,20 +11,20 @@
     <link rel="stylesheet" href="style.css">
 
     <style>
-        /* --- ARTEFATO BIO-DIGITAL (CHAOS MODE) --- */
+        /* --- ARTEFATO BIO-DIGITAL (FERROFLUID MODE) --- */
         .symbiote-container-home {
             position: fixed;
-            bottom: 10px;
-            right: 10px;
+            bottom: 20px;
+            right: 20px;
             z-index: 50;
-            width: 120px;
-            height: 120px;
+            width: 220px;
+            height: 220px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            /* Glow pulsante no container para dar ambiência */
-            filter: drop-shadow(0 0 15px rgba(0, 255, 136, 0.3));
+            /* Ambiência Tóxica */
+            filter: drop-shadow(0 0 15px rgba(0, 255, 136, 0.4));
             mix-blend-mode: screen;
             pointer-events: auto;
             cursor: none !important;
@@ -32,7 +32,7 @@
             transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        /* Lógica de Push (Mantida) */
+        /* Lógica de Push */
         body.push-right .symbiote-container-home {
             transform: translateX(-280px);
         }
@@ -49,74 +49,68 @@
             position: relative;
             width: 100px;
             height: 100px;
-            /* Cor mais "Venenosa" */
-            background: radial-gradient(circle at 40% 40%, #00ff88 0%, #003311 60%, #000000 100%);
-            border: 1px solid rgba(0, 255, 136, 0.6);
-            /* Polígono de 12 pontas base (mais complexo) */
-            clip-path: polygon(50% 0%, 60% 30%, 90% 20%, 70% 45%, 100% 60%, 70% 75%, 80% 100%, 50% 80%, 20% 100%, 30% 75%, 0% 60%, 30% 45%, 10% 20%, 40% 30%);
-            /* MISTURA DE ANIMAÇÕES: Gira + Deforma + Treme */
-            animation: spin-chaos 20s linear infinite, morph-spikes 6s ease-in-out infinite alternate, shiver 0.2s linear infinite; /* Tremor constante */
-
+            /* Cor "Venom" */
+            background: radial-gradient(circle at 40% 40%, #00ff88 0%, #004d1a 60%, #000000 100%);
+            border: 1px solid rgba(0, 255, 136, 0.5);
+            /* 1. Forma Base (Muitas pontas para permitir morphing complexo) */
+            clip-path: polygon(50% 0%, 60% 20%, 80% 10%, 70% 30%, 100% 40%, 80% 50%, 100% 60%, 70% 70%, 80% 90%, 60% 80%, 50% 100%, 40% 80%, 20% 90%, 30% 70%, 0% 60%, 20% 50%, 0% 40%, 30% 30%, 20% 10%, 40% 20%);
+            /* 2. Animação Unificada (Sem conflito de Transform) */
+            /* Gira, Deforma e "Respira" ao mesmo tempo de forma fluida */
+            animation: organic-spin 20s linear infinite, ferrofluid-morph 4s ease-in-out infinite alternate;
             pointer-events: none;
-            transition: all 0.3s;
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        /* Hover no PAI afeta o FILHO (Modo Fúria) */
+        /* Hover no PAI (Aceleração Suave) */
         .symbiote-container-home:hover .symbiote-blob {
-            /* Acelera tudo drasticamente */
-            animation: spin-chaos 3s linear infinite, morph-spikes 0.5s ease-in-out infinite alternate, shiver 0.05s linear infinite;
-            filter: brightness(1.5);
+            /* Acelera a rotação e deixa o morphing frenético */
+            animation: organic-spin 2s linear infinite, ferrofluid-morph 0.4s ease-in-out infinite alternate;
+            filter: brightness(1.3);
             border-color: #fff;
+            /* Aumenta levemente para parecer que vai atacar */
+            transform: scale(1.1);
         }
 
-        /* CAMADA INTERNA (NÚCLEO) */
+        /* NÚCLEO (Interferência Visual) */
         .symbiote-blob::after {
             content: '';
             position: absolute;
-            top: 20%;
-            left: 20%;
-            right: 20%;
-            bottom: 20%;
-            background: rgba(0, 255, 136, 0.2);
-            border: 1px solid #fff;
-            /* Forma diferente para criar interferência visual */
-            clip-path: polygon(50% 0%, 65% 25%, 100% 0%, 75% 50%, 100% 100%, 50% 75%, 0% 100%, 25% 50%, 0% 0%, 35% 25%);
-            /* Gira ao contrário e em ritmo diferente */
-            animation: spin-ccw 10s linear infinite;
+            top: 10%;
+            left: 10%;
+            right: 10%;
+            bottom: 10%;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            /* Forma diferente */
+            clip-path: polygon(50% 0%, 70% 30%, 100% 50%, 70% 70%, 50% 100%, 30% 70%, 0% 50%, 30% 30%);
+            /* Gira ao contrário */
+            animation: organic-spin-reverse 10s linear infinite;
         }
 
         .symbiote-container-home:hover .symbiote-blob::after {
-            animation: spin-ccw 2s linear infinite;
-            background: rgba(255, 255, 255, 0.4);
+            animation: organic-spin-reverse 1s linear infinite;
+            background: rgba(255, 255, 255, 0.2);
         }
 
-        /* --- ANIMAÇÕES DO CAOS --- */
+        /* --- ANIMAÇÕES FLUIDAS --- */
 
-        /* Rotação com variação de velocidade (não constante) */
-        @keyframes spin-chaos {
+        /* Rotação Orgânica (Varia a escala levemente enquanto gira) */
+        @keyframes organic-spin {
             0% {
                 transform: rotate(0deg) scale(1);
             }
 
-            25% {
-                transform: rotate(90deg) scale(1.1);
-            }
-            /* Cresce */
             50% {
                 transform: rotate(180deg) scale(0.9);
             }
-            /* Encolhe */
-            75% {
-                transform: rotate(270deg) scale(1.05);
-            }
-
+            /* Contrai */
             100% {
                 transform: rotate(360deg) scale(1);
             }
         }
 
-        /* Rotação Anti-Horária simples */
-        @keyframes spin-ccw {
+        /* Rotação Reversa */
+        @keyframes organic-spin-reverse {
             from {
                 transform: rotate(360deg);
             }
@@ -126,44 +120,18 @@
             }
         }
 
-        /* Deformação Agressiva (Muitos Spikes) */
-        @keyframes morph-spikes {
+        /* O EFEITO "FERROFLUIDO" (Spikes que crescem e encolhem) */
+        /* Mantém o mesmo número de vértices (20) para o navegador não se perder */
+        @keyframes ferrofluid-morph {
             0% {
-                /* Estado "Relaxado" (Mas pontudo) */
-                clip-path: polygon(50% 0%, 60% 30%, 90% 20%, 70% 45%, 100% 60%, 70% 75%, 80% 100%, 50% 80%, 20% 100%, 30% 75%, 0% 60%, 30% 45%, 10% 20%, 40% 30%);
-            }
-
-            50% {
-                /* Estado "Esticado Horizontal" */
-                clip-path: polygon(50% 10%, 55% 40%, 100% 40%, 60% 50%, 100% 60%, 55% 60%, 50% 90%, 45% 60%, 0% 60%, 40% 50%, 0% 40%, 45% 40%);
+                /* Estado "Redondo com Espinhos Curtos" */
+                clip-path: polygon(50% 5%, 60% 25%, 85% 15%, 75% 35%, 95% 45%, 80% 55%, 95% 65%, 75% 75%, 85% 85%, 60% 75%, 50% 95%, 40% 75%, 15% 85%, 25% 75%, 5% 65%, 20% 55%, 5% 45%, 25% 35%, 15% 15%, 40% 25%);
             }
 
             100% {
-                /* Estado "Explosão" (Pontas finas e longas) */
-                clip-path: polygon(50% -10%, 55% 45%, 110% 20%, 60% 55%, 110% 90%, 50% 70%, 20% 120%, 40% 60%, -10% 50%, 40% 40%, 10% -10%, 45% 45%);
-            }
-        }
-
-        /* O Tremor (Micro-movimentos aleatórios) */
-        @keyframes shiver {
-            0% {
-                transform: translate(0, 0) rotate(0deg);
-            }
-
-            25% {
-                transform: translate(2px, 2px) rotate(1deg);
-            }
-
-            50% {
-                transform: translate(-1px, 2px) rotate(-1deg);
-            }
-
-            75% {
-                transform: translate(2px, -1px) rotate(0deg);
-            }
-
-            100% {
-                transform: translate(0, 0) rotate(0deg);
+                /* Estado "Explosão de Espinhos Longos" */
+                /* Puxamos os pontos pares para FORA (negativos e >100%) e os ímpares para DENTRO */
+                clip-path: polygon(50% -20%, 55% 40%, 120% 20%, 60% 50%, 120% 80%, 55% 60%, 80% 120%, 50% 70%, 20% 120%, 45% 60%, -20% 80%, 40% 50%, -20% 20%, 45% 40%, 20% -20%, 50% 30%, 80% -20%, 60% 30%, 50% 10%, 50% 20%);
             }
         }
     </style>
