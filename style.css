@@ -911,6 +911,15 @@ a, button, .close-panel {
 		top: 10px;
 		right: 120px;
 	}
+
+	.audio-toggle {
+		top: 10px !important; /* Alinha no topo junto com os outros */
+		right: 200px !important; /* Joga para a esquerda do Resume */
+		/* Se a tela for muito pequena, talvez precise diminuir a fonte: */
+		font-size: 0.6rem !important;
+		padding: 8px 5px !important;
+	}
+
 }
 /* Header Portfolio */
 .header {
