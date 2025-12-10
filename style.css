@@ -237,7 +237,7 @@ body.push-left #folder-stack {
 }
 
 body.push-top #folder-stack {
-	transform: translateY(200px);
+	transform: translateY(220px);
 }
 
 body.push-bottom #folder-stack {
@@ -472,7 +472,7 @@ body.active .interaction-hint {
 }
 
 body.push-bottom .interaction-hint {
-	transform: translate(-50%, -200px);
+	transform: translate(-50%, -180px);
 }
 
 /* PANELS */
