@@ -184,7 +184,7 @@ body.active .audio-toggle {
 		text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
 		opacity: 1;
 	}
-
+	 
 	50% {
 		text-shadow: 0 0 15px rgba(0, 255, 136, 0.8);
 		opacity: 0.7;
