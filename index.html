@@ -11,19 +11,20 @@
     <link rel="stylesheet" href="style.css">
 
     <style>
-        /* --- ARTEFATO BIO-DIGITAL (FINAL) --- */
+        /* --- ARTEFATO BIO-DIGITAL (CHAOS MODE) --- */
         .symbiote-container-home {
             position: fixed;
-            bottom: 0px;
+            bottom: 10px;
             right: 10px;
             z-index: 50;
-            width: 220px;
-            height: 220px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            filter: drop-shadow(0 0 10px rgba(0, 255, 136, 0.2));
+            /* Glow pulsante no container para dar ambiência */
+            filter: drop-shadow(0 0 15px rgba(0, 255, 136, 0.3));
             mix-blend-mode: screen;
             pointer-events: auto;
             cursor: none !important;
@@ -31,14 +32,15 @@
             transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
+        /* Lógica de Push (Mantida) */
         body.push-right .symbiote-container-home {
             transform: translateX(-280px);
         }
 
         body.push-bottom .symbiote-container-home {
-            transform: translateY(-260px);
+            transform: translateY(-300px);
         }
-         
+
         body.push-right.push-bottom .symbiote-container-home {
             transform: translate(-280px, -300px);
         }
@@ -47,48 +49,73 @@
             position: relative;
             width: 100px;
             height: 100px;
-            background: radial-gradient(circle at 30% 30%, #004d1a 0%, #001a05 80%);
-            border: 1px solid rgba(0, 255, 136, 0.3);
-            clip-path: polygon(50% 0%, 65% 45%, 100% 50%, 65% 55%, 50% 100%, 35% 55%, 0% 50%, 35% 45%);
-            animation: spin-cw 30s linear infinite, spike-pulse 4s ease-in-out infinite alternate;
+            /* Cor mais "Venenosa" */
+            background: radial-gradient(circle at 40% 40%, #00ff88 0%, #003311 60%, #000000 100%);
+            border: 1px solid rgba(0, 255, 136, 0.6);
+            /* Polígono de 12 pontas base (mais complexo) */
+            clip-path: polygon(50% 0%, 60% 30%, 90% 20%, 70% 45%, 100% 60%, 70% 75%, 80% 100%, 50% 80%, 20% 100%, 30% 75%, 0% 60%, 30% 45%, 10% 20%, 40% 30%);
+            /* MISTURA DE ANIMAÇÕES: Gira + Deforma + Treme */
+            animation: spin-chaos 20s linear infinite, morph-spikes 6s ease-in-out infinite alternate, shiver 0.2s linear infinite; /* Tremor constante */
+
             pointer-events: none;
-            transition: background 0.3s;
+            transition: all 0.3s;
         }
 
+        /* Hover no PAI afeta o FILHO (Modo Fúria) */
         .symbiote-container-home:hover .symbiote-blob {
-            animation: spin-cw 8s linear infinite, spike-pulse 1s ease-in-out infinite alternate;
-            background: radial-gradient(circle at 30% 30%, #00802b 0%, #002200 80%);
-            border-color: #00ff88;
-        }
-
-        .symbiote-blob::after {
-            content: '';
-            position: absolute;
-            top: 15%;
-            left: 15%;
-            right: 15%;
-            bottom: 15%;
-            background: transparent;
-            border: 1px solid rgba(0, 255, 136, 0.5);
-            clip-path: polygon(50% 0%, 80% 20%, 100% 50%, 80% 80%, 50% 100%, 20% 80%, 0% 50%, 20% 20%);
-            animation: spin-ccw 15s linear infinite;
-        }
-
-        .symbiote-container-home:hover .symbiote-blob::after {
-            animation: spin-ccw 4s linear infinite;
+            /* Acelera tudo drasticamente */
+            animation: spin-chaos 3s linear infinite, morph-spikes 0.5s ease-in-out infinite alternate, shiver 0.05s linear infinite;
+            filter: brightness(1.5);
             border-color: #fff;
         }
 
-        @keyframes spin-cw {
-            from {
-                transform: rotate(0deg);
+        /* CAMADA INTERNA (NÚCLEO) */
+        .symbiote-blob::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            right: 20%;
+            bottom: 20%;
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid #fff;
+            /* Forma diferente para criar interferência visual */
+            clip-path: polygon(50% 0%, 65% 25%, 100% 0%, 75% 50%, 100% 100%, 50% 75%, 0% 100%, 25% 50%, 0% 0%, 35% 25%);
+            /* Gira ao contrário e em ritmo diferente */
+            animation: spin-ccw 10s linear infinite;
+        }
+
+        .symbiote-container-home:hover .symbiote-blob::after {
+            animation: spin-ccw 2s linear infinite;
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        /* --- ANIMAÇÕES DO CAOS --- */
+
+        /* Rotação com variação de velocidade (não constante) */
+        @keyframes spin-chaos {
+            0% {
+                transform: rotate(0deg) scale(1);
             }
 
-            to {
-                transform: rotate(360deg);
+            25% {
+                transform: rotate(90deg) scale(1.1);
+            }
+            /* Cresce */
+            50% {
+                transform: rotate(180deg) scale(0.9);
+            }
+            /* Encolhe */
+            75% {
+                transform: rotate(270deg) scale(1.05);
+            }
+
+            100% {
+                transform: rotate(360deg) scale(1);
             }
         }
 
+        /* Rotação Anti-Horária simples */
         @keyframes spin-ccw {
             from {
                 transform: rotate(360deg);
@@ -99,13 +126,44 @@
             }
         }
 
-        @keyframes spike-pulse {
+        /* Deformação Agressiva (Muitos Spikes) */
+        @keyframes morph-spikes {
             0% {
-                clip-path: polygon(50% 10%, 60% 40%, 90% 50%, 60% 60%, 50% 90%, 40% 60%, 10% 50%, 40% 40%);
+                /* Estado "Relaxado" (Mas pontudo) */
+                clip-path: polygon(50% 0%, 60% 30%, 90% 20%, 70% 45%, 100% 60%, 70% 75%, 80% 100%, 50% 80%, 20% 100%, 30% 75%, 0% 60%, 30% 45%, 10% 20%, 40% 30%);
+            }
+
+            50% {
+                /* Estado "Esticado Horizontal" */
+                clip-path: polygon(50% 10%, 55% 40%, 100% 40%, 60% 50%, 100% 60%, 55% 60%, 50% 90%, 45% 60%, 0% 60%, 40% 50%, 0% 40%, 45% 40%);
             }
 
             100% {
-                clip-path: polygon(50% -20%, 55% 45%, 120% 50%, 55% 55%, 50% 120%, 45% 55%, -20% 50%, 45% 45%);
+                /* Estado "Explosão" (Pontas finas e longas) */
+                clip-path: polygon(50% -10%, 55% 45%, 110% 20%, 60% 55%, 110% 90%, 50% 70%, 20% 120%, 40% 60%, -10% 50%, 40% 40%, 10% -10%, 45% 45%);
+            }
+        }
+
+        /* O Tremor (Micro-movimentos aleatórios) */
+        @keyframes shiver {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            25% {
+                transform: translate(2px, 2px) rotate(1deg);
+            }
+
+            50% {
+                transform: translate(-1px, 2px) rotate(-1deg);
+            }
+
+            75% {
+                transform: translate(2px, -1px) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(0, 0) rotate(0deg);
             }
         }
     </style>
