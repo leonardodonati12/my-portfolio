@@ -963,7 +963,7 @@ a, button, .close-panel {
 /* --- ARTEFATO BIO-DIGITAL (3D CONTAINER) --- */
 .symbiote-container-home {
 	position: fixed;
-	bottom: 20px;
+	bottom: 10px;
 	right: 20px;
 	z-index: 50;
 	/* Hitbox Grande (Mantida) */
