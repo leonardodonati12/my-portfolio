@@ -43,7 +43,7 @@ body.push-left #main-wrapper {
 }
 
 body.push-top #main-wrapper {
-	transform: translateY(260px);
+	transform: translateY(220px);
 }
 
 body.push-right #main-wrapper {
@@ -237,7 +237,7 @@ body.push-left #folder-stack {
 }
 
 body.push-top #folder-stack {
-	transform: translateY(260px);
+	transform: translateY(220px);
 }
 
 body.push-bottom #folder-stack {
