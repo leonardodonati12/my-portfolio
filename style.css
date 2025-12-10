@@ -43,7 +43,7 @@ body.push-left #main-wrapper {
 }
 
 body.push-top #main-wrapper {
-	transform: translateY(300px);
+	transform: translateY(260px);
 }
 
 body.push-right #main-wrapper {
@@ -202,7 +202,7 @@ body.push-right #resume-btn {
 }
 
 body.push-right .audio-toggle {
-	right: 50px;
+	right: 500px;
 }
 
 /* Todos descem juntos */
@@ -237,7 +237,7 @@ body.push-left #folder-stack {
 }
 
 body.push-top #folder-stack {
-	transform: translateY(220px);
+	transform: translateY(260px);
 }
 
 body.push-bottom #folder-stack {
