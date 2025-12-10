@@ -377,7 +377,7 @@ function drawVisualizer() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Arctic Monkeys Style: White, Thick, Glowing
-    ctx.lineWidth = 4;
+    ctx.lineWidth = 6;
     ctx.strokeStyle = '#ffffff';
     ctx.shadowBlur = 15;
     ctx.shadowColor = 'rgba(255, 255, 255, 0.6)';
@@ -393,7 +393,7 @@ function drawVisualizer() {
         const sampleSize = Math.floor(dataArray.length * 0.5);
         for (let i = 0; i < sampleSize; i++) sum += dataArray[i];
         const average = sum / sampleSize;
-        amplitude = average * 5; // Gorda/Volumosa
+        amplitude = average * 7; // Gorda/Volumosa
     }
 
     if (!window.waveTime) window.waveTime = 0;
