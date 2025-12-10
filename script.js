@@ -409,7 +409,7 @@ function drawVisualizer() {
 
         const y = centerY + (carrier * amplitude * envelope * 0.4);
         if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-    }
+    } 
     ctx.stroke();
     animationId = requestAnimationFrame(drawVisualizer);
 }
