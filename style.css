@@ -89,7 +89,7 @@ body.push-bottom #main-wrapper {
 }
 
 .cursor-outline {
-	width: 40px;
+	width: 40px; 
 	height: 40px;
 	border: 1px solid rgba(0, 255, 136, 0.5);
 	border-radius: 50%;
