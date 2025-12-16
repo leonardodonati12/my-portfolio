@@ -420,9 +420,9 @@ function setupAudioContext() {
 function drawVisualizer() {
     if (!ctx || !canvas) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.lineWidth = 6;
+    ctx.lineWidth = 3;
     ctx.strokeStyle = '#ffffff';
-    ctx.shadowBlur = 15;
+    ctx.shadowBlur = 10;
     ctx.shadowColor = 'rgba(255, 255, 255, 0.6)';
     const width = canvas.width;
     const height = canvas.height;
@@ -434,7 +434,7 @@ function drawVisualizer() {
         const sampleSize = Math.floor(dataArray.length * 0.5);
         for (let i = 0; i < sampleSize; i++) sum += dataArray[i];
         const average = sum / sampleSize;
-        amplitude = average * 7;
+        amplitude = average * 6;
     }
     if (!window.waveTime) window.waveTime = 0;
     window.waveTime += 0.02 + (amplitude * 0.0005);
