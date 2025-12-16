@@ -360,11 +360,8 @@ window.addEventListener('click', (event) => {
         const object = intersects[0].object;
         openModal(object.userData.data);
     }
-});    if (!document.body.classList.contains('active')) return;
-    if (event.target.closest('.ui-panel') || event.target.closest('.folder-tab') || event.target.closest('#project-modal') || event.target.closest('.close-modal')) return;
-    raycaster.setFromCamera(mouse, camera); const intersects = raycaster.intersectObjects(projectNodes);
-    if (intersects.length > 0) { const object = intersects[0].object; openModal(object.userData.data); }
 });
+
 function openModal(data) { if (modalTitle) modalTitle.innerHTML = data.titulo; if (modalTech) modalTech.innerHTML = "// " + data.tech; if (modalDesc) modalDesc.innerHTML = data.descricao; if (modal) { modal.style.display = 'flex'; setTimeout(() => { modal.classList.add('open'); }, 10); } }
 if (closeBtn) closeBtn.addEventListener('click', () => { if (modal) { modal.classList.remove('open'); setTimeout(() => { modal.style.display = 'none'; }, 500); } });
 let lastMiddleClick = 0; window.addEventListener('mousedown', (e) => { if (e.button === 1) { e.preventDefault(); const now = Date.now(); if (now - lastMiddleClick < 500) controls.reset(); lastMiddleClick = now; } });
@@ -447,7 +444,7 @@ function drawVisualizer() {
         for (let i = 0; i < sampleSize; i++) sum += dataArray[i];
         const average = sum / sampleSize;
         amplitude = average * 7; // Gorda/Volumosa
-    } 
+    }
 
     if (!window.waveTime) window.waveTime = 0;
     window.waveTime += 0.02 + (amplitude * 0.0005);
@@ -462,7 +459,7 @@ function drawVisualizer() {
 
         const y = centerY + (carrier * amplitude * envelope * 0.4);
         if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-    } 
+    }
     ctx.stroke();
     animationId = requestAnimationFrame(drawVisualizer);
 }
@@ -532,7 +529,7 @@ if (startBtn) {
         shininess: 10,        // Mais brilhante/molhado
         wireframe: false,
         flatShading: false
-    }); 
+    });
 
     const blob = new THREE.Mesh(geometry, material);
     scene.add(blob);
