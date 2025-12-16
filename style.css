@@ -967,6 +967,23 @@ a, button, .close-panel {
 		right: -60px !important;
 		bottom: 10px !important;
 	}
+
+	#about-overlay {
+		padding: 0 25px !important; /* Era 25% (muito grande), agora é 25px fixo */
+	}
+
+	/* [CORREÇÃO] Tirar o justificado que cria buracos */
+	.about-text {
+		text-align: left !important; /* Justify quebra em mobile, left resolve */
+		font-size: 1rem !important; /* Ajuste fino de tamanho */
+		line-height: 1.5 !important; /* Melhora a leitura */
+		width: 100% !important;
+	}
+
+	/* Ajuste também para a tela de frases (Phrases Overlay) para garantir */
+	#phrases-overlay {
+		padding: 0 20px !important;
+	}
 }
 
 @media (max-width: 770px) {
