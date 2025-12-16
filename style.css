@@ -153,7 +153,7 @@ body.push-bottom #copyright {
 }
 
 .audio-toggle {
-	right: 270px;
+	right: 260px;
 	opacity: 0;
 	pointer-events: none;
 }
