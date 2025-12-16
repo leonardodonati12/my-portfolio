@@ -260,6 +260,7 @@ window.addEventListener('mouseup', (e) => {
         const t = 50; if (e.clientX < t) dockPanel(dragPanel, 'left'); else if (e.clientX > window.innerWidth - t) dockPanel(dragPanel, 'right'); else if (e.clientY < t) dockPanel(dragPanel, 'top'); else if (e.clientY > window.innerHeight - t) dockPanel(dragPanel, 'bottom');
         dragPanel = null;
     }
+
 });
 document.querySelectorAll('.close-panel').forEach(btn => btn.addEventListener('click', (e) => closePanel(e.target.closest('.ui-panel'))));
 
@@ -304,10 +305,62 @@ fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(p
     });
 });
 
-const raycaster = new THREE.Raycaster(); const mouse = new THREE.Vector2(); let hoveredNode = null;
-window.addEventListener('mousemove', (event) => { mouse.x = (event.clientX / window.innerWidth) * 2 - 1; mouse.y = -(event.clientY / window.innerHeight) * 2 + 1; });
+// --- INTERAÇÃO HÍBRIDA (MOUSE + TOUCH HOLD) ---
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2(-100, -100); // Começa fora da tela
+let hoveredNode = null;
+let isTouching = false; // Flag para saber se está tocando
+
+// Função unificada para atualizar posição
+function updateInputPosition(clientX, clientY) {
+    mouse.x = (clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(clientY / window.innerHeight) * 2 + 1;
+}
+
+// 1. MOUSE (Desktop - Hover normal)
+window.addEventListener('mousemove', (event) => {
+    // Só atualiza pelo mouse se NÃO estiver tocando (evita conflito)
+    if (!isTouching) {
+        updateInputPosition(event.clientX, event.clientY);
+    }
+});
+
+// 2. TOUCH START (Celular - Começa a interagir)
+window.addEventListener('touchstart', (event) => {
+    isTouching = true;
+    if (event.touches.length > 0) {
+        updateInputPosition(event.touches[0].clientX, event.touches[0].clientY);
+    }
+}, { passive: false });
+
+// 3. TOUCH MOVE (Celular - Arrastar o dedo atualiza o alvo)
+window.addEventListener('touchmove', (event) => {
+    if (isTouching && event.touches.length > 0) {
+        updateInputPosition(event.touches[0].clientX, event.touches[0].clientY);
+    }
+}, { passive: false });
+
+// 4. TOUCH END (Celular - Soltou? Para a interação)
+window.addEventListener('touchend', () => {
+    isTouching = false;
+    // Joga o "mouse" para longe para cancelar qualquer hover
+    mouse.x = -100;
+    mouse.y = -100;
+});
+
+// Clique (Abre o modal)
 window.addEventListener('click', (event) => {
+    // ... (seu código de clique existente continua aqui) ...
     if (!document.body.classList.contains('active')) return;
+    if (event.target.closest('.ui-panel') || event.target.closest('.folder-tab') || event.target.closest('#project-modal') || event.target.closest('.close-modal')) return;
+
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(projectNodes);
+    if (intersects.length > 0) {
+        const object = intersects[0].object;
+        openModal(object.userData.data);
+    }
+});    if (!document.body.classList.contains('active')) return;
     if (event.target.closest('.ui-panel') || event.target.closest('.folder-tab') || event.target.closest('#project-modal') || event.target.closest('.close-modal')) return;
     raycaster.setFromCamera(mouse, camera); const intersects = raycaster.intersectObjects(projectNodes);
     if (intersects.length > 0) { const object = intersects[0].object; openModal(object.userData.data); }
@@ -501,6 +554,19 @@ if (startBtn) {
 
     container.addEventListener('mouseenter', () => { isHovering = true; document.body.style.cursor = 'none'; });
     container.addEventListener('mouseleave', () => { isHovering = false; document.body.style.cursor = 'none'; });
+
+    container.addEventListener('touchstart', (e) => {
+        // e.preventDefault(); // Descomente se quiser impedir a rolagem da tela ao tocar no bicho
+        isHovering = true;
+    }, { passive: false });
+
+    container.addEventListener('touchend', () => {
+        isHovering = false;
+    });
+
+    container.addEventListener('touchcancel', () => {
+        isHovering = false;
+    });
 
     function animateSymbiote() {
         requestAnimationFrame(animateSymbiote);

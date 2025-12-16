@@ -1040,3 +1040,50 @@ body.push-bottom .symbiote-container-home {
 body.push-right.push-bottom .symbiote-container-home {
 	transform: translate(-280px, -300px);
 }
+
+/* --- AJUSTES DE RESPONSIVIDADE FINAIS --- */
+
+/* 1. Esconder Dica de Rotação em telas médias (Tablets/Laptops pequenos) */
+@media (max-width: 1220px) {
+	.interaction-hint {
+		display: none !important;
+	}
+}
+
+/* 2. Ajustes Específicos para Mobile (< 740px) */
+@media (max-width: 740px) {
+
+	/* Ocultar Copyright */
+	#copyright {
+		display: none !important;
+	}
+
+	/* Reduzir Fontes do Hero em 50% */
+	.hero h1, #hero-name {
+		font-size: 1.75rem !important; /* Era 3.5rem -> Agora 1.75rem */
+	}
+
+	.hero .subtitle {
+		font-size: 0.5rem !important; /* Era 1rem -> Agora 0.5rem */
+		letter-spacing: 2px !important; /* Mantém legibilidade mesmo pequeno */
+		margin-top: 5px !important;
+	}
+
+	/* Empurrar o bloco Hero inteiro 20px para a esquerda */
+	.hero {
+		/* translateX é a forma mais segura de "empurrar" sem quebrar o layout */
+		transform: translateX(-20px);
+	}
+}
+
+/* --- TOUCH DEVICES: OCULTAR CURSOR --- */
+@media (hover: none) and (pointer: coarse) {
+	.cursor-dot, .cursor-outline {
+		display: none !important;
+	}
+
+	/* Garante que os links e botões tenham cursor padrão do sistema */
+	a, button, .close-panel, .folder-tab, .hero, .symbiote-container-home {
+		cursor: pointer !important;
+	}
+}
