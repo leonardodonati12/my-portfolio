@@ -260,7 +260,6 @@ window.addEventListener('mouseup', (e) => {
         const t = 50; if (e.clientX < t) dockPanel(dragPanel, 'left'); else if (e.clientX > window.innerWidth - t) dockPanel(dragPanel, 'right'); else if (e.clientY < t) dockPanel(dragPanel, 'top'); else if (e.clientY > window.innerHeight - t) dockPanel(dragPanel, 'bottom');
         dragPanel = null;
     }
-
 });
 document.querySelectorAll('.close-panel').forEach(btn => btn.addEventListener('click', (e) => closePanel(e.target.closest('.ui-panel'))));
 
@@ -307,25 +306,23 @@ fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(p
 
 // --- INTERAÇÃO HÍBRIDA (MOUSE + TOUCH HOLD) ---
 const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2(-100, -100); // Começa fora da tela
+const mouse = new THREE.Vector2(-100, -100);
 let hoveredNode = null;
-let isTouching = false; // Flag para saber se está tocando
+let isTouching = false;
 
-// Função unificada para atualizar posição
 function updateInputPosition(clientX, clientY) {
     mouse.x = (clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(clientY / window.innerHeight) * 2 + 1;
 }
 
-// 1. MOUSE (Desktop - Hover normal)
+// 1. MOUSE
 window.addEventListener('mousemove', (event) => {
-    // Só atualiza pelo mouse se NÃO estiver tocando (evita conflito)
     if (!isTouching) {
         updateInputPosition(event.clientX, event.clientY);
     }
 });
 
-// 2. TOUCH START (Celular - Começa a interagir)
+// 2. TOUCH START
 window.addEventListener('touchstart', (event) => {
     isTouching = true;
     if (event.touches.length > 0) {
@@ -333,24 +330,22 @@ window.addEventListener('touchstart', (event) => {
     }
 }, { passive: false });
 
-// 3. TOUCH MOVE (Celular - Arrastar o dedo atualiza o alvo)
+// 3. TOUCH MOVE
 window.addEventListener('touchmove', (event) => {
     if (isTouching && event.touches.length > 0) {
         updateInputPosition(event.touches[0].clientX, event.touches[0].clientY);
     }
 }, { passive: false });
 
-// 4. TOUCH END (Celular - Soltou? Para a interação)
+// 4. TOUCH END
 window.addEventListener('touchend', () => {
     isTouching = false;
-    // Joga o "mouse" para longe para cancelar qualquer hover
     mouse.x = -100;
     mouse.y = -100;
 });
 
-// Clique (Abre o modal)
+// Clique Global (Modal)
 window.addEventListener('click', (event) => {
-    // ... (seu código de clique existente continua aqui) ...
     if (!document.body.classList.contains('active')) return;
     if (event.target.closest('.ui-panel') || event.target.closest('.folder-tab') || event.target.closest('#project-modal') || event.target.closest('.close-modal')) return;
 
@@ -425,17 +420,13 @@ function setupAudioContext() {
 function drawVisualizer() {
     if (!ctx || !canvas) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Arctic Monkeys Style: White, Thick, Glowing
     ctx.lineWidth = 6;
     ctx.strokeStyle = '#ffffff';
     ctx.shadowBlur = 15;
     ctx.shadowColor = 'rgba(255, 255, 255, 0.6)';
-
     const width = canvas.width;
     const height = canvas.height;
     const centerY = height / 2;
-
     let amplitude = 0;
     if (isAudioPlaying && analyser) {
         analyser.getByteFrequencyData(dataArray);
@@ -443,20 +434,15 @@ function drawVisualizer() {
         const sampleSize = Math.floor(dataArray.length * 0.5);
         for (let i = 0; i < sampleSize; i++) sum += dataArray[i];
         const average = sum / sampleSize;
-        amplitude = average * 7; // Gorda/Volumosa
+        amplitude = average * 7;
     }
-
     if (!window.waveTime) window.waveTime = 0;
     window.waveTime += 0.02 + (amplitude * 0.0005);
     const t = window.waveTime;
-
     ctx.beginPath();
     for (let x = 0; x < width; x++) {
-        // Envelope: pontas presas
         const envelope = Math.sin((x / width) * Math.PI);
-        // Alta frequência (recheio denso)
         const carrier = Math.sin(x * 0.1 + t) + (Math.sin(x * 0.2 + t) * 1);
-
         const y = centerY + (carrier * amplitude * envelope * 0.4);
         if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     }
@@ -469,7 +455,6 @@ function toggleAudio() {
     if (!audioEl) return;
     setupAudioContext();
     if (audioContext.state === 'suspended') audioContext.resume();
-
     if (isAudioPlaying) {
         audioEl.pause();
         audioBtn.innerHTML = 'SOUND OFF';
@@ -503,109 +488,58 @@ if (startBtn) {
     });
 }
 
-// --- 14. SYMBIOTE 3D (FERROFLUID SPIKES - TWEAKED) ---
+// --- 14. SYMBIOTE 3D ---
 (function initSymbiote3D() {
     const container = document.getElementById('symbiote-container');
     const canvas = document.getElementById('symbiote-canvas');
     if (!container || !canvas) return;
-
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
     camera.position.z = 4;
-
     const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(220, 220);
-
-    // [AJUSTE 1] Tamanho reduzido (Raio 0.9)
-    // Mantive alto detalhe (20) para os spikes ficarem definidos
     const geometry = new THREE.IcosahedronGeometry(0.5, 30);
-
-    // [AJUSTE 2] Verde Reduzido na base
-    const material = new THREE.MeshPhongMaterial({
-        color: 0x01b963,      // Preto base
-        emissive: 0x006134,   // Brilho interno MUITO fraco (quase preto)
-        specular: 0x00de76,   // Reflexos pontuais continuam neon
-        shininess: 10,        // Mais brilhante/molhado
-        wireframe: false,
-        flatShading: false
-    });
-
+    const material = new THREE.MeshPhongMaterial({ color: 0x01b963, emissive: 0x006134, specular: 0x00de76, shininess: 10, wireframe: false, flatShading: false });
     const blob = new THREE.Mesh(geometry, material);
     scene.add(blob);
-
-    // Iluminação ajustada para destacar os spikes
     const light = new THREE.DirectionalLight(0xffffff, 1.2);
     light.position.set(2, 2, 5);
     scene.add(light);
-    const ambientLight = new THREE.AmbientLight(0x002200, 0.3); // Luz ambiente mais fraca
+    const ambientLight = new THREE.AmbientLight(0x002200, 0.3);
     scene.add(ambientLight);
-
     const originalPositions = geometry.attributes.position.array.slice();
     const count = geometry.attributes.position.count;
-
-    let time = 0;
-    let spikeAmount = 0.5; // Começa mais baixo
-    let speed = 0.005;
-    let isHovering = false;
-
+    let time = 0; let spikeAmount = 0.5; let speed = 0.005; let isHovering = false;
     container.addEventListener('mouseenter', () => { isHovering = true; document.body.style.cursor = 'none'; });
     container.addEventListener('mouseleave', () => { isHovering = false; document.body.style.cursor = 'none'; });
-
-    container.addEventListener('touchstart', (e) => {
-        // e.preventDefault(); // Descomente se quiser impedir a rolagem da tela ao tocar no bicho
-        isHovering = true;
-    }, { passive: false });
-
-    container.addEventListener('touchend', () => {
-        isHovering = false;
-    });
-
-    container.addEventListener('touchcancel', () => {
-        isHovering = false;
-    });
-
+    container.addEventListener('touchstart', (e) => { isHovering = true; }, { passive: false });
+    container.addEventListener('touchend', () => { isHovering = false; });
+    container.addEventListener('touchcancel', () => { isHovering = false; });
     function animateSymbiote() {
         requestAnimationFrame(animateSymbiote);
-
         if (isHovering) {
-            speed = THREE.MathUtils.lerp(speed, 0.025, 0.1); // Um pouco mais rápido
-            // Spikes crescem mais no hover
+            speed = THREE.MathUtils.lerp(speed, 0.025, 0.1);
             spikeAmount = THREE.MathUtils.lerp(spikeAmount, 1.0, 0.1);
-            // [AJUSTE 2] Verde do hover menos intenso que o original
             blob.material.emissive.setHex(0x00cc66);
         } else {
             speed = THREE.MathUtils.lerp(speed, 0.005, 0.1);
             spikeAmount = THREE.MathUtils.lerp(spikeAmount, 0.2, 0.1);
-            // [AJUSTE 2] Volta para o quase preto
             blob.material.emissive.setHex(0x006134);
         }
-
         time += speed;
         blob.rotation.y += 0.01;
         blob.rotation.z += 0.005;
-
         const positions = geometry.attributes.position;
         for (let i = 0; i < count; i++) {
-            const ox = originalPositions[i * 3];
-            const oy = originalPositions[i * 3 + 1];
-            const oz = originalPositions[i * 3 + 2];
-
-            // [AJUSTE 3] Frequências mais altas = Spikes mais finos/pontiagudos
-            // Antes era (ox * 2.5), agora é (ox * 5.0), etc.
-            const noise =
-                Math.sin(ox * 8.0 + time) * Math.cos(oy * 5 + time) * Math.sin(oz * 6 + time);
-
-            // O fator eleva o ruído ao quadrado para deixar os vales mais planos e os picos mais agudos
-            // Math.sign mantém a direção (para dentro ou para fora)
+            const ox = originalPositions[i * 3]; const oy = originalPositions[i * 3 + 1]; const oz = originalPositions[i * 3 + 2];
+            const noise = Math.sin(ox * 8.0 + time) * Math.cos(oy * 5 + time) * Math.sin(oz * 6 + time);
             const sharpNoise = Math.sign(noise) * Math.pow(Math.abs(noise), 1.5);
-
             const factor = 1 + (sharpNoise * spikeAmount);
             positions.setXYZ(i, ox * factor, oy * factor, oz * factor);
         }
-
         positions.needsUpdate = true;
-        geometry.computeVertexNormals(); // Essencial para a sombra ficar correta nos spikes novos
+        geometry.computeVertexNormals();
         renderer.render(scene, camera);
     }
     animateSymbiote();
