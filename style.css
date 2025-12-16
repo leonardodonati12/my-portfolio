@@ -961,7 +961,7 @@ a, button, .close-panel {
 	}
 
 		.hero .subtitle {
-			margin-left: -20px;
+			margin-left: 0px;
 		}
 
 	.symbiote-container-home {
@@ -986,6 +986,10 @@ a, button, .close-panel {
 	}
 
 	.hero {
+		transform: translateX(-20px);
+	}
+
+	.hero .subtitle {
 		transform: translateX(-20px);
 	}
 }
