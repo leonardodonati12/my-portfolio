@@ -5,7 +5,7 @@ body {
 	background-color: #050505;
 	color: #fff;
 	font-family: 'Consolas', 'Courier New', monospace;
-	cursor: none !important;
+	cursor: none !important; /* Esconde cursor padrão (JS move o verde) */
 	user-select: none;
 }
 
@@ -43,7 +43,7 @@ body.push-left #main-wrapper {
 }
 
 body.push-top #main-wrapper {
-	transform: translateY(220px);
+	transform: translateY(300px);
 }
 
 body.push-right #main-wrapper {
@@ -66,16 +66,17 @@ body.push-bottom #main-wrapper {
 /* --- AUDIO VISUALIZER (ESTILO AM) --- */
 #audio-visualizer {
 	position: fixed;
-	top: 20px;
+	top: 120px;
 	left: 0;
 	width: 100%;
-	height: 50px;
+	height: 200px;
 	z-index: 3000;
 	pointer-events: none;
 	opacity: 1;
 }
 
-/* CURSOR */
+/* CURSOR (ESSENCIAL: pointer-events: none) */
+/* Isso garante que o clique atravesse a bolinha e pegue o botão */
 .cursor-dot {
 	width: 8px;
 	height: 8px;
@@ -129,23 +130,20 @@ body.push-bottom #copyright {
 /* --- BOTÕES DO HEADER (PADRONIZADOS) --- */
 #resume-btn, #portfolio-btn, .audio-toggle {
 	position: fixed;
-	/* [AJUSTE] Posição vertical fixa para todos ficarem na mesma linha */
 	top: 50px;
-	font-family: 'Consolas', monospace; /* Garante a mesma fonte */
 	font-size: 0.75rem;
 	color: #eee;
+	font-family: 'Consolas', monospace;
 	letter-spacing: 2px;
 	text-decoration: none;
 	border: none;
 	background: transparent;
-	padding: 10px 15px; /* Padding igual para área de clique igual */
+	padding: 10px 15px;
 	z-index: 4000;
 	cursor: none !important;
-	/* Transições */
 	transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), top 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 2s ease, color 0.3s, text-shadow 0.3s;
 }
 
-/* POSICIONAMENTO HORIZONTAL (Matemática: Botão + 30px de Gap) */
 #portfolio-btn {
 	right: 40px;
 }
@@ -155,30 +153,38 @@ body.push-bottom #copyright {
 }
 
 .audio-toggle {
-	right: 260px;
+	right: 280px;
 	opacity: 0;
 	pointer-events: none;
 }
 
-/* Audio aparece quando ativo */
 body.active .audio-toggle {
 	opacity: 1;
 	pointer-events: auto;
 }
 
-/* Hover Unificado */
 #resume-btn:hover, #portfolio-btn:hover, .audio-toggle:hover {
 	color: #00ff88;
 	text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
 }
 
-/* Estado Playing */
 .audio-toggle.playing {
 	color: #00ff88;
 	animation: pulse-text-audio 3s infinite;
 }
 
-/* Movimentação PUSH (Lateral) */
+@keyframes pulse-text-audio {
+	0%, 100% {
+		text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+		opacity: 1;
+	}
+
+	50% {
+		text-shadow: 0 0 15px rgba(0, 255, 136, 0.8);
+		opacity: 0.7;
+	}
+}
+
 body.push-right #portfolio-btn {
 	right: 300px;
 }
@@ -188,49 +194,13 @@ body.push-right #resume-btn {
 }
 
 body.push-right .audio-toggle {
-	right: 520px;
+	right: 540px;
 }
 
-/* Movimentação PUSH (Vertical - Descida) */
-body.push-top #portfolio-btn,
-body.push-top #resume-btn,
-body.push-top .audio-toggle {
+body.push-top #portfolio-btn, body.push-top #resume-btn, body.push-top .audio-toggle {
 	top: 310px;
 }
 
-@keyframes pulse-text-audio {
-	0%, 100% {
-		text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
-		opacity: 1;
-	}
-	 
-	50% {
-		text-shadow: 0 0 15px rgba(0, 255, 136, 0.8);
-		opacity: 0.7;
-	}
-}
-
-/* Movimentação dos Botões (Push) */
-/* Todos se movem juntos para esquerda */
-body.push-right #portfolio-btn {
-	right: 300px;
-}
-
-body.push-right #resume-btn {
-	right: 410px;
-}
-
-body.push-right .audio-toggle {
-	right: 500px;
-}
-
-/* Todos descem juntos */
-body.push-top #portfolio-btn,
-body.push-top #resume-btn,
-body.push-top .audio-toggle {
-	top: 310px;
-}
- 
 
 /* --- SIDE TABS --- */
 #folder-stack {
@@ -243,7 +213,7 @@ body.push-top .audio-toggle {
 	z-index: 4000;
 	opacity: 0;
 	padding-left: 0;
-	margin-left: 1px;
+	margin-left: 0;
 	transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 1s;
 }
 
@@ -256,7 +226,7 @@ body.push-left #folder-stack {
 }
 
 body.push-top #folder-stack {
-	transform: translateY(220px);
+	transform: translateY(300px);
 }
 
 body.push-bottom #folder-stack {
@@ -438,8 +408,8 @@ body.push-bottom #folder-stack {
 /* HERO UI */
 .hero {
 	position: absolute;
-	top: 10%;
-	left: 80px;
+	top: 18%;
+	left: 40px;
 	pointer-events: none;
 	opacity: 0;
 	transition: opacity 2s;
@@ -455,7 +425,7 @@ body.active .hero {
 	font-size: 3.5rem;
 	margin: 0;
 	color: #ffffff !important;
-	line-height: 1.1;
+	line-height: 1;
 	pointer-events: auto;
 	cursor: none !important;
 	text-shadow: 0 0 20px rgba(0,0,0,0.8);
@@ -466,7 +436,7 @@ body.active .hero {
 	color: #00ff88 !important;
 	letter-spacing: 3px;
 	font-size: 1rem;
-	margin-top: 15px;
+	margin-top: 10px;
 	display: inline-block;
 	padding: 5px 0;
 	pointer-events: auto;
@@ -494,7 +464,7 @@ body.active .interaction-hint {
 }
 
 body.push-bottom .interaction-hint {
-	transform: translate(-50%, -280px);
+	transform: translate(-50%, -240px);
 }
 
 /* PANELS */
@@ -867,9 +837,53 @@ body.push-bottom .interaction-hint {
 	box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
 
+/* --- ARTEFATO BIO-DIGITAL (3D CONTAINER) --- */
+.symbiote-container-home {
+	position: fixed;
+	bottom: -20px;
+	right: -40px;
+	z-index: 50;
+	width: 220px;
+	height: 220px;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	pointer-events: auto;
+	cursor: none !important;
+	background-color: rgba(0, 0, 0, 0.01);
+	transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+#symbiote-canvas {
+	width: 100%;
+	height: 100%;
+	outline: none;
+	filter: drop-shadow(0 0 15px rgba(0, 255, 136, 0.3));
+}
+
+body.push-right .symbiote-container-home {
+	transform: translateX(-280px);
+}
+
+body.push-bottom .symbiote-container-home {
+	transform: translateY(-300px);
+}
+
+body.push-right.push-bottom .symbiote-container-home {
+	transform: translate(-280px, -300px);
+}
+
 /* GLOBAL CURSOR RESET */
 a, button, .close-panel {
 	cursor: none !important;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1220px) {
+	.interaction-hint {
+		display: none !important;
+	}
 }
 
 @media (max-width: 768px) {
@@ -925,37 +939,69 @@ a, button, .close-panel {
 	}
 
 	#portfolio-btn {
-		top: 10px;
-		right: 10px;
+		top: 20px;
+		right: 20px;
 	}
 
 	#resume-btn {
-		top: 10px;
-		right: 120px;
+		top: 20px;
+		right: 110px;
 	}
 
 	.audio-toggle {
-		top: 10px !important; /* Alinha no topo junto com os outros */
-		right: 220px !important; /* Joga para a esquerda do Resume */
+		top: 20px !important;
+		right: 200px !important;
 		padding: 10px !important;
+		font-size: 0.6rem !important;
+	}
+
+	.hero {
+		left: 20px;
+		top: 15%;
+	}
+
+		.hero .subtitle {
+			margin-left: -20px;
+		}
+
+	.symbiote-container-home {
+		right: -60px !important;
+		bottom: 10px !important;
+	}
+}
+
+@media (max-width: 740px) {
+	#copyright {
+		display: none !important;
+	}
+
+	.hero h1, #hero-name {
+		font-size: 1.75rem !important;
 	}
 
 	.hero .subtitle {
-		left: 10px; /* Puxa para a esquerda. Aumente o negativo se precisar mais. */
-		text-align: left;
+		font-size: 0.5rem !important;
+		letter-spacing: 2px !important;
+		margin-top: 5px !important;
 	}
 
-	.symbiote-container-home {
-		/* Joga ele para fora da tela (negativo) para não cobrir o texto */
-		right: -60px !important;
-		bottom: 10px !important;
-		/* Opcional: Reduzir um pouco o tamanho no celular para não atrapalhar */
-		/* transform: scale(0.8); */
+	.hero {
+		transform: translateX(-20px);
 	}
 }
- 
+
+/* --- TOUCH DEVICES: OCULTAR CURSOR --- */
+@media (hover: none) and (pointer: coarse) {
+	.cursor-dot, .cursor-outline {
+		display: none !important;
+	}
+	/* Reativa o cursor do sistema para botões quando em touch */
+	a, button, .close-panel, .folder-tab, .hero, .symbiote-container-home {
+		cursor: pointer !important;
+	}
 }
-/* Header Portfolio */
+
+/* Header Portfolio (Page Specific) */
 .header {
 	padding: 40px 60px;
 	display: flex;
@@ -964,7 +1010,7 @@ a, button, .close-panel {
 	position: sticky;
 	top: 0;
 	background: rgba(255,255,255,0.95);
-	backdrop-filter: blur(8px); 
+	backdrop-filter: blur(8px);
 	z-index: 100;
 }
 
@@ -992,98 +1038,4 @@ a, button, .close-panel {
 .nav {
 	display: flex;
 	gap: 30px;
-}
-
-/* --- ARTEFATO BIO-DIGITAL (3D CONTAINER) --- */
-.symbiote-container-home {
-	position: fixed;
-	bottom: 10px;
-	right: 20px;
-	z-index: 50;
-	/* Hitbox Grande (Mantida) */
-	width: 220px;
-	height: 220px;
-	border-radius: 50%;
-	/* Centralização */
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	/* Não precisa mais de mix-blend-mode se quiser cor real, 
-       mas 'screen' ajuda a integrar o glow */
-	/* mix-blend-mode: screen; */
-
-	pointer-events: auto;
-	cursor: none !important;
-	/* Debug Hitbox (apague depois) */
-	background-color: rgba(0, 0, 0, 0.01);
-	transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-/* O Canvas 3D */
-#symbiote-canvas {
-	width: 100%;
-	height: 100%;
-	outline: none;
-	/* Filtro leve para integrar com o tema neon */
-	filter: drop-shadow(0 0 15px rgba(0, 255, 136, 0.3));
-}
-
-/* Lógica de Push (Mantida) */
-body.push-right .symbiote-container-home {
-	transform: translateX(-280px);
-}
-
-body.push-bottom .symbiote-container-home {
-	transform: translateY(-300px);
-}
-
-body.push-right.push-bottom .symbiote-container-home {
-	transform: translate(-280px, -300px);
-}
-
-/* --- AJUSTES DE RESPONSIVIDADE FINAIS --- */
-
-/* 1. Esconder Dica de Rotação em telas médias (Tablets/Laptops pequenos) */
-@media (max-width: 1220px) {
-	.interaction-hint {
-		display: none !important;
-	}
-}
-
-/* 2. Ajustes Específicos para Mobile (< 740px) */
-@media (max-width: 740px) {
-
-	/* Ocultar Copyright */
-	#copyright {
-		display: none !important;
-	}
-
-	/* Reduzir Fontes do Hero em 50% */
-	.hero h1, #hero-name {
-		font-size: 1.75rem !important; /* Era 3.5rem -> Agora 1.75rem */
-	}
-
-	.hero .subtitle {
-		font-size: 0.5rem !important; /* Era 1rem -> Agora 0.5rem */
-		letter-spacing: 2px !important; /* Mantém legibilidade mesmo pequeno */
-		margin-top: 5px !important;
-	}
-
-	/* Empurrar o bloco Hero inteiro 20px para a esquerda */
-	.hero {
-		/* translateX é a forma mais segura de "empurrar" sem quebrar o layout */
-		transform: translateX(-20px);
-	}
-}
-
-/* --- TOUCH DEVICES: OCULTAR CURSOR --- */
-@media (hover: none) and (pointer: coarse) {
-	.cursor-dot, .cursor-outline {
-		display: none !important;
-	}
-
-	/* Garante que os links e botões tenham cursor padrão do sistema */
-	a, button, .close-panel, .folder-tab, .hero, .symbiote-container-home {
-		cursor: pointer !important;
-	}
 }
