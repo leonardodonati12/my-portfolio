@@ -867,7 +867,7 @@ body.push-right .symbiote-container-home {
 }
 
 body.push-bottom .symbiote-container-home {
-	transform: translateY(-320px);
+	transform: translateY(-300px);
 }
 
 body.push-right.push-bottom .symbiote-container-home {
