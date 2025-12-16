@@ -38,7 +38,7 @@ const calloutLine = document.getElementById('callout-line');
 let currentlyHoveredSphere = null;
 
 // --- 3. SCRAMBLE TEXT ---
-const roles = ["ARCHITECTURE STUDENT", "INNOVATION ASSISTANT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND", "BIM enthusiast"];
+const roles = ["ARCHITECTURE STUDENT", "INNOVATION ASSISTANT", "BEGINNER DEVELOPER", "COMPUTATIONAL DESIGNER", "CURIOUS MIND", "BIM ENTHUSIAST"];
 const roleEl = document.getElementById('scramble-text');
 const chars = '!<>-_\\/[]{}—=+*^?#________';
 let roleIndex = 0;
