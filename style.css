@@ -231,7 +231,7 @@ body.push-top #folder-stack {
 
 body.push-bottom #folder-stack {
 	transform: translateY(-50px);
-}
+} 
 
 .folder-tab {
 	background: linear-gradient(to right, #3d3e42, #202124);
