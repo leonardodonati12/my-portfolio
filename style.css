@@ -396,7 +396,7 @@ body.push-bottom #folder-stack {
 /* HERO UI */
 .hero {
 	position: absolute;
-	top: 100px;
+	top: 40px;
 	left: 70px;
 	pointer-events: none;
 	opacity: 0;
