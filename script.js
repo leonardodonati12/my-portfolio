@@ -169,9 +169,9 @@ if (heroSubtitle) {
 // --- 9. SKILLS & PANELS ---
 // --- 9. SKILLS & PANELS ---
 const mySkills = [
-    { name: "REVIT / BIM", level: 95 }, { name: "DYNAMO / PYTHON", level: 85 }, { name: "RHINO / GRASSHOPPER", level: 80 }, { name: "NAVISWORKS", level: 75 },
-    { name: "ARCHICAD", level: 70 }, { name: "INFRAWORKS / RECAP", level: 75 }, { name: "SKETCHUP", level: 90 }, { name: "C# / API DEV", level: 65 },
-    { name: "THREE.JS / WEBGL", level: 60 }, { name: "HTML / CSS / JS", level: 70 }, { name: "POWER BI", level: 80 }, { name: "PHOTOSHOP / AI", level: 85 }
+    { name: "REVIT / DYNAMO", level: 85 }, { name: "NAVISWORKS", level: 65 }, { name: "ARCHICAD / SKETCHUP", level: 65 },
+    { name: "INFRAWORKS", level: 70 }, { name: "CLOUDCOMPARE / RECAP", level: 75 }, { name: "ADOBE TOOLS", level: 70 },
+    { name: "POWER BI", level: 70 }, { name: "C# / PYTHON", level: 80 }, { name: "THREE.JS / WEBGL", level: 60 }, { name: "HTML / CSS / JS", level: 75 },
 ];
 const skillsList = document.getElementById('skills-list');
 
@@ -195,7 +195,8 @@ if (skillsList) {
 
 if (document.getElementById('timeline-content')) {
     document.getElementById('timeline-content').innerHTML = `
-        <div class="timeline-item"><div class="time-date">Aug 2024 - Present</div><div class="time-role">Spbim - Architecture Intern</div><div class="time-place">S&atilde;o Paulo - SP</div><div class="time-desc">BIM implementation support, parametric modeling, point cloud (laser scanner), coordination.</div></div>
+        <div class="timeline-item"><div class="time-date">Mar 2025 - Present</div><div class="time-role">Spbim - Architecture Assistant</div><div class="time-place">S&atilde;o Paulo - SP</div><div class="time-desc">BIM implementation support, parametric modeling, point cloud (laser scanner), coordination.</div></div>
+        <div class="timeline-item"><div class="time-date">Aug 2024 - Mar 2025</div><div class="time-role">Spbim - Architecture Intern</div><div class="time-place">S&atilde;o Paulo - SP</div><div class="time-desc">BIM implementation support, parametric modeling, point cloud (laser scanner), coordination.</div></div>
         <div class="timeline-item"><div class="time-date">Jan 2022 - Dec 2026</div><div class="time-role">Universidade Anhembi Morumbi</div><div class="time-desc">Bachelor of Architecture and Urbanism.</div></div>
         <div class="timeline-item"><div class="time-date">Oct 2020 - Apr 2021</div><div class="time-role">Tekno S.A. - Electrical Intern</div><div class="time-place">Guaratinguet&aacute; - SP</div><div class="time-desc">Analysis and development of electrical plans, preventive and corrective maintenance.</div></div>
         <div class="timeline-item"><div class="time-date">Jan 2017 - Dec 2019</div><div class="time-role">Col&eacute;gio T&eacute;cnico Industrial - Unesp</div><div class="time-desc">Technical High School.</div></div>
@@ -207,7 +208,8 @@ if (document.getElementById('extras-content')) {
         <div class="extra-item"><div class="extra-title">Spbim Workshop Monitor</div><div class="extra-detail">Laser Scanner Surveys (May 2025).</div></div>
         <div class="extra-item"><div class="extra-title">OBA Medalist</div><div class="extra-detail">Gold (2015), Bronze (2016), Silver (2019).</div></div>
         <div class="extra-item"><div class="extra-title">Integration Week Monitor</div><div class="extra-detail">Ctig - Unesp (2018, 2019, 2020).</div></div>
-        <div class="extra-item"><div class="extra-title">Languages</div><div class="extra-detail">Portuguese (Native)<br>English (B1 - Intermediate)</div></div>
+        <div class="extra-item"><div class="extra-title">Class and Professor Coordinator</div><div class="extra-detail">SPBIM (2025 - Present)</div></div>
+        <div class="extra-item"><div class="extra-title">Languages</div><div class="extra-detail">Portuguese [Native]<br>English [B2 - Intermediate]</div></div>
     `;
 }
 if (document.getElementById('contact-content')) {
