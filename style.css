@@ -837,43 +837,6 @@ body.push-bottom .interaction-hint {
 	box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
 
-/* --- ARTEFATO BIO-DIGITAL (3D CONTAINER) --- */
-.symbiote-container-home {
-	position: fixed;
-	bottom: -40px;
-	right: -40px;
-	z-index: 50;
-	width: 220px;
-	height: 220px;
-	border-radius: 50%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	pointer-events: auto;
-	cursor: none !important;
-	background-color: rgba(0, 0, 0, 0.01);
-	transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-#symbiote-canvas {
-	width: 100%;
-	height: 100%;
-	outline: none;
-	filter: drop-shadow(0 0 15px rgba(0, 255, 136, 0.3));
-}
-
-body.push-right .symbiote-container-home {
-	transform: translateX(-280px);
-}
-
-body.push-bottom .symbiote-container-home {
-	transform: translateY(-300px);
-}
-
-body.push-right.push-bottom .symbiote-container-home {
-	transform: translate(-280px, -300px);
-}
-
 /* GLOBAL CURSOR RESET */
 a, button, .close-panel {
 	cursor: none !important;

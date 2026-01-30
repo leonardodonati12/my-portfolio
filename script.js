@@ -388,73 +388,28 @@ function animate() {
 animate();
 window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); if (canvas) canvas.width = window.innerWidth; });
 
-// --- 13. AUDIO SYSTEM (VISUALIZER AM STYLE) ---
+// --- 13. AUDIO SYSTEM (SEM VISUALIZER) ---
 const audioEl = document.getElementById('theme-audio');
 const audioBtn = document.getElementById('audio-btn');
-const canvas = document.getElementById('audio-visualizer');
-const ctx = canvas ? canvas.getContext('2d') : null;
 
 let isAudioPlaying = false;
-let audioContext, analyser, dataArray, source;
-let animationId;
-
-if (canvas) {
-    canvas.width = window.innerWidth;
-    canvas.height = 200;
-}
+let audioContext;
 
 function setupAudioContext() {
-    if (!audioContext && audioEl) {
+    // Mantemos o Context apenas para lidar com políticas de Autoplay do navegador
+    if (!audioContext && (window.AudioContext || window.webkitAudioContext)) {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         audioContext = new AudioContext();
-        analyser = audioContext.createAnalyser();
-        source = audioContext.createMediaElementSource(audioEl);
-        source.connect(analyser);
-        analyser.connect(audioContext.destination);
-        analyser.fftSize = 2048;
-        const bufferLength = analyser.fftSize;
-        dataArray = new Uint8Array(bufferLength);
     }
 }
-
-function drawVisualizer() {
-    if (!ctx || !canvas) return;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = '#ffffff';
-    ctx.shadowBlur = 10;
-    ctx.shadowColor = 'rgba(255, 255, 255, 0.6)';
-    const width = canvas.width;
-    const height = canvas.height;
-    const centerY = height / 2;
-    let amplitude = 0;
-    if (isAudioPlaying && analyser) {
-        analyser.getByteFrequencyData(dataArray);
-        let sum = 0;
-        const sampleSize = Math.floor(dataArray.length * 0.5);
-        for (let i = 0; i < sampleSize; i++) sum += dataArray[i];
-        const average = sum / sampleSize;
-        amplitude = average * 6;
-    }
-    if (!window.waveTime) window.waveTime = 0;
-    window.waveTime += 0.02 + (amplitude * 0.0005);
-    const t = window.waveTime;
-    ctx.beginPath();
-    for (let x = 0; x < width; x++) {
-        const envelope = Math.sin((x / width) * Math.PI);
-        const carrier = Math.sin(x * 0.1 + t) + (Math.sin(x * 0.2 + t) * 1);
-        const y = centerY + (carrier * amplitude * envelope * 0.4);
-        if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-    }
-    ctx.stroke();
-    animationId = requestAnimationFrame(drawVisualizer);
-}
-drawVisualizer();
 
 function toggleAudio() {
     if (!audioEl) return;
     setupAudioContext();
-    if (audioContext.state === 'suspended') audioContext.resume();
+
+    // Garante que o contexto de áudio esteja rodando
+    if (audioContext && audioContext.state === 'suspended') audioContext.resume();
+
     if (isAudioPlaying) {
         audioEl.pause();
         audioBtn.innerHTML = 'SOUND OFF';
@@ -468,6 +423,7 @@ function toggleAudio() {
         }).catch(err => console.log("Áudio bloqueado:", err));
     }
 }
+
 if (audioBtn) audioBtn.addEventListener('click', toggleAudio);
 
 if (startBtn) {
@@ -479,6 +435,7 @@ if (startBtn) {
                 isAudioPlaying = true;
                 audioBtn.innerHTML = 'SOUND ON';
                 audioBtn.classList.add('playing');
+                // Fade in suave
                 let vol = 0;
                 const fade = setInterval(() => {
                     if (vol < 0.2) { vol += 0.01; audioEl.volume = vol; } else { clearInterval(fade); }
@@ -488,59 +445,3 @@ if (startBtn) {
     });
 }
 
-// --- 14. SYMBIOTE 3D ---
-(function initSymbiote3D() {
-    const container = document.getElementById('symbiote-container');
-    const canvas = document.getElementById('symbiote-canvas');
-    if (!container || !canvas) return;
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
-    camera.position.z = 4;
-    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(220, 220);
-    const geometry = new THREE.IcosahedronGeometry(0.5, 30);
-    const material = new THREE.MeshPhongMaterial({ color: 0x01b963, emissive: 0x006134, specular: 0x00de76, shininess: 10, wireframe: false, flatShading: false });
-    const blob = new THREE.Mesh(geometry, material);
-    scene.add(blob);
-    const light = new THREE.DirectionalLight(0xffffff, 1.2);
-    light.position.set(2, 2, 5);
-    scene.add(light);
-    const ambientLight = new THREE.AmbientLight(0x002200, 0.3);
-    scene.add(ambientLight);
-    const originalPositions = geometry.attributes.position.array.slice();
-    const count = geometry.attributes.position.count;
-    let time = 0; let spikeAmount = 0.5; let speed = 0.005; let isHovering = false;
-    container.addEventListener('mouseenter', () => { isHovering = true; document.body.style.cursor = 'none'; });
-    container.addEventListener('mouseleave', () => { isHovering = false; document.body.style.cursor = 'none'; });
-    container.addEventListener('touchstart', (e) => { isHovering = true; }, { passive: false });
-    container.addEventListener('touchend', () => { isHovering = false; });
-    container.addEventListener('touchcancel', () => { isHovering = false; });
-    function animateSymbiote() {
-        requestAnimationFrame(animateSymbiote);
-        if (isHovering) {
-            speed = THREE.MathUtils.lerp(speed, 0.025, 0.1);
-            spikeAmount = THREE.MathUtils.lerp(spikeAmount, 1.0, 0.1);
-            blob.material.emissive.setHex(0x00cc66);
-        } else {
-            speed = THREE.MathUtils.lerp(speed, 0.005, 0.1);
-            spikeAmount = THREE.MathUtils.lerp(spikeAmount, 0.2, 0.1);
-            blob.material.emissive.setHex(0x006134);
-        }
-        time += speed;
-        blob.rotation.y += 0.01;
-        blob.rotation.z += 0.005;
-        const positions = geometry.attributes.position;
-        for (let i = 0; i < count; i++) {
-            const ox = originalPositions[i * 3]; const oy = originalPositions[i * 3 + 1]; const oz = originalPositions[i * 3 + 2];
-            const noise = Math.sin(ox * 8.0 + time) * Math.cos(oy * 5 + time) * Math.sin(oz * 6 + time);
-            const sharpNoise = Math.sign(noise) * Math.pow(Math.abs(noise), 1.5);
-            const factor = 1 + (sharpNoise * spikeAmount);
-            positions.setXYZ(i, ox * factor, oy * factor, oz * factor);
-        }
-        positions.needsUpdate = true;
-        geometry.computeVertexNormals();
-        renderer.render(scene, camera);
-    }
-    animateSymbiote();
-})();
