@@ -15,7 +15,7 @@
             background-color: #fff;
             color: #000;
             overflow-x: hidden;
-            overflow-y: auto !important; /* Libera rolagem */
+            overflow-y: auto !important;
         }
 
         /* HEADER */
@@ -35,10 +35,7 @@
         .identity-group {
             display: flex;
             align-items: center;
-            /* gap: 15px; -> Removido pois só tem o nome agora */
         }
-
-        /* [ALTERAÇÃO] Removido estilos do .header-blob e animações */
 
         h1 {
             font-size: 1.5rem;
@@ -144,7 +141,6 @@
             letter-spacing: -1px;
         }
 
-        /* Animações Gerais */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -157,7 +153,6 @@
             }
         }
 
-        /* Responsividade */
         @media (max-width: 768px) {
             .header, .grid, #about-section {
                 padding: 30px 20px;
@@ -188,11 +183,12 @@
 <body>
 
     <div class="header">
-        <div class="identity-group" onclick="toggleSection('projects')" style="cursor: pointer;">
+        <div class="identity-group">
             <h1>Leonardo Donati</h1>
         </div>
 
         <div class="nav">
+            <a href="#" onclick="toggleSection('projects')">Projects</a>
             <a href="#" onclick="toggleSection('about')">About</a>
             <a href="index.html?skip=true" class="back-btn">← Home</a>
         </div>
@@ -243,6 +239,14 @@
             } else {
                 proj.style.display = 'grid';
                 about.style.display = 'none';
+            }
+        }
+
+        // Script inteligente para detectar quando vêm da página de detalhes
+        window.onload = function () {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('section') === 'about') {
+                toggleSection('about');
             }
         }
     </script>
