@@ -8,7 +8,6 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%2300ff88' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M32 4 L56 18 V46 L32 60 L8 46 V18 Z'/><path d='M32 4 L32 32 M56 18 L32 32 M56 46 L32 32 M32 60 L32 32 M8 46 L32 32 M8 18 L32 32'/></g></svg>" type="image/svg+xml">
 
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
         html, body {
@@ -19,7 +18,8 @@
             color: #333;
             margin: 0;
             padding: 0;
-            font-family: 'Inter', sans-serif;
+            /* [CORREÇÃO] Agora usa a mesma fonte do Portfolio.html */
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
 
         /* HEADER IDENTICO AO PORTFOLIO */
@@ -45,6 +45,7 @@
             font-size: 1.5rem;
             margin: 0;
             letter-spacing: -1px;
+            line-height: 1;
             color: #000;
         }
 
@@ -99,7 +100,7 @@
         }
 
         .info-label {
-            font-weight: 600;
+            font-weight: bold;
             color: #000;
             display: block;
             margin-top: 15px;
@@ -187,7 +188,8 @@
         </div>
         <div class="nav">
             <a href="portfolio.html">Projects</a>
-            <a href="portfolio.html?section=about">About</a> <a href="index.html?skip=true" class="back-btn">← Home</a>
+            <a href="portfolio.html?section=about">About</a>
+            <a href="index.html?skip=true" class="back-btn">← Home</a>
         </div>
     </div>
 
@@ -201,6 +203,8 @@
             São Paulo, Brazil
             <span class="info-label">YEAR</span>
             2024
+            <span class="info-label">TEAM</span>
+            Leonardo Donati, Sergio Yasuo and Gabriel Gomes
             <span class="info-label">TYPE</span>
             Urban Planning / Photogrammetry
             <span class="info-label">TOOLS</span>
