@@ -58,7 +58,6 @@
             letter-spacing: 2px;
             font-weight: 600;
             margin-top: 5px;
-            text-transform: uppercase;
         }
 
         .cv-contact {
@@ -178,17 +177,19 @@
             font-weight: 300;
         }
 
-        /* BACK BUTTON (Atualizado) */
-        .back-btn {
+        /* --- NAVIGATION & BUTTONS (UPDATED) --- */
+        .nav-container {
             position: fixed;
             top: 30px;
             right: 40px;
-            /* Estilo solicitado */
-            font-weight: 400;
-            display: inline-flex;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
             align-items: center;
-            gap: 5px;
-            /* Visual Base */
+        }
+
+        /* Estilo unificado para os botões */
+        .nav-btn {
             font-size: 0.8rem;
             color: #333;
             letter-spacing: 1px;
@@ -198,14 +199,70 @@
             border-radius: 30px;
             background: rgba(255,255,255,0.9);
             transition: 0.3s;
-            z-index: 100;
+            font-weight: 400;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
         }
 
-            .back-btn:hover {
+            .nav-btn:hover {
                 border-color: #00b35f;
                 color: #00b35f;
                 box-shadow: 0 5px 15px rgba(0, 255, 136, 0.15);
             }
+
+        /* DROPDOWN MENU */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 110%; /* Aparece logo abaixo */
+            background-color: #fff;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            border: 1px solid #eee;
+            padding: 5px 0;
+            z-index: 101;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.8rem;
+            transition: 0.2s;
+        }
+
+            .dropdown-content a:hover {
+                background-color: #f9f9f9;
+                color: #00b35f;
+            }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
         @media (max-width: 768px) {
             body {
@@ -225,16 +282,32 @@
                 color: #00b35f;
             }
 
-            .back-btn {
+            .nav-container {
                 top: 20px;
                 right: 20px;
+                gap: 5px;
+            }
+
+            .nav-btn {
+                padding: 6px 12px;
+                font-size: 0.75rem;
             }
         }
     </style>
 </head>
 <body>
 
-    <a href="index.html?skip=true" class="back-btn">← Home</a>
+    <div class="nav-container">
+        <div class="dropdown">
+            <button class="nav-btn">↓ Download</button>
+            <div class="dropdown-content">
+                <a href="Leonardo Donati_2026.01 (en).pdf" download>English (EN)</a>
+                <a href="Leonardo Donati_2026.01 (pt-BR).pdf" download>Português (BR)</a>
+            </div>
+        </div>
+
+        <a href="index.html?skip=true" class="nav-btn">← Home</a>
+    </div>
 
     <div class="cv-container">
 
