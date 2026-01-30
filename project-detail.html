@@ -11,12 +11,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
-        /* [CORREÇÃO CRÍTICA] Libera o scroll e define altura correta */
+        /* [CORREÇÃO] Libera o scroll e define altura correta */
         html, body {
             height: auto !important;
             overflow-x: hidden !important;
-            overflow-y: auto !important; /* <--- OBRIGA A ROLAGEM A FUNCIONAR */
-            background-color: #fff !important; /* Garante fundo branco */
+            overflow-y: auto !important;
+            background-color: #fff !important;
             color: #333;
             margin: 0;
             padding: 0;
@@ -40,16 +40,10 @@
         .identity-group {
             display: flex;
             align-items: center;
-            gap: 15px;
+            /* gap removido pois só tem o nome */
         }
 
-        .header-blob {
-            position: relative;
-            width: 30px;
-            height: 30px;
-            background: #0a1a0a;
-            clip-path: polygon(50% 0%, 65% 45%, 100% 50%, 65% 55%, 50% 100%, 35% 55%, 0% 50%, 35% 45%);
-        }
+        /* [ALTERAÇÃO] Removido estilos do .header-blob */
 
         h1 {
             font-size: 1.5rem;
@@ -188,7 +182,6 @@
 
     <div class="header">
         <div class="identity-group">
-            <div class="header-blob"></div>
             <h1>Leonardo Donati</h1>
         </div>
         <div class="nav">

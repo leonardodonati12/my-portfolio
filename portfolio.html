@@ -7,7 +7,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%2300ff88' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M32 4 L56 18 V46 L32 60 L8 46 V18 Z'/><path d='M32 4 L32 32 M56 18 L32 32 M56 46 L32 32 M32 60 L32 32 M8 46 L32 32 M8 18 L32 32'/></g></svg>" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* [CORREÇÃO] Adicionei !important para forçar a rolagem e sobrescrever o style.css */
+        /* CSS DO PORTFOLIO */
         body {
             margin: 0;
             padding: 0;
@@ -15,7 +15,7 @@
             background-color: #fff;
             color: #000;
             overflow-x: hidden;
-            overflow-y: auto !important; /* <--- ISSO LIBERA O SCROLL */
+            overflow-y: auto !important; /* Libera rolagem */
         }
 
         /* HEADER */
@@ -35,29 +35,10 @@
         .identity-group {
             display: flex;
             align-items: center;
-            gap: 15px;
+            /* gap: 15px; -> Removido pois só tem o nome agora */
         }
 
-        .header-blob {
-            position: relative;
-            width: 30px;
-            height: 30px;
-            background: #0a1a0a;
-            clip-path: polygon(50% 0%, 65% 45%, 100% 50%, 65% 55%, 50% 100%, 35% 55%, 0% 50%, 35% 45%);
-            animation: spin-cw 20s linear infinite, spike-pulse 5s ease-in-out infinite alternate;
-        }
-
-            .header-blob::after {
-                content: '';
-                position: absolute;
-                top: 20%;
-                left: 20%;
-                right: 20%;
-                bottom: 20%;
-                border: 1px solid #00ff88;
-                clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-                animation: spin-ccw 10s linear infinite;
-            }
+        /* [ALTERAÇÃO] Removido estilos do .header-blob e animações */
 
         h1 {
             font-size: 1.5rem;
@@ -163,37 +144,7 @@
             letter-spacing: -1px;
         }
 
-        /* Animações */
-        @keyframes spin-cw {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        @keyframes spin-ccw {
-            from {
-                transform: rotate(360deg);
-            }
-
-            to {
-                transform: rotate(0deg);
-            }
-        }
-
-        @keyframes spike-pulse {
-            0% {
-                clip-path: polygon(50% 10%, 60% 40%, 90% 50%, 60% 60%, 50% 90%, 40% 60%, 10% 50%, 40% 40%);
-            }
-
-            100% {
-                clip-path: polygon(50% -20%, 55% 45%, 120% 50%, 55% 55%, 50% 120%, 45% 55%, -20% 50%, 45% 45%);
-            }
-        }
-
+        /* Animações Gerais */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -237,13 +188,11 @@
 <body>
 
     <div class="header">
-        <div class="identity-group">
-            <div class="header-blob"></div>
+        <div class="identity-group" onclick="toggleSection('projects')" style="cursor: pointer;">
             <h1>Leonardo Donati</h1>
         </div>
 
         <div class="nav">
-            <a href="#" onclick="toggleSection('projects')">Projects</a>
             <a href="#" onclick="toggleSection('about')">About</a>
             <a href="index.html?skip=true" class="back-btn">← Home</a>
         </div>
