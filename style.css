@@ -63,18 +63,6 @@ body.push-bottom #main-wrapper {
 	z-index: 0;
 }
 
-/* --- AUDIO VISUALIZER (ESTILO AM) --- */
-#audio-visualizer {
-	position: fixed;
-	top: -30px;
-	left: 0;
-	width: 100%;
-	height: 200px;
-	z-index: 3000;
-	pointer-events: none;
-	opacity: 1;
-}
-
 /* CURSOR (ESSENCIAL: pointer-events: none) */
 /* Isso garante que o clique atravesse a bolinha e pegue o botão */
 .cursor-dot {
@@ -130,7 +118,7 @@ body.push-bottom #copyright {
 /* --- BOTÕES DO HEADER (PADRONIZADOS) --- */
 #resume-btn, #portfolio-btn, .audio-toggle {
 	position: fixed;
-	top: 100px;
+	top: 40px;
 	font-size: 0.75rem;
 	color: #eee;
 	font-family: 'Consolas', monospace;
@@ -205,7 +193,7 @@ body.push-top #portfolio-btn, body.push-top #resume-btn, body.push-top .audio-to
 /* --- SIDE TABS --- */
 #folder-stack {
 	position: fixed;
-	top: 100px;
+	top: 40px;
 	left: 0;
 	display: flex;
 	flex-direction: column;
@@ -926,11 +914,6 @@ a, button, .close-panel {
 			margin-left: 0px;
 		}
 
-	.symbiote-container-home {
-		right: -60px !important;
-		bottom: 10px !important;
-	}
-
 	#about-overlay {
 		padding: 0 25px !important; /* Era 25% (muito grande), agora é 25px fixo */
 	}
@@ -979,7 +962,7 @@ a, button, .close-panel {
 		display: none !important;
 	}
 	/* Reativa o cursor do sistema para botões quando em touch */
-	a, button, .close-panel, .folder-tab, .hero, .symbiote-container-home {
+	a, button, .close-panel, .folder-tab, .hero {
 		cursor: pointer !important;
 	}
 }

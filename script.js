@@ -167,23 +167,37 @@ if (heroSubtitle) {
 }
 
 // --- 9. SKILLS & PANELS ---
+// --- 9. SKILLS & PANELS ---
 const mySkills = [
     { name: "REVIT / BIM", level: 95 }, { name: "DYNAMO / PYTHON", level: 85 }, { name: "RHINO / GRASSHOPPER", level: 80 }, { name: "NAVISWORKS", level: 75 },
     { name: "ARCHICAD", level: 70 }, { name: "INFRAWORKS / RECAP", level: 75 }, { name: "SKETCHUP", level: 90 }, { name: "C# / API DEV", level: 65 },
     { name: "THREE.JS / WEBGL", level: 60 }, { name: "HTML / CSS / JS", level: 70 }, { name: "POWER BI", level: 80 }, { name: "PHOTOSHOP / AI", level: 85 }
 ];
 const skillsList = document.getElementById('skills-list');
+
 if (skillsList) {
     mySkills.forEach(skill => {
-        const item = document.createElement('div'); item.className = 'skill-item'; const totalBlocks = 20; const filledBlocks = Math.round((skill.level / 100) * totalBlocks); let blocksHTML = ''; for (let i = 0; i < totalBlocks; i++) { blocksHTML += `<div class="bar-block ${i < filledBlocks ? 'filled' : ''}"></div>`; } item.innerHTML = `<div class="skill-name"><span>${skill.name}</span><span class="skill-percent">${skill.level}%</span></div><div class="retro-bar">${blocksHTML}</div>`; skillsList.appendChild(item);
+        const item = document.createElement('div');
+        item.className = 'skill-item';
+        const totalBlocks = 20;
+        const filledBlocks = Math.round((skill.level / 100) * totalBlocks);
+        let blocksHTML = '';
+
+        for (let i = 0; i < totalBlocks; i++) {
+            blocksHTML += `<div class="bar-block ${i < filledBlocks ? 'filled' : ''}"></div>`;
+        }
+
+        item.innerHTML = `<div class="skill-name"><span>${skill.name}</span></div><div class="retro-bar">${blocksHTML}</div>`;
+
+        skillsList.appendChild(item);
     });
 }
 
 if (document.getElementById('timeline-content')) {
     document.getElementById('timeline-content').innerHTML = `
         <div class="timeline-item"><div class="time-date">Aug 2024 - Present</div><div class="time-role">Spbim - Architecture Intern</div><div class="time-place">S&atilde;o Paulo - SP</div><div class="time-desc">BIM implementation support, parametric modeling, point cloud (laser scanner), coordination.</div></div>
-        <div class="timeline-item"><div class="time-date">Oct 2020 - Apr 2021</div><div class="time-role">Tekno S.A. - Electrical Intern</div><div class="time-place">Guaratinguet&aacute; - SP</div><div class="time-desc">Analysis and development of electrical plans, preventive and corrective maintenance.</div></div>
         <div class="timeline-item"><div class="time-date">Jan 2022 - Dec 2026</div><div class="time-role">Universidade Anhembi Morumbi</div><div class="time-desc">Bachelor of Architecture and Urbanism.</div></div>
+        <div class="timeline-item"><div class="time-date">Oct 2020 - Apr 2021</div><div class="time-role">Tekno S.A. - Electrical Intern</div><div class="time-place">Guaratinguet&aacute; - SP</div><div class="time-desc">Analysis and development of electrical plans, preventive and corrective maintenance.</div></div>
         <div class="timeline-item"><div class="time-date">Jan 2017 - Dec 2019</div><div class="time-role">Col&eacute;gio T&eacute;cnico Industrial - Unesp</div><div class="time-desc">Technical High School.</div></div>
     `;
 }
