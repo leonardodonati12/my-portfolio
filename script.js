@@ -195,7 +195,7 @@ if (skillsList) {
 
 if (document.getElementById('timeline-content')) {
     document.getElementById('timeline-content').innerHTML = `
-        <div class="timeline-item"><div class="time-date">Mar 2025 - Present</div><div class="time-role">Spbim - Architecture Assistant</div><div class="time-place">S&atilde;o Paulo - SP</div><div class="time-desc">BIM implementation support, parametric modeling, point cloud (laser scanner), coordination.</div></div>
+        <div class="timeline-item"><div class="time-date">Mar 2025 - Present</div><div class="time-role">Spbim - Architecture Assistant</div><div class="time-place">S&atilde;o Paulo - SP</div><div class="time-desc">Development of interfaces and internal tools that overcometechnological limitations, connecting project stages and eliminating productionbottlenecks through computational intelligence.</div></div>
         <div class="timeline-item"><div class="time-date">Aug 2024 - Mar 2025</div><div class="time-role">Spbim - Architecture Intern</div><div class="time-place">S&atilde;o Paulo - SP</div><div class="time-desc">BIM implementation support, parametric modeling, point cloud (laser scanner), coordination.</div></div>
         <div class="timeline-item"><div class="time-date">Jan 2022 - Dec 2026</div><div class="time-role">Universidade Anhembi Morumbi</div><div class="time-desc">Bachelor of Architecture and Urbanism.</div></div>
         <div class="timeline-item"><div class="time-date">Oct 2020 - Apr 2021</div><div class="time-role">Tekno S.A. - Electrical Intern</div><div class="time-place">Guaratinguet&aacute; - SP</div><div class="time-desc">Analysis and development of electrical plans, preventive and corrective maintenance.</div></div>
