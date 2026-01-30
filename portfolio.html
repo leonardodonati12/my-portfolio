@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leonardo Donati | Portfolio</title>
-
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%2300ff88' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M32 4 L56 18 V46 L32 60 L8 46 V18 Z'/><path d='M32 4 L32 32 M56 18 L32 32 M56 46 L32 32 M32 60 L32 32 M8 46 L32 32 M8 18 L32 32'/></g></svg>" type="image/svg+xml">
-
     <link rel="stylesheet" href="style.css">
-
     <style>
         body {
             margin: 0;
@@ -19,7 +16,7 @@
             overflow-x: hidden;
         }
 
-        /* --- HEADER --- */
+        /* HEADER */
         .header {
             padding: 40px 60px;
             display: flex;
@@ -32,26 +29,22 @@
             z-index: 100;
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
-         
-        /* Grupo Esquerda: Blob + Nome */
+
         .identity-group {
             display: flex;
             align-items: center;
             gap: 15px;
         }
 
-        /* O "Bicho" Pequeno do Header (Versão Miniatura Dark) */
         .header-blob {
             position: relative;
             width: 30px;
             height: 30px;
-            /* Fundo escuro para contraste no papel branco */
             background: #0a1a0a;
             clip-path: polygon(50% 0%, 65% 45%, 100% 50%, 65% 55%, 50% 100%, 35% 55%, 0% 50%, 35% 45%);
             animation: spin-cw 20s linear infinite, spike-pulse 5s ease-in-out infinite alternate;
         }
 
-            /* Efeito de núcleo girando ao contrário no header também (detalhe sutil) */
             .header-blob::after {
                 content: '';
                 position: absolute;
@@ -69,10 +62,10 @@
             margin: 0;
             letter-spacing: -1px;
             line-height: 1;
-            color: #000; /* Preto sólido aqui */
+            color: #000;
         }
 
-        /* --- NAVEGAÇÃO --- */
+        /* NAVEGAÇÃO */
         .nav {
             display: flex;
             align-items: center;
@@ -83,11 +76,13 @@
                 text-decoration: none;
                 margin-left: 30px;
                 font-size: 0.9rem;
-                transition: opacity 0.2s;
+                transition: color 0.3s; /* Transição de cor */
             }
 
+                /* [AJUSTE] HOVER VERDE */
                 .nav a:hover {
-                    opacity: 0.6;
+                    color: #00ff88;
+                    opacity: 1;
                 }
 
                 .nav a.back-btn {
@@ -97,7 +92,7 @@
                     gap: 5px;
                 }
 
-        /* --- GRID DE PROJETOS --- */
+        /* GRID PROJETOS */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
@@ -108,6 +103,9 @@
         .project-item {
             cursor: pointer;
             transition: opacity 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
         }
 
             .project-item:hover {
@@ -125,6 +123,7 @@
             color: #aaa;
             font-size: 0.8rem;
             border-radius: 4px;
+            object-fit: cover;
         }
 
         .p-title {
@@ -140,7 +139,30 @@
             letter-spacing: 0.5px;
         }
 
-        /* Animações Compartilhadas */
+        /* ABOUT SECTION (Escondida por padrão) */
+        #about-section {
+            display: none;
+            padding: 60px;
+            max-width: 800px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .about-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .about-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+        }
+
+        /* Animações */
         @keyframes spin-cw {
             from {
                 transform: rotate(0deg);
@@ -171,9 +193,21 @@
             }
         }
 
-        /* --- RESPONSIVIDADE --- */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsividade */
         @media (max-width: 768px) {
-            .header, .grid {
+            .header, .grid, #about-section {
                 padding: 30px 20px;
             }
 
@@ -208,35 +242,59 @@
         </div>
 
         <div class="nav">
-            <a href="#">Projects</a>
-            <a href="#">About</a>
+            <a href="#" onclick="toggleSection('projects')">Projects</a>
+            <a href="#" onclick="toggleSection('about')">About</a>
             <a href="index.html?skip=true" class="back-btn">← Home</a>
         </div>
     </div>
 
-    <div class="grid">
-        <div class="project-item">
+    <div id="projects-section" class="grid">
+        <a href="project-detail.html" class="project-item">
             <div class="img-placeholder" style="background: #f0f0f0;">[ Project Image ]</div>
             <div class="p-title">Reconhecendo a Mooca</div>
             <div class="p-cat">Urbanismo / Fotogrametria</div>
-        </div>
-        <div class="project-item">
+        </a>
+        <a href="project-detail.html" class="project-item">
             <div class="img-placeholder" style="background: #e5e5e5;">[ Project Image ]</div>
             <div class="p-title">Centro Cultural Lapa</div>
             <div class="p-cat">Arquitetura / BIM</div>
-        </div>
-        <div class="project-item">
+        </a>
+        <a href="project-detail.html" class="project-item">
             <div class="img-placeholder" style="background: #ddd;">[ Project Image ]</div>
             <div class="p-title">Pavilhão Paramétrico</div>
             <div class="p-cat">Computational Design</div>
-        </div>
-        <div class="project-item">
+        </a>
+        <a href="project-detail.html" class="project-item">
             <div class="img-placeholder" style="background: #d0d0d0;">[ Project Image ]</div>
             <div class="p-title">Plugin Automation</div>
             <div class="p-cat">Software Development</div>
-        </div>
+        </a>
+    </div>
+
+    <div id="about-section">
+        <div class="about-title">Design Philosophy</div>
+        <p class="about-text">
+            I believe that architecture is not just about building spaces, but about defining the invisible rules that govern them. My work explores the intersection between physical reality and digital logic, using algorithms to uncover new possibilities in form and function.
+        </p>
+        <p class="about-text">
+            By integrating BIM, computational design, and programming, I seek to automate the mundane to focus on the essential: the human experience within the built environment.
+        </p>
     </div>
 
     <script src="cursor.js"></script>
+    <script>
+        function toggleSection(section) {
+            const proj = document.getElementById('projects-section');
+            const about = document.getElementById('about-section');
+
+            if (section === 'about') {
+                proj.style.display = 'none';
+                about.style.display = 'block';
+            } else {
+                proj.style.display = 'grid';
+                about.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>

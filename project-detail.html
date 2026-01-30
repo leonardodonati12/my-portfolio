@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Detail | Leonardo Donati</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%2300ff88' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M32 4 L56 18 V46 L32 60 L8 46 V18 Z'/><path d='M32 4 L32 32 M56 18 L32 32 M56 46 L32 32 M32 60 L32 32 M8 46 L32 32 M8 18 L32 32'/></g></svg>" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: #fff;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* HEADER IGUAL AO PORTFOLIO */
+        .header {
+            padding: 40px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .identity-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-blob {
+            position: relative;
+            width: 30px;
+            height: 30px;
+            background: #0a1a0a;
+            clip-path: polygon(50% 0%, 65% 45%, 100% 50%, 65% 55%, 50% 100%, 35% 55%, 0% 50%, 35% 45%);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin: 0;
+            letter-spacing: -1px;
+            color: #000;
+        }
+
+        .nav a {
+            color: #000;
+            text-decoration: none;
+            margin-left: 30px;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+            .nav a:hover {
+                color: #00ff88;
+            }
+
+        /* PROJECT HERO (Imagem Gigante) */
+        .project-hero {
+            width: 100%;
+            height: 60vh; /* Ocupa 60% da altura da tela */
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+            font-size: 1.5rem;
+            margin-bottom: 60px;
+        }
+
+        /* CONTEÚDO (Estilo Zaha) */
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 60px 100px 60px;
+            display: grid;
+            grid-template-columns: 300px 1fr; /* Coluna lateral + Conteúdo */
+            gap: 60px;
+        }
+
+        /* Coluna Lateral (Info Técnica) */
+        .sidebar {
+            font-size: 0.85rem;
+            line-height: 1.8;
+            color: #666;
+            border-top: 1px solid #000; /* Linha preta fina no topo */
+            padding-top: 20px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #000;
+            display: block;
+            margin-top: 15px;
+        }
+
+            .info-label:first-child {
+                margin-top: 0;
+            }
+
+        /* Coluna Principal (Texto) */
+        .main-content {
+            border-top: 1px solid #000;
+            padding-top: 20px;
+        }
+
+        .project-title {
+            font-size: 2.5rem;
+            font-weight: 300; /* Fonte leve */
+            margin: 0 0 30px 0;
+            letter-spacing: -1px;
+            color: #000;
+        }
+
+        .project-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #333;
+            text-align: justify;
+            columns: 2; /* Texto dividido em 2 colunas jornalísticas */
+            column-gap: 40px;
+        }
+
+        /* Galeria Adicional */
+        .gallery {
+            margin-top: 60px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .gallery-img {
+            width: 100%;
+            height: 400px;
+            background: #f4f4f4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 30px 20px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .content-wrapper {
+                padding: 0 20px 60px 20px;
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .project-text {
+                columns: 1;
+            }
+
+            .project-hero {
+                height: 40vh;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="identity-group">
+            <div class="header-blob"></div>
+            <h1>Leonardo Donati</h1>
+        </div>
+        <div class="nav">
+            <a href="portfolio.html">? Back to Projects</a>
+        </div>
+    </div>
+
+    <div class="project-hero">
+        [ Hero Image: Render 1920x1080 ]
+    </div>
+
+    <div class="content-wrapper">
+
+        <div class="sidebar">
+            <span class="info-label">LOCATION</span>
+            São Paulo, Brazil
+
+            <span class="info-label">YEAR</span>
+            2024
+
+            <span class="info-label">TYPE</span>
+            Urban Planning / Photogrammetry
+
+            <span class="info-label">TOOLS</span>
+            Revit, Recap, Drone Deploy
+        </div>
+
+        <div class="main-content">
+            <h2 class="project-title">Reconhecendo a Mooca</h2>
+            <div class="project-text">
+                <p>
+                    This project investigates the urban morphology of the Mooca district through advanced photogrammetry techniques. By capturing the existing fabric with high-resolution drone imagery, we generated a precise point cloud that served as the foundation for our analysis.
+                </p>
+                <p>
+                    The architectural intervention proposes a new dialogue between the industrial heritage and contemporary needs. The design utilizes parametric strategies to optimize air flow and reduce heat islands, creating a sustainable microclimate within the dense urban grid.
+                </p>
+            </div>
+
+            <div class="gallery">
+                <div class="gallery-img">[ Detail 1 ]</div>
+                <div class="gallery-img">[ Detail 2 ]</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="cursor.js"></script>
+</body>
+</html>
