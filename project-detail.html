@@ -1,23 +1,26 @@
-<!DOCTYPE html>
+Ôªø<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Detail | Leonardo Donati</title>
+
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%2300ff88' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M32 4 L56 18 V46 L32 60 L8 46 V18 Z'/><path d='M32 4 L32 32 M56 18 L32 32 M56 46 L32 32 M32 60 L32 32 M8 46 L32 32 M8 18 L32 32'/></g></svg>" type="image/svg+xml">
+
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
-        /* [CORRE«√O] Libera o scroll nesta p·gina tambÈm */
-        body {
+        /* [CORRE√á√ÉO CR√çTICA] Libera o scroll e define altura correta */
+        html, body {
+            height: auto !important;
+            overflow-x: hidden !important;
+            overflow-y: auto !important; /* <--- OBRIGA A ROLAGEM A FUNCIONAR */
+            background-color: #fff !important; /* Garante fundo branco */
+            color: #333;
             margin: 0;
             padding: 0;
             font-family: 'Inter', sans-serif;
-            background: #fff;
-            color: #333;
-            overflow-x: hidden;
-            overflow-y: auto !important; /* <--- IMPORTANTE */
         }
 
         /* HEADER */
@@ -55,6 +58,7 @@
             color: #000;
         }
 
+        /* NAVEGA√á√ÉO VERDE */
         .nav a {
             color: #000;
             text-decoration: none;
@@ -66,6 +70,7 @@
             .nav a:hover {
                 color: #00ff88;
             }
+        /* Hover Verde */
 
         /* PROJECT HERO */
         .project-hero {
@@ -80,7 +85,7 @@
             margin-bottom: 60px;
         }
 
-        /* CONTE⁄DO */
+        /* CONTE√öDO */
         .content-wrapper {
             max-width: 1200px;
             margin: 0 auto;
@@ -178,13 +183,16 @@
 </head>
 <body>
 
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
     <div class="header">
         <div class="identity-group">
             <div class="header-blob"></div>
             <h1>Leonardo Donati</h1>
         </div>
         <div class="nav">
-            <a href="portfolio.html">? Back to Projects</a>
+            <a href="portfolio.html">‚Üê Back to Projects</a>
         </div>
     </div>
 
@@ -195,7 +203,7 @@
     <div class="content-wrapper">
         <div class="sidebar">
             <span class="info-label">LOCATION</span>
-            S„o Paulo, Brazil
+            S√£o Paulo, Brazil
             <span class="info-label">YEAR</span>
             2024
             <span class="info-label">TYPE</span>
