@@ -58,6 +58,7 @@
             letter-spacing: 2px;
             font-weight: 600;
             margin-top: 5px;
+            text-transform: uppercase;
         }
 
         .cv-contact {
@@ -177,40 +178,44 @@
             font-weight: 300;
         }
 
-        /* --- NAVIGATION & BUTTONS (UPDATED) --- */
+        /* --- NAVIGATION & BUTTONS (CORRIGIDO) --- */
         .nav-container {
             position: fixed;
             top: 30px;
             right: 40px;
             display: flex;
-            gap: 10px;
+            gap: 15px; /* Espaço entre os botões */
             z-index: 100;
             align-items: center;
         }
 
-        /* Estilo unificado para os botões */
+        /* Estilo unificado para os botões (Sem borda, fonte preta) */
         .nav-btn {
             font-size: 0.8rem;
-            color: #333;
+            color: #000; /* Preto total */
             letter-spacing: 1px;
             text-decoration: none;
-            border: 1px solid #ddd;
-            padding: 8px 20px;
+            /* Borda transparente para não pular pixel no hover */
+            border: 1px solid transparent;
+            padding: 8px 15px;
             border-radius: 30px;
             background: rgba(255,255,255,0.9);
-            transition: 0.3s;
-            font-weight: 400;
+            transition: all 0.3s ease;
+            /* Ajuste da Fonte e Setas */
+            font-family: 'Inter', sans-serif;
+            font-weight: 300; /* Fonte leve deixa a seta fina */
+
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
             cursor: pointer;
-            font-family: 'Inter', sans-serif;
         }
 
             .nav-btn:hover {
-                border-color: #00b35f;
+                /* Apenas cor no texto e sombra leve, sem borda cinza */
                 color: #00b35f;
-                box-shadow: 0 5px 15px rgba(0, 255, 136, 0.15);
+                background: #fff;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
             }
 
         /* DROPDOWN MENU */
@@ -219,19 +224,34 @@
             display: inline-block;
         }
 
+        /* Conteúdo do Menu */
         .dropdown-content {
             display: none;
             position: absolute;
             right: 0;
-            top: 110%; /* Aparece logo abaixo */
+            top: 100%; /* Começa exatamente abaixo do botão */
+            margin-top: 10px; /* Pequeno espaço visual */
+
             background-color: #fff;
             min-width: 160px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            border-radius: 10px;
-            border: 1px solid #eee;
-            padding: 5px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Sombra mais suave */
+            border-radius: 12px;
+            border: 1px solid #f0f0f0;
+            padding: 8px 0;
             z-index: 101;
         }
+
+            /* --- A SOLUÇÃO DO BUG DE HOVER --- */
+            /* Cria uma "ponte invisível" entre o botão e o menu para o mouse não escapar */
+            .dropdown-content::before {
+                content: '';
+                position: absolute;
+                top: -15px; /* Cobre o buraco acima */
+                left: 0;
+                width: 100%;
+                height: 15px;
+                background: transparent;
+            }
 
         .dropdown:hover .dropdown-content {
             display: block;
@@ -240,15 +260,16 @@
 
         .dropdown-content a {
             color: #333;
-            padding: 10px 15px;
+            padding: 10px 20px;
             text-decoration: none;
             display: block;
             font-size: 0.8rem;
+            font-weight: 400;
             transition: 0.2s;
         }
 
             .dropdown-content a:hover {
-                background-color: #f9f9f9;
+                background-color: #f7f7f7;
                 color: #00b35f;
             }
 
@@ -313,7 +334,7 @@
 
         <header class="cv-header">
             <h1 class="cv-name">Leonardo Donati</h1>
-            <div class="cv-role">Brazilian, 22 years old.</div>
+            <div class="cv-role">Brazilian, 23 years old.</div>
             <div class="cv-contact">
                 Address: Av. Túlio Teodoro de Campos, 6 – Vila Paulista, São Paulo - 4360040
                 <br>
