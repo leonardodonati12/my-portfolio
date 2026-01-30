@@ -237,7 +237,7 @@ function getDragAfterElement(container, y) {
     return draggableElements.reduce((closest, child) => { const box = child.getBoundingClientRect(); const offset = y - box.top - box.height / 2; if (offset < 0 && offset > closest.offset) return { offset: offset, element: child }; else return closest; }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 
-const panels = document.querySelectorAll('.ui-panel');
+const panels = document.querySelectorAll('.ui-panel'); 
 function closePanel(panel) {
     panel.style.display = 'none'; const target = document.querySelector(`[data-target="${panel.id}"]`); if (target) target.classList.remove('active-tab');
     if (!panel.classList.contains('floating')) { document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom'); }
