@@ -7,6 +7,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%2300ff88' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M32 4 L56 18 V46 L32 60 L8 46 V18 Z'/><path d='M32 4 L32 32 M56 18 L32 32 M56 46 L32 32 M32 60 L32 32 M8 46 L32 32 M8 18 L32 32'/></g></svg>" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
     <style>
+        /* [CORREÇÃO] Adicionei !important para forçar a rolagem e sobrescrever o style.css */
         body {
             margin: 0;
             padding: 0;
@@ -14,6 +15,7 @@
             background-color: #fff;
             color: #000;
             overflow-x: hidden;
+            overflow-y: auto !important; /* <--- ISSO LIBERA O SCROLL */
         }
 
         /* HEADER */
@@ -76,10 +78,9 @@
                 text-decoration: none;
                 margin-left: 30px;
                 font-size: 0.9rem;
-                transition: color 0.3s; /* Transição de cor */
+                transition: color 0.3s;
             }
 
-                /* [AJUSTE] HOVER VERDE */
                 .nav a:hover {
                     color: #00ff88;
                     opacity: 1;
@@ -139,7 +140,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* ABOUT SECTION (Escondida por padrão) */
+        /* ABOUT SECTION */
         #about-section {
             display: none;
             padding: 60px;

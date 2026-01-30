@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
+        /* [CORREÇÃO] Libera o scroll nesta página também */
         body {
             margin: 0;
             padding: 0;
@@ -16,9 +17,10 @@
             background: #fff;
             color: #333;
             overflow-x: hidden;
+            overflow-y: auto !important; /* <--- IMPORTANTE */
         }
 
-        /* HEADER IGUAL AO PORTFOLIO */
+        /* HEADER */
         .header {
             padding: 40px 60px;
             display: flex;
@@ -65,10 +67,10 @@
                 color: #00ff88;
             }
 
-        /* PROJECT HERO (Imagem Gigante) */
+        /* PROJECT HERO */
         .project-hero {
             width: 100%;
-            height: 60vh; /* Ocupa 60% da altura da tela */
+            height: 60vh;
             background-color: #eee;
             display: flex;
             align-items: center;
@@ -78,22 +80,21 @@
             margin-bottom: 60px;
         }
 
-        /* CONTEÚDO (Estilo Zaha) */
+        /* CONTEÚDO */
         .content-wrapper {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 60px 100px 60px;
             display: grid;
-            grid-template-columns: 300px 1fr; /* Coluna lateral + Conteúdo */
+            grid-template-columns: 300px 1fr;
             gap: 60px;
         }
 
-        /* Coluna Lateral (Info Técnica) */
         .sidebar {
             font-size: 0.85rem;
             line-height: 1.8;
             color: #666;
-            border-top: 1px solid #000; /* Linha preta fina no topo */
+            border-top: 1px solid #000;
             padding-top: 20px;
         }
 
@@ -108,7 +109,6 @@
                 margin-top: 0;
             }
 
-        /* Coluna Principal (Texto) */
         .main-content {
             border-top: 1px solid #000;
             padding-top: 20px;
@@ -116,7 +116,7 @@
 
         .project-title {
             font-size: 2.5rem;
-            font-weight: 300; /* Fonte leve */
+            font-weight: 300;
             margin: 0 0 30px 0;
             letter-spacing: -1px;
             color: #000;
@@ -127,11 +127,10 @@
             line-height: 1.6;
             color: #333;
             text-align: justify;
-            columns: 2; /* Texto dividido em 2 colunas jornalísticas */
+            columns: 2;
             column-gap: 40px;
         }
 
-        /* Galeria Adicional */
         .gallery {
             margin-top: 60px;
             display: grid;
@@ -194,17 +193,13 @@
     </div>
 
     <div class="content-wrapper">
-
         <div class="sidebar">
             <span class="info-label">LOCATION</span>
             São Paulo, Brazil
-
             <span class="info-label">YEAR</span>
             2024
-
             <span class="info-label">TYPE</span>
             Urban Planning / Photogrammetry
-
             <span class="info-label">TOOLS</span>
             Revit, Recap, Drone Deploy
         </div>
