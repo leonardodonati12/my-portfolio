@@ -92,9 +92,14 @@
             .section-title::after {
                 content: '';
                 flex: 1;
-                height: 1px;
-                background: #e0e0e0;
+                /* Removemos height e background antigos */
+                height: 0;
+                background: transparent;
+                /* Usamos borda para garantir 1px exato em qualquer tela */
+                border-bottom: 1px solid #e0e0e0;
                 margin-left: 15px;
+                /* (Opcional) Ajuste fino vertical se parecer desalinhado */
+                transform: translateY(-1px); 
             }
 
             .section-title::before {
@@ -214,7 +219,7 @@
                 /* Apenas cor no texto e sombra leve, sem borda cinza */
                 color: #00b35f;
                 background: #fff;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                box-shadow:none;
             }
 
         /* DROPDOWN MENU */
