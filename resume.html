@@ -16,14 +16,13 @@
         body {
             margin: 0;
             padding: 60px 20px;
-            background-color: #ffffff; /* Fundo Branco */
-            color: #333; /* Texto Cinza Escuro (Suave) */
-            font-family: 'Inter', sans-serif; /* Fonte leve */
+            background-color: #ffffff;
+            color: #333;
+            font-family: 'Inter', sans-serif;
             line-height: 1.6;
             overflow-y: auto;
         }
 
-        /* Cursor customizado no tema claro (opcional) */
         .cursor-dot {
             background-color: #00ff88 !important;
         }
@@ -55,7 +54,7 @@
 
         .cv-role {
             font-size: 1rem;
-            color: #00b35f; /* Verde um pouco mais escuro para leitura no branco */
+            color: #00b35f;
             letter-spacing: 2px;
             font-weight: 600;
             margin-top: 5px;
@@ -72,7 +71,7 @@
                 color: #666;
                 text-decoration: none;
                 transition: color 0.2s;
-                margin-right: 15px;
+                margin-right: 10px;
             }
 
                 .cv-contact a:hover {
@@ -90,7 +89,7 @@
             display: flex;
             align-items: center;
         }
-            /* Linha decorativa verde discreta */
+
             .section-title::after {
                 content: '';
                 flex: 1;
@@ -103,7 +102,7 @@
                 content: '';
                 width: 8px;
                 height: 8px;
-                background: #00ff88; /* Detalhe em verde neon */
+                background: #00ff88;
                 margin-right: 10px;
                 border-radius: 50%;
             }
@@ -130,6 +129,7 @@
             font-size: 0.8rem;
             color: #888;
             font-family: 'Inter', monospace;
+            text-transform: uppercase;
         }
 
         .item-sub {
@@ -144,9 +144,14 @@
             color: #444;
             text-align: justify;
             font-weight: 300;
+            margin-top: 0;
         }
 
-        /* SKILLS LIST (Novo Layout) */
+            .item-desc p {
+                margin: 5px 0;
+            }
+
+        /* SKILLS LIST */
         .skills-list {
             display: grid;
             grid-template-columns: 1fr;
@@ -161,7 +166,7 @@
         }
 
         .skill-name {
-            min-width: 140px;
+            min-width: 180px;
             font-weight: 600;
             font-size: 0.9rem;
             color: #222;
@@ -173,11 +178,17 @@
             font-weight: 300;
         }
 
-        /* BACK BUTTON */
-        #back-btn {
+        /* BACK BUTTON (Atualizado) */
+        .back-btn {
             position: fixed;
             top: 30px;
             right: 40px;
+            /* Estilo solicitado */
+            font-weight: 400;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            /* Visual Base */
             font-size: 0.8rem;
             color: #333;
             letter-spacing: 1px;
@@ -188,10 +199,9 @@
             background: rgba(255,255,255,0.9);
             transition: 0.3s;
             z-index: 100;
-            font-weight: 500;
         }
 
-            #back-btn:hover {
+            .back-btn:hover {
                 border-color: #00b35f;
                 color: #00b35f;
                 box-shadow: 0 5px 15px rgba(0, 255, 136, 0.15);
@@ -215,7 +225,7 @@
                 color: #00b35f;
             }
 
-            #back-btn {
+            .back-btn {
                 top: 20px;
                 right: 20px;
             }
@@ -224,27 +234,26 @@
 </head>
 <body>
 
-    <a href="index.html?skip=true" id="back-btn">← BACK TO HOME</a>
+    <a href="index.html?skip=true" class="back-btn">← Home</a>
 
     <div class="cv-container">
 
         <header class="cv-header">
-            <h1 class="cv-name">LEONARDO DONATI</h1>
-            <div class="cv-role">INNOVATION ASSISTANT</div>
+            <h1 class="cv-name">Leonardo Donati</h1>
+            <div class="cv-role">Brazilian, 22 years old.</div>
             <div class="cv-contact">
-                <span>São Paulo, SP - Brazil</span>
-                <span>+55 12 99777 3790</span>
+                Address: Av. Túlio Teodoro de Campos, 6 – Vila Paulista, São Paulo - 4360040
                 <br>
-                <a href="mailto:leonardodonati12@gmail.com">leonardodonati12@gmail.com</a>
-                <span>•</span>
-                <a href="https://linkedin.com/in/leonardodonati12/" target="_blank">linkedin.com/in/leonardodonati12</a>
+                Contact: +55 12 99777 3790 | <a href="mailto:leonardodonati12@gmail.com">leonardodonati12@gmail.com</a>
+                <br>
+                LinkedIn: <a href="https://linkedin.com/in/leonardodonati12/" target="_blank">linkedin.com/in/leonardodonati12/</a>
             </div>
         </header>
 
         <section>
             <div class="section-title">PROFESSIONAL SUMMARY</div>
             <p class="item-desc">
-                Architecture and Urbanism student experienced in BIM, parametric modeling, and project compatibility. Active in implementing digital workflows, including point cloud surveys with laser scanners, photogrammetry, and interdisciplinary coordination of BIM models. Proficient in software such as Revit, Navisworks, and AutoCAD, as well as graphic tools for project presentation. Broad interest in technological innovation and process automation applied to architecture, urban planning, and construction efficiency.
+                Architect and Urban Planner in training, working at the intersection of physical space and digital logic. With a background in BIM and reality capture, I currently focus on developing innovation solutions, creating platforms and plugins that expand native software capabilities. I seek to translate design complexity into efficient algorithms, investigating the invisible structure that connects data, automation, and construction.
             </p>
         </section>
 
@@ -253,24 +262,40 @@
 
             <div class="item-block">
                 <div class="item-header">
-                    <span class="item-title">SPBIM</span>
-                    <span class="item-date">AUG 2024 - PRESENT</span>
+                    <span class="item-title">Spbim, São Paulo - SP</span>
+                    <span class="item-date">MARCH 2025 – PRESENT</span>
                 </div>
-                <div class="item-sub">Architecture Intern | São Paulo - SP</div>
-                <p class="item-desc">
-                    Assistance with BIM implementations. Responsible for parametric modeling, project compatibility, and organizing integrated workflows. Experience in point cloud surveys using laser scanners. Active in optimizing projects using digital technologies for greater precision and efficiency.
-                </p>
+                <div class="item-sub">Innovation Assistant</div>
+                <div class="item-desc">
+                    <p>Working on the diagnosis and optimization of workflows, translating design needs into software solutions.</p>
+                    <p>Development of interfaces and internal tools that overcome technological limitations, connecting project stages and eliminating production bottlenecks through computational intelligence.</p>
+                </div>
             </div>
 
             <div class="item-block">
                 <div class="item-header">
-                    <span class="item-title">TEKNO S.A.</span>
-                    <span class="item-date">OCT 2020 - APR 2021</span>
+                    <span class="item-title">Spbim, São Paulo - SP</span>
+                    <span class="item-date">AUGUST 2024 – MARCH 2025</span>
                 </div>
-                <div class="item-sub">Electrical Intern | Guaratinguetá - SP</div>
-                <p class="item-desc">
-                    Responsible for assisting in the analysis and development of electrical floor plans. Assisted in certification, execution of preventive and corrective maintenance of equipment, and monitoring of installation execution.
-                </p>
+                <div class="item-sub">Architecture Intern</div>
+                <div class="item-desc">
+                    <p>Assisted in BIM implementations.</p>
+                    <p>Responsible for parametric modeling, project coordination (clash detection), and organizing integrated workflows.</p>
+                    <p>Experience in point cloud surveys using laser scanners.</p>
+                    <p>Worked on project optimization using digital technologies for greater precision and efficiency.</p>
+                </div>
+            </div>
+
+            <div class="item-block">
+                <div class="item-header">
+                    <span class="item-title">Tekno S. A., Guaratinguetá - SP</span>
+                    <span class="item-date">OCTOBER 2020 – APRIL 2021</span>
+                </div>
+                <div class="item-sub">Electrical Maintenance Intern</div>
+                <div class="item-desc">
+                    <p>Responsible for assisting in the analysis and development of electrical blueprints.</p>
+                    <p>Assisted in the certification and execution of preventive and corrective maintenance of equipment and monitored the execution of installations.</p>
+                </div>
             </div>
         </section>
 
@@ -279,78 +304,86 @@
 
             <div class="item-block">
                 <div class="item-header">
-                    <span class="item-title">Universidade Anhembi Morumbi</span>
-                    <span class="item-date">JAN 2022 - DEC 2026</span>
+                    <span class="item-title">Universidade Anhembi Morumbi, São Paulo</span>
+                    <span class="item-date">JANUARY 2022 – DECEMBER 2026</span>
                 </div>
-                <div class="item-sub">Bachelor of Architecture and Urbanism</div>
+                <div class="item-sub">Bachelor’s Degree (Architecture and Urbanism)</div>
             </div>
 
             <div class="item-block">
                 <div class="item-header">
-                    <span class="item-title">Colégio Técnico Industrial - UNESP</span>
-                    <span class="item-date">JAN 2017 - DEC 2019</span>
+                    <span class="item-title">Colégio Técnico Industrial - Unesp, Guaratinguetá</span>
+                    <span class="item-date">JANUARY 2017 – DECEMBER 2019</span>
                 </div>
                 <div class="item-sub">Technical High School</div>
             </div>
         </section>
 
         <section>
-            <div class="section-title">SKILLS & SOFTWARE</div>
+            <div class="section-title">PROJECTS</div>
+            <div class="item-block">
+                <div class="item-header">
+                    <span class="item-title">Recognizing Mooca</span>
+                </div>
+                <p class="item-desc">
+                    Urban and architectural survey, applying photogrammetric techniques for urban flow analysis and heat island mapping.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-title">ADDITIONAL ACTIVITIES</div>
+            <p class="item-desc">
+                Student Mentor at "Semana de Integração Ctig - Unesp" (2018, 2019, and 2020).<br>
+                OBA Medalist (Brazilian Astronomy Olympiad) - Gold (2015), Bronze (2016), and Silver (2019).<br>
+                Workshop Mentor at Spbim regarding laser scanner surveys - May 2025.<br>
+                Extension Professor, Basic to Intermediate Revit at Universidade Anhembi Morumbi - March to November 2025.<br>
+                Class and Faculty Coordinator at SPBIM.
+            </p>
+        </section>
+
+        <section>
+            <div class="section-title">SKILLS</div>
             <div class="skills-list">
                 <div class="skill-row">
-                    <div class="skill-name">Revit</div>
-                    <div class="skill-desc">Parametric modeling and BIM project development, family creation, construction detailing, and interdisciplinary coordination.</div>
-                </div>
-                <div class="skill-row">
-                    <div class="skill-name">Dynamo</div>
-                    <div class="skill-desc">Process automation in Revit via visual programming, optimizing repetitive tasks, data analysis, and parametric element generation.</div>
+                    <div class="skill-name">Revit & Dynamo</div>
+                    <div class="skill-desc">Parametric modeling, BIM project development, family creation, construction detailing, and interdisciplinary coordination. Process automation, visual programming, data analysis, and parametric generation.</div>
                 </div>
                 <div class="skill-row">
                     <div class="skill-name">Navisworks</div>
-                    <div class="skill-desc">Project coordination, clash detection, 4D simulations, and model integration for efficient management.</div>
+                    <div class="skill-desc">Project coordination, interference detection (clash detection), 4D simulations, and model integration for efficient management.</div>
                 </div>
                 <div class="skill-row">
-                    <div class="skill-name">Archicad</div>
-                    <div class="skill-desc">BIM project development focused on architecture and interiors.</div>
+                    <div class="skill-name">Archicad & SketchUp</div>
+                    <div class="skill-desc">Modeling for volumetric and conceptual studies. BIM project development focused on architecture and interiors.</div>
                 </div>
                 <div class="skill-row">
                     <div class="skill-name">InfraWorks</div>
-                    <div class="skill-desc">Infrastructure modeling and visualization in real context, feasibility analysis, topographic data integration, and urban simulations.</div>
+                    <div class="skill-desc">Modeling and visualization of infrastructure projects, feasibility analysis, integration with topographic data, and urban simulations.</div>
                 </div>
                 <div class="skill-row">
-                    <div class="skill-name">Recap</div>
-                    <div class="skill-desc">Point cloud manipulation and processing for survey-based modeling.</div>
+                    <div class="skill-name">Recap & Cloudcompare</div>
+                    <div class="skill-desc">Manipulation, processing, and post-processing of point clouds.</div>
                 </div>
                 <div class="skill-row">
-                    <div class="skill-name">Cloud Compare</div>
-                    <div class="skill-desc">Point cloud processing and post-processing.</div>
-                </div>
-                <div class="skill-row">
-                    <div class="skill-name">SketchUp</div>
-                    <div class="skill-desc">Agile 3D modeling for form studies, volumetrics, and conceptual architectural models.</div>
-                </div>
-                <div class="skill-row">
-                    <div class="skill-name">Illustrator</div>
-                    <div class="skill-desc">Board layout, graphic element vectorization, visual schema creation, and technical presentations.</div>
-                </div>
-                <div class="skill-row">
-                    <div class="skill-name">Photoshop</div>
-                    <div class="skill-desc">Image post-production, perspective treatment, digital ambiance, and graphic material creation for project presentation.</div>
+                    <div class="skill-name">Adobe Tools</div>
+                    <div class="skill-desc">Layout of architectural boards, vectorization of graphic elements, creation of visual schemes and technical presentations, image post-production, and development of graphic material.</div>
                 </div>
                 <div class="skill-row">
                     <div class="skill-name">Power BI</div>
-                    <div class="skill-desc">Data analysis and visualization, BIM workflow integration, project monitoring, and management.</div>
+                    <div class="skill-desc">Data analysis and visualization, integration into BIM workflows, project monitoring, and management.</div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-name">Programming</div>
+                    <div class="skill-desc">Python, C# & MySQL (Automation scripts, plugins, and APIs). HTML, CSS & JS (Development of platforms, interactive websites, plugins, and APIs).</div>
                 </div>
             </div>
         </section>
 
         <section>
-            <div class="section-title">EXTRAS & LANGUAGES</div>
+            <div class="section-title">LANGUAGES</div>
             <p class="item-desc">
-                <strong>Projects:</strong> Reconhecendo a Mooca (Urban and architectural survey, photogrammetry, urban flow analysis).<br>
-                <strong>Monitoring:</strong> Spbim Workshop (Laser Scanner - May 2025) and Integration Week Ctig-Unesp (2018-2020).<br>
-                <strong>Awards:</strong> OBA Medalist (Gold 2015, Bronze 2016, Silver 2019).<br>
-                <strong>Languages:</strong> Portuguese (Native), English (B1 - Intermediate).
+                English: Intermediate [B2] - currently improving.
             </p>
         </section>
 
