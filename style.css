@@ -141,11 +141,11 @@ body.push-bottom #copyright {
 }
 
 #solutions-btn {
-	right: 260px;
+	right: 280px;
 }
 
 .audio-toggle {
-	right: 380px;
+	right: 400px;
 	opacity: 0;
 	pointer-events: none;
 }
@@ -897,25 +897,27 @@ a, button, .close-panel {
 		transform: none !important;
 	}
 
+	/* Ajuste Mobile: Menos padding e fonte menor para caberem os 4 botões */
+	#portfolio-btn, #resume-btn, #solutions-btn, .audio-toggle {
+		top: 20px !important;
+		padding: 8px 10px !important;
+		font-size: 0.65rem !important;
+	}
+
 	#portfolio-btn {
-		top: 20px;
-		right: 20px;
+		right: 15px !important;
 	}
 
 	#resume-btn {
-		top: 20px;
-		right: 110px;
+		right: 95px !important;
 	}
 
 	#solutions-btn {
-		top: 20px;
-		right: 180px;
+		right: 165px !important;
 	}
 
 	.audio-toggle {
-		top: 20px !important;
-		right: 270px !important;
-		padding: 10px !important;
+		right: 255px !important;
 	}
 
 	.hero {
