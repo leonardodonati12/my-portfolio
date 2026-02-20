@@ -1,0 +1,298 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solutions | Leonardo Donati</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%2300ff88' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M32 4 L56 18 V46 L32 60 L8 46 V18 Z'/><path d='M32 4 L32 32 M56 18 L32 32 M56 46 L32 32 M32 60 L32 32 M8 46 L32 32 M8 18 L32 32'/></g></svg>" type="image/svg+xml">
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #fff;
+            color: #000;
+            overflow-x: hidden;
+            overflow-y: auto !important;
+        }
+
+        /* HEADER IGUAL AO PORTFOLIO */
+        .header {
+            padding: 40px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .identity-group {
+            display: flex;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin: 0;
+            letter-spacing: -1px;
+            line-height: 1;
+            color: #000;
+        }
+
+        /* NAVEGAÇÃO */
+        .nav {
+            display: flex;
+            align-items: center;
+        }
+
+            .nav a {
+                color: #000;
+                text-decoration: none;
+                margin-left: 30px;
+                font-size: 0.9rem;
+                transition: color 0.3s;
+                cursor: pointer;
+            }
+
+                .nav a:hover, .nav a.active {
+                    color: #00ff88;
+                    opacity: 1;
+                }
+
+                .nav a.back-btn {
+                    font-weight: 400;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 5px;
+                }
+
+        /* GRID DE PLUGINS */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 40px;
+            padding: 40px 60px;
+        }
+
+        .plugin-item {
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+            padding: 20px;
+            transition: box-shadow 0.3s, transform 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+            .plugin-item:hover {
+                box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+                transform: translateY(-5px);
+            }
+
+        .plugin-icon {
+            width: 60px;
+            height: 60px;
+            background-color: #f5f5f5;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #00ff88;
+            border: 1px solid #eee;
+        }
+
+        .p-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .p-desc {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .p-download {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #000;
+            border-bottom: 2px solid #00ff88;
+            padding-bottom: 2px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* TEXT SECTIONS (Privacy & Support) */
+        .text-section {
+            display: none;
+            padding: 60px;
+            max-width: 800px;
+            margin: 0 auto;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .text-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+        }
+
+        .text-content p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        .text-content h3 {
+            font-size: 1.3rem;
+            margin: 40px 0 15px 0;
+            color: #111;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header, .grid, .text-section {
+                padding: 30px 20px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .nav {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+                .nav a {
+                    margin-left: 0;
+                }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <div class="header">
+        <div class="identity-group" onclick="toggleTab('plugins')" style="cursor: pointer;">
+            <h1>Leonardo Donati</h1>
+        </div>
+        <div class="nav">
+            <a href="javascript:void(0)" onclick="toggleTab('plugins')" id="tab-plugins" class="active">Plugins</a>
+            <a href="javascript:void(0)" onclick="toggleTab('privacy')" id="tab-privacy">Privacy Policy</a>
+            <a href="javascript:void(0)" onclick="toggleTab('support')" id="tab-support">Support</a>
+            <a href="index.html?skip=true" class="back-btn">← Home</a>
+        </div>
+    </div>
+
+    <div id="plugins-section" class="grid">
+
+        <a href="link-para-download-ou-autodesk-store" class="plugin-item" target="_blank">
+            <div class="plugin-icon">⚙️</div>
+            <div class="p-title">AutoRenumber Pro</div>
+            <div class="p-desc">Automate element renumbering in Revit based on spline paths. Save hours of manual documentation work.</div>
+            <div class="p-download">Download / Trial</div>
+        </a>
+
+        <a href="#" class="plugin-item">
+            <div class="plugin-icon">📐</div>
+            <div class="p-title">Quick Clash Exporter</div>
+            <div class="p-desc">Export Navisworks clashes directly to Excel and Power BI with custom views and parameters integrated.</div>
+            <div class="p-download">Coming Soon</div>
+        </a>
+
+    </div>
+
+    <div id="privacy-section" class="text-section">
+        <div class="text-title">Privacy Policy</div>
+        <div class="text-content">
+            <p>Last updated: February 2026</p>
+            <p>Leonardo Donati ("we", "us", or "our") operates the plugins and software tools distributed via the Autodesk App Store and our personal portfolio. We respect your privacy and are committed to protecting it.</p>
+
+            <h3>Data Collection</h3>
+            <p>Our Revit and Navisworks plugins operate locally on your machine. We do not collect, store, or transmit any personal data, project data, or BIM models to external servers. All processing is done locally within your Autodesk environment.</p>
+
+            <h3>Telemetry and Usage</h3>
+            <p>Currently, our plugins do not use any telemetry or tracking software. If this changes in future updates to improve user experience, we will explicitly request your consent.</p>
+        </div>
+    </div>
+
+    <div id="support-section" class="text-section">
+        <div class="text-title">Support & Contact</div>
+        <div class="text-content">
+            <p>If you are experiencing issues with any of our plugins, or if you have feature requests, please reach out. I am committed to maintaining these tools to support your BIM workflows.</p>
+
+            <h3>Contact Information</h3>
+            <p><strong>Email:</strong> leonardodonati12@gmail.com</p>
+            <p><strong>Response Time:</strong> Please allow 24-48 hours for a response to technical support queries.</p>
+
+            <h3>Bug Reports</h3>
+            <p>When submitting a bug report, please include:</p>
+            <ul>
+                <li>The name and version of the Plugin.</li>
+                <li>Your version of Revit/Navisworks.</li>
+                <li>A brief description of the issue and steps to reproduce it.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="cursor.js"></script>
+    <script>
+        function toggleTab(tabId) {
+            // Esconde todas as seções
+            document.getElementById('plugins-section').style.display = 'none';
+            document.getElementById('privacy-section').style.display = 'none';
+            document.getElementById('support-section').style.display = 'none';
+
+            // Remove a classe "active" de todos os links do menu
+            document.getElementById('tab-plugins').classList.remove('active');
+            document.getElementById('tab-privacy').classList.remove('active');
+            document.getElementById('tab-support').classList.remove('active');
+
+            // Mostra a seção escolhida e colore o link no menu
+            if(tabId === 'plugins') {
+                document.getElementById('plugins-section').style.display = 'grid';
+                document.getElementById('tab-plugins').classList.add('active');
+            } else {
+                document.getElementById(tabId + '-section').style.display = 'block';
+                document.getElementById('tab-' + tabId).classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>

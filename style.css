@@ -116,7 +116,7 @@ body.push-bottom #copyright {
 }
 
 /* --- BOTÕES DO HEADER (PADRONIZADOS) --- */
-#resume-btn, #portfolio-btn, .audio-toggle {
+#resume-btn, #portfolio-btn, #solutions-btn, .audio-toggle {
 	position: fixed;
 	top: 40px;
 	font-size: 0.75rem;
@@ -140,8 +140,12 @@ body.push-bottom #copyright {
 	right: 160px;
 }
 
-.audio-toggle {
+#solutions-btn {
 	right: 260px;
+}
+
+.audio-toggle {
+	right: 380px;
 	opacity: 0;
 	pointer-events: none;
 }
@@ -151,7 +155,7 @@ body.active .audio-toggle {
 	pointer-events: auto;
 }
 
-#resume-btn:hover, #portfolio-btn:hover, .audio-toggle:hover {
+#resume-btn:hover, #portfolio-btn:hover, #solutions-btn:hover, .audio-toggle:hover {
 	color: #00ff88;
 	text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
 }
@@ -181,11 +185,15 @@ body.push-right #resume-btn {
 	right: 420px;
 }
 
-body.push-right .audio-toggle {
+body.push-right #solutions-btn {
 	right: 540px;
 }
 
-body.push-top #portfolio-btn, body.push-top #resume-btn, body.push-top .audio-toggle {
+body.push-right .audio-toggle {
+	right: 660px;
+}
+
+body.push-top #portfolio-btn, body.push-top #resume-btn, body.push-top #solutions-btn, body.push-top .audio-toggle {
 	top: 310px;
 }
 
@@ -899,9 +907,14 @@ a, button, .close-panel {
 		right: 110px;
 	}
 
+	#solutions-btn {
+		top: 20px;
+		right: 180px;
+	}
+
 	.audio-toggle {
 		top: 20px !important;
-		right: 180px !important;
+		right: 270px !important;
 		padding: 10px !important;
 	}
 
