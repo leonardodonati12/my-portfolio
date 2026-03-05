@@ -1,14 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Detail | Leonardo Donati</title>
-
+    <title>Plugin Automation | Leonardo Donati</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%2300ff88' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M32 4 L56 18 V46 L32 60 L8 46 V18 Z'/><path d='M32 4 L32 32 M56 18 L32 32 M56 46 L32 32 M32 60 L32 32 M8 46 L32 32 M8 18 L32 32'/></g></svg>" type="image/svg+xml">
-
-    <link rel="stylesheet" href="../assets/css/style.css">
-
+    <link rel="stylesheet" href="../../../assets/css/style.css">
     <style>
         html, body {
             height: auto !important;
@@ -18,11 +15,9 @@
             color: #333;
             margin: 0;
             padding: 0;
-            /* [CORREÇÃO] Agora usa a mesma fonte do Portfolio.html */
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
 
-        /* HEADER IDENTICO AO PORTFOLIO */
         .header {
             padding: 40px 60px;
             display: flex;
@@ -57,11 +52,10 @@
             transition: color 0.3s;
         }
 
-            .nav a:hover {
+            .nav a:hover, .nav a.active {
                 color: #00ff88;
             }
 
-        /* PROJECT HERO */
         .project-hero {
             width: 100%;
             height: 60vh;
@@ -72,9 +66,10 @@
             color: #aaa;
             font-size: 1.5rem;
             margin-bottom: 60px;
+            background-size: cover;
+            background-position: center;
         }
 
-        /* CONTEÚDO */
         .content-wrapper {
             max-width: 1200px;
             margin: 0 auto;
@@ -88,15 +83,14 @@
             font-size: 0.85rem;
             line-height: 1.8;
             color: #666;
-            border-top: 1px solid #000;
-            padding-top: 20px;
+            padding-top: 10px;
         }
 
         .info-label {
             font-weight: bold;
             color: #000;
             display: block;
-            margin-top: 15px;
+            margin-top: 20px;
         }
 
             .info-label:first-child {
@@ -104,8 +98,7 @@
             }
 
         .main-content {
-            border-top: 1px solid #000;
-            padding-top: 20px;
+            padding-top: 5px;
         }
 
         .project-title {
@@ -114,6 +107,7 @@
             margin: 0 0 30px 0;
             letter-spacing: -1px;
             color: #000;
+            line-height: 1.1;
         }
 
         .project-text {
@@ -140,6 +134,8 @@
             align-items: center;
             justify-content: center;
             color: #ccc;
+            background-size: cover;
+            background-position: center;
         }
 
         @media (max-width: 768px) {
@@ -171,57 +167,43 @@
     </style>
 </head>
 <body>
-
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
 
     <div class="header">
-        <a href="../index.html?skip=true" class="identity-group" style="text-decoration: none; cursor: pointer;">
+        <a href="../../../index.html?skip=true" class="identity-group" style="text-decoration: none; cursor: pointer;">
             <h1>Leonardo Donati</h1>
         </a>
-
         <div class="nav">
-            <a href="portfolio.html" class="active">Projects</a>
-            <a href="portfolio.html?section=about">About</a>
+            <a href="../../index.html" class="active">Projects</a>
         </div>
     </div>
 
-    <div class="project-hero">
-        [ Hero Image: Render 1920x1080 ]
+    <div class="project-hero" style="background-image: url('../../../assets/img/plugin-hero.jpg');">
+        [ Hero Image: Code / Interface ]
     </div>
 
     <div class="content-wrapper">
         <div class="sidebar">
-            <span class="info-label">LOCATION</span>
-            São Paulo, Brazil
-            <span class="info-label">YEAR</span>
-            2024
-            <span class="info-label">TEAM</span>
-            Leonardo Donati, Sergio Yasuo and Gabriel Gomes
-            <span class="info-label">TYPE</span>
-            Urban Planning / Photogrammetry
-            <span class="info-label">TOOLS</span>
-            Revit, Recap, Drone Deploy
+            <span class="info-label">ROLE</span> Developer
+            <span class="info-label">YEAR</span> 2025
+            <span class="info-label">TYPE</span> Software Development
+            <span class="info-label">TOOLS</span> C#, .NET, Revit API
         </div>
 
         <div class="main-content">
-            <h2 class="project-title">Reconhecendo a Mooca</h2>
+            <h2 class="project-title">Custom Plugin Automation</h2>
             <div class="project-text">
-                <p>
-                    This project investigates the urban morphology of the Mooca district through advanced photogrammetry techniques. By capturing the existing fabric with high-resolution drone imagery, we generated a precise point cloud that served as the foundation for our analysis.
-                </p>
-                <p>
-                    The architectural intervention proposes a new dialogue between the industrial heritage and contemporary needs. The design utilizes parametric strategies to optimize air flow and reduce heat islands, creating a sustainable microclimate within the dense urban grid.
-                </p>
+                <p>This initiative focuses on bridging the gap between design intent and digital execution. I developed a suite of custom C# scripts and plugins leveraging the Revit API to automate highly repetitive tasks that typically consume hundreds of hours in a standard BIM workflow.</p>
+                <p>From automated sheet generation to complex parameter synchronization across linked models, these tools drastically reduced human error and allowed the architectural teams to focus on design rather than manual data entry.</p>
             </div>
-
             <div class="gallery">
-                <div class="gallery-img">[ Detail 1 ]</div>
-                <div class="gallery-img">[ Detail 2 ]</div>
+                <div class="gallery-img">[ WPF UI Design ]</div>
+                <div class="gallery-img">[ Code Snippet ]</div>
             </div>
         </div>
     </div>
 
-    <script src="../assets/js/cursor.js"></script>
+    <script src="../../../assets/js/cursor.js"></script>
 </body>
 </html>
