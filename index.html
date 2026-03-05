@@ -19,22 +19,27 @@
             border-color: #00ff88;
         }
 
-        /* [NOVO] Estilo para o cartão 3D discreto e linha */
+        /* [ATUALIZADO] Estilo para o cartão 3D discreto e travado */
         #secret-photo-card {
+            position: absolute; /* Trava a foto em relação ao seu nome */
+            right: -280px; /* Joga a foto 280px para a direita do nome */
+            top: 50%; /* Joga pro meio verticalmente */
+            margin-top: -140px; /* Puxa metade da altura pra cima pra alinhar o eixo perfeitamente */
+
             width: 220px;
             height: 280px;
             background: #000;
-            border: 1px solid #fff; /* [ALTERADO] Borda branca sólida */
+            border: 1px solid #fff;
             opacity: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            /* [TRAVADO] A foto não muda de lugar */
-            transition: opacity 0.3s, transform 0.1s ease-out; /* Movimento 3D suave */
-            pointer-events: none; /* Deixa o clique passar pro nome se tiver no hover */
+            transition: opacity 0.3s, transform 0.1s ease-out;
+            pointer-events: none;
             backface-visibility: hidden;
+            z-index: 9999;
         }
 
             /* Foto preta e branca */
@@ -84,18 +89,14 @@
 
     <div id="main-wrapper">
         <div class="hero">
-            <div id="hero-aligner" style="display: flex; align-items: center; gap: 60px;">
-
-                <h1 id="hero-name" style="cursor: crosshair; flex-shrink: 0;">
-                    <div id="name-line-1">LEONARDO</div>
-                    <div id="name-line-2">DONATI</div>
-                </h1>
+            <h1 id="hero-name" style="position: relative; cursor: crosshair;">
+                <div id="name-line-1">LEONARDO</div>
+                <div id="name-line-2">DONATI</div>
 
                 <div id="secret-photo-card">
-                    <img src="assets/img/profile.jpg" alt="Leonardo Donati">
+                    <img src="assets/img/profile.jpg" alt="Leonardo Donati" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
-            </div>
-
+            </h1>
             <div class="subtitle" id="hero-subtitle">ARCHITECTURE STUDENT</div>
         </div>
 
