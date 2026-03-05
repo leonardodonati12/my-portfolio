@@ -99,21 +99,44 @@
                 margin-top: 0;
             }
 
-        /* Botão minimalista na sidebar (Estilo INATIVO) */
+        /* [NOVO] Estilo do botão e ícone de download na sidebar */
         .download-link {
-            display: inline-block;
-            margin-top: 35px;
+            display: inline-flex;
+            align-items: center;
+            margin-top: 5px; /* Fica coladinho embaixo da label */
             font-size: 0.85rem;
             font-weight: bold;
-            color: #ccc;
+            color: #000;
             text-decoration: none;
-            border-bottom: 2px solid #ccc;
+            border-bottom: 2px solid #00ff88;
             padding-bottom: 2px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            cursor: not-allowed;
-            pointer-events: none;
+            transition: color 0.3s;
+            cursor: pointer;
         }
+
+            .download-link svg {
+                margin-left: 6px;
+                transition: transform 0.3s;
+            }
+
+            .download-link:hover {
+                color: #00ff88;
+            }
+
+                /* Efeitinho na seta ao passar o mouse */
+                .download-link:hover svg {
+                    transform: translateY(3px);
+                }
+
+            /* Estilo Inativo (Para o Clash Exporter) */
+            .download-link.disabled {
+                color: #ccc;
+                border-bottom: 2px solid #ccc;
+                cursor: not-allowed;
+                pointer-events: none;
+            }
 
         .main-content {
             padding-top: 5px;
@@ -194,6 +217,8 @@
         </a>
         <div class="nav">
             <a href="../../index.html" class="active">Solutions</a>
+            <a href="../../index.html?tab=privacy">Privacy Policy</a>
+            <a href="../../index.html?tab=support">Support</a>
         </div>
     </div>
 

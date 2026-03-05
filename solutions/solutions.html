@@ -193,7 +193,7 @@
         </a>
 
         <div class="nav">
-            <a href="javascript:void(0)" onclick="toggleTab('solutions')" id="tab-plugins" class="active">Plugins</a>
+            <a href="javascript:void(0)" onclick="toggleTab('plugins')" id="tab-plugins" class="active">Solutions</a>
             <a href="javascript:void(0)" onclick="toggleTab('privacy')" id="tab-privacy">Privacy Policy</a>
             <a href="javascript:void(0)" onclick="toggleTab('support')" id="tab-support">Support</a>
         </div>
@@ -268,6 +268,16 @@
                 document.getElementById('tab-' + tabId).classList.add('active');
             }
         }
+
+        // Script inteligente para detectar quando vêm da página de detalhes pedindo abas
+        window.onload = function () {
+            const params = new URLSearchParams(window.location.search);
+            const tab = params.get('tab');
+            if (tab) {
+                toggleTab(tab); // Se tiver ?tab=privacy ou support na URL, ele já abre a aba certa!
+            }
+        }
+
     </script>
 </body>
 </html>
