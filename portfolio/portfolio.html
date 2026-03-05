@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leonardo Donati | Portfolio</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%2300ff88' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M32 4 L56 18 V46 L32 60 L8 46 V18 Z'/><path d='M32 4 L32 32 M56 18 L32 32 M56 46 L32 32 M32 60 L32 32 M8 46 L32 32 M8 18 L32 32'/></g></svg>" type="image/svg+xml">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
     <style>
         /* CSS DO PORTFOLIO */
         body {
@@ -59,16 +59,9 @@
                 transition: color 0.3s;
             }
 
-                .nav a:hover {
+                .nav a:hover, .nav a.active {
                     color: #00ff88;
                     opacity: 1;
-                }
-
-                .nav a.back-btn {
-                    font-weight: 400;
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 5px;
                 }
 
         /* GRID PROJETOS */
@@ -183,14 +176,13 @@
 <body>
 
     <div class="header">
-        <div class="identity-group">
+        <a href="../index.html?skip=true" class="identity-group" style="text-decoration: none; cursor: pointer;">
             <h1>Leonardo Donati</h1>
-        </div>
+        </a>
 
         <div class="nav">
-            <a href="#" onclick="toggleSection('projects')">Projects</a>
-            <a href="#" onclick="toggleSection('about')">About</a>
-            <a href="index.html?skip=true" class="back-btn">← Home</a>
+            <a href="javascript:void(0)" onclick="toggleSection('projects')" id="tab-projects" class="active">Projects</a>
+            <a href="javascript:void(0)" onclick="toggleSection('about')" id="tab-about">About</a>
         </div>
     </div>
 
@@ -227,18 +219,28 @@
         </p>
     </div>
 
-    <script src="cursor.js"></script>
+    <script src="../assets/js/cursor.js"></script>
     <script>
         function toggleSection(section) {
             const proj = document.getElementById('projects-section');
             const about = document.getElementById('about-section');
+            const tabProj = document.getElementById('tab-projects');
+            const tabAbout = document.getElementById('tab-about');
 
             if (section === 'about') {
+                // Mostra aba About, esconde Projects
                 proj.style.display = 'none';
                 about.style.display = 'block';
+                // Deixa About verde, tira o verde de Projects
+                tabProj.classList.remove('active');
+                tabAbout.classList.add('active');
             } else {
+                // Mostra aba Projects, esconde About
                 proj.style.display = 'grid';
                 about.style.display = 'none';
+                // Deixa Projects verde, tira o verde de About
+                tabAbout.classList.remove('active');
+                tabProj.classList.add('active');
             }
         }
 

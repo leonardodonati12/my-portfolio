@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solution Detail | Leonardo Donati</title>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%2300ff88' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M32 4 L56 18 V46 L32 60 L8 46 V18 Z'/><path d='M32 4 L32 32 M56 18 L32 32 M56 46 L32 32 M32 60 L32 32 M8 46 L32 32 M8 18 L32 32'/></g></svg>" type="image/svg+xml">
+    
+    <link rel="stylesheet" href="../assets/css/style.css"> 
+    
+    <style>
+        html, body {
+            height: auto !important;
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+            background-color: #fff !important;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        /* HEADER IDENTICO */
+        .header { 
+            padding: 40px 60px; display: flex; justify-content: space-between; align-items: center; 
+            position: sticky; top: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); 
+            z-index: 100; border-bottom: 1px solid rgba(0,0,0,0.05); 
+        }
+
+        .identity-group { display: flex; align-items: center; }
+        h1 { font-size: 1.5rem; margin: 0; letter-spacing: -1px; line-height: 1; color: #000; }
+        
+        .nav a { color: #000; text-decoration: none; margin-left: 30px; font-size: 0.9rem; transition: color 0.3s; }
+        .nav a:hover { color: #00ff88; }
+        .nav a.back-btn { font-weight: 400; display: inline-flex; align-items: center; gap: 5px; }
+
+        /* HERO IMAGE */
+        .project-hero {
+            width: 100%; height: 60vh; background-color: #eee; display: flex; align-items: center; 
+            justify-content: center; color: #aaa; font-size: 1.5rem; margin-bottom: 60px;
+        }
+
+        /* CONTEÚDO */
+        .content-wrapper {
+            max-width: 1200px; margin: 0 auto; padding: 0 60px 100px 60px;
+            display: grid; grid-template-columns: 300px 1fr; gap: 60px;
+        }
+
+        /* BARRA LATERAL (Adaptada para Software) */
+        .sidebar {
+            font-size: 0.85rem; line-height: 1.8; color: #666; border-top: 1px solid #000; padding-top: 20px;
+        }
+        .info-label { font-weight: bold; color: #000; display: block; margin-top: 15px; }
+        .info-label:first-child { margin-top: 0; }
+
+        .main-content {
+            border-top: 1px solid #000; padding-top: 20px;
+        }
+        .project-title {
+            font-size: 2.5rem; font-weight: 300; margin: 0 0 30px 0; letter-spacing: -1px; color: #000;
+        }
+        .project-text {
+            font-size: 1.1rem; line-height: 1.6; color: #333; text-align: justify; columns: 2; column-gap: 40px;
+        }
+
+        /* BOTÃO DE DOWNLOAD ESTILIZADO */
+        .download-btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 24px;
+            background-color: #000;
+            color: #00ff88;
+            text-decoration: none;
+            font-weight: bold;
+            font-family: 'Consolas', monospace;
+            letter-spacing: 1px;
+            transition: background 0.3s, color 0.3s;
+        }
+        .download-btn:hover {
+            background-color: #00ff88;
+            color: #000;
+        }
+
+        .gallery {
+            margin-top: 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+        }
+        .gallery-img {
+            width: 100%; height: 400px; background: #f4f4f4; display: flex; align-items: center; justify-content: center; color: #ccc;
+        }
+
+        @media (max-width: 768px) {
+            .header { padding: 30px 20px; flex-direction: column; align-items: flex-start; gap: 20px; }
+            .content-wrapper { padding: 0 20px 60px 20px; grid-template-columns: 1fr; gap: 40px; }
+            .project-text { columns: 1; }
+            .project-hero { height: 40vh; }
+            .gallery { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <div class="header">
+        <a href="../index.html?skip=true" class="identity-group" style="text-decoration: none; cursor: pointer;">
+            <h1>Leonardo Donati</h1>
+        </a>
+        <div class="nav">
+            <a href="solutions.html">← Back to Solutions</a>
+        </div>
+    </div>
+
+    <div class="project-hero">
+        [ Video Demo / UI Screenshot 1920x1080 ]
+    </div>
+
+    <div class="content-wrapper">
+        <div class="sidebar">
+            <span class="info-label">VERSION</span>
+            1.2.0 (Feb 2026)
+            
+            <span class="info-label">COMPATIBILITY</span>
+            Autodesk Revit 2023-2025
+            
+            <span class="info-label">LANGUAGE</span>
+            C# / .NET API
+            
+            <span class="info-label">LICENSE</span>
+            Free Trial Available
+        </div>
+
+        <div class="main-content">
+            <h2 class="project-title">AutoRenumber Pro</h2>
+            <div class="project-text">
+                <p>
+                    AutoRenumber Pro was developed to solve one of the most tedious tasks in BIM documentation: renumbering elements based on a specific path. Instead of manually clicking hundreds of instances, this plugin allows users to draw a spline through the elements, and the algorithm automatically detects intersections and renumbers them sequentially.
+                </p>
+                <p>
+                    Built entirely with the Revit API and C#, this tool drastically reduces human error and saves hours of manual labor. It supports custom prefixes, suffixes, and padding, giving full control over the parameter output directly from an intuitive WPF interface.
+                </p>
+            </div>
+            
+            <a href="#" class="download-btn">DOWNLOAD / TRY NOW</a>
+
+            <div class="gallery">
+                <div class="gallery-img">[ UI Detail 1 ]</div>
+                <div class="gallery-img">[ Code Snippet / Detail 2 ]</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/cursor.js"></script>
+</body>
+</html>

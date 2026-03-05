@@ -6,7 +6,7 @@
     <title>Solutions | Leonardo Donati</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%2300ff88' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M32 4 L56 18 V46 L32 60 L8 46 V18 Z'/><path d='M32 4 L32 32 M56 18 L32 32 M56 46 L32 32 M32 60 L32 32 M8 46 L32 32 M8 18 L32 32'/></g></svg>" type="image/svg+xml">
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 
     <style>
         body {
@@ -66,72 +66,51 @@
                     opacity: 1;
                 }
 
-                .nav a.back-btn {
-                    font-weight: 400;
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 5px;
-                }
-
-        /* GRID DE PLUGINS */
+        /* GRID DE SOLUTIONS (Estética Portfolio) */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
             gap: 40px;
             padding: 40px 60px;
         }
 
-        .plugin-item {
-            border: 1px solid #eaeaea;
-            border-radius: 8px;
-            padding: 20px;
-            transition: box-shadow 0.3s, transform 0.3s;
+        .project-item {
+            cursor: pointer;
+            transition: opacity 0.3s;
             text-decoration: none;
             color: inherit;
             display: block;
         }
 
-            .plugin-item:hover {
-                box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-                transform: translateY(-5px);
+            .project-item:hover {
+                opacity: 0.7;
             }
 
-        .plugin-icon {
-            width: 60px;
-            height: 60px;
-            background-color: #f5f5f5;
-            border-radius: 12px;
-            margin-bottom: 20px;
+        .img-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: #eee;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            color: #00ff88;
-            border: 1px solid #eee;
+            color: #aaa;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            object-fit: cover;
         }
 
         .p-title {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
-        .p-desc {
-            font-size: 0.9rem;
-            color: #666;
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
-
-        .p-download {
-            display: inline-block;
+        .p-cat {
             font-size: 0.8rem;
-            font-weight: bold;
-            color: #000;
-            border-bottom: 2px solid #00ff88;
-            padding-bottom: 2px;
+            color: #666;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
 
         /* TEXT SECTIONS (Privacy & Support) */
@@ -209,33 +188,29 @@
     <div class="cursor-outline"></div>
 
     <div class="header">
-        <div class="identity-group" onclick="toggleTab('plugins')" style="cursor: pointer;">
+        <a href="../index.html?skip=true" class="identity-group" style="text-decoration: none; cursor: pointer;">
             <h1>Leonardo Donati</h1>
-        </div>
+        </a>
+
         <div class="nav">
             <a href="javascript:void(0)" onclick="toggleTab('plugins')" id="tab-plugins" class="active">Plugins</a>
             <a href="javascript:void(0)" onclick="toggleTab('privacy')" id="tab-privacy">Privacy Policy</a>
             <a href="javascript:void(0)" onclick="toggleTab('support')" id="tab-support">Support</a>
-            <a href="index.html?skip=true" class="back-btn">← Home</a>
         </div>
     </div>
 
     <div id="plugins-section" class="grid">
-
-        <a href="link-para-download-ou-autodesk-store" class="plugin-item" target="_blank">
-            <div class="plugin-icon">⚙️</div>
+        <a href="solution-detail.html" class="project-item">
+            <div class="img-placeholder" style="background: #f0f0f0;">[ Plugin Interface / GIF ]</div>
             <div class="p-title">AutoRenumber Pro</div>
-            <div class="p-desc">Automate element renumbering in Revit based on spline paths. Save hours of manual documentation work.</div>
-            <div class="p-download">Download / Trial</div>
+            <div class="p-cat">Revit Add-in / Automation</div>
         </a>
 
-        <a href="#" class="plugin-item">
-            <div class="plugin-icon">📐</div>
+        <a href="solution-detail.html" class="project-item">
+            <div class="img-placeholder" style="background: #e5e5e5;">[ Plugin Interface / GIF ]</div>
             <div class="p-title">Quick Clash Exporter</div>
-            <div class="p-desc">Export Navisworks clashes directly to Excel and Power BI with custom views and parameters integrated.</div>
-            <div class="p-download">Coming Soon</div>
+            <div class="p-cat">Navisworks / Data Extraction</div>
         </a>
-
     </div>
 
     <div id="privacy-section" class="text-section">
@@ -271,7 +246,7 @@
         </div>
     </div>
 
-    <script src="cursor.js"></script>
+    <script src="../assets/js/cursor.js"></script>
     <script>
         function toggleTab(tabId) {
             // Esconde todas as seções
