@@ -8,6 +8,63 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%2300ff88' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M32 4 L56 18 V46 L32 60 L8 46 V18 Z'/><path d='M32 4 L32 32 M56 18 L32 32 M56 46 L32 32 M32 60 L32 32 M8 46 L32 32 M8 18 L32 32'/></g></svg>" type="image/svg+xml">
 
     <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        /* --- ESTILOS DO SISTEMA (ADICIONADOS) --- */
+        body {
+            /* [AJUSTE 1] Margem branca em toda a janela */
+            border: 10px solid #fff;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            min-height: 100vh;
+        }
+
+        /* [AJUSTE 2 & 3] Estilo do Cartão 3D e Margem Branca */
+        #secret-photo-card {
+            position: fixed;
+            /* Coordenadas travadas no sistema */
+            top: 200px;
+            left: 100px;
+            width: 220px;
+            height: 280px;
+            background: #000;
+            border: 1px solid #00ff88; /* [AJUSTE 1] Moldura fina */
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            /* [AJUSTE 3] Ativando a física 3D */
+            transform-style: preserve-3d;
+            perspective: 1000px; /* Profundidade */
+            transform-origin: center center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+            #secret-photo-card img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                filter: grayscale(100%);
+            }
+
+        /* [AJUSTE 2] Linha de Chamada (SVG) */
+        #secret-photo-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+    </style>
 </head>
 <body>
     <canvas id="audio-visualizer"></canvas>
@@ -64,12 +121,12 @@
         <div id="callout-label">Nome do Projeto</div>
     </div>
 
-    <svg id="secret-photo-line" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9998; opacity: 0; transition: opacity 0.3s;">
+    <svg id="secret-photo-line">
         <line id="secret-line-path" x1="0" y1="0" x2="0" y2="0" stroke="#00ff88" stroke-width="1" stroke-dasharray="4 4" />
     </svg>
 
-    <div id="secret-photo-card" style="position: fixed; top: 0; left: 0; width: 220px; height: 280px; background: #000; border: 1px solid #00ff88; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s; transform-style: preserve-3d; display: flex; justify-content: center; align-items: center; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
-        <img src="assets/img/profile.jpg" alt="Leonardo Donati" style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%);">
+    <div id="secret-photo-card">
+        <img src="assets/img/profile.jpg" alt="Leonardo Donati">
     </div>
     <div id="folder-stack">
         <div class="folder-tab" draggable="true" data-target="skills-panel">SKILLS</div>
@@ -106,42 +163,54 @@
             }
 
             // ==========================================
-            // LÓGICA DO EASTER EGG: FOTO 3D E LINHA
+            // LÓGICA DO EASTER EGG: FOTO 3D TRAVADA
             // ==========================================
             const heroName = document.getElementById('hero-name');
+            const nameAnchor = document.getElementById('name-line-1'); // Ponto exato da linha
             const secretCard = document.getElementById('secret-photo-card');
             const secretSvg = document.getElementById('secret-photo-line');
             const secretLine = document.getElementById('secret-line-path');
 
-            let isPhotoVisible = false;
-            let isHoveringName = false;
             let forceVisibleTimer = null;
 
             function showSecretPhoto() {
                 if (!secretCard || !secretSvg) return;
                 secretCard.style.opacity = '1';
                 secretSvg.style.opacity = '1';
-                isPhotoVisible = true;
+                updateStaticLine(); // Desenha a linha travada
             }
 
             function hideSecretPhoto() {
-                if (forceVisibleTimer || !secretCard || !secretSvg) return; // Se clicou, não esconde ainda
+                if (forceVisibleTimer || !secretCard || !secretSvg) return;
                 secretCard.style.opacity = '0';
                 secretSvg.style.opacity = '0';
-                isPhotoVisible = false;
             }
 
-            // Eventos de Hover
-            if (heroName) {
-                heroName.addEventListener('mouseenter', () => {
-                    isHoveringName = true;
-                    showSecretPhoto();
-                });
+            // [AJUSTE 2] Desenha a linha fixa (Ancoragem -> Centro da Foto)
+            function updateStaticLine() {
+                if (!nameAnchor || !secretCard || !secretLine) return;
 
-                heroName.addEventListener('mouseleave', () => {
-                    isHoveringName = false;
-                    hideSecretPhoto();
-                });
+                const anchorRect = nameAnchor.getBoundingClientRect();
+                const cardRect = secretCard.getBoundingClientRect();
+
+                // Ponto de origem (Centro do elemento 'LEONARDO')
+                const x1 = anchorRect.left + (anchorRect.width / 2);
+                const y1 = anchorRect.top + (anchorRect.height / 2);
+
+                // Ponto de destino (Centro da Foto fixa)
+                const x2 = cardRect.left + (cardRect.width / 2);
+                const y2 = cardRect.top + (cardRect.height / 2);
+
+                secretLine.setAttribute('x1', x1);
+                secretLine.setAttribute('y1', y1);
+                secretLine.setAttribute('x2', x2);
+                secretLine.setAttribute('y2', y2);
+            }
+
+            // Eventos de Ativação (Passar mouse ou Clicar no nome)
+            if (heroName) {
+                heroName.addEventListener('mouseenter', showSecretPhoto);
+                heroName.addEventListener('mouseleave', hideSecretPhoto);
 
                 // Evento de Clique (Deixa visível por 5 segundos)
                 heroName.addEventListener('click', () => {
@@ -149,35 +218,30 @@
                     clearTimeout(forceVisibleTimer);
                     forceVisibleTimer = setTimeout(() => {
                         forceVisibleTimer = null;
-                        if (!isHoveringName) hideSecretPhoto(); // Só esconde se o mouse já tiver saído
+                        hideSecretPhoto();
                     }, 5000);
                 });
             }
 
-            // Movimento do Mouse (Efeito Three.js Fake)
+            // [AJUSTE 3] Física Tree.js: Rotação 3D contínua pelo mouse na tela
             window.addEventListener('mousemove', (e) => {
-                if (!isPhotoVisible || !secretCard || !secretLine) return;
+                if (!secretCard) return;
 
-                // Posição alvo do cartão (180px para a direita e 100px para cima do mouse)
-                const offsetX = 180;
-                const offsetY = -100;
-                const cardX = e.clientX + offsetX;
-                const cardY = e.clientY + offsetY;
-
-                // Cálculo da Rotação 3D (Efeito Tilt)
+                // Cálculo da Rotação baseada no centro da tela
                 const centerX = window.innerWidth / 2;
                 const centerY = window.innerHeight / 2;
-                const rotateX = ((e.clientY - centerY) / centerY) * -20; // Gira até -20 graus no eixo X
-                const rotateY = ((e.clientX - centerX) / centerX) * 20;  // Gira até 20 graus no eixo Y
+                const rotateX = ((e.clientY - centerY) / centerY) * -25; // Tilt vertical
+                const rotateY = ((e.clientX - centerX) / centerX) * 25;  // Tilt horizontal
 
-                // Aplica posição e rotação
-                secretCard.style.transform = `translate(calc(-50% + ${cardX}px), calc(-50% + ${cardY}px)) perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                // Aplica a rotação 3D travada na posição fixa
+                secretCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
 
-                // Atualiza a linha SVG (Conecta o mouse ao centro do cartão)
-                secretLine.setAttribute('x1', e.clientX);
-                secretLine.setAttribute('y1', e.clientY);
-                secretLine.setAttribute('x2', cardX);
-                secretLine.setAttribute('y2', cardY);
+            // Atualiza a linha se a janela mudar de tamanho
+            window.addEventListener('resize', () => {
+                if (secretCard && secretCard.style.opacity === '1') {
+                    updateStaticLine();
+                }
             });
         });
     </script>
