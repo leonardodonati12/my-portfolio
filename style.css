@@ -141,11 +141,11 @@ body.push-bottom #copyright {
 }
 
 #solutions-btn {
-	right: 280px;
+	right: 250px;
 }
 
 .audio-toggle {
-	right: 400px;
+	right: 370px;
 	opacity: 0;
 	pointer-events: none;
 }
@@ -186,11 +186,11 @@ body.push-right #resume-btn {
 }
 
 body.push-right #solutions-btn {
-	right: 540px;
+	right: 510px;
 }
 
 body.push-right .audio-toggle {
-	right: 660px;
+	right: 630px;
 }
 
 body.push-top #portfolio-btn, body.push-top #resume-btn, body.push-top #solutions-btn, body.push-top .audio-toggle {
