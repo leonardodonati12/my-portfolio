@@ -40,7 +40,7 @@
 
     <div id="main-wrapper">
         <div class="hero">
-            <h1 id="hero-name">
+            <h1 id="hero-name" style="cursor: crosshair;">
                 <div id="name-line-1">LEONARDO</div>
                 <div id="name-line-2">DONATI</div>
             </h1>
@@ -64,6 +64,13 @@
         <div id="callout-label">Nome do Projeto</div>
     </div>
 
+    <svg id="secret-photo-line" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9998; opacity: 0; transition: opacity 0.3s;">
+        <line id="secret-line-path" x1="0" y1="0" x2="0" y2="0" stroke="#00ff88" stroke-width="1" stroke-dasharray="4 4" />
+    </svg>
+
+    <div id="secret-photo-card" style="position: fixed; top: 0; left: 0; width: 220px; height: 280px; background: #000; border: 1px solid #00ff88; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s; transform-style: preserve-3d; display: flex; justify-content: center; align-items: center; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+        <img src="assets/img/profile.jpg" alt="Leonardo Donati" style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%);">
+    </div>
     <div id="folder-stack">
         <div class="folder-tab" draggable="true" data-target="skills-panel">SKILLS</div>
         <div class="folder-tab" draggable="true" data-target="timeline-panel">TIMELINE</div>
@@ -86,6 +93,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            // Pular Intro
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('skip') === 'true') {
                 console.log("Skipping Intro...");
@@ -96,6 +104,81 @@
                 document.body.classList.add('active');
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
+
+            // ==========================================
+            // LÓGICA DO EASTER EGG: FOTO 3D E LINHA
+            // ==========================================
+            const heroName = document.getElementById('hero-name');
+            const secretCard = document.getElementById('secret-photo-card');
+            const secretSvg = document.getElementById('secret-photo-line');
+            const secretLine = document.getElementById('secret-line-path');
+
+            let isPhotoVisible = false;
+            let isHoveringName = false;
+            let forceVisibleTimer = null;
+
+            function showSecretPhoto() {
+                if (!secretCard || !secretSvg) return;
+                secretCard.style.opacity = '1';
+                secretSvg.style.opacity = '1';
+                isPhotoVisible = true;
+            }
+
+            function hideSecretPhoto() {
+                if (forceVisibleTimer || !secretCard || !secretSvg) return; // Se clicou, não esconde ainda
+                secretCard.style.opacity = '0';
+                secretSvg.style.opacity = '0';
+                isPhotoVisible = false;
+            }
+
+            // Eventos de Hover
+            if (heroName) {
+                heroName.addEventListener('mouseenter', () => {
+                    isHoveringName = true;
+                    showSecretPhoto();
+                });
+
+                heroName.addEventListener('mouseleave', () => {
+                    isHoveringName = false;
+                    hideSecretPhoto();
+                });
+
+                // Evento de Clique (Deixa visível por 5 segundos)
+                heroName.addEventListener('click', () => {
+                    showSecretPhoto();
+                    clearTimeout(forceVisibleTimer);
+                    forceVisibleTimer = setTimeout(() => {
+                        forceVisibleTimer = null;
+                        if (!isHoveringName) hideSecretPhoto(); // Só esconde se o mouse já tiver saído
+                    }, 5000);
+                });
+            }
+
+            // Movimento do Mouse (Efeito Three.js Fake)
+            window.addEventListener('mousemove', (e) => {
+                if (!isPhotoVisible || !secretCard || !secretLine) return;
+
+                // Posição alvo do cartão (180px para a direita e 100px para cima do mouse)
+                const offsetX = 180;
+                const offsetY = -100;
+                const cardX = e.clientX + offsetX;
+                const cardY = e.clientY + offsetY;
+
+                // Cálculo da Rotação 3D (Efeito Tilt)
+                const centerX = window.innerWidth / 2;
+                const centerY = window.innerHeight / 2;
+                const rotateX = ((e.clientY - centerY) / centerY) * -20; // Gira até -20 graus no eixo X
+                const rotateY = ((e.clientX - centerX) / centerX) * 20;  // Gira até 20 graus no eixo Y
+
+                // Aplica posição e rotação
+                secretCard.style.transform = `translate(calc(-50% + ${cardX}px), calc(-50% + ${cardY}px)) perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+                // Atualiza a linha SVG (Conecta o mouse ao centro do cartão)
+                secretLine.setAttribute('x1', e.clientX);
+                secretLine.setAttribute('y1', e.clientY);
+                secretLine.setAttribute('x2', cardX);
+                secretLine.setAttribute('y2', cardY);
+            });
         });
     </script>
 
