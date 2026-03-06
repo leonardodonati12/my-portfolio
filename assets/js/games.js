@@ -184,7 +184,7 @@ function initSpace() {
         window.gameLoopId = requestAnimationFrame(loop);
     }
     loop();
-}
+} 
 
 // ==========================================
 // JOGO 2: TENNIS (PONG)
