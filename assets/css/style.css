@@ -133,19 +133,19 @@ body.push-bottom #copyright {
 }
 
 #portfolio-btn {
-	right: 0px;
+	right: 20px;
 }
 
 #resume-btn {
-	right: 120px;
+	right: 140px;
 }
 
 #solutions-btn {
-	right: 210px;
+	right: 230px;
 }
 
 .audio-toggle {
-	right: 330px;
+	right: 350px;
 	opacity: 0;
 	pointer-events: none;
 }
