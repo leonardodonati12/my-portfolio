@@ -257,27 +257,6 @@
                 });
             }
 
-            // [ATUALIZADO] Lógica para alinhar a linha no ponto exato travado
-            function updateLinePosition() {
-                if (!heroName || !secretCard || !secretLine) return;
-
-                // 1. Ponto de origem: Centro vertical entre LEONARDO e DONATI
-                const nameRect = heroName.getBoundingClientRect();
-                const startX = nameRect.right;
-                const startY = nameRect.top + (nameRect.height / 2);
-
-                // 2. Ponto de destino: Borda esquerda da foto
-                const cardRect = secretCard.getBoundingClientRect();
-                const endX = cardRect.left;
-                const endY = cardRect.top + (cardRect.height / 2);
-
-                // 3. Atualiza os atributos da linha SVG
-                secretLine.setAttribute('x1', startX);
-                secretLine.setAttribute('y1', startY);
-                secretLine.setAttribute('x2', endX);
-                secretLine.setAttribute('y2', endY);
-            }
-
             // [ATUALIZADO] Inclinação 3D discreta e travada na foto
             const handle3DTilt = (e) => {
                 if (!isPhotoVisible || !secretCard) return;
