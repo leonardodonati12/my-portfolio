@@ -287,12 +287,12 @@ body.push-bottom #folder-stack {
 
 	/* Quando o painel da direita abre (empurra o arcade para a esquerda) */
 	body.push-right #arcade-modal {
-		right: 280px; /* Ajuste esse valor de acordo com a largura do seu painel */
+		right: 300px; /* Ajuste esse valor de acordo com a largura do seu painel */
 	}
 
 	/* Quando o painel inferior/superior abre (empurra o arcade para cima/baixo) */
 	body.push-top #arcade-modal {
-		bottom: 280px; /* Ajuste esse valor para não encavalar no seu painel de baixo */
+		bottom: 300px; /* Ajuste esse valor para não encavalar no seu painel de baixo */
 		/* Nota: como o modal usa 'bottom' originalmente, é melhor empurrar mudando o 'bottom'. 
 		   Se preferir usar 'top', adicione 'bottom: auto;' aqui também. */
 	}
