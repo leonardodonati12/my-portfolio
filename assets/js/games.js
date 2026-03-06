@@ -62,10 +62,6 @@ function initSpace() {
     function loop() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Linha tracejada
-        ctx.setLineDash([10, 15]); ctx.beginPath(); ctx.moveTo(canvas.width / 2, 0); ctx.lineTo(canvas.width / 2, canvas.height);
-        ctx.strokeStyle = '#333'; ctx.stroke(); ctx.setLineDash([]);
-
         // Player
         if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
         if (keys['ArrowRight'] && player.x < canvas.width - player.width) player.x += player.speed;
@@ -115,9 +111,6 @@ function initTennis() {
 
     function loop() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        ctx.setLineDash([10, 10]); ctx.beginPath(); ctx.moveTo(canvas.width / 2, 0); ctx.lineTo(canvas.width / 2, canvas.height);
-        ctx.strokeStyle = '#fff'; ctx.stroke(); ctx.setLineDash([]);
 
         if (keys['ArrowUp'] && p1.y > 0) p1.y -= p1.speed;
         if (keys['ArrowDown'] && p1.y < canvas.height - p1.height) p1.y += p1.speed;

@@ -224,7 +224,7 @@
             font-size: 9px;
             color: #fff;
             margin-bottom: 8px;
-            padding: 0 4px; /* Crava exatamente no início das curvas */
+            padding: 10px 10px; /* Crava exatamente no início das curvas */
         }
 
         .game-area {
@@ -236,25 +236,31 @@
         .sidebar-tabs {
             display: flex;
             flex-direction: column;
-            gap: 0; /* Coladas umas nas outras */
+            gap: 0;
             margin-right: -2px; /* Avança sobre a borda principal para se fundir */
             z-index: 10;
             margin-top: 20px;
         }
 
         .game-tab {
-            writing-mode: vertical-rl;
+            /* [ATUALIZADO] Inverte a base das letras para a direita */
+            writing-mode: vertical-lr;
             transform: rotate(180deg);
-            padding: 15px 8px;
+            width: 28px; /* Força largura fixa para alinhar perfeito */
+            padding: 15px 0;
             border: 2px solid #fff;
-            border-radius: 10px 0 0 10px; /* Curva suave estilo aba de navegador */
+            border-right: none; /* Deixa a borda do canvas aparecer quando inativo */
+            border-radius: 10px 0 0 10px;
             background: #000;
-            color: #777; /* Texto apagado quando inativo */
+            color: #777;
             font-size: 9px;
             cursor: pointer;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.2s;
-            margin-bottom: -2px; /* Sobrepõe a borda da aba de baixo */
+            margin-bottom: -2px; /* Remove o espaço entre elas */
+            position: relative;
         }
 
             .game-tab:hover {
@@ -262,13 +268,12 @@
                 background: #111;
             }
 
-            /* Aba Ativa se funde com o quadro branco */
+            /* [ATUALIZADO] Aba Ativa: box-shadow cria a "ponte" escondendo a borda de baixo */
             .game-tab.active {
                 background: #fff;
                 color: #000;
-                border-right: none; /* Apaga a linha divisória */
-                padding-right: 10px; /* Compensa a borda removida para o texto não pular */
-                z-index: 11; /* Fica acima das inativas */
+                box-shadow: 4px 0 0px #fff;
+                z-index: 11;
             }
 
         /* Moldura do Jogo */
