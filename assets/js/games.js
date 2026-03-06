@@ -341,4 +341,4 @@ function initTetris() {
         window.gameLoopId = requestAnimationFrame(loop);
     }
     loop();
-}
+} 
