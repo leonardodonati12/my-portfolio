@@ -224,7 +224,7 @@
             font-size: 9px;
             color: #fff;
             margin-bottom: 8px;
-            padding: 10px 10px; /* Crava exatamente no início das curvas */
+            padding: -10px 10px; /* Crava exatamente no início das curvas */
         }
 
         .game-area {
@@ -243,13 +243,13 @@
         }
 
         .game-tab {
-            /* [ATUALIZADO] Inverte a base das letras para a direita */
-            writing-mode: vertical-lr;
-            transform: rotate(180deg);
-            width: 28px; /* Força largura fixa para alinhar perfeito */
+            /* [CORRIGIDO] Texto de cima pra baixo, base encostada na direita */
+            writing-mode: vertical-rl;
+            transform: none;
+            width: 28px;
             padding: 15px 0;
             border: 2px solid #fff;
-            border-right: none; /* Deixa a borda do canvas aparecer quando inativo */
+            border-right: none;
             border-radius: 10px 0 0 10px;
             background: #000;
             color: #777;
@@ -259,7 +259,7 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
-            margin-bottom: -2px; /* Remove o espaço entre elas */
+            margin-bottom: -2px;
             position: relative;
         }
 
