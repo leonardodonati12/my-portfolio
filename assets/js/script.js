@@ -448,8 +448,14 @@ const audioBtn = document.getElementById('audio-btn');
 let isAudioPlaying = false;
 let audioContext;
 
+// [NOVO] Força o botão a nascer com o texto e o visual de "Desligado"
+if (audioBtn) {
+    audioBtn.innerHTML = 'SOUND OFF';
+    audioBtn.classList.remove('playing');
+}
+
 function setupAudioContext() {
-    // Mantemos o Context apenas para lidar com políticas de Autoplay do navegador
+    // Mantemos o Context apenas para lidar com políticas do navegador
     if (!audioContext && (window.AudioContext || window.webkitAudioContext)) {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         audioContext = new AudioContext();
@@ -469,6 +475,8 @@ function toggleAudio() {
         audioBtn.classList.remove('playing');
         isAudioPlaying = false;
     } else {
+        // Quando o usuário finalmente clica, definimos o volume em 20% e tocamos
+        audioEl.volume = 0.2;
         audioEl.play().then(() => {
             audioBtn.innerHTML = 'SOUND ON';
             audioBtn.classList.add('playing');
