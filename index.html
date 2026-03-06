@@ -162,19 +162,12 @@
                 text-shadow: 0 0 5px #00ff88;
             }
 
-        /* [ATUALIZADO] Globo Menor, Mais Oval e Sem Brilho */
+        /* Proporção correta para o globo oval */
         .cyber-globe {
-            width: 12px; /* Reduzido de 16px para 12px */
-            height: 12px; /* Reduzido de 16px para 12px */
+            width: 28px; /* Largura ideal para bater com o tamanho da fonte */
+            height: 14px; /* Altura achatada */
             opacity: 0.9;
-            /* Animação e filter: drop-shadow removidos! */
         }
-
-            /* Ajuste fino na geometria do SVG dentro do HTML */
-            /* (Se você não mudou o HTML, adicione esse seletor aqui no CSS) */
-            .cyber-globe ellipse {
-                rx: 2 !important; /* Achata a elipse para ficar bem oval */
-            }
 
         @keyframes pulseGlow {
             0% {
@@ -282,17 +275,20 @@
 
     <div id="cyber-widget">
         <div class="cyber-counter" id="global-counter">
-            <svg class="cyber-globe" viewBox="0 0 24 24" fill="none" stroke="#00ff88" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <ellipse cx="12" cy="12" rx="4" ry="10"></ellipse>
-                <line x1="2" y1="12" x2="22" y2="12"></line>
+            <svg class="cyber-globe" viewBox="0 0 32 16" fill="none" stroke="#00ff88" stroke-width="1.5">
+                <ellipse cx="16" cy="8" rx="15" ry="7"></ellipse>
+                <ellipse cx="16" cy="8" rx="8" ry="7"></ellipse>
+                <line x1="16" y1="1" x2="16" y2="15"></line>
+                <line x1="1" y1="8" x2="31" y2="8"></line>
+                <line x1="3.5" y1="4" x2="28.5" y2="4"></line>
+                <line x1="3.5" y1="12" x2="28.5" y2="12"></line>
             </svg>
             <span class="cyber-label">GLOBAL CONN:</span>
             <span class="cyber-number" id="visit-count">000000</span>
         </div>
         <div class="cyber-btn-group">
             <button id="btn-cyber-game" class="cyber-btn">[GAME]</button>
-            <button id="btn-cyber-ai" class="cyber-btn">[A.I.]</button>
+            <button id="btn-cyber-ai" class="cyber-btn">[AI]</button>
         </div>
     </div>
 
