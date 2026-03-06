@@ -100,15 +100,15 @@
             transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-            /* Classes para esquivar dos painéis laterais/inferiores */
-            #cyber-widget.push-left {
-                transform: translateX(-280px); /* Ajuste esse valor para a largura do seu painel lateral */
+            /* O painel abriu na DIREITA, então o widget foge pra esquerda */
+            #cyber-widget.cyber-foge-esquerda {
+                transform: translateX(-280px) !important;
             }
 
-            #cyber-widget.push-up {
-                transform: translateY(-280px); /* Ajuste para desviar de algo embaixo */
+            /* O painel abriu EMBAIXO, então o widget foge pra cima */
+            #cyber-widget.cyber-foge-cima {
+                transform: translateY(-280px) !important;
             }
-
 
         /* Contador Enigmático */
         .cyber-counter {
