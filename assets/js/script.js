@@ -247,9 +247,9 @@ function closePanel(panel) {
         document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
     }
 
-    // [NOVO] Volta o Cyber Widget pro lugar original
+    // Limpa todas as classes de fuga do widget
     const cyberWidget = document.getElementById('cyber-widget');
-    if (cyberWidget) cyberWidget.classList.remove('push-left', 'push-up', 'push-both');
+    if (cyberWidget) cyberWidget.classList.remove('cyber-foge-esquerda', 'cyber-foge-cima', 'cyber-compensa');
 }
 function openPanel(panelId) {
     const panel = document.getElementById(panelId); if (!panel) return;
@@ -268,18 +268,22 @@ function dockPanel(panel, side) {
     panel.style.top = ''; panel.style.left = ''; panel.style.right = ''; panel.style.bottom = ''; panel.style.height = ''; panel.style.width = '';
 
     const cyberWidget = document.getElementById('cyber-widget');
-    if (cyberWidget) cyberWidget.classList.remove('push-left', 'push-up', 'push-both');
+    if (cyberWidget) cyberWidget.classList.remove('cyber-foge-esquerda', 'cyber-foge-cima', 'cyber-compensa');
 
     if (side !== 'float') {
         panel.classList.add(`docked-${side}`);
         document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
         document.body.classList.add(`push-${side}`);
 
+        // Lógica Exclusiva do Cyber Widget
         if (cyberWidget) {
             if (side === 'right') {
-                cyberWidget.classList.add('push-left');
+                cyberWidget.classList.add('cyber-foge-esquerda');
             } else if (side === 'bottom') {
-                cyberWidget.classList.add('push-up');
+                cyberWidget.classList.add('cyber-foge-cima');
+            } else if (side === 'left') {
+                // Se abrir na esquerda e o body arrastar o widget pra direita, essa classe puxa ele de volta!
+                cyberWidget.classList.add('cyber-compensa');
             }
         }
     } else {
