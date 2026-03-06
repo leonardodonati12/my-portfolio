@@ -19,15 +19,15 @@
             border-color: #00ff88;
         }
 
-        /* [ATUALIZADO] Cartão mais para baixo */
+        /* [ATUALIZADO] Cartão 30% menor e interativo */
         #secret-photo-card {
             position: absolute;
-            right: -280px;
-            top: 10%; /* Joga a foto para baixo do seu nome */
-            margin-top: 40px; /* Distância extra para baixo. Aumente esse número se quiser ela mais funda! */
+            right: -200px; /* Ajustado para a nova proporção */
+            top: 100%;
+            margin-top: 20px; /* Um pouco mais perto do nome */
 
-            width: 220px;
-            height: 280px;
+            width: 150px; /* Reduzido ~30% */
+            height: 200px; /* Reduzido ~30% */
             background: #000;
             border: 1px solid #fff;
             opacity: 0;
@@ -37,19 +37,31 @@
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             transition: opacity 0.3s, transform 0.1s ease-out;
-            pointer-events: none;
+            /* [MÁGICA AQUI] Muda para auto para a foto sentir o mouse */
+            pointer-events: auto;
             backface-visibility: hidden;
             z-index: 9999;
         }
 
-        /* [NOVO] "Campo de Força" para aumentar a área de movimento do mouse */
+            /* [NOVO] A "Ponte" invisível ligando a foto ao nome */
+            #secret-photo-card::before {
+                content: '';
+                position: absolute;
+                left: -100px; /* Estica em direção ao nome */
+                width: 100px;
+                top: -50px;
+                bottom: -50px;
+                background: transparent;
+            }
+
+        /* [ATUALIZADO] Margem de ativação de ~15% ao redor do nome */
         #hero-name::after {
             content: '';
             position: absolute;
-            top: -150px; /* Área extra para cima */
-            bottom: -350px; /* Área extra para baixo (cobre a nova posição da foto) */
-            left: -150px; /* Área extra para a esquerda */
-            right: -400px; /* Área extra para a direita (passa da foto) */
+            top: -20px;
+            bottom: -20px;
+            left: -20px;
+            right: -20px;
             background: transparent;
             z-index: 10;
         }
@@ -67,6 +79,12 @@
             stroke: #fff;
             stroke-width: 1;
             /* stroke-dasharray removido para ser contínua */
+        }
+
+        #hero-subtitle {
+            position: relative;
+            z-index: 20; /* Garante que ele fique acima do z-index: 10 do campo de força */
+            pointer-events: auto; /* Garante que ele sinta o mouse */
         }
     </style>
 </head>
