@@ -47,54 +47,139 @@ window.startGame = function () {
 // JOGO 1: SPACE
 // ==========================================
 function initSpace() {
+    let gameState = 'start'; // Estados: start, playing, gameover
     let player = { x: 180, y: 440, width: 40, height: 20, speed: 5 };
     let bullets = [];
     let enemies = [];
     let lastShot = 0;
+    let lastEnemySpawn = 0;
+    let frameCount = 0;
 
-    for (let i = 0; i < 4; i++) {
-        for (let j = 0; j < 6; j++) {
-            enemies.push({ x: 40 + j * 50, y: 30 + i * 40, width: 20, height: 15, alive: true });
-        }
+    function resetGame() {
+        player.x = 180;
+        bullets = [];
+        enemies = [];
+        score = 0;
+        updateScore();
+        gameState = 'playing';
+        lastEnemySpawn = Date.now();
+        frameCount = 0;
     }
-    let enemyDir = 1;
 
     function loop() {
+        if (!ctx) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Player
-        if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
-        if (keys['ArrowRight'] && player.x < canvas.width - player.width) player.x += player.speed;
+        // --- TELA INICIAL ---
+        if (gameState === 'start') {
+            ctx.fillStyle = '#fff';
+            ctx.font = '14px "Press Start 2P", monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText("SPACE DEFENDER", canvas.width / 2, canvas.height / 2 - 20);
 
-        if (keys['Space'] && Date.now() - lastShot > 300) {
-            bullets.push({ x: player.x + player.width / 2 - 2, y: player.y, width: 4, height: 10 });
-            lastShot = Date.now();
+            ctx.font = '10px "Press Start 2P", monospace';
+            // Efeito piscante
+            if (Math.floor(Date.now() / 500) % 2 === 0) {
+                ctx.fillText("PRESS SPACE TO PLAY", canvas.width / 2, canvas.height / 2 + 20);
+            }
+
+            if (keys['Space']) {
+                resetGame();
+                keys['Space'] = false; // Evita que dispare logo no início
+            }
         }
+        // --- TELA GAME OVER ---
+        else if (gameState === 'gameover') {
+            ctx.fillStyle = '#fff';
+            ctx.font = '16px "Press Start 2P", monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 20);
 
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(player.x, player.y, player.width, player.height);
-        ctx.fillRect(player.x + 15, player.y - 10, 10, 10);
+            ctx.font = '10px "Press Start 2P", monospace';
+            if (Math.floor(Date.now() / 500) % 2 === 0) {
+                ctx.fillText("PRESS SPACE TO RESTART", canvas.width / 2, canvas.height / 2 + 20);
+            }
 
-        bullets.forEach((b, index) => {
-            b.y -= 7; ctx.fillRect(b.x, b.y, b.width, b.height);
-            if (b.y < 0) bullets.splice(index, 1);
-        });
+            if (keys['Space']) {
+                resetGame();
+                keys['Space'] = false;
+            }
+        }
+        // --- JOGO A DECORRER ---
+        else if (gameState === 'playing') {
+            // 1. Pontuação baseada no tempo de sobrevivência
+            frameCount++;
+            if (frameCount % 6 === 0) { // Aumenta o score a cada 6 frames (~10x por segundo)
+                score += 1;
+                updateScore();
+            }
 
-        let hitWall = false;
-        enemies.forEach(e => {
-            if (!e.alive) return;
-            e.x += 1 * enemyDir;
-            if (e.x > canvas.width - e.width || e.x < 0) hitWall = true;
-            ctx.fillRect(e.x, e.y, e.width, e.height);
+            // 2. Movimento do Jogador
+            if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
+            if (keys['ArrowRight'] && player.x < canvas.width - player.width) player.x += player.speed;
 
-            bullets.forEach((b, bIndex) => {
-                if (b.x < e.x + e.width && b.x + b.width > e.x && b.y < e.y + e.height && b.y + b.height > e.y) {
-                    e.alive = false; bullets.splice(bIndex, 1); score += 150; updateScore();
-                }
+            // 3. Disparo
+            if (keys['Space'] && Date.now() - lastShot > 300) {
+                bullets.push({ x: player.x + player.width / 2 - 2, y: player.y, width: 4, height: 10 });
+                lastShot = Date.now();
+            }
+
+            // Desenhar Jogador (Nave)
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(player.x, player.y, player.width, player.height); // Corpo
+            ctx.fillRect(player.x + 15, player.y - 10, 10, 10); // Bico da nave
+
+            // 4. Lógica dos Disparos (Balas)
+            bullets.forEach((b, index) => {
+                b.y -= 8;
+                ctx.fillRect(b.x, b.y, b.width, b.height);
+                if (b.y < 0) bullets.splice(index, 1);
             });
-        });
 
-        if (hitWall) { enemyDir *= -1; enemies.forEach(e => e.y += 20); }
+            // 5. Spawn Aleatório de Inimigos
+            // Naves aparecem entre cada 0.4s e 1.2s
+            if (Date.now() - lastEnemySpawn > Math.random() * 800 + 400) {
+                enemies.push({
+                    x: Math.random() * (canvas.width - 20), // Posição X aleatória
+                    y: -20, // Nascem fora do ecrã em cima
+                    width: 20,
+                    height: 15,
+                    speed: Math.random() * 2 + 1.5 // Velocidade aleatória para cada nave
+                });
+                lastEnemySpawn = Date.now();
+            }
+
+            // 6. Lógica dos Inimigos
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                let e = enemies[i];
+                e.y += e.speed; // Move para baixo
+                ctx.fillRect(e.x, e.y, e.width, e.height);
+
+                // Verifica colisão com os disparos do jogador
+                let hit = false;
+                for (let j = bullets.length - 1; j >= 0; j--) {
+                    let b = bullets[j];
+                    if (b.x < e.x + e.width && b.x + b.width > e.x && b.y < e.y + e.height && b.y + b.height > e.y) {
+                        bullets.splice(j, 1); // Destrói a bala
+                        hit = true;
+                        break;
+                    }
+                }
+
+                if (hit) {
+                    enemies.splice(i, 1); // Destrói a nave inimiga (já não dá score, é só sobrevivência!)
+                    continue;
+                }
+
+                // Verifica Condição de GAME OVER (Inimigo tocou no jogador ou passou a linha do bico da nave)
+                // A linha do bico da nave é: player.y - 10
+                let passLine = (e.y + e.height >= player.y - 10);
+
+                if (passLine) {
+                    gameState = 'gameover';
+                }
+            }
+        }
 
         window.gameLoopId = requestAnimationFrame(loop);
     }
