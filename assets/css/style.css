@@ -178,19 +178,19 @@ body.active .audio-toggle {
 }
 
 body.push-right #portfolio-btn {
-	right: 300px;
+	right: 290px;
 }
 
 body.push-right #resume-btn {
-	right: 420px;
+	right: 410px;
 }
 
 body.push-right #solutions-btn {
-	right: 510px;
+	right: 500px;
 }
 
 body.push-right .audio-toggle {
-	right: 630px;
+	right: 620px;
 }
 
 body.push-top #portfolio-btn, body.push-top #resume-btn, body.push-top #solutions-btn, body.push-top .audio-toggle {

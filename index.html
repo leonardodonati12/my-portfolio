@@ -162,6 +162,31 @@
                 text-shadow: 0 0 5px #00ff88;
             }
 
+        /* [NOVO] Estilo do Globo Holográfico */
+        .cyber-globe {
+            width: 16px;
+            height: 16px;
+            animation: pulseGlow 2s infinite alternate; /* Animação de brilho suave */
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                filter: drop-shadow(0 0 2px #00ff88);
+                opacity: 0.7;
+            }
+
+            100% {
+                filter: drop-shadow(0 0 8px #00ff88);
+                opacity: 1;
+            }
+        }
+
+        /* Deixando a tipografia do contador mais imersiva */
+        .cyber-number {
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+        }
+
     </style>
 </head>
 <body>
@@ -248,10 +273,14 @@
     </audio>
 
     <div id="cyber-widget">
-        <div class="cyber-counter">
-            <span class="cyber-cursor">></span>
-            <span class="cyber-label">SYS.CONN:</span>
-            <span class="cyber-number">08992</span>
+        <div class="cyber-counter" id="global-counter">
+            <svg class="cyber-globe" viewBox="0 0 24 24" fill="none" stroke="#00ff88" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <ellipse cx="12" cy="12" rx="4" ry="10"></ellipse>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+            </svg>
+            <span class="cyber-label">GLOBAL CONN:</span>
+            <span class="cyber-number" id="visit-count">000000</span>
         </div>
         <div class="cyber-btn-group">
             <button id="btn-cyber-game" class="cyber-btn">[ GAME ]</button>
@@ -381,6 +410,36 @@
                 if (!secretCard) return;
                 secretCard.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
             });
+
+            // --- CYBER WIDGET: GLOBAL COUNTER FUNCIONAL ---
+            const countEl = document.getElementById('visit-count');
+            if (countEl) {
+                // 1. Define um número base bacana e busca na memória do navegador se já existe
+                let baseCount = parseInt(localStorage.getItem('matrixGlobalVisits')) || 184092;
+
+                // 2. Adiciona +1 para a sua visita atual
+                baseCount += 1;
+                localStorage.setItem('matrixGlobalVisits', baseCount);
+
+                // 3. Função para formatar o número com zeros à esquerda (ex: 00184092)
+                const updateDisplay = (num) => {
+                    countEl.innerText = num.toString().padStart(6, '0');
+                };
+
+                // Mostra o número inicial
+                updateDisplay(baseCount);
+
+                // 4. Simulador de "Live Traffic" (Pessoas conectando em tempo real)
+                setInterval(() => {
+                    // 60% de chance de alguém "entrar" no site a cada 3.5 segundos
+                    if (Math.random() > 0.4) {
+                        const jump = Math.floor(Math.random() * 3) + 1; // Soma de 1 a 3 novos acessos
+                        baseCount += jump;
+                        localStorage.setItem('matrixGlobalVisits', baseCount);
+                        updateDisplay(baseCount);
+                    }
+                }, 3500);
+            }
         });
     </script>
 
