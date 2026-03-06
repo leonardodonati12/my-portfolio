@@ -5,6 +5,26 @@ const tabs = document.querySelectorAll('.game-tab');
 let currentGame = 'space';
 window.gameLoopId = null; // Agora é global para o site conseguir pausar!
 let score = 0;
+let highScore = 0; // [NOVO] Variável para o recorde
+
+// [NOVO] Recordes Genéricos Iniciais (Estilo Fliperama)
+const genericHighScores = {
+    'space': 122324,
+    'tetris': 89920,
+    'tennis': 45500
+};
+
+// [NOVO] Função para carregar o recorde (local ou genérico)
+function loadHighScore() {
+    let savedScore = localStorage.getItem('arcade_highscore_' + currentGame);
+    if (savedScore) {
+        highScore = parseInt(savedScore);
+    } else {
+        highScore = genericHighScores[currentGame];
+    }
+    const globalScoreEl = document.getElementById('global-score');
+    if (globalScoreEl) globalScoreEl.innerText = `GLOBAL SCORE: ${highScore.toString().padStart(6, '0')}`;
+}
 
 // --- CONTROLES DA ABA ---
 tabs.forEach(tab => {
@@ -13,6 +33,7 @@ tabs.forEach(tab => {
         tab.classList.add('active');
         currentGame = tab.getAttribute('data-game');
         score = 0;
+        loadHighScore(); // [NOVO] Carrega o recorde da aba selecionada
         updateScore();
         window.startGame(); // Reinicia o jogo certo
     });
@@ -20,7 +41,18 @@ tabs.forEach(tab => {
 
 function updateScore() {
     document.getElementById('local-score').innerText = `SCORE: ${score.toString().padStart(6, '0')}`;
+    
+    // [NOVO] Verifica se bateu o recorde e atualiza a tela/memória
+    if (score > highScore) {
+        highScore = score;
+        localStorage.setItem('arcade_highscore_' + currentGame, highScore);
+        const globalScoreEl = document.getElementById('global-score');
+        if (globalScoreEl) globalScoreEl.innerText = `GLOBAL SCORE: ${highScore.toString().padStart(6, '0')}`;
+    }
 }
+
+// [NOVO] Carrega o recorde da aba inicial (Space) logo que abre
+loadHighScore();
 
 // --- CONTROLES DE TECLADO (Sem rolar a página) ---
 const keys = {};
