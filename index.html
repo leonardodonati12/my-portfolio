@@ -136,17 +136,22 @@
             }
         }
 
-        /* Botões Minimalistas */
+        /* [ATUALIZADO] Grupo de botões esticando para a largura do contador */
         .cyber-btn-group {
             display: flex;
-            gap: 10px;
+            gap: 10px; /* Espaçamento entre eles */
+            width: 100%; /* O grande truque: força a ter a exata largura do bloco de cima! */
         }
 
+        /* [ATUALIZADO] Botões simétricos dividindo o espaço */
         .cyber-btn {
+            flex: 1; /* O outro truque: divide o espaço em exatos 50% para cada botão */
+            text-align: center; /* Centraliza o texto no meio do botão */
+            /* (Mantendo suas cores e efeitos) */
             background: rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(0, 255, 136, 0.3);
             color: #00ff88;
-            padding: 6px 12px;
+            padding: 6px 0; /* Ajustei o padding lateral pra zero, o flex já cuida do tamanho */
             font-size: 0.75rem;
             cursor: pointer;
             font-family: 'Courier New', Courier, monospace;
@@ -159,7 +164,7 @@
                 background: rgba(0, 255, 136, 0.1);
                 border-color: #00ff88;
                 box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
-                text-shadow: 0 0 5px #00ff88;
+                /* Tiramos o text-shadow daqui também pra manter a pegada "clean" se quiser */
             }
 
         /* Proporção correta para o globo oval */
