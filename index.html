@@ -197,18 +197,16 @@
             position: fixed;
             bottom: 120px;
             right: 40px;
-            background: rgba(0, 0, 0, 0.9); /* Fundo escuro para destacar o branco */
-            padding: 15px;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
+            /* REMOVIDO: Background preto e backdrop-filter! Fica 100% transparente */
+            background: transparent;
+            padding: 0;
             z-index: 100;
             display: none;
-            /* Removemos as bordas verdes e o brilho! */
         }
 
             #arcade-modal.open {
                 display: block;
-                animation: glitch-open 0.3s forwards;
+                animation: pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
             }
 
         .arcade-machine {
@@ -218,51 +216,59 @@
             font-family: 'Press Start 2P', monospace;
         }
 
-        /* Scores perfeitamente alinhados com as curvas do container abaixo */
+        /* Largura ajustada para bater exatamente com a largura reduzida do Canvas (300px + bordas) */
         .score-header {
-            width: 412px; /* Largura do canvas(400) + bordas e padding(12) */
+            width: 312px;
             display: flex;
             justify-content: space-between;
-            font-size: 10px;
+            font-size: 9px;
             color: #fff;
-            margin-bottom: 8px; /* Espaçamento da curva superior */
+            margin-bottom: 8px;
+            padding: 0 4px; /* Crava exatamente no início das curvas */
         }
 
         .game-area {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
         }
-        /* Centraliza as abas verticalmente */
 
-        /* Abas fluidas com a moldura */
+        /* Abas Estilo Chrome: Coladas, arredondadas e sem gap */
         .sidebar-tabs {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            margin-right: -2px;
+            gap: 0; /* Coladas umas nas outras */
+            margin-right: -2px; /* Avança sobre a borda principal para se fundir */
             z-index: 10;
+            margin-top: 20px;
         }
 
         .game-tab {
             writing-mode: vertical-rl;
             transform: rotate(180deg);
-            padding: 15px 6px;
+            padding: 15px 8px;
             border: 2px solid #fff;
-            border-right: none; /* Tira a borda direita para colar na tela */
-            border-radius: 6px 0 0 6px;
+            border-radius: 10px 0 0 10px; /* Curva suave estilo aba de navegador */
             background: #000;
-            color: #fff;
-            font-size: 10px;
+            color: #777; /* Texto apagado quando inativo */
+            font-size: 9px;
             cursor: pointer;
             text-align: center;
             transition: all 0.2s;
+            margin-bottom: -2px; /* Sobrepõe a borda da aba de baixo */
         }
 
-            /* O Truque da fusão: box-shadow empurra um branco sólido pra cima da borda do canvas */
+            .game-tab:hover {
+                color: #fff;
+                background: #111;
+            }
+
+            /* Aba Ativa se funde com o quadro branco */
             .game-tab.active {
                 background: #fff;
                 color: #000;
-                box-shadow: 2px 0 0px #fff;
+                border-right: none; /* Apaga a linha divisória */
+                padding-right: 10px; /* Compensa a borda removida para o texto não pular */
+                z-index: 11; /* Fica acima das inativas */
             }
 
         /* Moldura do Jogo */
@@ -270,48 +276,21 @@
             border: 2px solid #fff;
             border-radius: 12px;
             padding: 4px;
-            background: #000;
+            background: #000; /* Agora o preto existe SÓ AQUI dentro! */
             position: relative;
             z-index: 5;
         }
 
+        /* TRUQUE DOS -25%: Força o canvas a renderizar menor no CSS */
         #gameCanvas {
             display: block;
             background: #000;
             border-radius: 8px;
+            width: 300px; /* 25% menor que os 400px originais */
+            height: 360px; /* 25% menor que os 480px originais */
         }
 
-        @keyframes glitch-open {
-            0% {
-                opacity: 0;
-                transform: translateY(20px) scale(0.95);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-            .game-tab.active {
-                background: #fff;
-                color: #000;
-            }
-
-        .screen-container {
-            border: 2px solid #fff;
-            border-radius: 10px;
-            padding: 4px;
-            background: #000;
-        }
-
-        #gameCanvas {
-            display: block;
-            background: #000;
-            border-radius: 6px;
-        }
-
-        @keyframes glitch-open {
+        @keyframes pop-in {
             0% {
                 opacity: 0;
                 transform: translateY(20px) scale(0.95);
@@ -409,15 +388,12 @@
     </audio>
 
     <div id="arcade-modal" class="cyber-modal">
-        <div class="arcade-header">
-            <span>// ARCADE.SYS_</span>
-            <button id="close-arcade-btn">[ X ]</button>
-        </div>
         <div class="arcade-machine">
             <div class="score-header">
                 <div id="local-score">SCORE: 000000</div>
                 <div id="global-score">GLOBAL SCORE: 122324</div>
             </div>
+
             <div class="game-area">
                 <div class="sidebar-tabs">
                     <div class="game-tab active" data-game="space">SPACE</div>
