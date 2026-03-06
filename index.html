@@ -162,12 +162,19 @@
                 text-shadow: 0 0 5px #00ff88;
             }
 
-        /* [NOVO] Estilo do Globo Holográfico */
+        /* [ATUALIZADO] Globo Menor, Mais Oval e Sem Brilho */
         .cyber-globe {
-            width: 16px;
-            height: 16px;
-            animation: pulseGlow 2s infinite alternate; /* Animação de brilho suave */
+            width: 12px; /* Reduzido de 16px para 12px */
+            height: 12px; /* Reduzido de 16px para 12px */
+            opacity: 0.9;
+            /* Animação e filter: drop-shadow removidos! */
         }
+
+            /* Ajuste fino na geometria do SVG dentro do HTML */
+            /* (Se você não mudou o HTML, adicione esse seletor aqui no CSS) */
+            .cyber-globe ellipse {
+                rx: 2 !important; /* Achata a elipse para ficar bem oval */
+            }
 
         @keyframes pulseGlow {
             0% {
@@ -181,10 +188,11 @@
             }
         }
 
-        /* Deixando a tipografia do contador mais imersiva */
+        /* [ATUALIZADO] Número Clean (Sem Brilho/Neon) */
         .cyber-number {
             font-weight: bold;
-            text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+            color: #00ff88; /* Verde sólido puro */
+            text-shadow: none !important; /* Removemos o brilho neon daqui */
         }
 
     </style>
@@ -283,8 +291,8 @@
             <span class="cyber-number" id="visit-count">000000</span>
         </div>
         <div class="cyber-btn-group">
-            <button id="btn-cyber-game" class="cyber-btn">[ GAME ]</button>
-            <button id="btn-cyber-ai" class="cyber-btn">[ A.I. ]</button>
+            <button id="btn-cyber-game" class="cyber-btn">[GAME]</button>
+            <button id="btn-cyber-ai" class="cyber-btn">[A.I.]</button>
         </div>
     </div>
 
