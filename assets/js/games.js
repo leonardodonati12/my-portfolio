@@ -211,14 +211,15 @@ function initTennis() {
 }
 
 // ==========================================
-// JOGO 3: TETRIS (Motor Completo!)
+// JOGO 3: TETRIS (Tela Inteira!)
 // ==========================================
 function initTetris() {
     let gameState = 'start';
-    let cols = 10, rows = 20, blockSize = 20;
-    // Centraliza o campo de jogo na tela (Grid de 200x400 num canvas de 400x480)
-    let offsetX = (canvas.width - (cols * blockSize)) / 2;
-    let offsetY = (canvas.height - (rows * blockSize)) / 2;
+
+    // [NOVO] A matemática perfeita: blocos de 20px preenchem a tela de 400x480 sem deixar bordas!
+    let blockSize = 20;
+    let cols = canvas.width / blockSize;  // 20 colunas
+    let rows = canvas.height / blockSize; // 24 linhas
 
     let grid = [], frameCount = 0, dropCounter = 0, lastMoveTime = 0, lastUpState = false;
 
@@ -239,8 +240,9 @@ function initTetris() {
 
     function spawnPiece() {
         piece.matrix = tetrominos[Math.floor(Math.random() * tetrominos.length)];
-        piece.y = 0; piece.x = Math.floor(cols / 2) - Math.floor(piece.matrix[0].length / 2);
-        if (collide()) gameState = 'gameover'; // Morre se nascer batendo
+        piece.y = 0;
+        piece.x = Math.floor(cols / 2) - Math.floor(piece.matrix[0].length / 2); // Nasce no meio exato
+        if (collide()) gameState = 'gameover'; // Morre se não houver espaço para nascer
     }
 
     function collide() {
@@ -277,7 +279,7 @@ function initTetris() {
         let rotated = [], N = piece.matrix.length, M = piece.matrix[0].length;
         for (let i = 0; i < M; i++) { rotated.push([]); for (let j = 0; j < N; j++) rotated[i].push(piece.matrix[N - j - 1][i]); }
         let oldMatrix = piece.matrix; piece.matrix = rotated;
-        if (collide()) piece.matrix = oldMatrix; // Cancela giro se bater na parede
+        if (collide()) piece.matrix = oldMatrix; // Cancela giro se for bater na parede
     }
 
     function resetGame() { createGrid(); spawnPiece(); score = 0; updateScore(); frameCount = 0; gameState = 'playing'; }
@@ -300,19 +302,18 @@ function initTetris() {
             if (keys['Space']) { resetGame(); keys['Space'] = false; }
         } else if (gameState === 'playing') {
             frameCount++;
-            if (frameCount % 6 === 0) { score += 1; updateScore(); } // Score de sobrevivência
+            if (frameCount % 6 === 0) { score += 1; updateScore(); } // Score sobrevivência
 
-            // Controles direcionais com limite de velocidade para não bugar
+            // Controles
             if (Date.now() - lastMoveTime > 120) {
                 if (keys['ArrowLeft']) { piece.x--; if (collide()) piece.x++; lastMoveTime = Date.now(); }
                 if (keys['ArrowRight']) { piece.x++; if (collide()) piece.x--; lastMoveTime = Date.now(); }
                 if (keys['ArrowDown']) { piece.y++; if (collide()) { piece.y--; merge(); clearLines(); spawnPiece(); } lastMoveTime = Date.now(); }
             }
 
-            // Giro: Seta pra Cima (Bloqueia clique segurado)
             if (keys['ArrowUp']) { if (!lastUpState) { rotate(); lastUpState = true; } } else { lastUpState = false; }
 
-            // Gravidade das Peças
+            // Gravidade
             dropCounter++;
             if (dropCounter > 35) {
                 piece.y++;
@@ -320,22 +321,20 @@ function initTetris() {
                 dropCounter = 0;
             }
 
-            // Desenhar Borda do Grid Central
-            ctx.strokeStyle = '#333'; ctx.strokeRect(offsetX - 1, offsetY - 1, cols * blockSize + 2, rows * blockSize + 2);
-
-            // Desenhar Peças Mortas
-            ctx.fillStyle = '#aaa';
+            // [NOVO] Desenhar Peças Mortas espalhadas pela tela inteira
+            ctx.fillStyle = '#777'; // Um cinza um pouco mais escuro para o "fundo"
             for (let y = 0; y < rows; y++) {
                 for (let x = 0; x < cols; x++) {
-                    if (grid[y][x]) ctx.fillRect(offsetX + x * blockSize + 1, offsetY + y * blockSize + 1, blockSize - 2, blockSize - 2);
+                    // O +1 e -2 criam aquele espaço de 1 pixel entre os blocos (estilo tijolo clássico)
+                    if (grid[y][x]) ctx.fillRect(x * blockSize + 1, y * blockSize + 1, blockSize - 2, blockSize - 2);
                 }
             }
 
-            // Desenhar Peça Viva
-            ctx.fillStyle = '#fff';
+            // [NOVO] Desenhar Peça Viva
+            ctx.fillStyle = '#fff'; // Peça caindo sempre branca e brilhante
             for (let y = 0; y < piece.matrix.length; y++) {
                 for (let x = 0; x < piece.matrix[y].length; x++) {
-                    if (piece.matrix[y][x]) ctx.fillRect(offsetX + (piece.x + x) * blockSize + 1, offsetY + (piece.y + y) * blockSize + 1, blockSize - 2, blockSize - 2);
+                    if (piece.matrix[y][x]) ctx.fillRect((piece.x + x) * blockSize + 1, (piece.y + y) * blockSize + 1, blockSize - 2, blockSize - 2);
                 }
             }
         }
