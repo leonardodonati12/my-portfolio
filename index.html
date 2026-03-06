@@ -193,6 +193,129 @@
             text-shadow: none !important; /* Removemos o brilho neon daqui */
         }
 
+        #arcade-modal {
+            position: fixed;
+            bottom: 120px; /* Fica exatamente em cima do Cyber Widget */
+            right: 40px;
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid rgba(0, 255, 136, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            display: none; /* Escondido por padrão */
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.15);
+        }
+
+            /* Animação de abertura estilo Glitch/Pop */
+            #arcade-modal.open {
+                display: flex;
+                animation: glitch-open 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            }
+
+        .arcade-header {
+            display: flex;
+            justify-content: space-between;
+            color: #00ff88;
+            font-size: 14px;
+            font-weight: bold;
+            border-bottom: 1px dashed rgba(0, 255, 136, 0.5);
+            padding-bottom: 8px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        #close-arcade-btn {
+            background: none;
+            border: none;
+            color: #00ff88;
+            cursor: pointer;
+            font-family: inherit;
+            transition: text-shadow 0.2s;
+        }
+
+            #close-arcade-btn:hover {
+                text-shadow: 0 0 8px #00ff88;
+            }
+
+        /* Adaptação do Layout da Máquina */
+        .arcade-machine {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Press Start 2P', monospace;
+        }
+
+        .score-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            color: #fff;
+            padding-left: 30px;
+        }
+
+        .game-area {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .sidebar-tabs {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-right: -2px;
+            z-index: 10;
+            margin-top: 15px;
+        }
+
+        .game-tab {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            padding: 15px 5px;
+            border: 1px solid #fff;
+            border-radius: 6px 0 0 6px;
+            border-right: none;
+            background: #000;
+            color: #fff;
+            font-size: 9px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+            .game-tab.active {
+                background: #fff;
+                color: #000;
+            }
+
+        .screen-container {
+            border: 2px solid #fff;
+            border-radius: 10px;
+            padding: 4px;
+            background: #000;
+        }
+
+        #gameCanvas {
+            display: block;
+            background: #000;
+            border-radius: 6px;
+        }
+
+        @keyframes glitch-open {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -278,6 +401,29 @@
         <source src="assets/audio/dark-ambient-126122.mp3" type="audio/mp3">
     </audio>
 
+    <div id="arcade-modal" class="cyber-modal">
+        <div class="arcade-header">
+            <span>// ARCADE.SYS_</span>
+            <button id="close-arcade-btn">[ X ]</button>
+        </div>
+        <div class="arcade-machine">
+            <div class="score-header">
+                <div id="local-score">SCORE: 000000</div>
+                <div id="global-score">GLOBAL SCORE: 122324</div>
+            </div>
+            <div class="game-area">
+                <div class="sidebar-tabs">
+                    <div class="game-tab active" data-game="space">SPACE</div>
+                    <div class="game-tab" data-game="tetris">TETRIS</div>
+                    <div class="game-tab" data-game="tennis">TENNIS</div>
+                </div>
+                <div class="screen-container">
+                    <canvas id="gameCanvas" width="400" height="480"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="cyber-widget">
         <div class="cyber-counter" id="global-counter">
             <svg class="cyber-globe" viewBox="0 0 32 16" fill="none" stroke="#00ff88" stroke-width="1.5">
@@ -296,6 +442,8 @@
             <button id="btn-cyber-ai" class="cyber-btn">[AI]</button>
         </div>
     </div>
+
+    <script src="assets/js/games.js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -448,7 +596,29 @@
                         updateDisplay(baseCount);
                     }
                 }, 3500);
-            } 
+            }
+
+            // --- LÓGICA DO BOTÃO [ GAME ] ---
+            const btnGame = document.getElementById('btn-cyber-game');
+            const arcadeModal = document.getElementById('arcade-modal');
+            const closeArcade = document.getElementById('close-arcade-btn');
+
+            if (btnGame && arcadeModal) {
+                btnGame.addEventListener('click', () => {
+                    arcadeModal.classList.add('open');
+                    // Dispara o jogo quando a janela abre
+                    if (typeof startGame === 'function') startGame();
+                });
+
+                closeArcade.addEventListener('click', () => {
+                    arcadeModal.classList.remove('open');
+                    // Pausa o jogo quando fecha (salva bateria do usuário!)
+                    if (typeof cancelAnimationFrame === 'function' && typeof gameLoopId !== 'undefined') {
+                        cancelAnimationFrame(gameLoopId);
+                    }
+                });
+            }
+
         });
     </script>
 

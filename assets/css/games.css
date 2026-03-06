@@ -1,0 +1,99 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Press Start 2P', monospace;
+}
+
+body {
+    background-color: #000;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.arcade-machine {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Header dos Scores */
+.score-header {
+    width: 500px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    padding-left: 40px; /* Compensa o espaço das abas */
+}
+
+/* Área Flex para Abas e Canvas lado a lado */
+.game-area {
+    display: flex;
+    align-items: stretch;
+}
+
+/* Abas Verticais */
+.sidebar-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-right: -2px; /* Faz a aba sobrepor a borda do canvas */
+    z-index: 10;
+    margin-top: 40px;
+}
+
+.game-tab {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg); /* Vira o texto de baixo pra cima */
+    padding: 20px 10px;
+    border: 2px solid #fff;
+    border-radius: 8px 0 0 8px; /* Arredonda só a esquerda */
+    border-right: none;
+    background: #000;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+    .game-tab:hover {
+        background: #222;
+    }
+
+    .game-tab.active {
+        background: #fff;
+        color: #000;
+    }
+
+/* Container do Jogo (A Borda arredondada) */
+.screen-container {
+    border: 2px solid #fff;
+    border-radius: 15px;
+    padding: 5px;
+    background: #000;
+}
+
+canvas {
+    display: block;
+    background: #000;
+    border-radius: 10px;
+}
+
+/* Botão de voltar */
+.back-btn {
+    margin-top: 20px;
+    color: #555;
+    text-decoration: none;
+    font-size: 10px;
+    transition: color 0.3s;
+}
+
+    .back-btn:hover {
+        color: #fff;
+    }
