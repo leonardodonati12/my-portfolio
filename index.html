@@ -227,19 +227,23 @@
             padding: -10px 10px; /* Crava exatamente no início das curvas */
         }
 
+        /* Transformamos a área do jogo em uma "âncora" para as abas */
         .game-area {
+            position: relative;
             display: flex;
             align-items: flex-start;
         }
 
-        /* Abas Estilo Chrome: Coladas, arredondadas e sem gap */
+        /* Jogamos as abas ABSOLUTAMENTE para fora, na esquerda */
         .sidebar-tabs {
+            position: absolute;
+            right: 100%; /* Empurra a caixa inteira para fora da tela do jogo */
+            top: 40px; /* Desloca um pouco para baixo para ficar alinhado bonito */
             display: flex;
             flex-direction: column;
             gap: 0;
-            margin-right: -2px; /* Avança sobre a borda principal para se fundir */
+            margin-right: -2px; /* O truque mágico: avança 2px para "comer" a borda branca do Canvas */
             z-index: 10;
-            margin-top: 20px;
         }
 
         .game-tab {
