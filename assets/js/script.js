@@ -276,12 +276,10 @@ function dockPanel(panel, side) {
         document.body.classList.add(`push-${side}`);
 
         if (cyberWidget) {
-            if (side === 'left') {
+            if (side === 'right') {
                 cyberWidget.classList.add('push-left');
             } else if (side === 'bottom') {
                 cyberWidget.classList.add('push-up');
-            } else if (side === 'right') {
-                cyberWidget.classList.add('push-left');
             }
         }
     } else {
