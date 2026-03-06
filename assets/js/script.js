@@ -479,22 +479,5 @@ function toggleAudio() {
 
 if (audioBtn) audioBtn.addEventListener('click', toggleAudio);
 
-if (startBtn) {
-    startBtn.addEventListener('click', () => {
-        setupAudioContext();
-        if (audioEl && !isAudioPlaying) {
-            audioEl.volume = 0;
-            audioEl.play().then(() => {
-                isAudioPlaying = true;
-                audioBtn.innerHTML = 'SOUND ON';
-                audioBtn.classList.add('playing');
-                // Fade in suave
-                let vol = 0;
-                const fade = setInterval(() => {
-                    if (vol < 0.2) { vol += 0.01; audioEl.volume = vol; } else { clearInterval(fade); }
-                }, 100);
-            }).catch(e => console.log("Autoplay aguardando interação."));
-        }
-    });
-}
+
 
