@@ -239,20 +239,55 @@ function getDragAfterElement(container, y) {
 
 const panels = document.querySelectorAll('.ui-panel'); 
 function closePanel(panel) {
-    panel.style.display = 'none'; const target = document.querySelector(`[data-target="${panel.id}"]`); if (target) target.classList.remove('active-tab');
-    if (!panel.classList.contains('floating')) { document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom'); }
+    panel.style.display = 'none';
+    const target = document.querySelector(`[data-target="${panel.id}"]`);
+    if (target) target.classList.remove('active-tab');
+
+    if (!panel.classList.contains('floating')) {
+        document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
+    }
+
+    // [NOVO] Volta o Cyber Widget pro lugar original
+    const cyberWidget = document.getElementById('cyber-widget');
+    if (cyberWidget) cyberWidget.classList.remove('push-left', 'push-up', 'push-both');
 }
 function openPanel(panelId) {
     const panel = document.getElementById(panelId); if (!panel) return;
     panels.forEach(p => { if (p.id !== panelId && !p.classList.contains('floating')) closePanel(p); });
-    panel.style.display = 'flex'; const target = document.querySelector(`[data-target="${panelId}"]`); if (target) target.classList.add('active-tab');
-    if (!panel.classList.contains('floating')) dockPanel(panel, 'left');
+
+    panel.style.display = 'flex';
+    const target = document.querySelector(`[data-target="${panelId}"]`);
+    if (target) target.classList.add('active-tab');
+
+    if (!panel.classList.contains('floating')) {
+        dockPanel(panel, 'left');
+    }
 }
 function dockPanel(panel, side) {
     panel.classList.remove('docked-left', 'docked-right', 'docked-top', 'docked-bottom', 'floating');
     panel.style.top = ''; panel.style.left = ''; panel.style.right = ''; panel.style.bottom = ''; panel.style.height = ''; panel.style.width = '';
-    if (side !== 'float') { panel.classList.add(`docked-${side}`); document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom'); document.body.classList.add(`push-${side}`); }
-    else { panel.classList.add('floating'); document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom'); }
+
+    const cyberWidget = document.getElementById('cyber-widget');
+    if (cyberWidget) cyberWidget.classList.remove('push-left', 'push-up', 'push-both');
+
+    if (side !== 'float') {
+        panel.classList.add(`docked-${side}`);
+        document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
+        document.body.classList.add(`push-${side}`);
+
+        if (cyberWidget) {
+            if (side === 'left') {
+                cyberWidget.classList.add('push-left');
+            } else if (side === 'bottom') {
+                cyberWidget.classList.add('push-up');
+            } else if (side === 'right') {
+                cyberWidget.classList.add('push-left');
+            }
+        }
+    } else {
+        panel.classList.add('floating');
+        document.body.classList.remove('push-left', 'push-top', 'push-right', 'push-bottom');
+    }
 }
 
 let isDragging = false, dragPanel = null, diffX = 0, diffY = 0;
