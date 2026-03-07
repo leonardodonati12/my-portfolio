@@ -656,59 +656,54 @@
                     });
                 }
 
-                // --- LÓGICA DO CHAT (MENSAGENS VIA API DA VERCEL) ---
+                // --- LÓGICA DO CHAT (COM MEMÓRIA E PROMPT CORRIGIDO) ---
                 const chatInput = document.getElementById('chat-input');
                 const chatHistory = document.getElementById('chat-history');
 
+                // 1. CRIAMOS A MEMÓRIA DA IA AQUI (O histórico de conversa)
+                // Já damos a primeira instrução com a "bronca" para ela não atuar.
+                let conversationHistory = [
+                    {
+                        role: "system",
+                        content: "Você é o SYSTEM, assistente do portfólio de Leonardo Donati (estudante de arquitetura). Responda de forma extremamente direta, fria, curta e objetiva. NUNCA use jargões falsos de hacker como 'Acesso autorizado', 'Pesquisa iniciada' ou 'Processando'. Apenas entregue a resposta diretamente. Não use formatação markdown (sem asteriscos)."
+                    }
+                ];
+
                 if (chatInput && chatHistory) {
 
-                    // [NOVO] O ESCUDO DEFINITIVO:
-                    // Usamos apenas um 'keydown'. O stopPropagation impede que o jogo 
-                    // roube QUALQUER tecla (Espaço, Enter, Setas) enquanto você digita.
                     chatInput.addEventListener('keydown', async function (e) {
-
-                        e.stopPropagation(); // Trava o vazamento de teclas pro jogo
+                        e.stopPropagation(); // O Escudo do Espaço/Enter
 
                         if (e.key === 'Enter' && this.value.trim() !== '') {
                             const userText = this.value.trim();
 
-                            // 1. Imprime a mensagem do usuário na tela
+                            // 2. SALVA A MENSAGEM DO USUÁRIO NA MEMÓRIA
+                            conversationHistory.push({ role: "user", content: userText });
+
+                            // Imprime a mensagem do usuário na tela
                             const userMsgDiv = document.createElement('div');
                             userMsgDiv.className = 'msg user-msg';
-                            userMsgDiv.innerHTML = `<span class="sender">USER:</span>${userText}`;
+                            userMsgDiv.innerHTML = `<span class="sender">YOU:</span>${userText}`;
                             chatHistory.appendChild(userMsgDiv);
 
-                            // 2. Limpa o input e rola pra baixo
                             this.value = '';
                             chatHistory.scrollTop = chatHistory.scrollHeight;
 
-                            // 3. Cria a mensagem do SYSTEM "pensando" (Feedback visual pro usuário)
                             const aiMsgDiv = document.createElement('div');
                             aiMsgDiv.className = 'msg ai-msg';
                             aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span><span class="cyber-cursor">_</span>`;
                             chatHistory.appendChild(aiMsgDiv);
                             chatHistory.scrollTop = chatHistory.scrollHeight;
 
-                            // 4. CHAMA O SEU SERVIDOR INVISÍVEL NA VERCEL
                             try {
                                 const response = await fetch('/api/chat', {
                                     method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
+                                    headers: { 'Content-Type': 'application/json' },
                                     body: JSON.stringify({
                                         model: "llama-3.1-8b-instant",
-                                        messages: [
-                                            {
-                                                role: "system",
-                                                content: "Você é o SYSTEM, a interface do portfólio do Leonardo Donati, um estudante de arquitetura e design. Responda de forma curta, robótica e no estilo terminal hacker. Sempre em português do Brasil. Nunca use formatação markdown (sem asteriscos ou negritos)."
-                                            },
-                                            {
-                                                role: "user",
-                                                content: userText
-                                            }
-                                        ],
-                                        temperature: 0.7
+                                        // 3. MANDAMOS O HISTÓRICO INTEIRO PARA A API LER
+                                        messages: conversationHistory,
+                                        temperature: 0.5 // Diminuí um pouco a criatividade para ela ficar mais séria
                                     })
                                 });
 
@@ -716,27 +711,28 @@
 
                                 if (data.choices && data.choices[0]) {
                                     const aiText = data.choices[0].message.content;
+
+                                    // 4. SALVA A RESPOSTA DA IA NA MEMÓRIA PARA ELA LEMBRAR DEPOIS
+                                    conversationHistory.push({ role: "assistant", content: aiText });
+
                                     aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>${aiText}`;
                                 } else if (data.error) {
-                                    // SE A GROQ RECLAMAR (EX: CHAVE ERRADA), ELA CUSPE O ERRO AQUI:
                                     const motivo = data.error.message || "Falha desconhecida";
                                     aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[ERRO DA API: ${motivo}_]`;
                                 } else {
-                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[RESPOSTA INVÁLIDA DO SERVIDOR_]`;
+                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[RESPOSTA INVÁLIDA_]`;
                                 }
 
                             } catch (error) {
-                                // Se a internet cair ou o servidor falhar
                                 console.error("Erro na Matrix:", error);
-                                aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[OFFLINE - SIGNAL LOST_]`;
+                                aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[OFFLINE - SINAL PERDIDO_]`;
                             }
 
-                            // Rola a tela pra baixo de novo após a resposta chegar
                             chatHistory.scrollTop = chatHistory.scrollHeight;
                         }
                     });
                 }
-            } // <-- Fecha o bloco isolado do Game/IA
+            } // <-- Fecha o bloco isolado
         });
 
     </script>
