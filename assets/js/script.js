@@ -320,7 +320,7 @@ const scene = new THREE.Scene(); scene.fog = new THREE.FogExp2(0x050505, 0.002);
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.set(-10, 5, 10); camera.lookAt(0, 0, 0);
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); renderer.setSize(window.innerWidth, window.innerHeight);
 if (document.getElementById('canvas-container')) document.getElementById('canvas-container').appendChild(renderer.domElement);
-const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.dampingFactor = 1; controls.enableZoom = true; controls.autoRotate = true; controls.autoRotateSpeed = 0.05;
+const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.dampingFactor = 0.05; controls.enableZoom = true; controls.autoRotate = true; controls.autoRotateSpeed = 0.25;
 
 function getScreenPosition(object3D, camera, renderer) {
     const vector = new THREE.Vector3(); const canvas = renderer.domElement;
