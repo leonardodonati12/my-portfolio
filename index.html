@@ -788,6 +788,7 @@ REGRAS DE CONDUTA:
 
                             // O SEGREDO É ESTE RETURN: Ele para o código aqui e não envia pra Groq!
                             return;
+                        }
 
                             // ==========================================
                             // FIM DO INTERCEPTADOR
@@ -852,7 +853,7 @@ REGRAS DE CONDUTA:
 
                             chatHistory.scrollTop = chatHistory.scrollHeight;
 
-                        }
+                        
                     });
                 }
             }
@@ -881,7 +882,7 @@ REGRAS DE CONDUTA:
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
 
-            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレゲゼデベペオォコソトノホモヨョロゴゾドボポヴッン';
+            const letters = '7QRDズテネヘEFGHABCMNOP0123456HIJKLM7QRDズテネヘEFGHMNOP0123MNOP012345IJKABCMNOP012345IJKLMアァカサタMNOP012345IJKナハマヤャラワNOP012レゲゼデベ3RDEFGHABCブヅプエェケセ0M7QRSTFGHIJKLUV01ユュルグ2M7QRSTF34567Z012345678901234567@#$%^&*ガツヌフMNOP0P012345IJKテ12345IJKムユュルグズMNOP012345IJKテネヘMNOP012345IJKメ';
             const fontSize = 16;
             const columns = canvas.width / fontSize;
             const drops = Array(Math.floor(columns)).fill(1);
