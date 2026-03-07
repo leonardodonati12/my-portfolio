@@ -445,8 +445,8 @@
             <span class="cyber-number" id="visit-count">000000</span>
         </div>
         <div class="cyber-btn-group">
-            <button id="btn-cyber-game" class="cyber-btn">[GAME]</button>
-            <button id="btn-cyber-ia" class="cyber-btn">[IA]</button>
+            <button id="btn-cyber-game" class="cyber-btn">[ GAME ]</button>
+            <button id="btn-cyber-ia" class="cyber-btn">[ IA ]</button>
         </div>
     </div>
 
@@ -656,33 +656,82 @@
                     });
                 }
 
-                // --- LÓGICA DO CHAT (MENSAGENS) ---
+                // --- LÓGICA DO CHAT (MENSAGENS COM GROQ API) ---
                 const chatInput = document.getElementById('chat-input');
                 const chatHistory = document.getElementById('chat-history');
 
+                // ⚠️ COLOQUE SUA CHAVE DA GROQ AQUI DENTRO DAS ASPAS
+                const GROQ_API_KEY = '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';
+
                 if (chatInput && chatHistory) {
-                    chatInput.addEventListener('keypress', function (e) {
+                    // Adicionamos o 'async' aqui para poder esperar a API responder
+                    chatInput.addEventListener('keypress', async function (e) {
                         if (e.key === 'Enter' && this.value.trim() !== '') {
                             const userText = this.value.trim();
-
-                            // Imprime a mensagem do usuário
+                            <div id="chat-history">
+                                <div class="msg ai-msg"><span class="sender">SYSTEM:</span>ask me something...</div>
+                            </div>
+                            // 1. Imprime a mensagem do usuário na tela
                             const userMsgDiv = document.createElement('div');
                             userMsgDiv.className = 'msg user-msg';
                             userMsgDiv.innerHTML = `<span class="sender">YOU:</span>${userText}`;
                             chatHistory.appendChild(userMsgDiv);
 
-                            // Limpa o input e rola pra baixo
+                            // 2. Limpa o input e rola pra baixo
                             this.value = '';
                             chatHistory.scrollTop = chatHistory.scrollHeight;
 
-                            // Simula a resposta da IA
-                            setTimeout(() => {
-                                const aiMsgDiv = document.createElement('div');
-                                aiMsgDiv.className = 'msg ai-msg';
-                                aiMsgDiv.innerHTML = `<span class="sender">AI:</span>PROCESSANDO INFO: "${userText}"...`;
-                                chatHistory.appendChild(aiMsgDiv);
-                                chatHistory.scrollTop = chatHistory.scrollHeight;
-                            }, 800);
+                            // 3. Cria a mensagem da IA "pensando" (Feedback visual pro usuário)
+                            const aiMsgDiv = document.createElement('div');
+                            aiMsgDiv.className = 'msg ai-msg';
+                            aiMsgDiv.innerHTML = `<span class="sender">AI:</span><span class="cyber-cursor">_</span>`;
+                            chatHistory.appendChild(aiMsgDiv);
+                            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+                            // 4. CHAMA A API DA GROQ
+                            try {
+                                const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Authorization': `Bearer ${GROQ_API_KEY}`,
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        model: "llama3-8b-8192", // Modelo ultra-rápido da Meta rodando na Groq
+                                        messages: [
+                                            {
+                                                role: "system",
+                                                // Aqui você dá a personalidade pra ela! Pode mudar esse texto como quiser.
+                                                content: "Você é uma IA de sistema cyberpunk integrada ao portfólio do Leonardo Donati, um estudante de arquitetura e design. Responda de forma curta, direta, robótica, no estilo terminal hacker. Sempre em português do Brasil. Nunca use formatação markdown (sem asteriscos ou negritos), apenas texto puro e limpo."
+                                            },
+                                            {
+                                                role: "user",
+                                                content: userText
+                                            }
+                                        ],
+                                        temperature: 0.7 // Quão criativa ela é (0 a 1)
+                                    })
+                                });
+
+                                const data = await response.json();
+
+                                // Se a API responder certinho, pegamos o texto e jogamos na tela
+                                if (data.choices && data.choices[0]) {
+                                    const aiText = data.choices[0].message.content;
+                                    aiMsgDiv.innerHTML = `<span class="sender">AI:</span>${aiText}`;
+                                } else {
+                                    // Se der ruim na formatação
+                                    aiMsgDiv.innerHTML = `<span class="sender">AI:</span>[ERRO DE COMUNICAÇÃO COM O SERVIDOR PRINCIPAL_]`;
+                                }
+
+                            } catch (error) {
+                                // Se a chave estiver errada ou faltar internet
+                                console.error("Erro na Matrix:", error);
+                                aiMsgDiv.innerHTML = `<span class="sender">AI:</span>[SISTEMA OFFLINE - SINAL PERDIDO_]`;
+                            }
+
+                            // Rola a tela pra baixo de novo após a resposta chegar
+                            chatHistory.scrollTop = chatHistory.scrollHeight;
                         }
                     });
                 }
