@@ -1160,12 +1160,10 @@ body.blueprint-mode {
 	}
 
 	#arcade-modal .game-tab {
-		writing-mode: vertical-lr;
-		transform: none;
+		writing-mode: vertical-rl;
+		transform: rotate(180deg);
 		width: 28px;
 		padding: 15px 0;
-		border: 2px solid #fff;
-		border-right: none;
 		border-radius: 10px 0 0 10px;
 		background: #000;
 		color: #777;
@@ -1187,7 +1185,6 @@ body.blueprint-mode {
 		#arcade-modal .game-tab.active {
 			background: #fff;
 			color: #000;
-			box-shadow: 4px 0 0px #fff;
 			z-index: 11;
 		}
 
