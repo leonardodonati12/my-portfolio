@@ -302,8 +302,8 @@ body.push-bottom #folder-stack {
 
 /* Tela do tamanho exato do Game Canvas */
 .ai-screen {
-	width: 310px;
-	height: 370px;
+	width: 320px;
+	height: 380px;
 	display: flex;
 	flex-direction: column;
 	padding: 15px;
@@ -1192,10 +1192,8 @@ body.blueprint-mode {
 		}
 
 	#arcade-modal .screen-container {
-		border: 2px solid #fff;
-		border-radius: 12px;
 		padding: 4px;
-		background: #000;
+		background: transparent;
 		position: relative;
 		z-index: 5;
 	}
