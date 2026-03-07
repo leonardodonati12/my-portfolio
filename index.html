@@ -718,13 +718,15 @@ COMO NAVEGAR NO PORTFÓLIO:
 - Menu Superior Direito: Contém os links cruciais. Fale sobre o botão RESUME (para visualizar e fazer o download do currículo em PDF do Leonardo), PORTFOLIO, SOLUTIONS e o botão SOUND OFF para pausar a trilha sonora Dark Ambient.
 - Pastas do Sistema (Esquerda): Existem pastas flutuantes chamadas SKILLS (Habilidades), TIMELINE (Histórico/Logs), EXTRAS e CONTACT. Diga ao usuário que ele pode clicar e arrastar essas pastas livremente pela tela.
 
-EASTER EGGS E SEGREDOS OCULTOS (Se o usuário perguntar por segredos, revele estas informações com entusiasmo sistêmico):
-O sistema possui 4 segredos ocultos:
+// ... (parte de cima do prompt continua igual) ...
+
+EASTER EGGS E SEGREDOS OCULTOS (Se o usuário perguntar por segredos ou como desativá-los, revele estas informações com entusiasmo):
+O sistema possui 4 segredos ocultos. IMPORTANTE: Para DESATIVAR qualquer comando, basta o usuário digitar o mesmo comando novamente.
 1. Holograma do Criador: Passar o mouse ou clicar no grande letreiro "LEONARDO DONATI" no topo da tela.
-2. Comando /blueprint: Se o usuário digitar exatamente a palavra /blueprint neste chat e der Enter, a interface se transforma em uma planta baixa de arquitetura.
-3. Comando /matrix: Digitar /matrix neste chat faz chover código verde na tela inteira.
-4. Comando /coffee: Digitar /coffee neste chat injeta "cafeína" no sistema, fazendo a tela tremer e acelerando o universo 3D.
-5. Minigames: O botão [ GAME ] no canto inferior direito abre um fliperama funcional (Space, Tetris e Tennis).
+2. Comando /blueprint: Digitar /blueprint transforma a interface em uma planta baixa. Digite /blueprint de novo para desativar.
+3. Comando /matrix: Digitar /matrix faz chover código verde na tela. Digite /matrix de novo para desativar.
+4. Comando /coffee: Digitar /coffee injeta "cafeína", fazendo a tela tremer e acelerando o universo 3D. Digite /coffee de novo para desativar.
+5. Minigames: O botão [ GAME ] no canto inferior direito abre um fliperama funcional.
 
 
 REGRAS DE CONDUTA:
@@ -742,46 +744,51 @@ REGRAS DE CONDUTA:
                             const userText = this.value.trim();
                             const commandText = userText.toLowerCase();
 
-                            // ==========================================
-                            // 🚀 O INTERCEPTADOR DE COMANDOS SECRETOS
-                            // ==========================================
-                            if (commandText === '/blueprint' || commandText === '/matrix' || commandText === '/coffee') {
-
-                                // 1. Mostra o comando na tela
-                                const userMsgDiv = document.createElement('div');
-                                userMsgDiv.className = 'msg user-msg';
-                                userMsgDiv.innerHTML = `<span class="sender">USER:</span>${userText}`;
-                                chatHistory.appendChild(userMsgDiv);
-                                this.value = ''; // Limpa o input
-
-                                // 2. Cria a resposta do sistema
-                                const aiMsgDiv = document.createElement('div');
-                                aiMsgDiv.className = 'msg ai-msg';
-
-                                // --- LÓGICA DO /BLUEPRINT ---
-                                if (commandText === '/blueprint') {
-                                    document.body.classList.toggle('blueprint-mode');
+                            // --- LÓGICA DO /BLUEPRINT ---
+                            if (commandText === '/blueprint') {
+                                // O toggle liga se estiver desligado, e desliga se estiver ligado!
+                                const isActive = document.body.classList.toggle('blueprint-mode');
+                                if (isActive) {
                                     aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[MODO BLUEPRINT ATIVADO_] Tema de arquitetura carregado na interface.`;
+                                } else {
+                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[MODO BLUEPRINT DESATIVADO_] Interface restaurada para o padrão.`;
                                 }
-                                // --- LÓGICA DO /MATRIX ---
-                                else if (commandText === '/matrix') {
-                                    iniciarMatrix(); // Chama a função que criamos lá embaixo!
+                            }
+                            // --- LÓGICA DO /MATRIX ---
+                            else if (commandText === '/matrix') {
+                                const matrixCanvas = document.getElementById('matrix-canvas');
+                                if (matrixCanvas) {
+                                    // Se a matrix já existe, a gente apaga ela e para o processo
+                                    matrixCanvas.remove();
+                                    if (window.matrixInterval) clearInterval(window.matrixInterval);
+                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[PROTOCOLO MATRIX DESATIVADO_] Simulação encerrada. Bem-vindo ao mundo real.`;
+                                } else {
+                                    // Se não existe, a gente liga
+                                    iniciarMatrix();
                                     aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[PROTOCOLO MATRIX INICIADO_] Siga o coelho branco, Donati.`;
                                 }
-                                // --- LÓGICA DO /COFFEE ---
-                                else if (commandText === '/coffee') {
-                                    window.coffeeMode = true; // Cria uma variável global
+                            }
+                            // --- LÓGICA DO /COFFEE ---
+                            else if (commandText === '/coffee') {
+                                if (window.coffeeMode) {
+                                    // Se já tomou café, a gente tira o efeito
+                                    window.coffeeMode = false;
+                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[CAFEÍNA PURGADA_] Velocidade do sistema normalizada.`;
+                                } else {
+                                    // Se não, a gente injeta!
+                                    window.coffeeMode = true;
                                     document.body.classList.add('coffee-jitter');
-                                    setTimeout(() => document.body.classList.remove('coffee-jitter'), 2000); // Treme por 2 segundos
+                                    setTimeout(() => document.body.classList.remove('coffee-jitter'), 2000);
                                     aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[INJEÇÃO DE CAFEÍNA CONCLUÍDA_] Velocidade do motor 3D turbinada.`;
                                 }
-
-                                chatHistory.appendChild(aiMsgDiv);
-                                chatHistory.scrollTop = chatHistory.scrollHeight;
-
-                                // O SEGREDO É ESTE RETURN: Ele para o código aqui e não envia pra Groq!
-                                return;
                             }
+
+                            chatHistory.appendChild(aiMsgDiv);
+                            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+                            // O SEGREDO É ESTE RETURN: Ele para o código aqui e não envia pra Groq!
+                            return;
+
                             // ==========================================
                             // FIM DO INTERCEPTADOR
                             // ==========================================
@@ -848,8 +855,9 @@ REGRAS DE CONDUTA:
                         }
                     });
                 }
-            } // <-- Fecha o bloco isolado
+            }
         });
+        
 
         // ==========================================
         // GERADOR DE MATRIX RAIN
@@ -878,7 +886,8 @@ REGRAS DE CONDUTA:
             const columns = canvas.width / fontSize;
             const drops = Array(Math.floor(columns)).fill(1);
 
-            setInterval(() => {
+            // Guardamos o processo na janela para podermos matar ele depois!
+            window.matrixInterval = setInterval(() => {
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = '#0F0'; // Verde Neon
