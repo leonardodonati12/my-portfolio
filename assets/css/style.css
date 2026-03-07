@@ -1218,7 +1218,7 @@ body.blueprint-mode {
 /* 🚀 SISTEMA DE FUGA DAS PASTAS (PUSH) PARA ARCADE E AI */
 body.push-bottom #arcade-modal,
 body.push-bottom #ai-modal {
-	bottom: 350px !important;
+	bottom: 370px !important;
 }
 
 body.push-right #arcade-modal,
