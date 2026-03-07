@@ -167,7 +167,6 @@ if (heroSubtitle) {
 }
 
 // --- 9. SKILLS & PANELS ---
-// --- 9. SKILLS & PANELS ---
 const mySkills = [
     { name: "REVIT / DYNAMO", level: 85 }, { name: "NAVISWORKS", level: 65 }, { name: "ARCHICAD / SKETCHUP", level: 65 },
     { name: "INFRAWORKS", level: 70 }, { name: "CLOUDCOMPARE / RECAP", level: 75 }, { name: "ADOBE TOOLS", level: 70 },
@@ -330,7 +329,7 @@ function getScreenPosition(object3D, camera, renderer) {
     return { x, y };
 }
 
-const geometry = new THREE.IcosahedronGeometry(2.7, 2);
+const geometry = new THREE.IcosahedronGeometry(2, 2);
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 });
 const sphere = new THREE.Mesh(geometry, material);
 sphere.userData = { isCenter: true };
@@ -357,80 +356,83 @@ const projetosSimulados = [
 ];
 
 fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(projetos => {
-    const radius = 6.5; const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+    const time = Date.now() * 0.001; // Tempo correndo
 
-    projetos.forEach((proj, i) => {
-        const y = 1 - (i / (projetos.length - 1)) * 2; const radiusAtY = Math.sqrt(1 - y * y); const theta = goldenAngle * i; const x = Math.cos(theta) * radiusAtY; const z = Math.sin(theta) * radiusAtY;
-        const nodeMat = new THREE.ShaderMaterial({ uniforms: { "c": { type: "c", value: new THREE.Color(0xffffff) }, "p": { type: "f", value: 3.0 }, "glowIntensity": { type: "f", value: 1.5 } }, vertexShader: vertexShader, fragmentShader: fragmentShader, side: THREE.FrontSide, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false });
-        const nodeGeo = new THREE.SphereGeometry(0.3, 32, 32); const node = new THREE.Mesh(nodeGeo, nodeMat);
-        node.position.set(x * radius, y * radius, z * radius);
-        node.userData = {
-            id: i,
-            data: proj,
-            isNode: true,
-            projectName: proj.titulo,
-            // Guardamos a posição original para ela não se perder no espaço
-            basePosition: new THREE.Vector3(x * radius, y * radius, z * radius),
-            randomSeed: Math.random() * 100 // Uma semente para elas não dançarem todas juntas
-        };
-        projectNodes.push(node); projectGroup.add(node);
+    projectNodes.forEach(node => {
+        const targetScale = (node === hoveredNode) ? 1.5 : 1;
+        node.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
+
+        // Movimento forte e desincronizado
+        if (node.userData.basePosition) {
+            const base = node.userData.basePosition;
+            const seed = node.userData.randomSeed;
+
+            // Cada bolinha ganha uma "personalidade" de velocidade baseada na sua seed
+            const freqX = 0.8 + (seed % 0.5);
+            const freqY = 1.1 + (seed % 0.6);
+            const freqZ = 0.9 + (seed % 0.4);
+            const amplitude = 0.6; // <- AQUI ESTÁ A DISTÂNCIA MAIOR! (Tava 0.2)
+
+            node.position.x = base.x + Math.sin(time * freqX + seed) * amplitude;
+            node.position.y = base.y + Math.cos(time * freqY + seed) * amplitude;
+            node.position.z = base.z + Math.sin(time * freqZ + seed) * amplitude;
+        }
     });
 
-    // LIGAÇÕES MOLECULARES DOS PROJETOS
-    const esferas = projectNodes;
-    if (esferas.length < 2) return;
+    // ATUALIZAR AS LINHAS EM TEMPO REAL PARA ELES ACOMPANHAREM OS NÓS
+    if (window.activeEdges && window.moleculeBonds) {
+        const segments = [];
+        const espacamento = 0.5; // Distância de respiro entre a linha e a bolinha
 
-    const segments = [];
-    const espacamento = 0.5; // Aquele gap estiloso antes de encostar na bolinha
-
-    // 1. Criamos um catálogo com todas as combinações possíveis de ligações
-    let possiveisArestas = [];
-    for (let i = 0; i < esferas.length; i++) {
-        for (let j = i + 1; j < esferas.length; j++) {
-            const dist = esferas[i].position.distanceTo(esferas[j].position);
-            possiveisArestas.push({ noA: i, noB: j, distancia: dist });
-        }
-    }
-
-    // 2. Ordenamos da menor distância (vizinhos) para a maior (opostos que cruzam o centro)
-    possiveisArestas.sort((a, b) => a.distancia - b.distancia);
-
-    // 3. Contador: Vamos vigiar para que CADA bolinha tenha no máximo 4 ligações
-    const conexoesPorBolinha = new Array(esferas.length).fill(0);
-
-    // 4. Distribuímos as arestas seguindo a regra
-    for (const aresta of possiveisArestas) {
-        const i = aresta.noA;
-        const j = aresta.noB;
-
-        // Se TANTO a bolinha A quanto a B tiverem menos de 4 conexões, a gente liga!
-        if (conexoesPorBolinha[i] < 4 && conexoesPorBolinha[j] < 4) {
-            conexoesPorBolinha[i]++;
-            conexoesPorBolinha[j]++;
-
-            const posA = esferas[i].position.clone();
-            const posB = esferas[j].position.clone();
+        window.activeEdges.forEach(edge => {
+            const posA = edge.a.position; // Pega a nova posição em que a bolinha está agora
+            const posB = edge.b.position;
 
             const vetorAB = posB.clone().sub(posA);
             const direcaoAB = vetorAB.clone().normalize();
 
-            // Calcula as pontas com o espaçamento
             const posA_nova = posA.clone().add(direcaoAB.clone().multiplyScalar(espacamento));
             const posB_nova = posB.clone().sub(direcaoAB.clone().multiplyScalar(espacamento));
 
             segments.push(posA_nova, posB_nova);
-        }
+        });
+
+        // Redesenha a gaiola no novo frame!
+        window.moleculeBonds.geometry.setFromPoints(segments);
     }
 
-    const lineGeometry = new THREE.BufferGeometry().setFromPoints(segments);
+    // LIGAÇÕES MOLECULARES DOS PROJETOS
+    const esferas = projectNodes;
+    if (esferas.length >= 2) {
+        let possiveisArestas = [];
+        for (let i = 0; i < esferas.length; i++) {
+            for (let j = i + 1; j < esferas.length; j++) {
+                const dist = esferas[i].position.distanceTo(esferas[j].position);
+                possiveisArestas.push({ noA: i, noB: j, distancia: dist });
+            }
+        }
+        possiveisArestas.sort((a, b) => a.distancia - b.distancia);
 
-    // Linhas Brancas Limpas
-    const lineMaterial = new THREE.LineBasicMaterial({
-        color: 0xffffff,
-        transparent: true,
-        opacity: 0.3,
-        linewidth: 1
-    });
+        const conexoesPorBolinha = new Array(esferas.length).fill(0);
+
+        // Guardamos as conexões na "janela" do navegador para a animação ler depois!
+        window.activeEdges = [];
+
+        for (const aresta of possiveisArestas) {
+            const i = aresta.noA;
+            const j = aresta.noB;
+            if (conexoesPorBolinha[i] < 4 && conexoesPorBolinha[j] < 4) {
+                conexoesPorBolinha[i]++;
+                conexoesPorBolinha[j]++;
+                window.activeEdges.push({ a: esferas[i], b: esferas[j] });
+            }
+        }
+
+        // Criamos o objeto da linha VAZIO por enquanto e jogamos na tela
+        const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.3, linewidth: 1 });
+        window.moleculeBonds = new THREE.LineSegments(new THREE.BufferGeometry(), lineMaterial);
+        projectGroup.add(window.moleculeBonds);
+    }
 
     const moleculeBonds = new THREE.LineSegments(lineGeometry, lineMaterial);
     projectGroup.add(moleculeBonds);

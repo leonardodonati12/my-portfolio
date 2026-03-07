@@ -410,12 +410,7 @@ body.push-right #ai-modal {
 }
 
 body.push-top #ai-modal {
-	bottom: 350px;
-}
-
-body.push-right.push-top #ai-modal {
-	right: 320px;
-	bottom: 350px;
+	transform: translateY(-280px);
 }
 
 /* OVERLAYS */
