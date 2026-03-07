@@ -783,16 +783,6 @@ REGRAS DE CONDUTA:
                                 }
                             }
 
-                            chatHistory.appendChild(aiMsgDiv);
-                            chatHistory.scrollTop = chatHistory.scrollHeight;
-
-                            // O SEGREDO É ESTE RETURN: Ele para o código aqui e não envia pra Groq!
-                            return;
-                        }
-
-                            // ==========================================
-                            // FIM DO INTERCEPTADOR
-                            // ==========================================
 
                             // --- SE NÃO FOR COMANDO SECRETO, SEGUE O FLUXO NORMAL PRA IA ---
                             conversationHistory.push({ role: "user", content: userText });
@@ -852,7 +842,12 @@ REGRAS DE CONDUTA:
                             }
 
                             chatHistory.scrollTop = chatHistory.scrollHeight;
+                            chatHistory.appendChild(aiMsgDiv);
+                            chatHistory.scrollTop = chatHistory.scrollHeight;
 
+                            // O SEGREDO É ESTE RETURN: Ele para o código aqui e não envia pra Groq!
+                            return;
+                        }
                         
                     });
                 }
