@@ -371,9 +371,6 @@ body.push-bottom #folder-stack {
 /* Área de input de texto */
 .chat-input-area {
 	display: flex;
-	align-items: center;
-	gap: 8px;
-	border-top: 1px dashed #fff;
 	padding-top: 10px;
 }
 

@@ -714,6 +714,8 @@
 
                                 const data = await response.json();
 
+                                console.log("MENSAGEM SECRETA DA GROQ:", data);
+
                                 // Se a API responder certinho, pegamos o texto e jogamos na tela
                                 if (data.choices && data.choices[0]) {
                                     const aiText = data.choices[0].message.content;
