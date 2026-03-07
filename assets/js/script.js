@@ -354,9 +354,6 @@ const projetosSimulados = [
     { titulo: "Project 8", tech: "Future Tech", descricao: "Mais uma ideia conectada." },
 ];
 
-// ==========================================
-// 1. CRIAÇÃO DO UNIVERSO (O FETCH)
-// ==========================================
 fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(projetos => {
     const radius = 6.5; const goldenAngle = Math.PI * (3 - Math.sqrt(5));
 
@@ -369,8 +366,8 @@ fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(p
         node.position.set(x * radius, y * radius, z * radius);
         node.userData = {
             id: i, data: proj, isNode: true, projectName: proj.titulo,
-            basePosition: new THREE.Vector3(x * radius, y * radius, z * radius), // <-- SALVA A ÂNCORA AQUI!
-            randomSeed: Math.random() * 100 // <-- SEMENTE PARA O MOVIMENTO CAÓTICO!
+            basePosition: new THREE.Vector3(x * radius, y * radius, z * radius),
+            randomSeed: Math.random() * 100
         };
         projectNodes.push(node); projectGroup.add(node);
     });
@@ -388,7 +385,7 @@ fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(p
         possiveisArestas.sort((a, b) => a.distancia - b.distancia);
 
         const conexoesPorBolinha = new Array(esferas.length).fill(0);
-        window.activeEdges = []; // Guardamos na window para a Animação poder ler!
+        window.activeEdges = [];
 
         for (const aresta of possiveisArestas) {
             const i = aresta.noA;
@@ -400,7 +397,6 @@ fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(p
             }
         }
 
-        // Cria a linha inicial vazia
         const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.3, linewidth: 1 });
         window.moleculeBonds = new THREE.LineSegments(new THREE.BufferGeometry(), lineMaterial);
         projectGroup.add(window.moleculeBonds);
@@ -437,7 +433,7 @@ if (closeBtn) closeBtn.addEventListener('click', () => { if (modal) { modal.clas
 let lastMiddleClick = 0; window.addEventListener('mousedown', (e) => { if (e.button === 1) { e.preventDefault(); const now = Date.now(); if (now - lastMiddleClick < 500) controls.reset(); lastMiddleClick = now; } });
 
 // ==========================================
-// 2. A ANIMAÇÃO (O CORAÇÃO BATENDO)
+// 2. A ANIMAÇÃO ÚNICA E CORRETA
 // ==========================================
 function animate() {
     requestAnimationFrame(animate); controls.update();
@@ -465,22 +461,20 @@ function animate() {
         }
 
         // --- VIBRAÇÃO CAÓTICA E ATUALIZAÇÃO DAS LINHAS ---
-        const time = Date.now() * 0.001; // Tempo correndo
+        const time = Date.now() * 0.001;
 
         projectNodes.forEach(node => {
             const targetScale = (node === hoveredNode) ? 1.5 : 1;
             node.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
 
-            // Movimento forte e desincronizado
             if (node.userData.basePosition) {
                 const base = node.userData.basePosition;
                 const seed = node.userData.randomSeed;
 
-                // Cada bolinha ganha uma "personalidade" de velocidade
                 const freqX = 0.8 + (seed % 0.5);
                 const freqY = 1.1 + (seed % 0.6);
                 const freqZ = 0.9 + (seed % 0.4);
-                const amplitude = 0.6; // <- Distância do movimento (Ajuste aqui se quiser)
+                const amplitude = 0.6; // Distância do movimento
 
                 node.position.x = base.x + Math.sin(time * freqX + seed) * amplitude;
                 node.position.y = base.y + Math.cos(time * freqY + seed) * amplitude;
@@ -491,7 +485,7 @@ function animate() {
         // Atualizar as linhas elásticas
         if (window.activeEdges && window.moleculeBonds) {
             const segments = [];
-            const espacamento = 0.5; // <- Gap da linha até a bolinha (Ajuste aqui)
+            const espacamento = 0.5; // Gap da linha até a bolinha
 
             window.activeEdges.forEach(edge => {
                 const posA = edge.a.position;
@@ -514,96 +508,46 @@ function animate() {
 
     renderer.render(scene, camera);
 }
+animate();
+window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); if (typeof canvas !== 'undefined') canvas.width = window.innerWidth; });
 
-    function openModal(data) { if (modalTitle) modalTitle.innerHTML = data.titulo; if (modalTech) modalTech.innerHTML = "// " + data.tech; if (modalDesc) modalDesc.innerHTML = data.descricao; if (modal) { modal.style.display = 'flex'; setTimeout(() => { modal.classList.add('open'); }, 10); } }
-    if (closeBtn) closeBtn.addEventListener('click', () => { if (modal) { modal.classList.remove('open'); setTimeout(() => { modal.style.display = 'none'; }, 500); } });
-    let lastMiddleClick = 0; window.addEventListener('mousedown', (e) => { if (e.button === 1) { e.preventDefault(); const now = Date.now(); if (now - lastMiddleClick < 500) controls.reset(); lastMiddleClick = now; } });
+// --- 13. AUDIO SYSTEM (SEM VISUALIZER) ---
+const audioEl = document.getElementById('theme-audio');
+const audioBtn = document.getElementById('audio-btn');
+let isAudioPlaying = false;
+let audioContext;
 
-    function animate() {
-        requestAnimationFrame(animate); controls.update();
-        if (document.body.classList.contains('active')) {
-            raycaster.setFromCamera(mouse, camera); const intersectsNodes = raycaster.intersectObjects(projectNodes); const intersectsCenter = raycaster.intersectObject(sphere);
-            if (!hoveredNode) { projectGroup.rotation.y -= 0.001; projectGroup.rotation.z += 0.0005; }
-            if (intersectsNodes.length > 0) {
-                const object = intersectsNodes[0].object;
-                if (calloutContainer && calloutLabel && calloutLine) {
-                    calloutContainer.classList.add('visible'); calloutLabel.innerHTML = object.userData.projectName || "Projeto";
-                    const startPoint = getScreenPosition(object, camera, renderer); const endPoint = { x: startPoint.x + 80, y: startPoint.y - 60 };
-                    calloutLabel.style.left = `${endPoint.x}px`; calloutLabel.style.top = `${endPoint.y - 20}px`;
-                    const deltaX = endPoint.x - startPoint.x; const deltaY = endPoint.y - startPoint.y; const lineLength = Math.sqrt(deltaX * deltaX + deltaY * deltaY); const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
-                    calloutLine.style.width = `${lineLength}px`; calloutLine.style.left = `${startPoint.x}px`; calloutLine.style.top = `${startPoint.y}px`; calloutLine.style.transform = `rotate(${angle}deg)`;
-                }
-                if (hoveredNode !== object) { if (hoveredNode) hoveredNode.material.uniforms.c.value.setHex(0xffffff); hoveredNode = object; hoveredNode.material.uniforms.c.value.setHex(0x00ff88); document.body.style.cursor = 'none'; }
-            } else {
-                if (calloutContainer) calloutContainer.classList.remove('visible');
-                if (hoveredNode) { hoveredNode.material.uniforms.c.value.setHex(0xffffff); hoveredNode = null; document.body.style.cursor = 'none'; }
-            }
-            const time = Date.now() * 0.0015; // Velocidade da pulsação
-            projectNodes.forEach(node => {
-                const targetScale = (node === hoveredNode) ? 1.5 : 1;
-                node.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
+if (audioBtn) {
+    audioBtn.innerHTML = 'SOUND OFF';
+    audioBtn.classList.remove('playing');
+}
 
-                // NOVO: Vibração orgânica das bolinhas!
-                if (node.userData.basePosition) {
-                    const base = node.userData.basePosition;
-                    const seed = node.userData.randomSeed;
-
-                    // O valor '0.2' é o limite. Ele afasta um pouquinho sem quebrar a forma.
-                    node.position.x = base.x + Math.sin(time + seed) * 0.2;
-                    node.position.y = base.y + Math.cos(time * 1.1 + seed) * 0.2;
-                    node.position.z = base.z + Math.sin(time * 0.9 + seed) * 0.2;
-                }
-            });
-            if (intersectsCenter.length > 0) { sphere.rotation.y += 0.001; sphere.rotation.x += 0.001; sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.5, 0.05); } else { sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.15, 0.05); }
-        }
-        renderer.render(scene, camera);
+function setupAudioContext() {
+    if (!audioContext && (window.AudioContext || window.webkitAudioContext)) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioContext = new AudioContext();
     }
-    animate();
-    window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); if (canvas) canvas.width = window.innerWidth; });
+}
 
-    // --- 13. AUDIO SYSTEM (SEM VISUALIZER) ---
-    const audioEl = document.getElementById('theme-audio');
-    const audioBtn = document.getElementById('audio-btn');
+function toggleAudio() {
+    if (!audioEl) return;
+    setupAudioContext();
+    if (audioContext && audioContext.state === 'suspended') audioContext.resume();
 
-    let isAudioPlaying = false;
-    let audioContext;
-
-    // [NOVO] Força o botão a nascer com o texto e o visual de "Desligado"
-    if (audioBtn) {
+    if (isAudioPlaying) {
+        audioEl.pause();
         audioBtn.innerHTML = 'SOUND OFF';
         audioBtn.classList.remove('playing');
+        isAudioPlaying = false;
+    } else {
+        audioEl.volume = 0.2;
+        audioEl.play().then(() => {
+            audioBtn.innerHTML = 'SOUND ON';
+            audioBtn.classList.add('playing');
+            isAudioPlaying = true;
+        }).catch(err => console.log("Áudio bloqueado:", err));
     }
+}
 
-    function setupAudioContext() {
-        // Mantemos o Context apenas para lidar com políticas do navegador
-        if (!audioContext && (window.AudioContext || window.webkitAudioContext)) {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            audioContext = new AudioContext();
-        }
-    }
-
-    function toggleAudio() {
-        if (!audioEl) return;
-        setupAudioContext();
-
-        // Garante que o contexto de áudio esteja rodando
-        if (audioContext && audioContext.state === 'suspended') audioContext.resume();
-
-        if (isAudioPlaying) {
-            audioEl.pause();
-            audioBtn.innerHTML = 'SOUND OFF';
-            audioBtn.classList.remove('playing');
-            isAudioPlaying = false;
-        } else {
-            // Quando o usuário finalmente clica, definimos o volume em 20% e tocamos
-            audioEl.volume = 0.2;
-            audioEl.play().then(() => {
-                audioBtn.innerHTML = 'SOUND ON';
-                audioBtn.classList.add('playing');
-                isAudioPlaying = true;
-            }).catch(err => console.log("Áudio bloqueado:", err));
-        }
-    }
-
-    if (audioBtn) audioBtn.addEventListener('click', toggleAudio);
+if (audioBtn) audioBtn.addEventListener('click', toggleAudio);
 
