@@ -412,7 +412,7 @@ body.push-bottom #folder-stack {
 /* 2. Se a pasta for grudada EMBAIXO, as telas fogem pra cima */
 body.push-bottom #arcade-modal,
 body.push-bottom #ai-modal {
-	bottom: 350px !important; /* Altura exata para escapar da pasta */
+	bottom: 370px !important; /* Altura exata para escapar da pasta */
 }
 
 /* 3. Se a pasta for grudada na DIREITA, as telas fogem pra esquerda */
