@@ -350,58 +350,32 @@ const projetosSimulados = [
     { titulo: "Mooca", tech: "Grasshopper / Rhino", descricao: "Estudos de forma e fabrica&ccedil;&atilde;o digital." },
     { titulo: "Project 5", tech: "Grasshopper / Rhino", descricao: "Estudos de forma e fabrica&ccedil;&atilde;o digital." },
     { titulo: "Project 6", tech: "Grasshopper / Rhino", descricao: "Estudos de forma e fabrica&ccedil;&atilde;o digital." },
-    // Adicionamos as duas novas!
     { titulo: "Project 7", tech: "Future Tech", descricao: "Nova ideia flutuante." },
     { titulo: "Project 8", tech: "Future Tech", descricao: "Mais uma ideia conectada." },
 ];
 
+// ==========================================
+// 1. CRIAÇÃO DO UNIVERSO (O FETCH)
+// ==========================================
 fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(projetos => {
-    const time = Date.now() * 0.001; // Tempo correndo
+    const radius = 6.5; const goldenAngle = Math.PI * (3 - Math.sqrt(5));
 
-    projectNodes.forEach(node => {
-        const targetScale = (node === hoveredNode) ? 1.5 : 1;
-        node.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
+    // A. Cria as bolinhas e guarda a Posição Base delas
+    projetos.forEach((proj, i) => {
+        const y = 1 - (i / (projetos.length - 1)) * 2; const radiusAtY = Math.sqrt(1 - y * y); const theta = goldenAngle * i; const x = Math.cos(theta) * radiusAtY; const z = Math.sin(theta) * radiusAtY;
+        const nodeMat = new THREE.ShaderMaterial({ uniforms: { "c": { type: "c", value: new THREE.Color(0xffffff) }, "p": { type: "f", value: 3.0 }, "glowIntensity": { type: "f", value: 1.5 } }, vertexShader: vertexShader, fragmentShader: fragmentShader, side: THREE.FrontSide, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false });
+        const nodeGeo = new THREE.SphereGeometry(0.3, 32, 32); const node = new THREE.Mesh(nodeGeo, nodeMat);
 
-        // Movimento forte e desincronizado
-        if (node.userData.basePosition) {
-            const base = node.userData.basePosition;
-            const seed = node.userData.randomSeed;
-
-            // Cada bolinha ganha uma "personalidade" de velocidade baseada na sua seed
-            const freqX = 0.8 + (seed % 0.5);
-            const freqY = 1.1 + (seed % 0.6);
-            const freqZ = 0.9 + (seed % 0.4);
-            const amplitude = 0.6; // <- AQUI ESTÁ A DISTÂNCIA MAIOR! (Tava 0.2)
-
-            node.position.x = base.x + Math.sin(time * freqX + seed) * amplitude;
-            node.position.y = base.y + Math.cos(time * freqY + seed) * amplitude;
-            node.position.z = base.z + Math.sin(time * freqZ + seed) * amplitude;
-        }
+        node.position.set(x * radius, y * radius, z * radius);
+        node.userData = {
+            id: i, data: proj, isNode: true, projectName: proj.titulo,
+            basePosition: new THREE.Vector3(x * radius, y * radius, z * radius), // <-- SALVA A ÂNCORA AQUI!
+            randomSeed: Math.random() * 100 // <-- SEMENTE PARA O MOVIMENTO CAÓTICO!
+        };
+        projectNodes.push(node); projectGroup.add(node);
     });
 
-    // ATUALIZAR AS LINHAS EM TEMPO REAL PARA ELES ACOMPANHAREM OS NÓS
-    if (window.activeEdges && window.moleculeBonds) {
-        const segments = [];
-        const espacamento = 0.5; // Distância de respiro entre a linha e a bolinha
-
-        window.activeEdges.forEach(edge => {
-            const posA = edge.a.position; // Pega a nova posição em que a bolinha está agora
-            const posB = edge.b.position;
-
-            const vetorAB = posB.clone().sub(posA);
-            const direcaoAB = vetorAB.clone().normalize();
-
-            const posA_nova = posA.clone().add(direcaoAB.clone().multiplyScalar(espacamento));
-            const posB_nova = posB.clone().sub(direcaoAB.clone().multiplyScalar(espacamento));
-
-            segments.push(posA_nova, posB_nova);
-        });
-
-        // Redesenha a gaiola no novo frame!
-        window.moleculeBonds.geometry.setFromPoints(segments);
-    }
-
-    // LIGAÇÕES MOLECULARES DOS PROJETOS
+    // B. Calcula a Gaiola (Arestas)
     const esferas = projectNodes;
     if (esferas.length >= 2) {
         let possiveisArestas = [];
@@ -414,9 +388,7 @@ fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(p
         possiveisArestas.sort((a, b) => a.distancia - b.distancia);
 
         const conexoesPorBolinha = new Array(esferas.length).fill(0);
-
-        // Guardamos as conexões na "janela" do navegador para a animação ler depois!
-        window.activeEdges = [];
+        window.activeEdges = []; // Guardamos na window para a Animação poder ler!
 
         for (const aresta of possiveisArestas) {
             const i = aresta.noA;
@@ -428,69 +400,120 @@ fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(p
             }
         }
 
-        // Criamos o objeto da linha VAZIO por enquanto e jogamos na tela
+        // Cria a linha inicial vazia
         const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.3, linewidth: 1 });
         window.moleculeBonds = new THREE.LineSegments(new THREE.BufferGeometry(), lineMaterial);
         projectGroup.add(window.moleculeBonds);
     }
-
-    const moleculeBonds = new THREE.LineSegments(lineGeometry, lineMaterial);
-    projectGroup.add(moleculeBonds);
-
 });
 
-    // --- INTERAÇÃO HÍBRIDA (MOUSE + TOUCH HOLD) ---
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2(-100, -100);
-    let hoveredNode = null;
-    let isTouching = false;
+// --- INTERAÇÃO HÍBRIDA (MOUSE + TOUCH HOLD) ---
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2(-100, -100);
+let hoveredNode = null;
+let isTouching = false;
 
-    function updateInputPosition(clientX, clientY) {
-        mouse.x = (clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(clientY / window.innerHeight) * 2 + 1;
+function updateInputPosition(clientX, clientY) {
+    mouse.x = (clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(clientY / window.innerHeight) * 2 + 1;
+}
+
+window.addEventListener('mousemove', (event) => { if (!isTouching) updateInputPosition(event.clientX, event.clientY); });
+window.addEventListener('touchstart', (event) => { isTouching = true; if (event.touches.length > 0) updateInputPosition(event.touches[0].clientX, event.touches[0].clientY); }, { passive: false });
+window.addEventListener('touchmove', (event) => { if (isTouching && event.touches.length > 0) updateInputPosition(event.touches[0].clientX, event.touches[0].clientY); }, { passive: false });
+window.addEventListener('touchend', () => { isTouching = false; mouse.x = -100; mouse.y = -100; });
+
+window.addEventListener('click', (event) => {
+    if (!document.body.classList.contains('active')) return;
+    if (event.target.closest('.ui-panel') || event.target.closest('.folder-tab') || event.target.closest('#project-modal') || event.target.closest('.close-modal')) return;
+
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(projectNodes);
+    if (intersects.length > 0) openModal(intersects[0].object.userData.data);
+});
+
+function openModal(data) { if (modalTitle) modalTitle.innerHTML = data.titulo; if (modalTech) modalTech.innerHTML = "// " + data.tech; if (modalDesc) modalDesc.innerHTML = data.descricao; if (modal) { modal.style.display = 'flex'; setTimeout(() => { modal.classList.add('open'); }, 10); } }
+if (closeBtn) closeBtn.addEventListener('click', () => { if (modal) { modal.classList.remove('open'); setTimeout(() => { modal.style.display = 'none'; }, 500); } });
+let lastMiddleClick = 0; window.addEventListener('mousedown', (e) => { if (e.button === 1) { e.preventDefault(); const now = Date.now(); if (now - lastMiddleClick < 500) controls.reset(); lastMiddleClick = now; } });
+
+// ==========================================
+// 2. A ANIMAÇÃO (O CORAÇÃO BATENDO)
+// ==========================================
+function animate() {
+    requestAnimationFrame(animate); controls.update();
+
+    if (document.body.classList.contains('active')) {
+        raycaster.setFromCamera(mouse, camera);
+        const intersectsNodes = raycaster.intersectObjects(projectNodes);
+        const intersectsCenter = raycaster.intersectObject(sphere);
+
+        if (!hoveredNode) { projectGroup.rotation.y -= 0.001; projectGroup.rotation.z += 0.0005; }
+
+        if (intersectsNodes.length > 0) {
+            const object = intersectsNodes[0].object;
+            if (calloutContainer && calloutLabel && calloutLine) {
+                calloutContainer.classList.add('visible'); calloutLabel.innerHTML = object.userData.projectName || "Projeto";
+                const startPoint = getScreenPosition(object, camera, renderer); const endPoint = { x: startPoint.x + 80, y: startPoint.y - 60 };
+                calloutLabel.style.left = `${endPoint.x}px`; calloutLabel.style.top = `${endPoint.y - 20}px`;
+                const deltaX = endPoint.x - startPoint.x; const deltaY = endPoint.y - startPoint.y; const lineLength = Math.sqrt(deltaX * deltaX + deltaY * deltaY); const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+                calloutLine.style.width = `${lineLength}px`; calloutLine.style.left = `${startPoint.x}px`; calloutLine.style.top = `${startPoint.y}px`; calloutLine.style.transform = `rotate(${angle}deg)`;
+            }
+            if (hoveredNode !== object) { if (hoveredNode) hoveredNode.material.uniforms.c.value.setHex(0xffffff); hoveredNode = object; hoveredNode.material.uniforms.c.value.setHex(0x00ff88); document.body.style.cursor = 'none'; }
+        } else {
+            if (calloutContainer) calloutContainer.classList.remove('visible');
+            if (hoveredNode) { hoveredNode.material.uniforms.c.value.setHex(0xffffff); hoveredNode = null; document.body.style.cursor = 'none'; }
+        }
+
+        // --- VIBRAÇÃO CAÓTICA E ATUALIZAÇÃO DAS LINHAS ---
+        const time = Date.now() * 0.001; // Tempo correndo
+
+        projectNodes.forEach(node => {
+            const targetScale = (node === hoveredNode) ? 1.5 : 1;
+            node.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
+
+            // Movimento forte e desincronizado
+            if (node.userData.basePosition) {
+                const base = node.userData.basePosition;
+                const seed = node.userData.randomSeed;
+
+                // Cada bolinha ganha uma "personalidade" de velocidade
+                const freqX = 0.8 + (seed % 0.5);
+                const freqY = 1.1 + (seed % 0.6);
+                const freqZ = 0.9 + (seed % 0.4);
+                const amplitude = 0.6; // <- Distância do movimento (Ajuste aqui se quiser)
+
+                node.position.x = base.x + Math.sin(time * freqX + seed) * amplitude;
+                node.position.y = base.y + Math.cos(time * freqY + seed) * amplitude;
+                node.position.z = base.z + Math.sin(time * freqZ + seed) * amplitude;
+            }
+        });
+
+        // Atualizar as linhas elásticas
+        if (window.activeEdges && window.moleculeBonds) {
+            const segments = [];
+            const espacamento = 0.5; // <- Gap da linha até a bolinha (Ajuste aqui)
+
+            window.activeEdges.forEach(edge => {
+                const posA = edge.a.position;
+                const posB = edge.b.position;
+
+                const vetorAB = posB.clone().sub(posA);
+                const direcaoAB = vetorAB.clone().normalize();
+
+                const posA_nova = posA.clone().add(direcaoAB.clone().multiplyScalar(espacamento));
+                const posB_nova = posB.clone().sub(direcaoAB.clone().multiplyScalar(espacamento));
+
+                segments.push(posA_nova, posB_nova);
+            });
+
+            window.moleculeBonds.geometry.setFromPoints(segments);
+        }
+
+        if (intersectsCenter.length > 0) { sphere.rotation.y += 0.001; sphere.rotation.x += 0.001; sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.5, 0.05); } else { sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.15, 0.05); }
     }
 
-    // 1. MOUSE
-    window.addEventListener('mousemove', (event) => {
-        if (!isTouching) {
-            updateInputPosition(event.clientX, event.clientY);
-        }
-    });
-
-    // 2. TOUCH START
-    window.addEventListener('touchstart', (event) => {
-        isTouching = true;
-        if (event.touches.length > 0) {
-            updateInputPosition(event.touches[0].clientX, event.touches[0].clientY);
-        }
-    }, { passive: false });
-
-    // 3. TOUCH MOVE
-    window.addEventListener('touchmove', (event) => {
-        if (isTouching && event.touches.length > 0) {
-            updateInputPosition(event.touches[0].clientX, event.touches[0].clientY);
-        }
-    }, { passive: false });
-
-    // 4. TOUCH END
-    window.addEventListener('touchend', () => {
-        isTouching = false;
-        mouse.x = -100;
-        mouse.y = -100;
-    });
-
-    // Clique Global (Modal)
-    window.addEventListener('click', (event) => {
-        if (!document.body.classList.contains('active')) return;
-        if (event.target.closest('.ui-panel') || event.target.closest('.folder-tab') || event.target.closest('#project-modal') || event.target.closest('.close-modal')) return;
-
-        raycaster.setFromCamera(mouse, camera);
-        const intersects = raycaster.intersectObjects(projectNodes);
-        if (intersects.length > 0) {
-            const object = intersects[0].object;
-            openModal(object.userData.data);
-        }
-    });
+    renderer.render(scene, camera);
+}
 
     function openModal(data) { if (modalTitle) modalTitle.innerHTML = data.titulo; if (modalTech) modalTech.innerHTML = "// " + data.tech; if (modalDesc) modalDesc.innerHTML = data.descricao; if (modal) { modal.style.display = 'flex'; setTimeout(() => { modal.classList.add('open'); }, 10); } }
     if (closeBtn) closeBtn.addEventListener('click', () => { if (modal) { modal.classList.remove('open'); setTimeout(() => { modal.style.display = 'none'; }, 500); } });
