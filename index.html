@@ -736,81 +736,86 @@ REGRAS DE CONDUTA:
                 ];
 
                 if (chatInput && chatHistory) {
+
                     chatInput.addEventListener('keydown', async function (e) {
-                        e.stopPropagation();
+                        e.stopPropagation(); // O Escudo do Espaço/Enter
 
                         if (e.key === 'Enter' && this.value.trim() !== '') {
                             const userText = this.value.trim();
                             const commandText = userText.toLowerCase();
 
-                            // 🚀 O INTERCEPTADOR DE COMANDOS SECRETOS
-                            if (commandText === '/blueprint' || commandText === '/matrix' || commandText === '/coffee') {
-                                const userMsgDiv = document.createElement('div');
-                                userMsgDiv.className = 'msg user-msg';
-                                userMsgDiv.innerHTML = `<span class="sender">YOU:</span>${userText}`;
-                                chatHistory.appendChild(userMsgDiv);
-                                this.value = '';
-
-                                const aiMsgDiv = document.createElement('div');
-                                aiMsgDiv.className = 'msg ai-msg';
-
-                                if (commandText === '/blueprint') {
-                                    const isActive = document.body.classList.toggle('blueprint-mode');
-                                    if (isActive) {
-                                        aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[MODO BLUEPRINT ATIVADO_] Tema de arquitetura carregado na interface.`;
-                                    } else {
-                                        aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[MODO BLUEPRINT DESATIVADO_] Interface restaurada para o padrão.`;
-                                    }
-                                } else if (commandText === '/matrix') {
-                                    const matrixCanvas = document.getElementById('matrix-canvas');
-                                    if (matrixCanvas) {
-                                        matrixCanvas.remove();
-                                        if (window.matrixInterval) clearInterval(window.matrixInterval);
-                                        aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[PROTOCOLO MATRIX DESATIVADO_] Simulação encerrada. Bem-vindo ao mundo real.`;
-                                    } else {
-                                        iniciarMatrix();
-                                        aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[PROTOCOLO MATRIX INICIADO_] Siga o coelho branco, Donati.`;
-                                    }
-                                } else if (commandText === '/coffee') {
-                                    if (window.coffeeMode) {
-                                        window.coffeeMode = false;
-                                        aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[CAFEÍNA PURGADA_] Velocidade do sistema normalizada.`;
-                                    } else {
-                                        window.coffeeMode = true;
-                                        document.body.classList.add('coffee-jitter');
-                                        setTimeout(() => document.body.classList.remove('coffee-jitter'), 2000);
-                                        aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[INJEÇÃO DE CAFEÍNA CONCLUÍDA_] Velocidade do motor 3D turbinada.`;
-                                    }
+                            // --- LÓGICA DO /BLUEPRINT ---
+                            if (commandText === '/blueprint') {
+                                // O toggle liga se estiver desligado, e desliga se estiver ligado!
+                                const isActive = document.body.classList.toggle('blueprint-mode');
+                                if (isActive) {
+                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[MODO BLUEPRINT ATIVADO_] Tema de arquitetura carregado na interface.`;
+                                } else {
+                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[MODO BLUEPRINT DESATIVADO_] Interface restaurada para o padrão.`;
                                 }
-
-                                chatHistory.appendChild(aiMsgDiv);
-                                chatHistory.scrollTop = chatHistory.scrollHeight;
-                                return;
                             }
+                            // --- LÓGICA DO /MATRIX ---
+                            else if (commandText === '/matrix') {
+                                const matrixCanvas = document.getElementById('matrix-canvas');
+                                if (matrixCanvas) {
+                                    // Se a matrix já existe, a gente apaga ela e para o processo
+                                    matrixCanvas.remove();
+                                    if (window.matrixInterval) clearInterval(window.matrixInterval);
+                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[PROTOCOLO MATRIX DESATIVADO_] Simulação encerrada. Bem-vindo ao mundo real.`;
+                                } else {
+                                    // Se não existe, a gente liga
+                                    iniciarMatrix();
+                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[PROTOCOLO MATRIX INICIADO_] Siga o coelho branco, Donati.`;
+                                }
+                            }
+                            // --- LÓGICA DO /COFFEE ---
+                            else if (commandText === '/coffee') {
+                                if (window.coffeeMode) {
+                                    // Se já tomou café, a gente tira o efeito
+                                    window.coffeeMode = false;
+                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[CAFEÍNA PURGADA_] Velocidade do sistema normalizada.`;
+                                } else {
+                                    // Se não, a gente injeta!
+                                    window.coffeeMode = true;
+                                    document.body.classList.add('coffee-jitter');
+                                    setTimeout(() => document.body.classList.remove('coffee-jitter'), 2000);
+                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[INJEÇÃO DE CAFEÍNA CONCLUÍDA_] Velocidade do motor 3D turbinada.`;
+                                }
+                            }
+
+
 
                             // --- SE NÃO FOR COMANDO SECRETO, SEGUE O FLUXO NORMAL PRA IA ---
                             conversationHistory.push({ role: "user", content: userText });
 
+                            // (AQUI CONTINUA O SEU CÓDIGO NORMAL DE IMPRIMIR A MENSAGEM DO USUÁRIO...)
                             const userMsgDiv = document.createElement('div');
                             userMsgDiv.className = 'msg user-msg';
-                            userMsgDiv.innerHTML = `<span class="sender">YOU:</span>${userText}`;
+                            userMsgDiv.innerHTML = `<span class="sender">USER:</span>${userText}`;
                             chatHistory.appendChild(userMsgDiv);
 
                             this.value = '';
                             chatHistory.scrollTop = chatHistory.scrollHeight;
 
+                            this.value = '';
+                            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+
+                            // 1. Cria a mensagem do SYSTEM "pensando" (Feedback visual)
                             const aiMsgDiv = document.createElement('div');
                             aiMsgDiv.className = 'msg ai-msg';
                             aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span><span class="cyber-cursor">_</span>`;
                             chatHistory.appendChild(aiMsgDiv);
                             chatHistory.scrollTop = chatHistory.scrollHeight;
 
+                            // 2. CHAMA O SEU SERVIDOR NA VERCEL
                             try {
                                 const response = await fetch('/api/chat', {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'application/json' },
                                     body: JSON.stringify({
                                         model: "llama-3.1-8b-instant",
+                                        // Manda a memória toda pra ela lembrar do contexto
                                         messages: conversationHistory,
                                         temperature: 0.5
                                     })
@@ -820,7 +825,10 @@ REGRAS DE CONDUTA:
 
                                 if (data.choices && data.choices[0]) {
                                     const aiText = data.choices[0].message.content;
+
+                                    // Salva a resposta dela na memória!
                                     conversationHistory.push({ role: "assistant", content: aiText });
+
                                     aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>${aiText}`;
                                 } else if (data.error) {
                                     const motivo = data.error.message || "Falha desconhecida";
@@ -835,7 +843,13 @@ REGRAS DE CONDUTA:
                             }
 
                             chatHistory.scrollTop = chatHistory.scrollHeight;
+                            chatHistory.appendChild(aiMsgDiv);
+                            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+                            // O SEGREDO É ESTE RETURN: Ele para o código aqui e não envia pra Groq!
+                            return;
                         }
+                        
                     });
                 }
             }
