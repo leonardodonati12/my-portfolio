@@ -754,32 +754,28 @@ REGRAS DE CONDUTA:
                                 const aiMsgDiv = document.createElement('div');
                                 aiMsgDiv.className = 'msg ai-msg';
 
+                                // --- LÓGICA DO /BLUEPRINT ---
                                 if (commandText === '/blueprint') {
-                                    const isActive = document.body.classList.toggle('blueprint-mode');
-                                    if (isActive) {
-                                        aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[MODO BLUEPRINT ATIVADO_] Tema de arquitetura carregado na interface.`;
-                                    } else {
-                                        aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[MODO BLUEPRINT DESATIVADO_] Interface restaurada para o padrão.`;
-                                    }
-                                } else if (commandText === '/matrix') {
+                                    document.body.classList.toggle('blueprint-mode');
+                                }
+                                // --- LÓGICA DO /MATRIX ---
+                                else if (commandText === '/matrix') {
                                     const matrixCanvas = document.getElementById('matrix-canvas');
                                     if (matrixCanvas) {
                                         matrixCanvas.remove();
                                         if (window.matrixInterval) clearInterval(window.matrixInterval);
-                                        aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[PROTOCOLO MATRIX DESATIVADO_] Simulação encerrada. Bem-vindo ao mundo real.`;
                                     } else {
                                         iniciarMatrix();
-                                        aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[PROTOCOLO MATRIX INICIADO_] Siga o coelho branco, Donati.`;
                                     }
-                                } else if (commandText === '/coffee') {
+                                }
+                                // --- LÓGICA DO /COFFEE ---
+                                else if (commandText === '/coffee') {
                                     if (window.coffeeMode) {
                                         window.coffeeMode = false;
-                                        aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[CAFEÍNA PURGADA_] Velocidade do sistema normalizada.`;
                                     } else {
                                         window.coffeeMode = true;
                                         document.body.classList.add('coffee-jitter');
                                         setTimeout(() => document.body.classList.remove('coffee-jitter'), 2000);
-                                        aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[INJEÇÃO DE CAFEÍNA CONCLUÍDA_] Velocidade do motor 3D turbinada.`;
                                     }
                                 }
 
