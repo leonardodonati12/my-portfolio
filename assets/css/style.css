@@ -280,20 +280,6 @@ body.push-bottom #folder-stack {
 		cursor: none !important;
 	}
 
-	/* Garante que o arcade deslize suavemente quando as classes do body mudarem */
-	#arcade-modal {
-		transition: right 0.3s ease, bottom 0.3s ease, top 0.3s ease;
-	}
-
-	/* Quando o painel da direita abre (empurra o arcade para a esquerda) */
-	body.push-right #arcade-modal {
-		right: 300px; /* Ajuste esse valor de acordo com a largura do seu painel */
-	}
-
-	/* Quando o painel inferior/superior abre (empurra o arcade para cima/baixo) */
-	body.push-top #arcade-modal {
-		transform: translateY(-280px);
-	}
 
 /* ========================================== */
 /* AI MODAL STYLES & PUSH */
