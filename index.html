@@ -819,15 +819,15 @@ REGRAS DE CONDUTA:
                                     conversationHistory.push({ role: "assistant", content: aiText });
                                     aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>${aiText}`;
                                 } else if (data.error) {
-                                    const motivo = data.error.message || "Falha desconhecida";
-                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[ERRO DA API: ${motivo}_]`;
+                                    const motivo = data.error.message || "ERROR: Unknown failure";
+                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[API ERROR: ${motivo}_]`;
                                 } else {
-                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[RESPOSTA INVÁLIDA_]`;
+                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[ERRO: INVALID ANSWER_]`;
                                 }
 
                             } catch (error) {
                                 console.error("Erro na Matrix:", error);
-                                aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[OFFLINE - SINAL PERDIDO_]`;
+                                aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[ERROR: SIGNLA LOST_]`;
                             }
 
                             chatHistory.scrollTop = chatHistory.scrollHeight;
