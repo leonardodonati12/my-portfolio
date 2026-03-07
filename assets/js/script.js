@@ -372,7 +372,7 @@ fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(p
     if (esferas.length < 2) return;
 
     const segments = [];
-    const espacamento = 1.2; // Aquele gap estiloso antes de encostar na bolinha
+    const espacamento = 0.5; // Aquele gap estiloso antes de encostar na bolinha
 
     // 1. Criamos um catálogo com todas as combinações possíveis de ligações
     let possiveisArestas = [];
