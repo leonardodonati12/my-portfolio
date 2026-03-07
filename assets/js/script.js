@@ -372,36 +372,41 @@ fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(p
     if (esferas.length < 2) return;
 
     const segments = [];
-    const espacamento = 1.0;
+    const espacamento = 1.2; // Espaçamento (gap) antes de encostar no centro da bolinha
+    const limiteDistancia = 10.5; // O número mágico! Impede que a linha fure o núcleo
 
-    for (let i = 0; i < esferas.length - 1; i++) {
-        const noA = esferas[i];
-        const noB = esferas[i + 1];
+    // Loop duplo: Comparamos cada bolinha com todas as outras bolinhas
+    for (let i = 0; i < esferas.length; i++) {
+        for (let j = i + 1; j < esferas.length; j++) {
+            const posA = esferas[i].position.clone();
+            const posB = esferas[j].position.clone();
 
-        const posA = noA.position.clone();
-        const posB = noB.position.clone();
+            const distancia = posA.distanceTo(posB);
 
-        const vetorAB = posB.clone().sub(posA);
-        const direcaoAB = vetorAB.clone().normalize();
+            // Regra de Ouro: Só conecta se a distância for menor que 10.5. 
+            // Se for maior, significa que cruzaria o centro, então a gente ignora!
+            if (distancia < limiteDistancia) {
+                const vetorAB = posB.clone().sub(posA);
+                const direcaoAB = vetorAB.clone().normalize();
 
-        const posA_nova = posA.clone().add(direcaoAB.clone().multiplyScalar(espacamento));
-        const posB_nova = posB.clone().sub(direcaoAB.clone().multiplyScalar(espacamento));
+                // Calcula as novas pontas da linha parando "antes" de chegar no nó
+                const posA_nova = posA.clone().add(direcaoAB.clone().multiplyScalar(espacamento));
+                const posB_nova = posB.clone().sub(direcaoAB.clone().multiplyScalar(espacamento));
 
-        segments.push(posA_nova, posB_nova);
+                segments.push(posA_nova, posB_nova);
+            }
+        }
     }
 
     const lineGeometry = new THREE.BufferGeometry().setFromPoints(segments);
 
-    // Linhas Brancas
+    // 1. Linhas Brancas
     const lineMaterial = new THREE.LineBasicMaterial({
-        color: 0xffffff,
+        color: 0xffffff, // Branco limpo
         transparent: true,
-        opacity: 0.4,
+        opacity: 0.3,    // Um pouco mais suave para ficar sci-fi
         linewidth: 1
     });
-
-    const moleculeBonds = new THREE.LineSegments(lineGeometry, lineMaterial);
-    projectGroup.add(moleculeBonds);
 
 });
 
