@@ -750,7 +750,7 @@ REGRAS DE CONDUTA:
                                 // 1. Mostra o comando na tela
                                 const userMsgDiv = document.createElement('div');
                                 userMsgDiv.className = 'msg user-msg';
-                                userMsgDiv.innerHTML = `<span class="sender">YOU:</span>${userText}`;
+                                userMsgDiv.innerHTML = `<span class="sender">USER:</span>${userText}`;
                                 chatHistory.appendChild(userMsgDiv);
                                 this.value = ''; // Limpa o input
 
@@ -792,10 +792,57 @@ REGRAS DE CONDUTA:
                             // (AQUI CONTINUA O SEU CÓDIGO NORMAL DE IMPRIMIR A MENSAGEM DO USUÁRIO...)
                             const userMsgDiv = document.createElement('div');
                             userMsgDiv.className = 'msg user-msg';
-                            userMsgDiv.innerHTML = `<span class="sender">YOU:</span>${userText}`;
+                            userMsgDiv.innerHTML = `<span class="sender">USER:</span>${userText}`;
                             chatHistory.appendChild(userMsgDiv);
 
                             this.value = '';
+                            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+                            this.value = '';
+                            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+
+                            // 1. Cria a mensagem do SYSTEM "pensando" (Feedback visual)
+                            const aiMsgDiv = document.createElement('div');
+                            aiMsgDiv.className = 'msg ai-msg';
+                            aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span><span class="cyber-cursor">_</span>`;
+                            chatHistory.appendChild(aiMsgDiv);
+                            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+                            // 2. CHAMA O SEU SERVIDOR NA VERCEL
+                            try {
+                                const response = await fetch('/api/chat', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        model: "llama-3.1-8b-instant",
+                                        // Manda a memória toda pra ela lembrar do contexto
+                                        messages: conversationHistory,
+                                        temperature: 0.5
+                                    })
+                                });
+
+                                const data = await response.json();
+
+                                if (data.choices && data.choices[0]) {
+                                    const aiText = data.choices[0].message.content;
+
+                                    // Salva a resposta dela na memória!
+                                    conversationHistory.push({ role: "assistant", content: aiText });
+
+                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>${aiText}`;
+                                } else if (data.error) {
+                                    const motivo = data.error.message || "Falha desconhecida";
+                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[ERRO DA API: ${motivo}_]`;
+                                } else {
+                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[RESPOSTA INVÁLIDA_]`;
+                                }
+
+                            } catch (error) {
+                                console.error("Erro na Matrix:", error);
+                                aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[OFFLINE - SINAL PERDIDO_]`;
+                            }
+
                             chatHistory.scrollTop = chatHistory.scrollHeight;
 
                         }
