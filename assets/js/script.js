@@ -372,41 +372,59 @@ fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(p
     if (esferas.length < 2) return;
 
     const segments = [];
-    const espacamento = 1.2; // Espaçamento (gap) antes de encostar no centro da bolinha
-    const limiteDistancia = 10.5; // O número mágico! Impede que a linha fure o núcleo
+    const espacamento = 1.2; // Aquele gap estiloso antes de encostar na bolinha
 
-    // Loop duplo: Comparamos cada bolinha com todas as outras bolinhas
+    // 1. Criamos um catálogo com todas as combinações possíveis de ligações
+    let possiveisArestas = [];
     for (let i = 0; i < esferas.length; i++) {
         for (let j = i + 1; j < esferas.length; j++) {
+            const dist = esferas[i].position.distanceTo(esferas[j].position);
+            possiveisArestas.push({ noA: i, noB: j, distancia: dist });
+        }
+    }
+
+    // 2. Ordenamos da menor distância (vizinhos) para a maior (opostos que cruzam o centro)
+    possiveisArestas.sort((a, b) => a.distancia - b.distancia);
+
+    // 3. Contador: Vamos vigiar para que CADA bolinha tenha no máximo 4 ligações
+    const conexoesPorBolinha = new Array(esferas.length).fill(0);
+
+    // 4. Distribuímos as arestas seguindo a regra
+    for (const aresta of possiveisArestas) {
+        const i = aresta.noA;
+        const j = aresta.noB;
+
+        // Se TANTO a bolinha A quanto a B tiverem menos de 4 conexões, a gente liga!
+        if (conexoesPorBolinha[i] < 4 && conexoesPorBolinha[j] < 4) {
+            conexoesPorBolinha[i]++;
+            conexoesPorBolinha[j]++;
+
             const posA = esferas[i].position.clone();
             const posB = esferas[j].position.clone();
 
-            const distancia = posA.distanceTo(posB);
+            const vetorAB = posB.clone().sub(posA);
+            const direcaoAB = vetorAB.clone().normalize();
 
-            // Regra de Ouro: Só conecta se a distância for menor que 10.5. 
-            // Se for maior, significa que cruzaria o centro, então a gente ignora!
-            if (distancia < limiteDistancia) {
-                const vetorAB = posB.clone().sub(posA);
-                const direcaoAB = vetorAB.clone().normalize();
+            // Calcula as pontas com o espaçamento
+            const posA_nova = posA.clone().add(direcaoAB.clone().multiplyScalar(espacamento));
+            const posB_nova = posB.clone().sub(direcaoAB.clone().multiplyScalar(espacamento));
 
-                // Calcula as novas pontas da linha parando "antes" de chegar no nó
-                const posA_nova = posA.clone().add(direcaoAB.clone().multiplyScalar(espacamento));
-                const posB_nova = posB.clone().sub(direcaoAB.clone().multiplyScalar(espacamento));
-
-                segments.push(posA_nova, posB_nova);
-            }
+            segments.push(posA_nova, posB_nova);
         }
     }
 
     const lineGeometry = new THREE.BufferGeometry().setFromPoints(segments);
 
-    // 1. Linhas Brancas
+    // Linhas Brancas Limpas
     const lineMaterial = new THREE.LineBasicMaterial({
-        color: 0xffffff, // Branco limpo
+        color: 0xffffff,
         transparent: true,
-        opacity: 0.3,    // Um pouco mais suave para ficar sci-fi
+        opacity: 0.3,
         linewidth: 1
     });
+
+    const moleculeBonds = new THREE.LineSegments(lineGeometry, lineMaterial);
+    projectGroup.add(moleculeBonds);
 
 });
 
