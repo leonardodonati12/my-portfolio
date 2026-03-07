@@ -358,6 +358,7 @@ const projetosSimulados = [
 
 fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(projetos => {
     const radius = 6.5; const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+
     projetos.forEach((proj, i) => {
         const y = 1 - (i / (projetos.length - 1)) * 2; const radiusAtY = Math.sqrt(1 - y * y); const theta = goldenAngle * i; const x = Math.cos(theta) * radiusAtY; const z = Math.sin(theta) * radiusAtY;
         const nodeMat = new THREE.ShaderMaterial({ uniforms: { "c": { type: "c", value: new THREE.Color(0xffffff) }, "p": { type: "f", value: 3.0 }, "glowIntensity": { type: "f", value: 1.5 } }, vertexShader: vertexShader, fragmentShader: fragmentShader, side: THREE.FrontSide, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false });
@@ -368,13 +369,11 @@ fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(p
 
     // LIGAÇÕES MOLECULARES DOS PROJETOS
     const esferas = projectNodes;
-    if (esferas.length < 2) return; // Precisa de pelo menos 2 bolinhas para conectar
+    if (esferas.length < 2) return;
 
-    const segments = []; // Array que guardará os pares de pontos (início, fim)
-    const espacamento = 1.0; // Espaçamento antes de chegar no centro (ajustável, tente 0.8 ou 1.2)
+    const segments = [];
+    const espacamento = 1.0;
 
-    // Percorremos a lista de esferas conectando nó i com nó i+1
-    // (A ordem ângulo dourado garante nós próximos, evitando cruzar o Icosaedro central)
     for (let i = 0; i < esferas.length - 1; i++) {
         const noA = esferas[i];
         const noB = esferas[i + 1];
@@ -382,42 +381,29 @@ fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(p
         const posA = noA.position.clone();
         const posB = noB.position.clone();
 
-        // 2 & 3. Calcular espaçamento e evitar cruzamento com o centro
-        // Como o raio dos nós é de 6.5 e o do icosaedro é 1.7, 
-        // a linha entre nós espacialmente próximos não cruza o volume central.
-        // A lógica de nós consecutivos não cria conexões entre o polo norte e o polo sul.
-        const vetorAB = posB.clone().sub(posA); // Vetor que vai de A para B
-        const direcaoAB = vetorAB.clone().normalize(); // Direção normalizada de A para B
+        const vetorAB = posB.clone().sub(posA);
+        const direcaoAB = vetorAB.clone().normalize();
 
-        // Calcular novos pontos de início (A') e fim (B') que "param antes" do centro
-        // A' é a posição de A movida na direção de B
         const posA_nova = posA.clone().add(direcaoAB.clone().multiplyScalar(espacamento));
-        // B' é a posição de B movida na direção de A (subtraída da direção A->B)
         const posB_nova = posB.clone().sub(direcaoAB.clone().multiplyScalar(espacamento));
 
-        segments.push(posA_nova, posB_nova); // Adicionar o par de pontos para o segmento
+        segments.push(posA_nova, posB_nova);
     }
 
-    // (Não fechamos o loop do nó 7 para o nó 0 para evitar que a linha cruze o Icosaedro central)
-
-    // Criar a geometria a partir dos segmentos
     const lineGeometry = new THREE.BufferGeometry().setFromPoints(segments);
 
-    // 1. Linhas Brancas
+    // Linhas Brancas
     const lineMaterial = new THREE.LineBasicMaterial({
-        color: 0xffffff, // Mudado para branco puro
+        color: 0xffffff,
         transparent: true,
         opacity: 0.4,
         linewidth: 1
     });
 
-    // Usar THREE.LineSegments para desenhar segmentos separados
     const moleculeBonds = new THREE.LineSegments(lineGeometry, lineMaterial);
-
-    // Adiciona as linhas no projectGroup (o que gira as bolinhas)
     projectGroup.add(moleculeBonds);
 
-
+});
 
     // --- INTERAÇÃO HÍBRIDA (MOUSE + TOUCH HOLD) ---
     const raycaster = new THREE.Raycaster();
