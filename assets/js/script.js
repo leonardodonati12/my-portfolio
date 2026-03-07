@@ -366,160 +366,186 @@ fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(p
         projectNodes.push(node); projectGroup.add(node);
     });
 
-// LIGAÇÕES MOLECULARES DOS PROJETOS
+    // LIGAÇÕES MOLECULARES DOS PROJETOS
+    const esferas = projectNodes;
+    if (esferas.length < 2) return; // Precisa de pelo menos 2 bolinhas para conectar
+
+    const segments = []; // Array que guardará os pares de pontos (início, fim)
+    const espacamento = 1.0; // Espaçamento antes de chegar no centro (ajustável, tente 0.8 ou 1.2)
+
+    // Percorremos a lista de esferas conectando nó i com nó i+1
+    // (A ordem ângulo dourado garante nós próximos, evitando cruzar o Icosaedro central)
+    for (let i = 0; i < esferas.length - 1; i++) {
+        const noA = esferas[i];
+        const noB = esferas[i + 1];
+
+        const posA = noA.position.clone();
+        const posB = noB.position.clone();
+
+        // 2 & 3. Calcular espaçamento e evitar cruzamento com o centro
+        // Como o raio dos nós é de 6.5 e o do icosaedro é 1.7, 
+        // a linha entre nós espacialmente próximos não cruza o volume central.
+        // A lógica de nós consecutivos não cria conexões entre o polo norte e o polo sul.
+        const vetorAB = posB.clone().sub(posA); // Vetor que vai de A para B
+        const direcaoAB = vetorAB.clone().normalize(); // Direção normalizada de A para B
+
+        // Calcular novos pontos de início (A') e fim (B') que "param antes" do centro
+        // A' é a posição de A movida na direção de B
+        const posA_nova = posA.clone().add(direcaoAB.clone().multiplyScalar(espacamento));
+        // B' é a posição de B movida na direção de A (subtraída da direção A->B)
+        const posB_nova = posB.clone().sub(direcaoAB.clone().multiplyScalar(espacamento));
+
+        segments.push(posA_nova, posB_nova); // Adicionar o par de pontos para o segmento
+    }
+
+    // (Não fechamos o loop do nó 7 para o nó 0 para evitar que a linha cruze o Icosaedro central)
+
+    // Criar a geometria a partir dos segmentos
+    const lineGeometry = new THREE.BufferGeometry().setFromPoints(segments);
+
+    // 1. Linhas Brancas
     const lineMaterial = new THREE.LineBasicMaterial({
-        color: 0x00ff88,
+        color: 0xffffff, // Mudado para branco puro
         transparent: true,
         opacity: 0.4,
         linewidth: 1
     });
 
-    const points = [];
-    projectNodes.forEach(bolinha => {
-        points.push(bolinha.position);
-    });
-
-    // Copia a primeira posição pro final para fechar a figura 3D
-    if (points.length > 0) {
-        points.push(points[0]);
-    }
-
-    const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-    const moleculeBonds = new THREE.Line(lineGeometry, lineMaterial);
+    // Usar THREE.LineSegments para desenhar segmentos separados
+    const moleculeBonds = new THREE.LineSegments(lineGeometry, lineMaterial);
 
     // Adiciona as linhas no projectGroup (o que gira as bolinhas)
     projectGroup.add(moleculeBonds);
-});
 
-// --- INTERAÇÃO HÍBRIDA (MOUSE + TOUCH HOLD) ---
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2(-100, -100);
-let hoveredNode = null;
-let isTouching = false;
 
-function updateInputPosition(clientX, clientY) {
-    mouse.x = (clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(clientY / window.innerHeight) * 2 + 1;
-}
 
-// 1. MOUSE
-window.addEventListener('mousemove', (event) => {
-    if (!isTouching) {
-        updateInputPosition(event.clientX, event.clientY);
+    // --- INTERAÇÃO HÍBRIDA (MOUSE + TOUCH HOLD) ---
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2(-100, -100);
+    let hoveredNode = null;
+    let isTouching = false;
+
+    function updateInputPosition(clientX, clientY) {
+        mouse.x = (clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(clientY / window.innerHeight) * 2 + 1;
     }
-});
 
-// 2. TOUCH START
-window.addEventListener('touchstart', (event) => {
-    isTouching = true;
-    if (event.touches.length > 0) {
-        updateInputPosition(event.touches[0].clientX, event.touches[0].clientY);
-    }
-}, { passive: false });
-
-// 3. TOUCH MOVE
-window.addEventListener('touchmove', (event) => {
-    if (isTouching && event.touches.length > 0) {
-        updateInputPosition(event.touches[0].clientX, event.touches[0].clientY);
-    }
-}, { passive: false });
-
-// 4. TOUCH END
-window.addEventListener('touchend', () => {
-    isTouching = false;
-    mouse.x = -100;
-    mouse.y = -100;
-});
-
-// Clique Global (Modal)
-window.addEventListener('click', (event) => {
-    if (!document.body.classList.contains('active')) return;
-    if (event.target.closest('.ui-panel') || event.target.closest('.folder-tab') || event.target.closest('#project-modal') || event.target.closest('.close-modal')) return;
-
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(projectNodes);
-    if (intersects.length > 0) {
-        const object = intersects[0].object;
-        openModal(object.userData.data);
-    }
-});
-
-function openModal(data) { if (modalTitle) modalTitle.innerHTML = data.titulo; if (modalTech) modalTech.innerHTML = "// " + data.tech; if (modalDesc) modalDesc.innerHTML = data.descricao; if (modal) { modal.style.display = 'flex'; setTimeout(() => { modal.classList.add('open'); }, 10); } }
-if (closeBtn) closeBtn.addEventListener('click', () => { if (modal) { modal.classList.remove('open'); setTimeout(() => { modal.style.display = 'none'; }, 500); } });
-let lastMiddleClick = 0; window.addEventListener('mousedown', (e) => { if (e.button === 1) { e.preventDefault(); const now = Date.now(); if (now - lastMiddleClick < 500) controls.reset(); lastMiddleClick = now; } });
-
-function animate() {
-    requestAnimationFrame(animate); controls.update();
-    if (document.body.classList.contains('active')) {
-        raycaster.setFromCamera(mouse, camera); const intersectsNodes = raycaster.intersectObjects(projectNodes); const intersectsCenter = raycaster.intersectObject(sphere);
-        if (!hoveredNode) { projectGroup.rotation.y -= 0.001; projectGroup.rotation.z += 0.0005; }
-        if (intersectsNodes.length > 0) {
-            const object = intersectsNodes[0].object;
-            if (calloutContainer && calloutLabel && calloutLine) {
-                calloutContainer.classList.add('visible'); calloutLabel.innerHTML = object.userData.projectName || "Projeto";
-                const startPoint = getScreenPosition(object, camera, renderer); const endPoint = { x: startPoint.x + 80, y: startPoint.y - 60 };
-                calloutLabel.style.left = `${endPoint.x}px`; calloutLabel.style.top = `${endPoint.y - 20}px`;
-                const deltaX = endPoint.x - startPoint.x; const deltaY = endPoint.y - startPoint.y; const lineLength = Math.sqrt(deltaX * deltaX + deltaY * deltaY); const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
-                calloutLine.style.width = `${lineLength}px`; calloutLine.style.left = `${startPoint.x}px`; calloutLine.style.top = `${startPoint.y}px`; calloutLine.style.transform = `rotate(${angle}deg)`;
-            }
-            if (hoveredNode !== object) { if (hoveredNode) hoveredNode.material.uniforms.c.value.setHex(0xffffff); hoveredNode = object; hoveredNode.material.uniforms.c.value.setHex(0x00ff88); document.body.style.cursor = 'none'; }
-        } else {
-            if (calloutContainer) calloutContainer.classList.remove('visible');
-            if (hoveredNode) { hoveredNode.material.uniforms.c.value.setHex(0xffffff); hoveredNode = null; document.body.style.cursor = 'none'; }
+    // 1. MOUSE
+    window.addEventListener('mousemove', (event) => {
+        if (!isTouching) {
+            updateInputPosition(event.clientX, event.clientY);
         }
-        projectNodes.forEach(node => { const targetScale = (node === hoveredNode) ? 1.5 : 1; node.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1); });
-        if (intersectsCenter.length > 0) { sphere.rotation.y += 0.001; sphere.rotation.x += 0.001; sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.5, 0.05); } else { sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.15, 0.05); }
+    });
+
+    // 2. TOUCH START
+    window.addEventListener('touchstart', (event) => {
+        isTouching = true;
+        if (event.touches.length > 0) {
+            updateInputPosition(event.touches[0].clientX, event.touches[0].clientY);
+        }
+    }, { passive: false });
+
+    // 3. TOUCH MOVE
+    window.addEventListener('touchmove', (event) => {
+        if (isTouching && event.touches.length > 0) {
+            updateInputPosition(event.touches[0].clientX, event.touches[0].clientY);
+        }
+    }, { passive: false });
+
+    // 4. TOUCH END
+    window.addEventListener('touchend', () => {
+        isTouching = false;
+        mouse.x = -100;
+        mouse.y = -100;
+    });
+
+    // Clique Global (Modal)
+    window.addEventListener('click', (event) => {
+        if (!document.body.classList.contains('active')) return;
+        if (event.target.closest('.ui-panel') || event.target.closest('.folder-tab') || event.target.closest('#project-modal') || event.target.closest('.close-modal')) return;
+
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(projectNodes);
+        if (intersects.length > 0) {
+            const object = intersects[0].object;
+            openModal(object.userData.data);
+        }
+    });
+
+    function openModal(data) { if (modalTitle) modalTitle.innerHTML = data.titulo; if (modalTech) modalTech.innerHTML = "// " + data.tech; if (modalDesc) modalDesc.innerHTML = data.descricao; if (modal) { modal.style.display = 'flex'; setTimeout(() => { modal.classList.add('open'); }, 10); } }
+    if (closeBtn) closeBtn.addEventListener('click', () => { if (modal) { modal.classList.remove('open'); setTimeout(() => { modal.style.display = 'none'; }, 500); } });
+    let lastMiddleClick = 0; window.addEventListener('mousedown', (e) => { if (e.button === 1) { e.preventDefault(); const now = Date.now(); if (now - lastMiddleClick < 500) controls.reset(); lastMiddleClick = now; } });
+
+    function animate() {
+        requestAnimationFrame(animate); controls.update();
+        if (document.body.classList.contains('active')) {
+            raycaster.setFromCamera(mouse, camera); const intersectsNodes = raycaster.intersectObjects(projectNodes); const intersectsCenter = raycaster.intersectObject(sphere);
+            if (!hoveredNode) { projectGroup.rotation.y -= 0.001; projectGroup.rotation.z += 0.0005; }
+            if (intersectsNodes.length > 0) {
+                const object = intersectsNodes[0].object;
+                if (calloutContainer && calloutLabel && calloutLine) {
+                    calloutContainer.classList.add('visible'); calloutLabel.innerHTML = object.userData.projectName || "Projeto";
+                    const startPoint = getScreenPosition(object, camera, renderer); const endPoint = { x: startPoint.x + 80, y: startPoint.y - 60 };
+                    calloutLabel.style.left = `${endPoint.x}px`; calloutLabel.style.top = `${endPoint.y - 20}px`;
+                    const deltaX = endPoint.x - startPoint.x; const deltaY = endPoint.y - startPoint.y; const lineLength = Math.sqrt(deltaX * deltaX + deltaY * deltaY); const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+                    calloutLine.style.width = `${lineLength}px`; calloutLine.style.left = `${startPoint.x}px`; calloutLine.style.top = `${startPoint.y}px`; calloutLine.style.transform = `rotate(${angle}deg)`;
+                }
+                if (hoveredNode !== object) { if (hoveredNode) hoveredNode.material.uniforms.c.value.setHex(0xffffff); hoveredNode = object; hoveredNode.material.uniforms.c.value.setHex(0x00ff88); document.body.style.cursor = 'none'; }
+            } else {
+                if (calloutContainer) calloutContainer.classList.remove('visible');
+                if (hoveredNode) { hoveredNode.material.uniforms.c.value.setHex(0xffffff); hoveredNode = null; document.body.style.cursor = 'none'; }
+            }
+            projectNodes.forEach(node => { const targetScale = (node === hoveredNode) ? 1.5 : 1; node.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1); });
+            if (intersectsCenter.length > 0) { sphere.rotation.y += 0.001; sphere.rotation.x += 0.001; sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.5, 0.05); } else { sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.15, 0.05); }
+        }
+        renderer.render(scene, camera);
     }
-    renderer.render(scene, camera);
-}
-animate();
-window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); if (canvas) canvas.width = window.innerWidth; });
+    animate();
+    window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); if (canvas) canvas.width = window.innerWidth; });
 
-// --- 13. AUDIO SYSTEM (SEM VISUALIZER) ---
-const audioEl = document.getElementById('theme-audio');
-const audioBtn = document.getElementById('audio-btn');
+    // --- 13. AUDIO SYSTEM (SEM VISUALIZER) ---
+    const audioEl = document.getElementById('theme-audio');
+    const audioBtn = document.getElementById('audio-btn');
 
-let isAudioPlaying = false;
-let audioContext;
+    let isAudioPlaying = false;
+    let audioContext;
 
-// [NOVO] Força o botão a nascer com o texto e o visual de "Desligado"
-if (audioBtn) {
-    audioBtn.innerHTML = 'SOUND OFF';
-    audioBtn.classList.remove('playing');
-}
-
-function setupAudioContext() {
-    // Mantemos o Context apenas para lidar com políticas do navegador
-    if (!audioContext && (window.AudioContext || window.webkitAudioContext)) {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        audioContext = new AudioContext();
-    }
-}
-
-function toggleAudio() {
-    if (!audioEl) return;
-    setupAudioContext();
-
-    // Garante que o contexto de áudio esteja rodando
-    if (audioContext && audioContext.state === 'suspended') audioContext.resume();
-
-    if (isAudioPlaying) {
-        audioEl.pause();
+    // [NOVO] Força o botão a nascer com o texto e o visual de "Desligado"
+    if (audioBtn) {
         audioBtn.innerHTML = 'SOUND OFF';
         audioBtn.classList.remove('playing');
-        isAudioPlaying = false;
-    } else {
-        // Quando o usuário finalmente clica, definimos o volume em 20% e tocamos
-        audioEl.volume = 0.2;
-        audioEl.play().then(() => {
-            audioBtn.innerHTML = 'SOUND ON';
-            audioBtn.classList.add('playing');
-            isAudioPlaying = true;
-        }).catch(err => console.log("Áudio bloqueado:", err));
     }
-}
 
-if (audioBtn) audioBtn.addEventListener('click', toggleAudio);
+    function setupAudioContext() {
+        // Mantemos o Context apenas para lidar com políticas do navegador
+        if (!audioContext && (window.AudioContext || window.webkitAudioContext)) {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioContext = new AudioContext();
+        }
+    }
 
+    function toggleAudio() {
+        if (!audioEl) return;
+        setupAudioContext();
 
+        // Garante que o contexto de áudio esteja rodando
+        if (audioContext && audioContext.state === 'suspended') audioContext.resume();
+
+        if (isAudioPlaying) {
+            audioEl.pause();
+            audioBtn.innerHTML = 'SOUND OFF';
+            audioBtn.classList.remove('playing');
+            isAudioPlaying = false;
+        } else {
+            // Quando o usuário finalmente clica, definimos o volume em 20% e tocamos
+            audioEl.volume = 0.2;
+            audioEl.play().then(() => {
+                audioBtn.innerHTML = 'SOUND ON';
+                audioBtn.classList.add('playing');
+                isAudioPlaying = true;
+            }).catch(err => console.log("Áudio bloqueado:", err));
+        }
+    }
+
+    if (audioBtn) audioBtn.addEventListener('click', toggleAudio);
 
