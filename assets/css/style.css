@@ -292,10 +292,134 @@ body.push-bottom #folder-stack {
 
 	/* Quando o painel inferior/superior abre (empurra o arcade para cima/baixo) */
 	body.push-top #arcade-modal {
-		top: 300px; /* Ajuste esse valor para não encavalar no seu painel de baixo */
-		/* Nota: como o modal usa 'bottom' originalmente, é melhor empurrar mudando o 'bottom'. 
-		   Se preferir usar 'top', adicione 'bottom: auto;' aqui também. */
+		transform: translateY(-280px);
 	}
+
+/* ========================================== */
+/* AI MODAL STYLES & PUSH */
+/* ========================================== */
+#ai-modal {
+	position: fixed;
+	bottom: 120px;
+	right: 40px;
+	background: transparent;
+	padding: 0;
+	z-index: 100;
+	display: none;
+	transition: right 0.3s ease, bottom 0.3s ease, top 0.3s ease;
+}
+
+	#ai-modal.open {
+		display: block;
+		animation: pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+	}
+
+/* Tela do tamanho exato do Game Canvas */
+.ai-screen {
+	width: 300px;
+	height: 360px;
+	display: flex;
+	flex-direction: column;
+	padding: 15px;
+	box-sizing: border-box;
+}
+
+/* Área das mensagens */
+#chat-history {
+	flex: 1;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	font-size: 9px;
+	line-height: 1.5;
+	margin-bottom: 10px;
+	padding-right: 5px;
+	font-family: 'Press Start 2P', monospace;
+}
+
+	/* Scrollbar estilo Retro */
+	#chat-history::-webkit-scrollbar {
+		width: 4px;
+	}
+
+	#chat-history::-webkit-scrollbar-thumb {
+		background: #fff;
+		border-radius: 2px;
+	}
+
+/* Estilo das mensagens */
+.msg {
+	word-wrap: break-word;
+}
+
+.ai-msg {
+	color: #fff;
+}
+
+.user-msg {
+	color: #00ff88;
+	text-align: right;
+}
+/* Verde para o usuário */
+.sender {
+	font-weight: bold;
+	margin-right: 5px;
+	opacity: 0.7;
+}
+
+/* Área de input de texto */
+.chat-input-area {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	border-top: 1px dashed #fff;
+	padding-top: 10px;
+}
+
+.prompt-symbol {
+	color: #fff;
+	font-size: 10px;
+	animation: blink 1s infinite;
+}
+
+@keyframes blink {
+	0%, 100% {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0;
+	}
+}
+
+#chat-input {
+	flex: 1;
+	background: transparent;
+	border: none;
+	outline: none;
+	color: #00ff88;
+	font-family: 'Press Start 2P', monospace;
+	font-size: 9px;
+}
+
+	#chat-input::placeholder {
+		color: #555;
+	}
+
+/* --- SISTEMA DE PUSH DA IA (Idêntico ao do Arcade) --- */
+body.push-right #ai-modal {
+	right: 320px;
+}
+
+body.push-top #ai-modal {
+	bottom: 350px;
+}
+
+body.push-right.push-top #ai-modal {
+	right: 320px;
+	bottom: 350px;
+}
 
 /* OVERLAYS */
 .overlay-screen {

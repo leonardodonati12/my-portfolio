@@ -403,6 +403,22 @@
                 <div id="global-score">GLOBAL SCORE: 122324</div>
             </div>
 
+            <div id="ai-modal" class="cyber-modal">
+                <div class="arcade-machine">
+                    <div class="game-area">
+                        <div class="screen-container ai-screen">
+                            <div id="chat-history">
+                                <div class="msg ai-msg"><span class="sender">AI:</span> SYSTEM ONLINE. COMO POSSO AJUDAR?</div>
+                            </div>
+                            <div class="chat-input-area">
+                                <span class="prompt-symbol">></span>
+                                <input type="text" id="chat-input" placeholder="AWAITING INPUT..." autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="game-area">
                 <div class="sidebar-tabs">
                     <div class="game-tab active" data-game="space">SPACE</div>
@@ -590,26 +606,80 @@
                 }, 3500);
             }
 
-            // --- LÓGICA DO BOTÃO [ GAME ] TIPO INTERRUPTOR ---
+            // --- LÓGICA DE ALTERNÂNCIA: GAME vs IA ---
             const btnGame = document.getElementById('btn-cyber-game');
             const arcadeModal = document.getElementById('arcade-modal');
 
+            const btnAi = document.getElementById('btn-cyber-ia'); // <-- Seu botão de IA
+            const aiModal = document.getElementById('ai-modal');
+
+            // BOTÃO GAME
             if (btnGame && arcadeModal) {
                 btnGame.addEventListener('click', () => {
-                    // Se já estiver aberto, ele fecha e pausa o jogo
+                    // 1. Força a IA a fechar
+                    if (aiModal && aiModal.classList.contains('open')) aiModal.classList.remove('open');
+
+                    // 2. Abre/Fecha o Game
                     if (arcadeModal.classList.contains('open')) {
                         arcadeModal.classList.remove('open');
                         if (window.gameLoopId) cancelAnimationFrame(window.gameLoopId);
-                    }
-                    // Se estiver fechado, ele abre e inicia o jogo
-                    else {
+                    } else {
                         arcadeModal.classList.add('open');
                         if (typeof window.startGame === 'function') window.startGame();
                     }
                 });
             }
 
-        });
+            // BOTÃO IA
+            if (btnAi && aiModal) {
+                btnAi.addEventListener('click', () => {
+                    // 1. Força o Game a fechar e pausa o motor
+                    if (arcadeModal && arcadeModal.classList.contains('open')) {
+                        arcadeModal.classList.remove('open');
+                        if (window.gameLoopId) cancelAnimationFrame(window.gameLoopId);
+                    }
+
+                    // 2. Abre/Fecha a IA
+                    if (aiModal.classList.contains('open')) {
+                        aiModal.classList.remove('open');
+                    } else {
+                        aiModal.classList.add('open');
+                        setTimeout(() => document.getElementById('chat-input').focus(), 100); // Foca para digitar direto
+                    }
+                });
+            }
+
+            // --- LÓGICA DO CHAT (MENSAGENS) ---
+            const chatInput = document.getElementById('chat-input');
+            const chatHistory = document.getElementById('chat-history');
+
+            if (chatInput && chatHistory) {
+                chatInput.addEventListener('keypress', function (e) {
+                    // Se apertar "Enter" e não estiver vazio
+                    if (e.key === 'Enter' && this.value.trim() !== '') {
+                        const userText = this.value.trim();
+
+                        // 1. Imprime a mensagem do usuário na cor Verde
+                        const userMsgDiv = document.createElement('div');
+                        userMsgDiv.className = 'msg user-msg';
+                        userMsgDiv.innerHTML = `<span class="sender">YOU:</span>${userText}`;
+                        chatHistory.appendChild(userMsgDiv);
+
+                        // 2. Limpa a barra de digitação e rola o chat pra baixo
+                        this.value = '';
+                        chatHistory.scrollTop = chatHistory.scrollHeight;
+
+                        // 3. Simula a resposta da IA (Você pode ligar isso numa API real depois!)
+                        setTimeout(() => {
+                            const aiMsgDiv = document.createElement('div');
+                            aiMsgDiv.className = 'msg ai-msg';
+                            aiMsgDiv.innerHTML = `<span class="sender">AI:</span>PROCESSANDO INFO: "${userText}"... (Backend não conectado)`;
+                            chatHistory.appendChild(aiMsgDiv);
+                            chatHistory.scrollTop = chatHistory.scrollHeight; // Rola pra baixo de novo
+                        }, 800); // Demora 0.8s pra dar um efeito de "pensamento"
+                    }
+                });
+            }
     </script>
 
     <script src="assets/js/cursor.js"></script>
