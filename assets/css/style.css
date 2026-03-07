@@ -405,12 +405,20 @@ body.push-bottom #folder-stack {
 	}
 
 /* --- SISTEMA DE PUSH DA IA (Idêntico ao do Arcade) --- */
-body.push-right #ai-modal {
-	right: 320px;
+#arcade-modal, #ai-modal {
+	transition: bottom 0.4s cubic-bezier(0.25, 1, 0.5, 1), right 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
 }
 
-body.push-top #ai-modal {
-	transform: translateY(-280px);
+/* 2. Se a pasta for grudada EMBAIXO, as telas fogem pra cima */
+body.push-bottom #arcade-modal,
+body.push-bottom #ai-modal {
+	bottom: 350px !important; /* Altura exata para escapar da pasta */
+}
+
+/* 3. Se a pasta for grudada na DIREITA, as telas fogem pra esquerda */
+body.push-right #arcade-modal,
+body.push-right #ai-modal {
+	right: 320px !important; /* Largura exata para escapar da pasta */
 }
 
 /* OVERLAYS */
