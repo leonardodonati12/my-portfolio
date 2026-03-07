@@ -714,15 +714,15 @@
 
                                 const data = await response.json();
 
-                                console.log("MENSAGEM SECRETA DA GROQ:", data);
-
-                                // Se a API responder certinho, pegamos o texto e jogamos na tela
                                 if (data.choices && data.choices[0]) {
                                     const aiText = data.choices[0].message.content;
                                     aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>${aiText}`;
+                                } else if (data.error) {
+                                    // SE A GROQ RECLAMAR (EX: CHAVE ERRADA), ELA CUSPE O ERRO AQUI:
+                                    const motivo = data.error.message || "Falha desconhecida";
+                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[ERRO DA API: ${motivo}_]`;
                                 } else {
-                                    // Se der ruim na formatação
-                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[COMMUNICATION ERROR_]`;
+                                    aiMsgDiv.innerHTML = `<span class="sender">SYSTEM:</span>[RESPOSTA INVÁLIDA DO SERVIDOR_]`;
                                 }
 
                             } catch (error) {
