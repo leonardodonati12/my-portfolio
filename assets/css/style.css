@@ -635,7 +635,7 @@ body.push-bottom .interaction-hint {
 	padding: 12px 15px;
 	font-size: 0.75rem;
 	letter-spacing: 2px;
-	color: #00ff88;
+	color: #ffffff;
 	cursor: none !important;
 	border-bottom: 1px solid rgba(255,255,255,0.1);
 	display: flex;
