@@ -43,7 +43,7 @@ body.push-left #main-wrapper {
 }
 
 body.push-top #main-wrapper {
-	transform: translateY(300px);
+	transform: translateY(320px);
 }
 
 body.push-right #main-wrapper {
