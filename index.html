@@ -662,17 +662,15 @@
 
                 if (chatInput && chatHistory) {
 
-                    // [NOVO] O ESCUDO DA BARRA DE ESPAÇO:
-                    // Se estiver digitando no chat, não deixa o jogo "roubar" a tecla espaço!
-                    chatInput.addEventListener('keydown', function (e) {
-                        if (e.key === ' ') {
-                            e.stopPropagation();
-                        }
-                    });
+                    // [NOVO] O ESCUDO DEFINITIVO:
+                    // Usamos apenas um 'keydown'. O stopPropagation impede que o jogo 
+                    // roube QUALQUER tecla (Espaço, Enter, Setas) enquanto você digita.
+                    chatInput.addEventListener('keydown', async function (e) {
 
-                    // (O resto do seu código continua normal aqui para baixo...)
-                    chatInput.addEventListener('keypress', async function (e) {
+                        e.stopPropagation(); // Trava o vazamento de teclas pro jogo
+
                         if (e.key === 'Enter' && this.value.trim() !== '') {
+                            const userText = this.value.trim();
 
                             // 1. Imprime a mensagem do usuário na tela
                             const userMsgDiv = document.createElement('div');
@@ -693,7 +691,6 @@
 
                             // 4. CHAMA O SEU SERVIDOR INVISÍVEL NA VERCEL
                             try {
-                                // Apontando para a pasta /api/chat que criamos!
                                 const response = await fetch('/api/chat', {
                                     method: 'POST',
                                     headers: {
