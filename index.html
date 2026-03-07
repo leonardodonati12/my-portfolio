@@ -447,7 +447,7 @@
         </div>
         <div class="cyber-btn-group">
             <button id="btn-cyber-game" class="cyber-btn">[GAME]</button>
-            <button id="btn-cyber-ai" class="cyber-btn">[AI]</button>
+            <button id="btn-cyber-ia" class="cyber-btn">[ IA ]</button>
         </div>
     </div>
 
@@ -606,80 +606,89 @@
                 }, 3500);
             }
 
-            // --- LÓGICA DE ALTERNÂNCIA: GAME vs IA ---
-            const btnGame = document.getElementById('btn-cyber-game');
-            const arcadeModal = document.getElementById('arcade-modal');
+            // ==========================================
+            // LÓGICA DE ALTERNÂNCIA: GAME vs IA
+            // ==========================================
+            {
+                const btnGame = document.getElementById('btn-cyber-game');
+                const arcadeModal = document.getElementById('arcade-modal');
 
-            const btnAi = document.getElementById('btn-cyber-ia'); // <-- Seu botão de IA
-            const aiModal = document.getElementById('ai-modal');
+                const btnAi = document.getElementById('btn-cyber-ia');
+                const aiModal = document.getElementById('ai-modal');
 
-            // BOTÃO GAME
-            if (btnGame && arcadeModal) {
-                btnGame.addEventListener('click', () => {
-                    // 1. Força a IA a fechar
-                    if (aiModal && aiModal.classList.contains('open')) aiModal.classList.remove('open');
+                // BOTÃO GAME
+                if (btnGame && arcadeModal) {
+                    btnGame.addEventListener('click', () => {
+                        // 1. Força a IA a fechar
+                        if (aiModal && aiModal.classList.contains('open')) {
+                            aiModal.classList.remove('open');
+                        }
 
-                    // 2. Abre/Fecha o Game
-                    if (arcadeModal.classList.contains('open')) {
-                        arcadeModal.classList.remove('open');
-                        if (window.gameLoopId) cancelAnimationFrame(window.gameLoopId);
-                    } else {
-                        arcadeModal.classList.add('open');
-                        if (typeof window.startGame === 'function') window.startGame();
-                    }
-                });
+                        // 2. Abre/Fecha o Game
+                        if (arcadeModal.classList.contains('open')) {
+                            arcadeModal.classList.remove('open');
+                            if (window.gameLoopId) cancelAnimationFrame(window.gameLoopId);
+                        } else {
+                            arcadeModal.classList.add('open');
+                            if (typeof window.startGame === 'function') window.startGame();
+                        }
+                    });
+                }
+
+                // BOTÃO IA
+                if (btnAi && aiModal) {
+                    btnAi.addEventListener('click', () => {
+                        // 1. Força o Game a fechar e pausa o motor
+                        if (arcadeModal && arcadeModal.classList.contains('open')) {
+                            arcadeModal.classList.remove('open');
+                            if (window.gameLoopId) cancelAnimationFrame(window.gameLoopId);
+                        }
+
+                        // 2. Abre/Fecha a IA
+                        if (aiModal.classList.contains('open')) {
+                            aiModal.classList.remove('open');
+                        } else {
+                            aiModal.classList.add('open');
+                            setTimeout(() => {
+                                const chatInput = document.getElementById('chat-input');
+                                if (chatInput) chatInput.focus();
+                            }, 100);
+                        }
+                    });
+                }
+
+                // --- LÓGICA DO CHAT (MENSAGENS) ---
+                const chatInput = document.getElementById('chat-input');
+                const chatHistory = document.getElementById('chat-history');
+
+                if (chatInput && chatHistory) {
+                    chatInput.addEventListener('keypress', function (e) {
+                        if (e.key === 'Enter' && this.value.trim() !== '') {
+                            const userText = this.value.trim();
+
+                            // Imprime a mensagem do usuário
+                            const userMsgDiv = document.createElement('div');
+                            userMsgDiv.className = 'msg user-msg';
+                            userMsgDiv.innerHTML = `<span class="sender">YOU:</span>${userText}`;
+                            chatHistory.appendChild(userMsgDiv);
+
+                            // Limpa o input e rola pra baixo
+                            this.value = '';
+                            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+                            // Simula a resposta da IA
+                            setTimeout(() => {
+                                const aiMsgDiv = document.createElement('div');
+                                aiMsgDiv.className = 'msg ai-msg';
+                                aiMsgDiv.innerHTML = `<span class="sender">AI:</span>PROCESSANDO INFO: "${userText}"...`;
+                                chatHistory.appendChild(aiMsgDiv);
+                                chatHistory.scrollTop = chatHistory.scrollHeight;
+                            }, 800);
+                        }
+                    });
+                }
             }
 
-            // BOTÃO IA
-            if (btnAi && aiModal) {
-                btnAi.addEventListener('click', () => {
-                    // 1. Força o Game a fechar e pausa o motor
-                    if (arcadeModal && arcadeModal.classList.contains('open')) {
-                        arcadeModal.classList.remove('open');
-                        if (window.gameLoopId) cancelAnimationFrame(window.gameLoopId);
-                    }
-
-                    // 2. Abre/Fecha a IA
-                    if (aiModal.classList.contains('open')) {
-                        aiModal.classList.remove('open');
-                    } else {
-                        aiModal.classList.add('open');
-                        setTimeout(() => document.getElementById('chat-input').focus(), 100); // Foca para digitar direto
-                    }
-                });
-            }
-
-            // --- LÓGICA DO CHAT (MENSAGENS) ---
-            const chatInput = document.getElementById('chat-input');
-            const chatHistory = document.getElementById('chat-history');
-
-            if (chatInput && chatHistory) {
-                chatInput.addEventListener('keypress', function (e) {
-                    // Se apertar "Enter" e não estiver vazio
-                    if (e.key === 'Enter' && this.value.trim() !== '') {
-                        const userText = this.value.trim();
-
-                        // 1. Imprime a mensagem do usuário na cor Verde
-                        const userMsgDiv = document.createElement('div');
-                        userMsgDiv.className = 'msg user-msg';
-                        userMsgDiv.innerHTML = `<span class="sender">YOU:</span>${userText}`;
-                        chatHistory.appendChild(userMsgDiv);
-
-                        // 2. Limpa a barra de digitação e rola o chat pra baixo
-                        this.value = '';
-                        chatHistory.scrollTop = chatHistory.scrollHeight;
-
-                        // 3. Simula a resposta da IA (Você pode ligar isso numa API real depois!)
-                        setTimeout(() => {
-                            const aiMsgDiv = document.createElement('div');
-                            aiMsgDiv.className = 'msg ai-msg';
-                            aiMsgDiv.innerHTML = `<span class="sender">AI:</span>PROCESSANDO INFO: "${userText}"... (Backend não conectado)`;
-                            chatHistory.appendChild(aiMsgDiv);
-                            chatHistory.scrollTop = chatHistory.scrollHeight; // Rola pra baixo de novo
-                        }, 800); // Demora 0.8s pra dar um efeito de "pensamento"
-                    }
-                });
-            }
     </script>
 
     <script src="assets/js/cursor.js"></script>
