@@ -747,7 +747,7 @@ REGRAS DE CONDUTA:
                             if (commandText === '/blueprint' || commandText === '/matrix' || commandText === '/coffee') {
                                 const userMsgDiv = document.createElement('div');
                                 userMsgDiv.className = 'msg user-msg';
-                                userMsgDiv.innerHTML = `<span class="sender">YOU:</span>${userText}`;
+                                userMsgDiv.innerHTML = `<span class="sender">USER:</span>${userText}`;
                                 chatHistory.appendChild(userMsgDiv);
                                 this.value = '';
 
@@ -793,7 +793,7 @@ REGRAS DE CONDUTA:
 
                             const userMsgDiv = document.createElement('div');
                             userMsgDiv.className = 'msg user-msg';
-                            userMsgDiv.innerHTML = `<span class="sender">YOU:</span>${userText}`;
+                            userMsgDiv.innerHTML = `<span class="sender">USER:</span>${userText}`;
                             chatHistory.appendChild(userMsgDiv);
 
                             this.value = '';
