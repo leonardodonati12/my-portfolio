@@ -330,7 +330,12 @@ function getScreenPosition(object3D, camera, renderer) {
     return { x, y };
 }
 
-const geometry = new THREE.IcosahedronGeometry(2.6, 2); const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 }); const sphere = new THREE.Mesh(geometry, material); sphere.userData = { isCenter: true }; scene.add(sphere);
+const geometry = new THREE.IcosahedronGeometry(2.7, 2);
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.15 });
+const sphere = new THREE.Mesh(geometry, material);
+sphere.userData = { isCenter: true };
+scene.add(sphere);
+
 const pGeo = new THREE.BufferGeometry(); const pCount = 10000; const pPos = new Float32Array(pCount * 3);
 for (let i = 0; i < pCount * 3; i++) { pPos[i] = (Math.random() - 0.5) * 100; }
 pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3)); const pMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffffff }); const particles = new THREE.Points(pGeo, pMat); scene.add(particles);
@@ -344,8 +349,11 @@ const projetosSimulados = [
     { titulo: "Spbim Workshop", tech: "BIM / Laser Scan", descricao: "Monitoria de levantamento com nuvem de pontos." },
     { titulo: "Plugin Automation", tech: "C# / Revit API", descricao: "Desenvolvimento de automa&ccedil;&atilde;o para arquitetura." },
     { titulo: "Mooca", tech: "Grasshopper / Rhino", descricao: "Estudos de forma e fabrica&ccedil;&atilde;o digital." },
-    { titulo: "Project 2", tech: "Grasshopper / Rhino", descricao: "Estudos de forma e fabrica&ccedil;&atilde;o digital." },
-    { titulo: "Project 3", tech: "Grasshopper / Rhino", descricao: "Estudos de forma e fabrica&ccedil;&atilde;o digital." },
+    { titulo: "Project 5", tech: "Grasshopper / Rhino", descricao: "Estudos de forma e fabrica&ccedil;&atilde;o digital." },
+    { titulo: "Project 6", tech: "Grasshopper / Rhino", descricao: "Estudos de forma e fabrica&ccedil;&atilde;o digital." },
+    // Adicionamos as duas novas!
+    { titulo: "Project 7", tech: "Future Tech", descricao: "Nova ideia flutuante." },
+    { titulo: "Project 8", tech: "Future Tech", descricao: "Mais uma ideia conectada." },
 ];
 
 fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(projetos => {
@@ -357,36 +365,31 @@ fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(p
         node.position.set(x * radius, y * radius, z * radius); node.userData = { id: i, data: proj, isNode: true, projectName: proj.titulo };
         projectNodes.push(node); projectGroup.add(node);
     });
-});
 
 // LIGAÇÕES MOLECULARES DOS PROJETOS
+    const lineMaterial = new THREE.LineBasicMaterial({
+        color: 0x00ff88,
+        transparent: true,
+        opacity: 0.4,
+        linewidth: 1
+    });
 
+    const points = [];
+    projectNodes.forEach(bolinha => {
+        points.push(bolinha.position);
+    });
 
-// 1. Cria o material da linha (Verde neon, meio transparente pra ficar sci-fi)
-const lineMaterial = new THREE.LineBasicMaterial({
-    color: 0x00ff88,
-    transparent: true,
-    opacity: 0.4,
-    linewidth: 1 // O navegador trava a espessura em 1, mas o brilho resolve
+    // Copia a primeira posição pro final para fechar a figura 3D
+    if (points.length > 0) {
+        points.push(points[0]);
+    }
+
+    const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+    const moleculeBonds = new THREE.Line(lineGeometry, lineMaterial);
+
+    // Adiciona as linhas no projectGroup (o que gira as bolinhas)
+    projectGroup.add(moleculeBonds);
 });
-
-// 2. Pega as posições de todas as bolinhas criadas
-const points = [];
-projetosBolinhas.forEach(bolinha => {
-    points.push(bolinha.position);
-});
-
-// 3. (Opcional) Copia a primeira posição pro final da lista pra "fechar" o desenho geométrico
-if (points.length > 0) {
-    points.push(points[0]);
-}
-
-// 4. Cria a geometria da linha e junta tudo
-const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-const moleculeBonds = new THREE.Line(lineGeometry, lineMaterial);
-
-// 5. Adiciona as linhas no mesmo "grupo" que gira o icosaedro!
-grupoRotacao.add(moleculeBonds);
 
 // --- INTERAÇÃO HÍBRIDA (MOUSE + TOUCH HOLD) ---
 const raycaster = new THREE.Raycaster();
