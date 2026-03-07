@@ -402,23 +402,6 @@
                 <div id="local-score">SCORE: 000000</div>
                 <div id="global-score">GLOBAL SCORE: 122324</div>
             </div>
-
-            <div id="ai-modal" class="cyber-modal">
-                <div class="arcade-machine">
-                    <div class="game-area">
-                        <div class="screen-container ai-screen">
-                            <div id="chat-history">
-                                <div class="msg ai-msg"><span class="sender">AI:</span> SYSTEM ONLINE. COMO POSSO AJUDAR?</div>
-                            </div>
-                            <div class="chat-input-area">
-                                <span class="prompt-symbol">></span>
-                                <input type="text" id="chat-input" placeholder="AWAITING INPUT..." autocomplete="off">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="game-area">
                 <div class="sidebar-tabs">
                     <div class="game-tab active" data-game="space">SPACE</div>
@@ -427,6 +410,22 @@
                 </div>
                 <div class="screen-container">
                     <canvas id="gameCanvas" width="400" height="480"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="ai-modal" class="cyber-modal">
+        <div class="arcade-machine">
+            <div class="game-area">
+                <div class="screen-container ai-screen">
+                    <div id="chat-history">
+                        <div class="msg ai-msg"><span class="sender">AI:</span> SYSTEM ONLINE. COMO POSSO AJUDAR?</div>
+                    </div>
+                    <div class="chat-input-area">
+                        <span class="prompt-symbol">></span>
+                        <input type="text" id="chat-input" placeholder="AWAITING INPUT..." autocomplete="off">
+                    </div>
                 </div>
             </div>
         </div>
@@ -447,7 +446,7 @@
         </div>
         <div class="cyber-btn-group">
             <button id="btn-cyber-game" class="cyber-btn">[GAME]</button>
-            <button id="btn-cyber-ia" class="cyber-btn">[ IA ]</button>
+            <button id="btn-cyber-ia" class="cyber-btn">[IA]</button>
         </div>
     </div>
 
@@ -688,6 +687,7 @@
                     });
                 }
             }
+        });
 
     </script>
 
