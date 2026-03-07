@@ -222,7 +222,7 @@ body.push-left #folder-stack {
 }
 
 body.push-top #folder-stack {
-	transform: translateY(300px);
+	transform: translateY(280px);
 }
 
 body.push-bottom #folder-stack {
@@ -570,7 +570,7 @@ body.active .interaction-hint {
 }
 
 body.push-bottom .interaction-hint {
-	transform: translate(-50%, -280px);
+	transform: translate(-50%, -260px);
 }
 
 /* PANELS */
