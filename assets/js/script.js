@@ -363,7 +363,16 @@ fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(p
         const y = 1 - (i / (projetos.length - 1)) * 2; const radiusAtY = Math.sqrt(1 - y * y); const theta = goldenAngle * i; const x = Math.cos(theta) * radiusAtY; const z = Math.sin(theta) * radiusAtY;
         const nodeMat = new THREE.ShaderMaterial({ uniforms: { "c": { type: "c", value: new THREE.Color(0xffffff) }, "p": { type: "f", value: 3.0 }, "glowIntensity": { type: "f", value: 1.5 } }, vertexShader: vertexShader, fragmentShader: fragmentShader, side: THREE.FrontSide, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false });
         const nodeGeo = new THREE.SphereGeometry(0.3, 32, 32); const node = new THREE.Mesh(nodeGeo, nodeMat);
-        node.position.set(x * radius, y * radius, z * radius); node.userData = { id: i, data: proj, isNode: true, projectName: proj.titulo };
+        node.position.set(x * radius, y * radius, z * radius);
+        node.userData = {
+            id: i,
+            data: proj,
+            isNode: true,
+            projectName: proj.titulo,
+            // Guardamos a posição original para ela não se perder no espaço
+            basePosition: new THREE.Vector3(x * radius, y * radius, z * radius),
+            randomSeed: Math.random() * 100 // Uma semente para elas não dançarem todas juntas
+        };
         projectNodes.push(node); projectGroup.add(node);
     });
 
@@ -504,7 +513,22 @@ fetch('projetos.json').then(r => r.json()).catch(() => projetosSimulados).then(p
                 if (calloutContainer) calloutContainer.classList.remove('visible');
                 if (hoveredNode) { hoveredNode.material.uniforms.c.value.setHex(0xffffff); hoveredNode = null; document.body.style.cursor = 'none'; }
             }
-            projectNodes.forEach(node => { const targetScale = (node === hoveredNode) ? 1.5 : 1; node.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1); });
+            const time = Date.now() * 0.0015; // Velocidade da pulsação
+            projectNodes.forEach(node => {
+                const targetScale = (node === hoveredNode) ? 1.5 : 1;
+                node.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
+
+                // NOVO: Vibração orgânica das bolinhas!
+                if (node.userData.basePosition) {
+                    const base = node.userData.basePosition;
+                    const seed = node.userData.randomSeed;
+
+                    // O valor '0.2' é o limite. Ele afasta um pouquinho sem quebrar a forma.
+                    node.position.x = base.x + Math.sin(time + seed) * 0.2;
+                    node.position.y = base.y + Math.cos(time * 1.1 + seed) * 0.2;
+                    node.position.z = base.z + Math.sin(time * 0.9 + seed) * 0.2;
+                }
+            });
             if (intersectsCenter.length > 0) { sphere.rotation.y += 0.001; sphere.rotation.x += 0.001; sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.5, 0.05); } else { sphere.material.opacity = THREE.MathUtils.lerp(sphere.material.opacity, 0.15, 0.05); }
         }
         renderer.render(scene, camera);
