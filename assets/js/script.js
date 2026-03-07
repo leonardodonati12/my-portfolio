@@ -509,7 +509,7 @@ function animate() {
     renderer.render(scene, camera);
 }
 animate();
-window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); if (typeof canvas !== 'undefined') canvas.width = window.innerWidth; });
+window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
 
 // --- 13. AUDIO SYSTEM (SEM VISUALIZER) ---
 const audioEl = document.getElementById('theme-audio');
