@@ -675,7 +675,7 @@
                             // 1. Imprime a mensagem do usuário na tela
                             const userMsgDiv = document.createElement('div');
                             userMsgDiv.className = 'msg user-msg';
-                            userMsgDiv.innerHTML = `<span class="sender">YOU:</span>${userText}`;
+                            userMsgDiv.innerHTML = `<span class="sender">USER:</span>${userText}`;
                             chatHistory.appendChild(userMsgDiv);
 
                             // 2. Limpa o input e rola pra baixo
@@ -697,7 +697,7 @@
                                         'Content-Type': 'application/json'
                                     },
                                     body: JSON.stringify({
-                                        model: "llama3-8b-8192",
+                                        model: "llama-3.1-8b-instant",
                                         messages: [
                                             {
                                                 role: "system",
