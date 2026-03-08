@@ -1798,7 +1798,7 @@ body.push-right #ai-modal {
 		/* 3. LINKS MENORES E PREPARO PRA CACHOEIRA */
 		#gallery-dropdown a {
 			color: #000 !important;
-			font-size: 0.85rem !important; /* <--- FONTE REDUZIDA AQUI! */
+			font-size: 0.7rem !important; /* <--- FONTE REDUZIDA AQUI! */
 			text-decoration: none;
 			text-transform: uppercase;
 			letter-spacing: 2px;
