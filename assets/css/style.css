@@ -1471,6 +1471,8 @@ body.push-right #ai-modal {
 		display: flex !important;
 		flex-direction: column !important;
 		width: 100% !important;
+
+		padding-top: 25px !important;
 		padding-right: 5px !important;
 	}
 
