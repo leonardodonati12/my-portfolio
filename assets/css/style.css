@@ -1570,6 +1570,10 @@ body.push-right #ai-modal {
 		right: 0 !important;
 		max-height: 75dvh !important; /* Salva do buraco do Safari */
 	}
+
+	#chat-input {
+		font-size: 16px !important; /* Tem que ser 16px pro iPhone não dar zoom! */
+	}
 }
 
 	/* ========================================== */
