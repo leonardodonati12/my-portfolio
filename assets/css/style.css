@@ -1244,7 +1244,7 @@ body.push-right #ai-modal {
 }
 
 /* ========================================== */
-/* RESPONSIVIDADE & MOBILE (DO ZERO)          */
+/* RESPONSIVIDADE & MOBILE (LIMPO E OTIMIZADO)*/
 /* ========================================== */
 
 /* 1. Sumir o DRAG TO ROTATE em 1300px */
@@ -1263,18 +1263,18 @@ body.push-right #ai-modal {
 	font-size: 1.8rem;
 	color: #00ff88;
 	z-index: 5000;
-	cursor: none !important; /* Mantém seu cursor customizado */
+	cursor: none !important;
 	text-shadow: 0 0 10px rgba(0,255,136,0.5);
 }
 
 #mobile-dropdown {
-	display: none; /* Controlado via JS */
+	display: none;
 	position: fixed;
 	top: 75px;
 	right: 30px;
 	flex-direction: column;
 	gap: 20px;
-	background: transparent; /* Transparente como pedido */
+	background: transparent;
 	text-align: right;
 	z-index: 4999;
 }
@@ -1295,14 +1295,18 @@ body.push-right #ai-modal {
 		}
 
 /* 3. O GRANDE CORTE: 1000px */
-/* 3. O GRANDE CORTE: 1000px */
 @media (max-width: 1000px) {
-	/* Sumir itens do desktop (incluindo as antigas SIDETABS #folder-stack) */
-	#cyber-widget, #copyright, #resume-btn, #portfolio-btn, #solutions-btn, .audio-toggle, #folder-stack {
+	/* Sumir itens desnecessários e o cursor verde customizado */
+	#cyber-widget, #copyright, #resume-btn, #portfolio-btn, #solutions-btn, .audio-toggle, #folder-stack, #callout-container, .cursor-dot, .cursor-outline {
 		display: none !important;
 	}
 
-	/* 1 - MENU MENOR, BRANCO E MENOS ESPAÇADO */
+	/* Volta o cursor natural do sistema no mobile */
+	body, a, button, .folder-tab, .close-panel, * {
+		cursor: auto !important;
+	}
+
+	/* MENU MENOR E DROP DE CIMA PRA BAIXO */
 	#mobile-menu-btn {
 		display: block;
 		color: #fff;
@@ -1313,21 +1317,11 @@ body.push-right #ai-modal {
 	}
 
 	#mobile-dropdown {
-		top: 20px !important; /* Mesma altura do Hero */
+		top: 20px !important;
 		right: 20px !important;
 		gap: 12px;
-		background: rgba(0, 0, 0, 0.85) !important; /* Fundo escuro pro menu ler bem */
-		padding: 20px !important;
-		border-radius: 12px !important;
-		backdrop-filter: blur(10px) !important;
-		border: 1px solid rgba(0, 255, 136, 0.3) !important;
-		/* Mágica da animação */
-		display: flex !important;
-		transform-origin: top !important;
-		transform: scaleY(0) !important;
-		opacity: 0 !important;
-		pointer-events: none !important;
-		transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease !important;
+		transform-origin: top right !important;
+		animation: menu-drop 0.2s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
 	}
 
 		#mobile-dropdown a {
@@ -1335,14 +1329,19 @@ body.push-right #ai-modal {
 			color: #fff;
 		}
 
-		/* Classe que o JS vai ativar para abrir o menu */
-		#mobile-dropdown.open-menu {
-			transform: scaleY(1) !important;
-			opacity: 1 !important;
-			pointer-events: auto !important;
+	@keyframes menu-drop {
+		0% {
+			transform: scaleY(0);
+			opacity: 0;
 		}
 
-	/* 3 - MOVER HERO PRA ESQUERDA */
+		100% {
+			transform: scaleY(1);
+			opacity: 1;
+		}
+	}
+
+	/* HERO ALINHADO À ESQUERDA */
 	.hero {
 		left: 15px !important;
 		top: 20px !important;
@@ -1357,12 +1356,12 @@ body.push-right #ai-modal {
 			margin-left: 2px !important;
 		}
 
-	/* 3 e 4 - ALINHAR O PROJETO COM O HERO, SUBIR E REDUZIR FONTES */
+	/* PROJETO ALINHADO AO HERO */
 	#project-modal {
-		left: 15px !important; /* Exatamente o mesmo 'left' do Hero */
-		top: 130px !important; /* Subiu! Fica logo abaixo do Hero */
+		left: 15px !important;
+		top: 130px !important;
 		width: 85% !important;
-		transform: scaleY(0) !important; /* Sobrescreve a centralização anterior */
+		transform: scaleY(0) !important;
 		padding-left: 15px !important;
 	}
 
@@ -1370,7 +1369,6 @@ body.push-right #ai-modal {
 			transform: scaleY(1) !important;
 		}
 
-		/* Redução de fontes do Cartão de Projeto */
 		#project-modal .modal-title {
 			font-size: 0.95rem !important;
 		}
@@ -1390,8 +1388,7 @@ body.push-right #ai-modal {
 			padding: 5px 10px !important;
 		}
 
-	/* 5 - PAINÉIS (SIDETABS) NO CANTO INFERIOR DIREITO, MINIMALISTAS E SEM FUNDO */
-	/* 2 - Animação de surgir de baixo para cima nas Abas (Painéis) */
+	/* DEGRADÊ BLUR DE LADO A LADO PARA PAINÉIS E IA */
 	@keyframes hud-pop-up {
 		0% {
 			transform: scaleY(0);
@@ -1404,48 +1401,60 @@ body.push-right #ai-modal {
 		}
 	}
 
-	#mobile-dropdown {
-		top: 20px !important; /* Exata mesma altura do Hero */
-		right: 20px !important;
-		transform-origin: top right !important; /* A animação nasce do topo direito */
-		animation: menu-drop 0.2s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
-	}
-
-	@keyframes menu-drop {
-		0% {
-			transform: scaleY(0);
-			opacity: 0;
-		}
-
-		100% {
-			transform: scaleY(1);
-			opacity: 1;
-		}
-	}
-
-	/* 3 - Background Blur de lado a lado para Painéis e IA */
 	.ui-panel, #ai-modal {
-		width: 100% !important; /* Espalha a fumaça/blur pela tela toda */
-		max-height: 70vh !important;
-		bottom: 0 !important; /* Cola no chão */
+		width: 100% !important;
+		left: 0 !important;
 		right: 0 !important;
-		/* Degradê do preto sólido embaixo para invisível em cima */
+		bottom: 0 !important;
+		max-height: 70vh !important;
 		background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 50%, transparent 100%) !important;
 		backdrop-filter: blur(8px) !important;
-		-webkit-backdrop-filter: blur(8px) !important; /* Suporte para iPhone/Safari */
-
-		border-right: none !important; /* Removemos a linha lateral pra não ficar estranho */
-		border-bottom: 2px solid #00ff88 !important; /* O neon verde agora fica no chão! */
-
-		padding-right: 20px !important; /* Mantém o texto nas exatas posições originais! */
-		padding-bottom: 20px !important;
+		-webkit-backdrop-filter: blur(8px) !important;
+		border: none !important;
+		border-bottom: 2px solid #00ff88 !important;
+		border-radius: 0 !important;
+		padding: 0 20px 20px 0 !important;
+		text-align: right !important;
+		box-shadow: none !important;
 	}
 
-		/* Para a IA manter a posição na direita mesmo com a tela esticada */
+	.ui-panel {
+		transform-origin: bottom !important;
+		animation: hud-pop-up 0.2s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+	}
+
+	/* IA MODAL ESPECÍFICO (Animar abertura e manter chat colado à direita) */
+	#ai-modal {
+		transform-origin: bottom !important;
+		transform: scaleY(0) !important;
+		transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s ease !important;
+	}
+
+		#ai-modal.open {
+			transform: scaleY(1) !important;
+			animation: none !important;
+		}
+
 		#ai-modal .ai-screen {
 			margin-left: auto !important;
 		}
 
+	/* ARCADE MODAL (Não ganha o Blur 100%, fica quietinho no canto) */
+	#arcade-modal {
+		bottom: 20px !important;
+		right: 20px !important;
+		left: auto !important;
+		transform-origin: bottom !important;
+		transform: scaleY(0) !important;
+		transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s ease !important;
+	}
+
+		#arcade-modal.open {
+			transform: scaleY(1) !important;
+			animation: none !important;
+		}
+
+	/* LIMPANDO TEXTOS DOS PAINÉIS (SKILLS, EXTRAS, ETC) */
 	.panel-header {
 		display: none !important;
 	}
@@ -1456,7 +1465,6 @@ body.push-right #ai-modal {
 		overflow-x: hidden;
 	}
 
-	/* 3 - REMOVER LINHAS SEPARADORAS E DEIXAR TOTALMENTE CLEAN */
 	.skill-name {
 		justify-content: flex-end !important;
 		gap: 10px;
@@ -1467,12 +1475,9 @@ body.push-right #ai-modal {
 		justify-content: flex-end;
 	}
 
-	/* Sem linha na direita da timeline e sem bolinha verde */
 	.timeline-item {
-		border-left: none !important;
-		border-right: none !important;
-		padding-left: 0 !important;
-		padding-right: 0 !important;
+		border: none !important;
+		padding: 0 !important;
 		text-align: right;
 	}
 
@@ -1485,10 +1490,8 @@ body.push-right #ai-modal {
 		font-size: 0.7rem !important;
 	}
 
-	/* Sem linhas em baixo dos contatos e extras */
 	.contact-item {
 		border: none !important;
-		border-bottom: none !important;
 		border-radius: 0 !important;
 		text-align: right;
 		padding: 5px 0 !important;
@@ -1508,36 +1511,8 @@ body.push-right #ai-modal {
 		padding-bottom: 5px !important;
 	}
 
+	/* Proteção contra push do body */
 	body[class*="push-"] #main-wrapper {
 		transform: none !important;
-	}
-
-	#ai-modal, #arcade-modal {
-		bottom: 20px !important;
-		right: 20px !important; /* Voltou para a direita! */
-		left: auto !important;
-		transform-origin: bottom !important; /* Animação baseada no chão */
-		transform: scaleY(0) !important;
-		transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s ease !important;
-	}
-
-		#ai-modal.open, #arcade-modal.open {
-			transform: scaleY(1) !important;
-			animation: none !important;
-		}
-
-	/* 4 - Remover completamente o cursor customizado verde no Mobile */
-	body, a, button, .folder-tab, .close-panel, * {
-		cursor: auto !important;
-	}
-
-	.cursor-dot, .cursor-outline {
-		display: none !important;
-	}
-
-	/* 5 - Ocultar o Callout 3D para não atrapalhar o toque */
-	/* (O toque na bolinha agora abre o cartão limpo direto!) */
-	#callout-container {
-		display: none !important;
 	}
 }
