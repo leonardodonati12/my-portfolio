@@ -1469,6 +1469,18 @@ body.push-right #ai-modal {
 			transform: scaleY(1) !important;
 		}
 
+	#chat-history .user-msg {
+		align-self: flex-end !important; /* Empurra a caixa inteira pra direita */
+		text-align: right !important; /* Garante que o texto cole na borda direita */
+		width: 100% !important;
+	}
+
+	#chat-history .ai-msg {
+		align-self: flex-start !important; /* Mantém a IA cravada na esquerda */
+		text-align: left !important;
+		width: 100% !important;
+	}
+
 	/* ARCADE MODAL (Não ganha o Blur 100%, fica quietinho no canto) */
 	#arcade-modal {
 		bottom: 20px !important;
