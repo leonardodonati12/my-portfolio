@@ -801,85 +801,83 @@ body.push-bottom .interaction-hint {
 	line-height: 1.4;
 }
 
+/* ========================================== */
+/* PROJECT MODAL (HOLOGRÁFICO ABAIXO DO NOME) */
+/* ========================================== */
 #project-modal {
 	position: fixed;
-	bottom: 40px; /* Fica colado lá embaixo */
-	left: 70px; /* Alinhado à esquerda, com o seu nome */
-	width: 280px; /* Estreito e vertical */
-	background: rgba(10, 10, 10, 0.65); /* Transparente e elegante */
-	backdrop-filter: blur(12px);
+	top: 160px; /* Cola ele perfeitamente abaixo do Hero Subtitle */
+	left: 70px; /* Alinhado à esquerda com os títulos */
+	width: 300px;
+	background: transparent; /* FUNDO TOTALMENTE REMOVIDO */
+	backdrop-filter: none; /* SEM BLUR */
 	border: none;
-	border-left: 2px solid #00ff88; /* Apenas uma linha neon na esquerda */
-	padding: 25px;
-	border-radius: 0 15px 15px 0;
+	border-left: 2px solid #00ff88; /* Mantém só a "régua" verde do lado esquerdo */
+	padding: 0 0 0 20px; /* Cola o texto na régua verde */
 	z-index: 5005;
 	display: none;
 	flex-direction: column;
-	box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.5);
+	box-shadow: none; /* SEM SOMBRAS */
+	/* Efeito revelar de cima pra baixo (rápido!) */
+	transform-origin: top;
+	transform: scaleY(0);
 	opacity: 0;
-	transform: translateX(-20px);
-	transition: opacity 0.4s ease, transform 0.4s ease;
+	transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s ease;
 }
 
 	#project-modal.open {
 		display: flex;
 		opacity: 1;
-		transform: translateX(0);
+		transform: scaleY(1); /* Abre puxando pra baixo */
 	}
 
+/* Adicionamos uma sombra só nos textos para leitura ficar fácil em cima do 3D */
 .modal-title {
 	font-size: 1.1rem;
 	color: #fff;
 	margin-bottom: 5px;
+	text-shadow: 0 2px 5px rgba(0,0,0,0.8);
 }
 
 .modal-tech {
 	color: #00ff88;
 	font-size: 0.65rem;
-	margin-bottom: 15px;
+	margin-bottom: 10px;
 	text-transform: uppercase;
 	letter-spacing: 1px;
-	opacity: 0.8;
+	text-shadow: 0 2px 5px rgba(0,0,0,0.8);
 }
 
 .modal-desc {
-	color: #aaa;
+	color: #ccc;
 	line-height: 1.5;
 	font-size: 0.8rem;
-	margin-bottom: 20px;
+	margin-bottom: 15px;
+	text-shadow: 0 2px 5px rgba(0,0,0,0.8);
 }
 
+/* Escondemos o botão de fechar, clicando fora do projeto ele já fecha naturalmente */
 .close-modal {
-	position: absolute;
-	top: 15px;
-	right: 15px;
-	color: #555;
-	font-size: 1.2rem;
-	cursor: none !important;
-	transition: color 0.3s;
+	display: none;
 }
 
-	.close-modal:hover {
-		color: #00ff88;
-	}
-
-/* ESTILO DO NOVO BOTÃO DE LINK */
 .modal-link-btn {
 	display: inline-block;
 	color: #00ff88;
 	font-size: 0.7rem;
 	text-decoration: none;
 	border: 1px solid rgba(0, 255, 136, 0.4);
-	padding: 8px 0;
+	padding: 6px 12px;
 	text-align: center;
 	transition: all 0.3s;
 	cursor: none !important;
 	letter-spacing: 1px;
-	margin-top: auto; /* Empurra pro final do card */
+	width: fit-content;
+	background: rgba(0,0,0,0.4); /* Leve fundo pro botão não sumir nas partículas */
 }
 
 	.modal-link-btn:hover {
-		background: rgba(0, 255, 136, 0.1);
+		background: rgba(0, 255, 136, 0.2);
 		border-color: #00ff88;
 		box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
 	}

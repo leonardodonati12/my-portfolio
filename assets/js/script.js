@@ -434,13 +434,20 @@ function openModal(data) {
     if (modalTech) modalTech.innerHTML = "// " + data.tech;
     if (modalDesc) modalDesc.innerHTML = data.descricao;
 
-    // Mostra ou esconde o botão dependendo se o projeto tem link
+    // A mágica de direcionamento automático:
     if (modalLinkBtn) {
-        if (data.link) {
-            modalLinkBtn.style.display = 'inline-block';
-            modalLinkBtn.href = data.link; // Joga pro link do portfólio
+        modalLinkBtn.style.display = 'inline-block';
+
+        // Ele vai caçar a palavra "plugin" no título, ou "c#" nas tecnologias
+        const textToSearch = (data.titulo + " " + data.tech).toLowerCase();
+        const isPlugin = textToSearch.includes('plugin') || textToSearch.includes('c#');
+
+        if (isPlugin) {
+            modalLinkBtn.href = "solutions/solutions.html";
+            modalLinkBtn.innerHTML = "[ VIEW IN SOLUTIONS ]";
         } else {
-            modalLinkBtn.style.display = 'none'; // Esconde se não tiver link
+            modalLinkBtn.href = "portfolio/portfolio.html";
+            modalLinkBtn.innerHTML = "[ VIEW IN GALLERY ]";
         }
     }
 
@@ -449,6 +456,7 @@ function openModal(data) {
         setTimeout(() => { modal.classList.add('open'); }, 10);
     }
 }
+
 if (closeBtn) closeBtn.addEventListener('click', () => { if (modal) { modal.classList.remove('open'); setTimeout(() => { modal.style.display = 'none'; }, 500); } });
 let lastMiddleClick = 0; window.addEventListener('mousedown', (e) => { if (e.button === 1) { e.preventDefault(); const now = Date.now(); if (now - lastMiddleClick < 500) controls.reset(); lastMiddleClick = now; } });
 
