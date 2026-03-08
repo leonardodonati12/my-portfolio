@@ -38,6 +38,11 @@ body.active #system-curtain {
 	z-index: 0;
 }
 
+#name-line-1, #name-line-2 {
+	display: block !important;
+	width: 100%;
+}
+
 body.push-left #main-wrapper {
 	transform: translateX(240px);
 }

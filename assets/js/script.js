@@ -697,24 +697,25 @@ window.addEventListener('click', (e) => {
     const aiModal = document.getElementById('ai-modal');
     const gameModal = document.getElementById('arcade-modal');
 
-    // Fechar IA
-    if (aiModal && aiModal.classList.contains('open') && !aiModal.contains(e.target) && e.target.id !== 'mob-ai') {
+    // Fechar IA (Ignora o clique se for no botão mobile ou no botão desktop)
+    if (aiModal && aiModal.classList.contains('open') && !aiModal.contains(e.target) && !e.target.closest('#mob-ai') && !e.target.closest('#btn-cyber-ia')) {
         aiModal.classList.remove('open');
     }
 
-    // Fechar Game
-    if (gameModal && gameModal.classList.contains('open') && !gameModal.contains(e.target) && e.target.id !== 'mob-game') {
+    // Fechar Game (Ignora o clique se for no botão mobile ou no botão desktop)
+    if (gameModal && gameModal.classList.contains('open') && !gameModal.contains(e.target) && !e.target.closest('#mob-game') && !e.target.closest('#btn-cyber-game')) {
         gameModal.classList.remove('open');
     }
 
-    // 1 - FECHAR AS ABAS (SKILLS, TIMELINE, ETC) CLICANDO FORA
-    const isPanelLink = e.target.closest('.mob-panel-link');
-    // Se não clicou no botão do menu que abre a aba...
-    if (!isPanelLink) {
+    // FECHAR AS ABAS (SKILLS, TIMELINE, ETC) CLICANDO FORA
+    const isPanelLink = e.target.closest('.mob-panel-link'); // Botão do celular
+    const isFolderTab = e.target.closest('.folder-tab');     // Pasta do computador
+
+    // Se o clique NÃO foi no botão do celular e NEM na pasta do computador...
+    if (!isPanelLink && !isFolderTab) {
         document.querySelectorAll('.ui-panel').forEach(panel => {
             // Se a aba estiver aberta e o clique não foi dentro dela...
             if (panel.style.display === 'flex' && !panel.contains(e.target)) {
-                // Fechamos ela usando a sua função padrão original!
                 if (typeof closePanel === 'function') {
                     closePanel(panel);
                 } else {
