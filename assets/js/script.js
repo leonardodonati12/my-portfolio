@@ -451,6 +451,9 @@ function openModal(data) {
     }
 }
 
+if (closeBtn) closeBtn.addEventListener('click', () => { if (modal) { modal.classList.remove('open'); setTimeout(() => { modal.style.display = 'none'; }, 500); } });
+let lastMiddleClick = 0; window.addEventListener('mousedown', (e) => { if (e.button === 1) { e.preventDefault(); const now = Date.now(); if (now - lastMiddleClick < 500) controls.reset(); lastMiddleClick = now; } });
+
 // ==========================================
 // 2. A ANIMAÇÃO ÚNICA E CORRETA
 // ==========================================
