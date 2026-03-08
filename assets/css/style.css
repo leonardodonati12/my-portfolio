@@ -1457,39 +1457,40 @@ body.push-right #ai-modal {
 	}
 
 	/* 4. Modal da IA (Precisa de altura fixa pra não esmagar o chat) */
-	#ai-modal {
-		height: 65dvh !important;
-		padding: 40px 0 0 0 !important;
-		transform-origin: bottom !important;
-		transform: scaleY(0) !important;
-		transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s ease !important;
+	#ai-modal .arcade-machine,
+	#ai-modal .game-area,
+	#ai-modal .ai-screen {
+		width: 100% !important;
+		display: flex !important;
+		flex-direction: column !important;
+		box-sizing: border-box !important;
 	}
 
-		#ai-modal.open {
-			transform: scaleY(1) !important;
-		}
-
+	/* 2. O histórico ganha 100% de largura real */
 	#chat-history {
 		display: flex !important;
 		flex-direction: column !important;
 		width: 100% !important;
-		padding-right: 0 !important; /* Limpa qualquer recuo lateral */
-		box-sizing: border-box !important;
+		padding-right: 5px !important;
 	}
 
+	/* 3. A mensagem do Usuário empurrada pra parede direita */
 	.user-msg {
-		width: 100% !important; /* Ocupa a largura total do container */
-		text-align: right !important; /* Manda o texto "morrer" na direita */
-		color: #00ff88 !important;
-		padding: 5px 0 !important; /* Espaçamento entre linhas */
+		align-self: flex-end !important; /* Empurra a caixa pro canto direito */
+		margin-left: auto !important; /* Mágica extra para afastar da esquerda */
+		text-align: right !important; /* Alinha o texto dentro da caixa */
+		width: fit-content !important; /* A caixa fica só do tamanho da frase */
+		max-width: 90% !important; /* Não deixa textão bater na outra margem */
 		display: block !important;
 	}
 
+	/* 4. A mensagem da IA colada na parede esquerda */
 	.ai-msg {
-		width: 100% !important;
+		align-self: flex-start !important;
+		margin-right: auto !important;
 		text-align: left !important;
-		color: #fff !important;
-		padding: 5px 0 !important;
+		width: fit-content !important;
+		max-width: 90% !important;
 		display: block !important;
 	}
 
