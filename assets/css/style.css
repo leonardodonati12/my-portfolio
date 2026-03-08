@@ -222,11 +222,7 @@ body.push-left #folder-stack {
 }
 
 body.push-top #folder-stack {
-	transform: translateY(300px);
-}
-
-body.push-bottom #folder-stack {
-	transform: translateY(-50px);
+	transform: translateY(280px);
 }
 
 .folder-tab {
