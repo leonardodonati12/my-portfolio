@@ -422,40 +422,68 @@ window.addEventListener('touchend', () => { isTouching = false; mouse.x = -100; 
 
 window.addEventListener('click', (event) => {
     if (!document.body.classList.contains('active')) return;
-    if (event.target.closest('.ui-panel') || event.target.closest('.folder-tab') || event.target.closest('#project-modal') || event.target.closest('.close-modal')) return;
+
+    // Se o clique foi na UI (pastas, modais, widget), a gente ignora pro 3D
+    if (event.target.closest('.ui-panel') ||
+        event.target.closest('.folder-tab') ||
+        event.target.closest('#project-modal') ||
+        event.target.closest('.close-modal') ||
+        event.target.closest('#cyber-widget') ||
+        event.target.closest('.audio-toggle') ||
+        event.target.closest('.header-btn')) return;
 
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(projectNodes);
-    if (intersects.length > 0) openModal(intersects[0].object.userData.data);
+
+    // Se acertou uma bolinha, abre o projeto
+    if (intersects.length > 0) {
+        openModal(intersects[0].object.userData.data);
+    } else {
+        // SE CLICOU NO VAZIO: Fecha o cartão suavemente!
+        if (modal && modal.classList.contains('open')) {
+            modal.classList.remove('open');
+            setTimeout(() => { modal.style.display = 'none'; }, 200);
+        }
+    }
 });
 
 function openModal(data) {
-    if (modalTitle) modalTitle.innerHTML = data.titulo;
-    if (modalTech) modalTech.innerHTML = "// " + data.tech;
-    if (modalDesc) modalDesc.innerHTML = data.descricao;
+    // Criamos uma mini-função que injeta os dados e faz a animação de abrir
+    const updateContentAndOpen = () => {
+        if (modalTitle) modalTitle.innerHTML = data.titulo;
+        if (modalTech) modalTech.innerHTML = "// " + data.tech;
+        if (modalDesc) modalDesc.innerHTML = data.descricao;
 
-    // A mágica de direcionamento automático:
-    if (modalLinkBtn) {
-        modalLinkBtn.style.display = 'inline-block';
+        if (modalLinkBtn) {
+            modalLinkBtn.style.display = 'inline-block';
+            const textToSearch = (data.titulo + " " + data.tech).toLowerCase();
+            const isPlugin = textToSearch.includes('plugin') || textToSearch.includes('c#');
 
-        // Ele vai caçar a palavra "plugin" no título, ou "c#" nas tecnologias
-        const textToSearch = (data.titulo + " " + data.tech).toLowerCase();
-        const isPlugin = textToSearch.includes('plugin') || textToSearch.includes('c#');
-
-        if (isPlugin) {
-            modalLinkBtn.href = "solutions/solutions.html";
-            modalLinkBtn.innerHTML = "[ VIEW IN SOLUTIONS ]";
-        } else {
-            modalLinkBtn.href = "portfolio/portfolio.html";
-            modalLinkBtn.innerHTML = "[ VIEW IN GALLERY ]";
+            if (isPlugin) {
+                modalLinkBtn.href = "solutions/solutions.html";
+                modalLinkBtn.innerHTML = "[ VIEW IN SOLUTIONS ]";
+            } else {
+                modalLinkBtn.href = "portfolio/portfolio.html";
+                modalLinkBtn.innerHTML = "[ VIEW IN GALLERY ]";
+            }
         }
-    }
 
-    if (modal) {
         modal.style.display = 'flex';
         setTimeout(() => { modal.classList.add('open'); }, 10);
+    };
+
+    // A MÁGICA DA TROCA ACONTECE AQUI:
+    if (modal && modal.classList.contains('open')) {
+        // Se já está aberto, tira a classe para recolher o cartão
+        modal.classList.remove('open');
+        // Espera exatos 200ms (tempo da animação do seu CSS) e abre o novo!
+        setTimeout(updateContentAndOpen, 200);
+    } else {
+        // Se estava fechado, só abre direto
+        updateContentAndOpen();
     }
 }
+
 
 if (closeBtn) closeBtn.addEventListener('click', () => { if (modal) { modal.classList.remove('open'); setTimeout(() => { modal.style.display = 'none'; }, 500); } });
 let lastMiddleClick = 0; window.addEventListener('mousedown', (e) => { if (e.button === 1) { e.preventDefault(); const now = Date.now(); if (now - lastMiddleClick < 500) controls.reset(); lastMiddleClick = now; } });
