@@ -1764,28 +1764,47 @@ body.push-right #ai-modal {
 
 /* 2. Mostra o botão ☰ apenas quando a tela for 850px ou menor */
 @media (max-width: 850px) {
+	/* MÁGICA 1: Esconde o menu horizontal do desktop para não ficar duplicado! */
+	.header .nav {
+		display: none !important;
+	}
+
+	/* O Botão ☰ */
 	#gallery-menu-btn {
 		display: block;
 		position: fixed;
-		top: 20px;
-		right: 20px;
+		top: 35px; /* Alinhado com o seu Header */
+		right: 30px;
 		z-index: 9999;
-		font-size: 24px;
-		color: #fff;
+		font-size: 30px; /* Um pouco maior pra ficar fácil de clicar */
+		color: #000 !important; /* MÁGICA 2: PRETO! Agora ele aparece no fundo branco! */
 		cursor: pointer;
 	}
 
-	/* Estilo da caixinha do menu (copiado da Home, mas independente) */
+	/* Estilo da caixinha do menu (Escura pra dar contraste) */
 	#gallery-dropdown {
 		position: fixed;
-		top: 60px;
+		top: 80px;
 		right: 20px;
 		background: rgba(10, 10, 10, 0.95);
 		border: 1px solid #333;
-		padding: 15px;
+		padding: 20px;
 		display: none; /* Continua escondido até o clique */
 		flex-direction: column;
-		gap: 15px;
+		gap: 20px;
 		z-index: 9998;
 	}
+
+		/* Estilo dos links dentro da caixinha escura */
+		#gallery-dropdown a {
+			color: #eee;
+			font-size: 1rem;
+			text-decoration: none;
+			text-transform: uppercase;
+			letter-spacing: 2px;
+		}
+
+			#gallery-dropdown a:hover, #gallery-dropdown a.active {
+				color: #00ff88;
+			}
 }
