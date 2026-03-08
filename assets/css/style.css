@@ -1243,187 +1243,156 @@ body.push-right #ai-modal {
 	right: 320px !important;
 }
 
+/* ========================================== */
+/* RESPONSIVIDADE & MOBILE (DO ZERO)          */
+/* ========================================== */
 
-
-/* RESPONSIVE */
-@media (max-width: 1220px) {
+/* 1. Sumir o DRAG TO ROTATE em 1300px */
+@media (max-width: 1300px) {
 	.interaction-hint {
 		display: none !important;
 	}
 }
 
-@media (max-width: 770px) {
+/* 2. Estilo Padrão do Menu Mobile (Escondido no Desktop) */
+#mobile-menu-btn {
+	display: none;
+	position: fixed;
+	top: 30px;
+	right: 30px;
+	font-size: 1.8rem;
+	color: #00ff88;
+	z-index: 5000;
+	cursor: none !important; /* Mantém seu cursor customizado */
+	text-shadow: 0 0 10px rgba(0,255,136,0.5);
+}
+
+#mobile-dropdown {
+	display: none; /* Controlado via JS */
+	position: fixed;
+	top: 75px;
+	right: 30px;
+	flex-direction: column;
+	gap: 20px;
+	background: transparent; /* Transparente como pedido */
+	text-align: right;
+	z-index: 4999;
+}
+
+	#mobile-dropdown a {
+		color: #eee;
+		font-family: 'Consolas', monospace;
+		font-size: 1rem;
+		letter-spacing: 2px;
+		text-decoration: none;
+		text-transform: uppercase;
+		text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+		cursor: none !important;
+	}
+
+		#mobile-dropdown a:hover {
+			color: #00ff88;
+		}
+
+/* 3. O GRANDE CORTE: 1000px */
+@media (max-width: 1000px) {
+	/* Sumir itens desnecessários */
+	#cyber-widget, /* Contador e Botões AI/Game */
+	#copyright, /* Direitos */
+	#resume-btn, /* Botões Header */
+	#portfolio-btn,
+	#solutions-btn,
+	.audio-toggle {
+		display: none !important;
+	}
+
+	/* Mostrar Menu Hambúrguer */
+	#mobile-menu-btn {
+		display: block;
+	}
+
+	/* Sidetabs (Pastas) descendo para o rodapé */
 	#folder-stack {
-		top: auto;
-		bottom: 0;
-		left: 0;
-		width: 100%;
-		height: 50px;
-		flex-direction: row;
-		background: #000;
-		border-top: 1px solid #333;
-		margin-left: 0;
+		top: auto !important;
+		bottom: 0 !important;
+		left: 0 !important;
+		width: 100% !important;
+		height: 45px !important;
+		flex-direction: row !important;
+		background: rgba(0, 0, 0, 0.9) !important;
+		border-top: 1px solid #333 !important;
+		margin: 0 !important;
+		padding: 0 !important;
 		transform: none !important;
 	}
 
 	.folder-tab {
-		writing-mode: horizontal-tb;
-		transform: none;
-		width: auto;
-		margin: 0;
-		margin-left: -10px;
-		border-radius: 10px 10px 0 0;
-		padding: 10px;
-		flex: 1;
-		text-align: center;
-		border-left: none;
-		background: linear-gradient(to top, #3d3e42, #202124);
-		border-right: none;
+		writing-mode: horizontal-tb !important;
+		transform: none !important;
+		width: 100% !important;
+		margin: 0 !important;
+		border-radius: 10px 10px 0 0 !important;
+		padding: 10px 0 !important;
+		flex: 1 !important;
+		text-align: center !important;
+		border-left: none !important;
+		border-right: 1px solid rgba(255,255,255,0.05);
+		font-size: 0.6rem !important; /* Reduzido */
 	}
 
 		.folder-tab:hover {
-			transform: none;
+			transform: translateY(-3px) !important;
 		}
 
-		.folder-tab:first-child {
-			margin-left: 0;
-		}
-
+	/* Painéis UI (Skills, Timeline, etc) abrindo a partir do rodapé */
 	.ui-panel {
 		width: 100% !important;
-		height: 60% !important;
-		bottom: 50px !important;
+		height: 65vh !important;
+		bottom: 45px !important; /* Cola em cima das abas */
 		top: auto !important;
 		left: 0 !important;
-		border-radius: 20px 20px 0 0;
-		border: none;
-		border-top: 1px solid #00ff88;
+		border-radius: 20px 20px 0 0 !important;
+		border: none !important;
+		border-top: 1px solid #00ff88 !important;
 	}
 
+	/* Impede a tela de "pular" no mobile ao abrir pastas */
 	body[class*="push-"] #main-wrapper {
 		transform: none !important;
 	}
 
-	/* Ajuste Mobile: Menos padding e fonte menor para caberem os 4 botões */
-	#portfolio-btn, #resume-btn, #solutions-btn, .audio-toggle {
-		top: 40px !important;
-		padding: 8px 10px !important;
-		font-size: 0.65rem !important;
+	body[class*="push-"] #project-modal {
+		transform: none !important;
 	}
 
-	#portfolio-btn {
-		right: 15px !important;
-	}
-
-	#resume-btn {
-		right: 95px !important;
-	}
-
-	#solutions-btn {
-		right: 165px !important;
-	}
-
-	.audio-toggle {
-		right: 255px !important;
-	}
-
-	.hero {
-		left: 20px;
-		top: 15%;
-	}
-
-		.hero .subtitle {
-			margin-left: 0px;
-		}
-
-	#about-overlay {
-		padding: 0 25px !important; /* Era 25% (muito grande), agora é 25px fixo */
-	}
-
-	/* [CORREÇÃO] Tirar o justificado que cria buracos */
-	.about-text {
-		text-align: left !important; /* Justify quebra em mobile, left resolve */
-		font-size: 1rem !important; /* Ajuste fino de tamanho */
-		line-height: 1.5 !important; /* Melhora a leitura */
-		width: 100% !important;
-	}
-
-	/* Ajuste também para a tela de frases (Phrases Overlay) para garantir */
-	#phrases-overlay {
-		padding: 0 20px !important;
-	}
-}
-
-@media (max-width: 770px) {
-	#copyright {
-		display: none !important;
-	}
-
+	/* O Hero já fica parado no lugar dele (left: 70px), mas ajustamos a fonte para caber */
 	.hero h1, #hero-name {
-		font-size: 2.50rem !important;
+		font-size: 2.2rem !important;
 	}
 
 	.hero .subtitle {
-		font-size: 0.8rem !important;
-		letter-spacing: 2px !important;
-		margin-top: 2px !important;
+		font-size: 0.75rem !important;
 	}
 
-	.hero {
-		transform: translateX(0px);
+	/* Cartão do Projeto centralizado */
+	#project-modal {
+		left: 50% !important;
+		transform: translateX(-50%) scaleY(0) !important;
+		width: 80% !important;
 	}
 
-		.hero .subtitle {
-			transform: translateX(00px);
+		#project-modal.open {
+			transform: translateX(-50%) scaleY(1) !important;
 		}
 }
 
-/* --- TOUCH DEVICES: OCULTAR CURSOR --- */
+/* TOUCH FIX: Volta o cursor padrão só pra celular */
 @media (hover: none) and (pointer: coarse) {
 	.cursor-dot, .cursor-outline {
 		display: none !important;
 	}
-	/* Reativa o cursor do sistema para botões quando em touch */
-	a, button, .close-panel, .folder-tab, .hero {
-		cursor: pointer !important;
+
+	* {
+		cursor: auto !important;
 	}
-}
-
-/* Header Portfolio (Page Specific) */
-.header {
-	padding: 40px 60px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	position: sticky;
-	top: 0;
-	background: rgba(255,255,255,0.95);
-	backdrop-filter: blur(8px);
-	z-index: 100;
-}
-
-.identity-group {
-	display: flex;
-	align-items: center;
-	gap: 15px;
-}
-
-.header-blob {
-	width: 30px;
-	height: 30px;
-	background: #000;
-	clip-path: polygon(50% 0%, 70% 40%, 100% 50%, 70% 60%, 50% 100%, 30% 60%, 0% 50%, 30% 40%);
-	animation: spin 10s linear infinite;
-}
-
-.header h1 {
-	font-size: 2.0rem;
-	margin: 0;
-	line-height: 1;
-	color: #000;
-}
-
-.nav {
-	display: flex;
-	gap: 30px;
 }

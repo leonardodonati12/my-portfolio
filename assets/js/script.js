@@ -607,3 +607,48 @@ function toggleAudio() {
 
 if (audioBtn) audioBtn.addEventListener('click', toggleAudio);
 
+// --- 14. RESPONSIVO: MENU MOBILE E ZOOM DA CÂMERA ---
+
+// 1. Zoom dinâmico do 3D baseado no tamanho da tela
+function adjustCameraZoom() {
+    if (window.innerWidth <= 1000) {
+        camera.position.z = 16; // Afasta a câmera no celular (Zoom Out)
+    } else {
+        camera.position.z = 10; // Câmera normal no PC
+    }
+}
+// Roda ao carregar e ao redimensionar a janela
+adjustCameraZoom();
+window.addEventListener('resize', adjustCameraZoom);
+
+
+// 2. Lógica do Menu Dropdown
+const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+const mobileDropdown = document.getElementById('mobile-dropdown');
+
+if (mobileMenuBtn && mobileDropdown) {
+    mobileMenuBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Evita que o clique vaze pro 3D
+        const isClosed = mobileDropdown.style.display === 'none' || mobileDropdown.style.display === '';
+        mobileDropdown.style.display = isClosed ? 'flex' : 'none';
+        mobileMenuBtn.innerHTML = isClosed ? '×' : '☰';
+    });
+
+    // Fecha o menu se clicar em qualquer outro lugar da tela
+    window.addEventListener('click', (e) => {
+        if (e.target !== mobileMenuBtn && !mobileDropdown.contains(e.target)) {
+            mobileDropdown.style.display = 'none';
+            mobileMenuBtn.innerHTML = '☰';
+        }
+    });
+}
+
+// 3. Ligar os botões do Dropdown na IA e no Arcade
+document.getElementById('mob-ai')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('ai-modal').classList.add('open');
+});
+document.getElementById('mob-game')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('arcade-modal').classList.add('open');
+});
