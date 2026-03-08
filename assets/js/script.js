@@ -429,28 +429,7 @@ window.addEventListener('click', (event) => {
     if (intersects.length > 0) openModal(intersects[0].object.userData.data);
 });
 
-function openModal(data) {
-    if (modalTitle) modalTitle.innerHTML = data.titulo;
-    if (modalTech) modalTech.innerHTML = "// " + data.tech;
-    if (modalDesc) modalDesc.innerHTML = data.descricao;
-
-    // Atualiza o link do botão dinamicamente
-    if (modalLinkBtn) {
-        if (data.link) {
-            modalLinkBtn.style.display = 'inline-block';
-            modalLinkBtn.href = data.link; // Joga pro link do seu portfólio!
-        } else {
-            // Se o projeto não tiver link cadastrado, esconde o botão
-            modalLinkBtn.style.display = 'none';
-        }
-    }
-
-    if (modal) {
-        modal.style.display = 'flex';
-        setTimeout(() => { modal.classList.add('open'); }, 10);
-    }
-}
-
+function openModal(data) { if (modalTitle) modalTitle.innerHTML = data.titulo; if (modalTech) modalTech.innerHTML = "// " + data.tech; if (modalDesc) modalDesc.innerHTML = data.descricao; if (modal) { modal.style.display = 'flex'; setTimeout(() => { modal.classList.add('open'); }, 10); } }
 if (closeBtn) closeBtn.addEventListener('click', () => { if (modal) { modal.classList.remove('open'); setTimeout(() => { modal.style.display = 'none'; }, 500); } });
 let lastMiddleClick = 0; window.addEventListener('mousedown', (e) => { if (e.button === 1) { e.preventDefault(); const now = Date.now(); if (now - lastMiddleClick < 500) controls.reset(); lastMiddleClick = now; } });
 

@@ -5,11 +5,11 @@ body {
 	background-color: #050505;
 	color: #fff;
 	font-family: 'Consolas', 'Courier New', monospace;
-	cursor: none !important;
+	cursor: none !important; /* Esconde cursor padrão (JS move o verde) */
 	user-select: none;
 }
 
-/* SYSTEM CURTAIN */
+/* SYSTEM CURTAIN (Z-Index 5500) */
 #system-curtain {
 	position: fixed;
 	top: 0;
@@ -27,7 +27,7 @@ body.active #system-curtain {
 	pointer-events: none;
 }
 
-/* MAIN WRAPPER & PUSH SYSTEM */
+/* MAIN WRAPPER */
 #main-wrapper {
 	position: fixed;
 	top: 0;
@@ -38,7 +38,6 @@ body.active #system-curtain {
 	z-index: 0;
 }
 
-/* PUSH - A mágica acontece aqui */
 body.push-left #main-wrapper {
 	transform: translateX(240px);
 }
@@ -64,7 +63,8 @@ body.push-bottom #main-wrapper {
 	z-index: 0;
 }
 
-/* CURSOR */
+/* CURSOR (ESSENCIAL: pointer-events: none) */
+/* Isso garante que o clique atravesse a bolinha e pegue o botão */
 .cursor-dot {
 	width: 8px;
 	height: 8px;
@@ -115,7 +115,7 @@ body.push-bottom #copyright {
 	transform: translateY(-280px);
 }
 
-/* BOTÕES DO HEADER */
+/* --- BOTÕES DO HEADER (PADRONIZADOS) --- */
 #resume-btn, #portfolio-btn, #solutions-btn, .audio-toggle {
 	position: fixed;
 	top: 20px;
@@ -197,7 +197,8 @@ body.push-top #portfolio-btn, body.push-top #resume-btn, body.push-top #solution
 	top: 300px;
 }
 
-/* SIDE TABS PRINCIPAIS */
+
+/* --- SIDE TABS --- */
 #folder-stack {
 	position: fixed;
 	top: 40px;
@@ -275,7 +276,10 @@ body.push-top #folder-stack {
 		cursor: none !important;
 	}
 
-/* AI MODAL STYLES */
+
+/* ========================================== */
+/* AI MODAL STYLES & PUSH */
+/* ========================================== */
 #ai-modal {
 	position: fixed;
 	bottom: 120px;
@@ -292,6 +296,7 @@ body.push-top #folder-stack {
 		animation: pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 	}
 
+/* Tela do tamanho exato do Game Canvas */
 .ai-screen {
 	width: 320px;
 	height: 380px;
@@ -301,6 +306,7 @@ body.push-top #folder-stack {
 	box-sizing: border-box;
 }
 
+/* Área das mensagens */
 #chat-history {
 	flex: 1;
 	overflow-y: auto;
@@ -314,6 +320,7 @@ body.push-top #folder-stack {
 	font-family: 'Press Start 2P', monospace;
 }
 
+	/* Scrollbar estilo Retro */
 	#chat-history::-webkit-scrollbar {
 		width: 4px;
 	}
@@ -323,6 +330,7 @@ body.push-top #folder-stack {
 		border-radius: 2px;
 	}
 
+/* Estilo das mensagens */
 .msg {
 	word-wrap: break-word;
 }
@@ -335,13 +343,14 @@ body.push-top #folder-stack {
 	color: #00ff88;
 	text-align: right;
 }
-
+/* Verde para o usuário */
 .sender {
 	font-weight: bold;
 	margin-right: 5px;
 	opacity: 0.7;
 }
 
+/* Área de input de texto */
 .chat-input-area {
 	display: flex;
 	padding-top: 10px;
@@ -351,6 +360,16 @@ body.push-top #folder-stack {
 	color: #fff;
 	font-size: 10px;
 	animation: blink 1s infinite;
+}
+
+@keyframes blink {
+	0%, 100% {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0;
+	}
 }
 
 #chat-input {
@@ -651,62 +670,190 @@ body.push-bottom .interaction-hint {
 	flex: 1;
 }
 
-/* PROJECT MODAL MINIMALISTA */
+.skill-item {
+	margin-bottom: 15px;
+}
+
+.skill-name {
+	font-size: 0.65rem;
+	color: #eee;
+	margin-bottom: 4px;
+	display: flex;
+	justify-content: space-between;
+	letter-spacing: 1px;
+}
+
+.retro-bar {
+	display: flex;
+	gap: 2px;
+	height: 5px;
+}
+
+.bar-block {
+	flex: 1;
+	background: rgba(255,255,255,0.1);
+	border-radius: 1px;
+}
+
+	.bar-block.filled {
+		background: #00ff88;
+		box-shadow: 0 0 5px rgba(0,255,136,0.4);
+	}
+
+.timeline-item {
+	position: relative;
+	padding-left: 20px;
+	margin-bottom: 25px;
+	border-left: 1px solid #333;
+}
+
+	.timeline-item::before {
+		content: '';
+		position: absolute;
+		left: -3px;
+		top: 0;
+		width: 5px;
+		height: 5px;
+		background: #00ff88;
+		border-radius: 50%;
+		box-shadow: 0 0 5px #00ff88;
+	}
+
+.time-date {
+	font-size: 0.65rem;
+	color: #00ff88;
+	margin-bottom: 2px;
+	text-transform: uppercase;
+}
+
+.time-role {
+	font-size: 0.8rem;
+	font-weight: bold;
+	color: #fff;
+	margin-bottom: 2px;
+}
+
+.time-place {
+	font-size: 0.7rem;
+	color: #888;
+	font-style: italic;
+	margin-bottom: 5px;
+}
+
+.time-desc {
+	font-size: 0.7rem;
+	color: #aaa;
+	line-height: 1.4;
+}
+
+.contact-item {
+	margin-bottom: 20px;
+	padding: 10px;
+	border: 1px solid #222;
+	border-radius: 5px;
+	transition: 0.3s;
+}
+
+	.contact-item:hover {
+		border-color: #00ff88;
+		background: rgba(0,255,136,0.05);
+	}
+
+.contact-label {
+	font-size: 0.6rem;
+	color: #555;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	margin-bottom: 3px;
+}
+
+.contact-val {
+	font-size: 0.8rem;
+	color: #fff;
+	word-break: break-all;
+}
+
+	.contact-val a {
+		color: #fff;
+		text-decoration: none;
+		cursor: none;
+	}
+
+		.contact-val a:hover {
+			color: #00ff88;
+		}
+
+.extra-item {
+	margin-bottom: 15px;
+	border-bottom: 1px solid #222;
+	padding-bottom: 10px;
+}
+
+.extra-title {
+	font-size: 0.8rem;
+	color: #fff;
+	margin-bottom: 3px;
+}
+
+.extra-detail {
+	font-size: 0.7rem;
+	color: #888;
+	line-height: 1.4;
+}
+
 #project-modal {
 	position: fixed;
-	bottom: 40px;
-	left: 70px;
-	width: 280px;
-	background: rgba(10, 10, 10, 0.65);
-	backdrop-filter: blur(12px);
-	border: none;
-	border-left: 2px solid #00ff88;
-	padding: 25px;
-	border-radius: 0 15px 15px 0;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 80%;
+	max-width: 500px;
+	background: rgba(10, 10, 10, 0.95);
+	border: 1px solid #00ff88;
+	padding: 40px;
+	border-radius: 20px;
 	z-index: 5005;
 	display: none;
 	flex-direction: column;
-	box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.5);
+	box-shadow: 0 0 50px rgba(0, 255, 136, 0.15);
 	opacity: 0;
-	transform: translateX(-20px);
-	transition: opacity 0.4s ease, transform 0.4s ease;
+	transition: opacity 0.5s;
 }
 
 	#project-modal.open {
 		display: flex;
 		opacity: 1;
-		transform: translateX(0);
 	}
 
 .modal-title {
-	font-size: 1.1rem;
+	font-size: 1.5rem;
 	color: #fff;
-	margin-bottom: 5px;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #333;
+	padding-bottom: 10px;
 }
 
 .modal-tech {
 	color: #00ff88;
-	font-size: 0.65rem;
-	margin-bottom: 15px;
+	font-size: 0.9rem;
+	margin-bottom: 20px;
 	text-transform: uppercase;
 	letter-spacing: 1px;
-	opacity: 0.8;
 }
 
 .modal-desc {
-	color: #aaa;
-	line-height: 1.5;
-	font-size: 0.8rem;
-	margin-bottom: 20px;
+	color: #ccc;
+	line-height: 1.6;
+	font-size: 1rem;
 }
 
 .close-modal {
 	position: absolute;
 	top: 15px;
-	right: 15px;
+	right: 20px;
 	color: #555;
-	font-size: 1.2rem;
-	cursor: none !important;
+	font-size: 1.5rem;
+	cursor: none;
 	transition: color 0.3s;
 }
 
@@ -714,26 +861,6 @@ body.push-bottom .interaction-hint {
 		color: #00ff88;
 	}
 
-.modal-link-btn {
-	display: inline-block;
-	color: #00ff88;
-	font-size: 0.7rem;
-	text-decoration: none;
-	border: 1px solid rgba(0, 255, 136, 0.4);
-	padding: 8px 0;
-	text-align: center;
-	transition: all 0.3s;
-	cursor: none !important;
-	letter-spacing: 1px;
-}
-
-	.modal-link-btn:hover {
-		background: rgba(0, 255, 136, 0.1);
-		border-color: #00ff88;
-		box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
-	}
-
-/* UTILIDADES E ANIMAÇÕES */
 ::-webkit-scrollbar {
 	width: 4px;
 	height: 4px;
@@ -812,11 +939,12 @@ body.push-bottom .interaction-hint {
 	box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
 
+/* GLOBAL CURSOR RESET */
 a, button, .close-panel {
 	cursor: none !important;
 }
 
-/* EASTER EGG: FOTO 3D */
+/* --- EASTER EGG: FOTO 3D E LINHA --- */
 #secret-photo-card {
 	position: absolute;
 	right: -200px;
@@ -871,7 +999,7 @@ a, button, .close-panel {
 	stroke-width: 1;
 }
 
-/* EASTER EGGS: COMANDOS */
+/* --- EASTER EGGS: COMANDOS (BLUEPRINT / COFFEE) --- */
 body.blueprint-mode {
 	background-color: #003366 !important;
 	background-image: linear-gradient(rgba(255, 255, 255, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.3) 1px, transparent 1px), linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px) !important;
@@ -904,7 +1032,7 @@ body.blueprint-mode {
 	}
 }
 
-/* CYBER WIDGET */
+/* --- CYBER WIDGET (CONTADOR E BOTÕES) --- */
 #cyber-widget {
 	position: fixed;
 	bottom: 20px;
@@ -976,7 +1104,7 @@ body.blueprint-mode {
 		box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
 	}
 
-/* ARCADE MODAL & FUGA DE PASTAS */
+/* --- ARCADE MODAL (BLINDADO) E FUGA DE PASTAS --- */
 #arcade-modal {
 	position: fixed;
 	bottom: 120px;
@@ -1027,18 +1155,16 @@ body.blueprint-mode {
 		z-index: 10;
 	}
 
-	/* Correção das Abas do Jogo (Invertidas Corretamente) */
 	#arcade-modal .game-tab {
 		writing-mode: vertical-rl;
 		transform: rotate(180deg);
 		width: 28px;
 		padding: 15px 0;
-		border: none;
 		border-radius: 0 10px 10px 0;
 		background: #000;
 		color: #777;
 		font-size: 9px;
-		cursor: none !important;
+		cursor: pointer;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -1055,7 +1181,6 @@ body.blueprint-mode {
 		#arcade-modal .game-tab.active {
 			background: #fff;
 			color: #000;
-			box-shadow: none;
 			z-index: 11;
 		}
 
@@ -1064,7 +1189,6 @@ body.blueprint-mode {
 		background: transparent;
 		position: relative;
 		z-index: 5;
-		border: none;
 	}
 
 #gameCanvas {
@@ -1075,7 +1199,19 @@ body.blueprint-mode {
 	height: 360px;
 }
 
-/* 🚀 O Push do Game e da IA corrigido! */
+@keyframes pop-in {
+	0% {
+		opacity: 0;
+		transform: translateY(20px) scale(0.95);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+/* 🚀 SISTEMA DE FUGA DAS PASTAS (PUSH) PARA ARCADE E AI */
 body.push-bottom #arcade-modal,
 body.push-bottom #ai-modal {
 	bottom: 370px !important;
@@ -1086,7 +1222,9 @@ body.push-right #ai-modal {
 	right: 320px !important;
 }
 
-/* RESPONSIVE & MOBILE FIXES */
+
+
+/* RESPONSIVE */
 @media (max-width: 1220px) {
 	.interaction-hint {
 		display: none !important;
@@ -1141,11 +1279,11 @@ body.push-right #ai-modal {
 		border-top: 1px solid #00ff88;
 	}
 
-	/* Isso garante que no mobile, o site não quebre quando abre aba */
 	body[class*="push-"] #main-wrapper {
 		transform: none !important;
 	}
 
+	/* Ajuste Mobile: Menos padding e fonte menor para caberem os 4 botões */
 	#portfolio-btn, #resume-btn, #solutions-btn, .audio-toggle {
 		top: 40px !important;
 		padding: 8px 10px !important;
@@ -1178,20 +1316,24 @@ body.push-right #ai-modal {
 		}
 
 	#about-overlay {
-		padding: 0 25px !important;
+		padding: 0 25px !important; /* Era 25% (muito grande), agora é 25px fixo */
 	}
 
+	/* [CORREÇÃO] Tirar o justificado que cria buracos */
 	.about-text {
-		text-align: left !important;
-		font-size: 1rem !important;
-		line-height: 1.5 !important;
+		text-align: left !important; /* Justify quebra em mobile, left resolve */
+		font-size: 1rem !important; /* Ajuste fino de tamanho */
+		line-height: 1.5 !important; /* Melhora a leitura */
 		width: 100% !important;
 	}
 
+	/* Ajuste também para a tela de frases (Phrases Overlay) para garantir */
 	#phrases-overlay {
 		padding: 0 20px !important;
 	}
+}
 
+@media (max-width: 770px) {
 	#copyright {
 		display: none !important;
 	}
@@ -1215,11 +1357,12 @@ body.push-right #ai-modal {
 		}
 }
 
+/* --- TOUCH DEVICES: OCULTAR CURSOR --- */
 @media (hover: none) and (pointer: coarse) {
 	.cursor-dot, .cursor-outline {
 		display: none !important;
 	}
-
+	/* Reativa o cursor do sistema para botões quando em touch */
 	a, button, .close-panel, .folder-tab, .hero {
 		cursor: pointer !important;
 	}
