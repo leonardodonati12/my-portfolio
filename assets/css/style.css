@@ -1348,6 +1348,14 @@ body.push-right #ai-modal {
 			margin-left: 2px !important;
 		}
 
+	.hero {
+		width: max-content !important; /* A caixa fica do tamanho exato do texto, sem vazar */
+	}
+
+	#hero-name::after {
+		display: none !important; /* Remove aquela margem invisível que roubava os cliques */
+	}
+
 	/* PROJETO ALINHADO AO HERO */
 	#project-modal {
 		left: 15px !important;
