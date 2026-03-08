@@ -725,54 +725,70 @@ window.closeAllMobileUI = function (keepOpen) {
     }
 };
 
-// Substitua o seu evento 'window.addEventListener("click"...)' por este:
-window.addEventListener('click', (event) => {
+window.addEventListener('pointerdown', (event) => { // 'pointerdown' garante 100% de precisão no toque!
     if (!document.body.classList.contains('active')) return;
 
-    // Garante precisão do toque no 3D
-    if (event.clientX !== undefined && event.clientY !== undefined) {
-        if (typeof updateInputPosition === 'function') updateInputPosition(event.clientX, event.clientY);
+    // 1. Atualiza as coordenadas perfeitas pro 3D ler o seu dedo
+    if (typeof mouse !== 'undefined') {
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     }
 
-    // --- SISTEMA MOBILE: Fecha o que não está sendo clicado ---
+    // --- SISTEMA MOBILE EXCLUSIVO ---
     if (window.innerWidth <= 1000) {
         const t = event.target;
+        const secretCard = document.getElementById('secret-photo-card');
 
-        // Descobre o que o usuário acabou de abrir
+        // LÓGICA DA FOTO SECRETA (Abrir, Fechar e Timer de 5s)
+        if (t.closest('#hero-name')) {
+            if (typeof closeAllMobileUI === 'function') closeAllMobileUI('photo');
+            if (secretCard) secretCard.style.opacity = '1';
+
+            // Inicia o timer de 5s para fechar sozinho
+            clearTimeout(window.photoTimerMobile);
+            window.photoTimerMobile = setTimeout(() => {
+                if (secretCard) secretCard.style.opacity = '0';
+            }, 5000);
+            return; // Para tudo aqui para não fechar acidentalmente
+        } else if (secretCard && secretCard.style.opacity === '1') {
+            // Se a foto tá aberta e clicou em outro lugar, fecha ela e mata o timer!
+            secretCard.style.opacity = '0';
+            clearTimeout(window.photoTimerMobile);
+        }
+
+        // GERENTE DE JANELAS (Exclusão Mútua)
         if (t.closest('#mobile-menu-btn')) closeAllMobileUI('menu');
         else if (t.closest('.mob-panel-link')) closeAllMobileUI('panel');
-        else if (t.closest('#hero-name')) closeAllMobileUI('photo');
         else if (t.closest('#mob-ai')) closeAllMobileUI('ai');
         else if (t.closest('#mob-game')) closeAllMobileUI('arcade');
         else {
-            // Se o clique foi numa UI já aberta, não faz nada
             const isInsideUI = t.closest('.ui-panel') || t.closest('#mobile-dropdown') ||
                 t.closest('#project-modal') || t.closest('#ai-modal') ||
-                t.closest('#arcade-modal') || t.closest('#secret-photo-card');
-
-            // Mas se clicou no VAZIO, limpa a tela inteira!
-            if (!isInsideUI) closeAllMobileUI('none');
+                t.closest('#arcade-modal');
+            if (!isInsideUI) {
+                if (typeof closeAllMobileUI === 'function') closeAllMobileUI('none');
+            }
         }
     }
 
-    // Se o clique foi em alguma interface, a gente aborta o laser do 3D
+    // Se o clique foi em alguma interface de UI, a gente não atira o laser do 3D
     if (event.target.closest('.ui-panel') || event.target.closest('.folder-tab') ||
         event.target.closest('#project-modal') || event.target.closest('.close-modal') ||
         event.target.closest('#cyber-widget') || event.target.closest('.audio-toggle') ||
         event.target.closest('.header-btn') || event.target.closest('#mobile-menu-btn') ||
         event.target.closest('#mobile-dropdown')) return;
 
-    // Dispara o laser 3D pra ver se acertou um projeto
-    if (typeof raycaster !== 'undefined' && typeof mouse !== 'undefined' && typeof camera !== 'undefined' && typeof projectNodes !== 'undefined') {
+    // 2. O Laser do Raycaster (Atirando na Bolinha do Projeto)
+    if (typeof raycaster !== 'undefined' && typeof camera !== 'undefined' && typeof projectNodes !== 'undefined') {
         raycaster.setFromCamera(mouse, camera);
         const intersects = raycaster.intersectObjects(projectNodes);
 
         if (intersects.length > 0) {
-            // Se acertar a bolinha no mobile, fecha todo o resto e abre o projeto!
-            if (window.innerWidth <= 1000) closeAllMobileUI('project');
+            // ACERTOU A BOLINHA!
+            if (window.innerWidth <= 1000 && typeof closeAllMobileUI === 'function') closeAllMobileUI('project');
             if (typeof openModal === 'function') openModal(intersects[0].object.userData.data);
         } else {
-            // Se errou a bolinha no desktop, apenas esconde o projeto
+            // ERROU A BOLINHA (Clicou no vazio)
             const modal = document.getElementById('project-modal');
             if (modal && modal.classList.contains('open') && window.innerWidth > 1000) {
                 modal.classList.remove('open');

@@ -1529,8 +1529,17 @@ body.push-right #ai-modal {
 	#secret-photo-line, #callout-container {
 		display: none !important;
 	}
-}
 
+	/* BLINDAGEM PARA IPHONE / SAFARI */
+	.ui-panel, .ui-panel[class*="docked-"] {
+		top: auto !important;
+		/* Levanta o painel respeitando a "Home Bar" do iPhone */
+		bottom: env(safe-area-inset-bottom, 20px) !important;
+		margin: 0 !important;
+		/* Usa dvh (Dynamic Viewport Height) pra não vazar pra baixo da barra de endereço */
+		max-height: 75dvh !important;
+	}
+}
 
 	/* ========================================== */
 	/* 📱 PROTEÇÃO TOTAL PARA TOUCH E TELAS GRANDES*/
