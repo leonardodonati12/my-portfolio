@@ -266,5 +266,76 @@
     </div>
 
     <script src="../../../assets/js/cursor.js"></script>
+
+    <script>
+        function toggleTab(tabId) {
+            // Esconde todas as seções
+            document.getElementById('plugins-section').style.display = 'none';
+            document.getElementById('privacy-section').style.display = 'none';
+            document.getElementById('support-section').style.display = 'none';
+
+            // Remove a classe "active" de todos os links do menu
+            document.getElementById('tab-plugins').classList.remove('active');
+            document.getElementById('tab-privacy').classList.remove('active');
+            document.getElementById('tab-support').classList.remove('active');
+
+            // Mostra a seção escolhida e colore o link no menu
+            if (tabId === 'plugins') {
+                document.getElementById('plugins-section').style.display = 'grid';
+                document.getElementById('tab-plugins').classList.add('active');
+            } else {
+                document.getElementById(tabId + '-section').style.display = 'block';
+                document.getElementById('tab-' + tabId).classList.add('active');
+            }
+        }
+
+        // Script inteligente para detectar quando vêm da página de detalhes pedindo abas
+        window.onload = function () {
+            const params = new URLSearchParams(window.location.search);
+            const tab = params.get('tab');
+            if (tab) {
+                toggleTab(tab); // Se tiver ?tab=privacy ou support na URL, ele já abre a aba certa!
+            }
+        }
+        document.addEventListener("DOMContentLoaded", () => {
+            const iosFix = function () { };
+            document.documentElement.addEventListener('click', iosFix);
+            document.body.addEventListener('click', iosFix);
+
+            document.addEventListener('click', (event) => {
+                const t = event.target;
+                if (!t) return;
+
+                // Agora o JS procura o menu da galeria!
+                const dropdown = document.getElementById('gallery-dropdown');
+                const btn = document.getElementById('gallery-menu-btn');
+
+                if (!dropdown || !btn) return;
+
+                if (t.closest('#gallery-menu-btn')) {
+                    event.stopPropagation();
+                    dropdown.style.display = 'flex';
+                    btn.style.display = 'none';
+                    return;
+                }
+
+                // Quebra de tela ajustada para 850px!
+                if (window.innerWidth <= 850 && dropdown.style.display === 'flex') {
+
+                    if (t.closest('.mobile-menu-item')) {
+                        dropdown.style.display = 'none';
+                        btn.style.display = 'block';
+                        return;
+                    }
+
+                    if (!t.closest('#gallery-dropdown')) {
+                        dropdown.style.display = 'none';
+                        btn.style.display = 'block';
+                    }
+                }
+            }, true);
+        });
+    </script>
+
 </body>
 </html>
