@@ -1404,19 +1404,47 @@ body.push-right #ai-modal {
 		}
 	}
 
-	.ui-panel, #ai-modal {
-		background: rgba(0, 0, 0, 0.75) !important; /* Fundo preto translúcido */
-		backdrop-filter: blur(12px) !important; /* O Blur elegante */
-		padding: 20px 15px !important; /* Espaço pro texto não colar na borda */
-		border-radius: 15px 0 0 15px !important; /* Arredonda a esquerda */
-		border: 1px solid rgba(255,255,255,0.05) !important;
-		border-right: 2px solid #00ff88 !important; /* Mantém a régua neon */
+	#mobile-dropdown {
+		top: 20px !important; /* Exata mesma altura do Hero */
+		right: 20px !important;
+		transform-origin: top right !important; /* A animação nasce do topo direito */
+		animation: menu-drop 0.2s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
 	}
 
-	#ai-modal {
-		padding: 5px !important;
+	@keyframes menu-drop {
+		0% {
+			transform: scaleY(0);
+			opacity: 0;
+		}
+
+		100% {
+			transform: scaleY(1);
+			opacity: 1;
+		}
 	}
-	/* Ajuste fino pra IA caber na caixa */
+
+	/* 3 - Background Blur de lado a lado para Painéis e IA */
+	.ui-panel, #ai-modal {
+		width: 100% !important; /* Espalha a fumaça/blur pela tela toda */
+		max-height: 70vh !important;
+		bottom: 0 !important; /* Cola no chão */
+		right: 0 !important;
+		/* Degradê do preto sólido embaixo para invisível em cima */
+		background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 50%, transparent 100%) !important;
+		backdrop-filter: blur(8px) !important;
+		-webkit-backdrop-filter: blur(8px) !important; /* Suporte para iPhone/Safari */
+
+		border-right: none !important; /* Removemos a linha lateral pra não ficar estranho */
+		border-bottom: 2px solid #00ff88 !important; /* O neon verde agora fica no chão! */
+
+		padding-right: 20px !important; /* Mantém o texto nas exatas posições originais! */
+		padding-bottom: 20px !important;
+	}
+
+		/* Para a IA manter a posição na direita mesmo com a tela esticada */
+		#ai-modal .ai-screen {
+			margin-left: auto !important;
+		}
 
 	.panel-header {
 		display: none !important;
@@ -1498,16 +1526,17 @@ body.push-right #ai-modal {
 			animation: none !important;
 		}
 
-	/* 4 - REMOVER CURSOR JS TOTALMENTE NO MOBILE */
+	/* 4 - Remover completamente o cursor customizado verde no Mobile */
+	body, a, button, .folder-tab, .close-panel, * {
+		cursor: auto !important;
+	}
+
 	.cursor-dot, .cursor-outline {
 		display: none !important;
 	}
 
-	* {
-		cursor: auto !important;
-	}
-
-	/* 5 - REMOVER CALLOUT DO HOVER NO MOBILE (Aparece só no clique agora!) */
+	/* 5 - Ocultar o Callout 3D para não atrapalhar o toque */
+	/* (O toque na bolinha agora abre o cartão limpo direto!) */
 	#callout-container {
 		display: none !important;
 	}
