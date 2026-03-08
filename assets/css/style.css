@@ -1388,7 +1388,6 @@ body.push-right #ai-modal {
 			padding: 5px 10px !important;
 		}
 
-	/* DEGRADÊ BLUR DE LADO A LADO PARA PAINÉIS E IA */
 	@keyframes hud-pop-up {
 		0% {
 			transform: scaleY(0);
@@ -1406,28 +1405,33 @@ body.push-right #ai-modal {
 		left: 0 !important;
 		right: 0 !important;
 		bottom: 0 !important;
-		max-height: 70vh !important;
-		background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 50%, transparent 100%) !important;
+		height: auto !important; /* Acompanha a altura exata do conteúdo */
+		max-height: 80vh !important;
+		/* O fundo esfumaçado com uma "sobra" suave pra cima */
+		background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 65%, transparent 100%) !important;
 		backdrop-filter: blur(8px) !important;
 		-webkit-backdrop-filter: blur(8px) !important;
 		border: none !important;
-		border-bottom: 2px solid #00ff88 !important;
+		border-right: 2px solid #00ff88 !important; /* Voltou a linha vertical cravada na direita! */
+		border-bottom: none !important; /* Adeus linha horizontal */
 		border-radius: 0 !important;
-		padding: 0 20px 20px 0 !important;
-		text-align: right !important;
-		box-shadow: none !important;
+		box-sizing: border-box !important;
 	}
 
 	.ui-panel {
+		padding: 40px 20px 20px 20px !important; /* Os 40px no topo criam a sobrinha do background */
+		text-align: right !important; /* O texto fica alinhado no canto direito */
+		box-shadow: none !important;
 		transform-origin: bottom !important;
 		animation: hud-pop-up 0.2s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
 	}
 
-	/* IA MODAL ESPECÍFICO (Animar abertura e manter chat colado à direita) */
+	/* IA MODAL (Chat funcional de Lado a Lado) */
 	#ai-modal {
 		transform-origin: bottom !important;
 		transform: scaleY(0) !important;
 		transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s ease !important;
+		padding: 40px 0 0 0 !important; /* Sobrinha pra cima no background da IA */
 	}
 
 		#ai-modal.open {
@@ -1436,7 +1440,11 @@ body.push-right #ai-modal {
 		}
 
 		#ai-modal .ai-screen {
-			margin-left: auto !important;
+			width: 100% !important; /* Tela funcional pegando a tela inteira! */
+			height: 60vh !important; /* Dá bastante espaço para as mensagens */
+			margin: 0 !important;
+			padding: 0 20px 20px 20px !important;
+			box-sizing: border-box !important;
 		}
 
 	/* ARCADE MODAL (Não ganha o Blur 100%, fica quietinho no canto) */

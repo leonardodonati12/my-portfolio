@@ -420,26 +420,35 @@ window.addEventListener('touchstart', (event) => { isTouching = true; if (event.
 window.addEventListener('touchmove', (event) => { if (isTouching && event.touches.length > 0) updateInputPosition(event.touches[0].clientX, event.touches[0].clientY); }, { passive: false });
 window.addEventListener('touchend', () => { isTouching = false; mouse.x = -100; mouse.y = -100; });
 
+// EVENTO DE CLIQUE GLOBAL (Blindado para Mobile e Desktop)
 window.addEventListener('click', (event) => {
     if (!document.body.classList.contains('active')) return;
 
-    // Se o clique foi na UI (pastas, modais, widget), a gente ignora pro 3D
+    // O SEGREDO DO MOBILE: Pega a posição exata na hora que o clique acontece!
+    if (event.clientX !== undefined && event.clientY !== undefined) {
+        updateInputPosition(event.clientX, event.clientY);
+    }
+
+    // Se o clique foi em qualquer UI (menus, modais, pastas), ignoramos o 3D
     if (event.target.closest('.ui-panel') ||
         event.target.closest('.folder-tab') ||
         event.target.closest('#project-modal') ||
         event.target.closest('.close-modal') ||
         event.target.closest('#cyber-widget') ||
         event.target.closest('.audio-toggle') ||
-        event.target.closest('.header-btn')) return;
+        event.target.closest('.header-btn') ||
+        event.target.closest('#mobile-menu-btn') ||
+        event.target.closest('#mobile-dropdown')) return;
 
+    // Dispara o laser virtual pra ver se acertou uma bolinha
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(projectNodes);
 
-    // Se acertou uma bolinha, abre o projeto
     if (intersects.length > 0) {
+        // Acertou a bolinha! Abre o projeto!
         openModal(intersects[0].object.userData.data);
     } else {
-        // SE CLICOU NO VAZIO: Fecha o cartão suavemente!
+        // Errou a bolinha (clicou no vazio espacial). Fecha o projeto se estiver aberto!
         if (modal && modal.classList.contains('open')) {
             modal.classList.remove('open');
             setTimeout(() => { modal.style.display = 'none'; }, 200);
