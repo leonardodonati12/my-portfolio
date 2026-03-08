@@ -1302,10 +1302,14 @@ body.push-right #ai-modal {
 		display: none !important;
 	}
 
-	/* 2. Levanta a tela da IA para fugir da barra de pesquisa do Safari/Chrome */
+	/* 1. Devolvemos o tamanho normal da caixa (desfazendo o erro anterior) */
 	#ai-modal .ai-screen {
-		/* Aumentamos o padding de baixo de 20px para 90px, criando uma margem de segurança gigante */
-		padding: 0 20px 90px 20px !important;
+		padding: 0 20px 20px 20px !important;
+	}
+
+	/* 2. Colocamos o 'calço' diretamente na área de digitar */
+	.chat-input-area {
+		margin-bottom: 90px !important; /* Levanta SÓ o campo de texto acima da barra do Safari/Chrome */
 	}
 
 	/* MOBILE MENU - estado padrão */
