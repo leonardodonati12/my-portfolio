@@ -1220,18 +1220,6 @@ body.blueprint-mode {
 	height: 360px;
 }
 
-@keyframes pop-in {
-	0% {
-		opacity: 0;
-		transform: translateY(20px) scale(0.95);
-	}
-
-	100% {
-		opacity: 1;
-		transform: translateY(0) scale(1);
-	}
-}
-
 /* 🚀 SISTEMA DE FUGA DAS PASTAS (PUSH) PARA ARCADE E AI */
 body.push-bottom #arcade-modal,
 body.push-bottom #ai-modal {
