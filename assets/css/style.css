@@ -1605,26 +1605,33 @@ body.push-right #ai-modal {
 	/* 🛡️ PADRONIZAÇÃO GLOBAL DE FONTES (PC & MOBILE) */
 	/* ========================================== */
 
-	/* Títulos, Botões e Destaques (Usam Space Mono) */
+	/* 1. Títulos, Botões e Destaques (Space Mono para TODO MUNDO) */
 	.intro-name, .about-title, .modal-title, .panel-header,
-	#hero-name, #hero-subtitle, .enter-btn, .folder-tab, .cyber-btn {
+	#hero-name, #hero-subtitle, .enter-btn, .folder-tab, .cyber-btn,
+	.mobile-menu-item, .mob-panel-link {
 		font-family: 'Space Mono', monospace !important;
 	}
 
-	/* Textos da Introdução e Mobile (Usam Courier Prime) */
-	@media (max-width: 1000px) {
-		#scramble-text, #bio-text-container,
-		#phrases-container, .continue-hint {
-			font-family: 'Courier Prime', monospace !important;
-		}
+	/* 2. Textos, Descrições e Frases (Courier Prime para TODO MUNDO) */
+	#scramble-text, #bio-text-container,
+	#phrases-container, .continue-hint,
+	.modal-desc, .modal-tech, .msg, #chat-input {
+		font-family: 'Courier Prime', monospace !important;
+	}
 
-		/* Autodescrição e Frases perfeitamente alinhadas */
+
+	/* ========================================== */
+	/* 🛠️ AJUSTES DE TAMANHO APENAS PARA MOBILE  */
+	/* ========================================== */
+	@media (max-width: 1000px) {
+		/* Autodescrição elástica pro celular */
 		#bio-text-container {
 			font-size: clamp(12px, 3.5vw, 16px) !important;
 			line-height: 1.6 !important;
 			padding: 0 15px !important;
 		}
 
+		/* Frases de efeito sem fatiar palavras no celular */
 		#phrases-container {
 			font-size: clamp(14px, 4vw, 18px) !important;
 			white-space: pre-wrap !important;
