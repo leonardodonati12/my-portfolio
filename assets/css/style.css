@@ -1469,31 +1469,27 @@ body.push-right #ai-modal {
 			transform: scaleY(1) !important;
 		}
 
-	/* 🤖 ALINHAMENTO BLINDADO DO CHAT NO MOBILE */
 	#chat-history {
 		display: flex !important;
 		flex-direction: column !important;
-		gap: 15px !important;
 		width: 100% !important;
+		padding-right: 0 !important; /* Limpa qualquer recuo lateral */
+		box-sizing: border-box !important;
 	}
 
 	.user-msg {
-		/* MÁGICA: margin-left auto empurra a caixa inteira para a direita */
-		margin-left: auto !important;
-		margin-right: 0 !important;
-		text-align: right !important;
-		width: fit-content !important; /* A caixa só ocupa o tamanho do texto */
-		max-width: 85% !important; /* Não deixa o texto bater na outra parede */
+		width: 100% !important; /* Ocupa a largura total do container */
+		text-align: right !important; /* Manda o texto "morrer" na direita */
+		color: #00ff88 !important;
+		padding: 5px 0 !important; /* Espaçamento entre linhas */
 		display: block !important;
 	}
 
 	.ai-msg {
-		/* IA fica cravada na esquerda */
-		margin-right: auto !important;
-		margin-left: 0 !important;
+		width: 100% !important;
 		text-align: left !important;
-		width: fit-content !important;
-		max-width: 85% !important;
+		color: #fff !important;
+		padding: 5px 0 !important;
 		display: block !important;
 	}
 
