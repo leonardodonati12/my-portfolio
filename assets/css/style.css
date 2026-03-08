@@ -829,7 +829,7 @@ body.push-bottom .interaction-hint {
 		display: flex;
 		opacity: 1;
 		transform: scaleY(1); /* Abre puxando pra baixo */
-	}
+	} 
 
 /* Adicionamos uma sombra só nos textos para leitura ficar fácil em cima do 3D */
 .modal-title {
