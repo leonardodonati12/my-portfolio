@@ -1,34 +1,10 @@
-﻿/* ========================================== */
-/* 🛡️ BLINDAGEM TIPOGRÁFICA MESTRE (A SOLUÇÃO)  */
-/* ========================================== */
-/* 1. Definimos a fonte customizada baixando o arquivo.
-   Você PRECISA colocar os arquivos Consolas.woff2 ou Consolas.ttf na pasta assets/fonts/ */
-@font-face {
-	font-family: 'Consolas Custom';
-	/* Volta uma pasta (../), entra em fonts e pega o nome EXATO do arquivo */
-	src: url('../fonts/CONSOLA.TTF') format('truetype');
-	font-weight: normal;
-	font-style: normal;
-}
-
-/* 2. Forçamos o uso dessa fonte em TUDO no mobile */
-@media (max-width: 1000px) {
-	/* Lista de todos os elementos que têm texto na introdução */
-	.intro-name, #scramble-text, .enter-btn,
-	.about-title, #bio-text-container,
-	#phrases-container, .continue-hint,
-	.hero, #hero-subtitle {
-		font-family: 'Consolas Custom', monospace !important;
-	}
-}
-
-/* --- GENERAL CONFIG --- */
+﻿/* --- GENERAL CONFIG --- */
 body {
 	margin: 0;
 	overflow: hidden;
 	background-color: #050505;
 	color: #fff;
-	font-family: 'Consolas', 'Courier New', monospace;
+	font-family: 'Courier New', monospace;
 	cursor: none !important; /* Esconde cursor padrão (JS move o verde) */
 	user-select: none;
 }
@@ -1626,31 +1602,34 @@ body.push-right #ai-modal {
 	}
 
 	/* ========================================== */
-	/* 🛠️ AJUSTES DA INTRODUÇÃO E FONTES MOBILE  */
+	/* 🛡️ PADRONIZAÇÃO GLOBAL DE FONTES (PC & MOBILE) */
 	/* ========================================== */
 
+	/* Títulos, Botões e Destaques (Usam Space Mono) */
+	.intro-name, .about-title, .modal-title, .panel-header,
+	#hero-name, #hero-subtitle, .enter-btn, .folder-tab, .cyber-btn {
+		font-family: 'Space Mono', monospace !important;
+	}
+
+	/* Textos da Introdução e Mobile (Usam Courier Prime) */
 	@media (max-width: 1000px) {
-		/* 1. FORÇA A FONTE (Leia a dica abaixo!) */
-		.intro-name, #scramble-text, .enter-btn,
-		.about-title, #bio-text-container,
-		#phrases-container, .continue-hint,
-		.hero, #hero-subtitle {
-			font-family: 'VT323', monospace !important;
+		#scramble-text, #bio-text-container,
+		#phrases-container, .continue-hint {
+			font-family: 'Courier Prime', monospace !important;
 		}
 
-		/* 2. Autodescrição mais bem ajustada */
+		/* Autodescrição e Frases perfeitamente alinhadas */
 		#bio-text-container {
 			font-size: clamp(12px, 3.5vw, 16px) !important;
 			line-height: 1.6 !important;
 			padding: 0 15px !important;
 		}
 
-		/* 4. Frases de efeito (Chega de quebras feias nas palavras) */
 		#phrases-container {
-			font-size: clamp(14px, 4vw, 18px) !important; /* Reduzi levemente pra caber frases longas */
+			font-size: clamp(14px, 4vw, 18px) !important;
 			white-space: pre-wrap !important;
-			word-break: normal !important; /* MÁGICA: Impede que a palavra seja cortada no meio! */
-			width: 95% !important; /* Dá o máximo de espaço na largura pro texto respirar */
+			word-break: normal !important;
+			width: 95% !important;
 			margin: 0 auto !important;
 			min-height: 80px !important;
 		}
