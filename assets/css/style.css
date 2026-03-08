@@ -1341,7 +1341,7 @@ body.push-right #ai-modal {
 	/* 3 e 4 - ALINHAR O PROJETO COM O HERO, SUBIR E REDUZIR FONTES */
 	#project-modal {
 		left: 15px !important; /* Exatamente o mesmo 'left' do Hero */
-		top: 90px !important; /* Subiu! Fica logo abaixo do Hero */
+		top: 120px !important; /* Subiu! Fica logo abaixo do Hero */
 		width: 85% !important;
 		transform: scaleY(0) !important; /* Sobrescreve a centralização anterior */
 		padding-left: 15px !important;
@@ -1454,4 +1454,17 @@ body.push-right #ai-modal {
 	body[class*="push-"] #main-wrapper {
 		transform: none !important;
 	}
+
+	#ai-modal, #arcade-modal {
+		bottom: 20px !important; /* Bem mais baixo */
+		left: 50% !important;
+		right: auto !important;
+		transform: translateX(-50%) !important; /* Centraliza perfeitamente */
+	}
+
+		/* Remove a animação original no mobile para não bugar a centralização */
+		#ai-modal.open, #arcade-modal.open {
+			animation: none !important;
+		}
+
 }

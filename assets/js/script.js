@@ -622,42 +622,77 @@ adjustCameraZoom();
 window.addEventListener('resize', adjustCameraZoom);
 
 
-// 2. Lógica do Menu Dropdown
+// 2. Lógica do Menu Dropdown (Sumiço do botão e Click Outside)
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
 const mobileDropdown = document.getElementById('mobile-dropdown');
 
+// Função auxiliar rápida para fechar o menu e voltar o botão ☰
+function closeMobileMenu() {
+    if (mobileDropdown) mobileDropdown.style.display = 'none';
+    if (mobileMenuBtn) mobileMenuBtn.style.display = 'block';
+}
+
 if (mobileMenuBtn && mobileDropdown) {
     mobileMenuBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // Evita que o clique vaze pro 3D
-        const isClosed = mobileDropdown.style.display === 'none' || mobileDropdown.style.display === '';
-        mobileDropdown.style.display = isClosed ? 'flex' : 'none';
-        // AJUSTE 2: Removida a linha que transformava o menu em 'X'. Ele sempre será '☰'
+        e.stopPropagation();
+        mobileDropdown.style.display = 'flex'; // Mostra o menu
+        mobileMenuBtn.style.display = 'none';  // ESCONDE O BOTÃO ☰
     });
 
-    // AJUSTE 2: Fecha o menu se clicar em qualquer outro lugar da tela
+    // Fechar menu clicando em qualquer outro lugar da tela
     window.addEventListener('click', (e) => {
-        if (e.target !== mobileMenuBtn && !mobileDropdown.contains(e.target)) {
-            mobileDropdown.style.display = 'none';
+        if (mobileDropdown.style.display === 'flex' && !mobileDropdown.contains(e.target)) {
+            closeMobileMenu();
         }
     });
 }
 
-// 3. Ligar os botões do Dropdown na IA, Arcade E AGORA NOS PAINÉIS!
+// 3. Ligar os botões do Dropdown na IA, Arcade e ÁUDIO
 document.getElementById('mob-ai')?.addEventListener('click', (e) => {
     e.preventDefault();
+    closeMobileMenu(); // Escolheu a opção, o menu recolhe
     document.getElementById('ai-modal').classList.add('open');
 });
+
 document.getElementById('mob-game')?.addEventListener('click', (e) => {
     e.preventDefault();
+    closeMobileMenu(); // Escolheu a opção, o menu recolhe
     document.getElementById('arcade-modal').classList.add('open');
 });
 
-// A MÁGICA: Conectar os botões do menu aos seus painéis originais
+// FAZENDO O BOTÃO DE SOM FUNCIONAR
+document.getElementById('mob-audio')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    closeMobileMenu(); // Recolhe o menu
+    if (typeof toggleAudio === 'function') toggleAudio(); // Chama a sua função original de áudio!
+
+    // Atualiza o texto do botão para o usuário saber o status
+    setTimeout(() => {
+        e.target.innerHTML = isAudioPlaying ? 'Sound off' : 'Sound on';
+    }, 50);
+});
+
 document.querySelectorAll('.mob-panel-link').forEach(link => {
     link.addEventListener('click', (e) => {
         e.preventDefault();
-        mobileDropdown.style.display = 'none'; // Fecha o menu ao clicar na opção
+        closeMobileMenu(); // Escolheu o painel, o menu recolhe
         const targetId = link.getAttribute('data-target');
-        openPanel(targetId); // Usa a sua própria função do código para abrir o HUD!
+        if (typeof openPanel === 'function') openPanel(targetId);
     });
+});
+
+// 4. FECHAR IA E GAME CLICANDO FORA DELES
+window.addEventListener('click', (e) => {
+    const aiModal = document.getElementById('ai-modal');
+    const gameModal = document.getElementById('arcade-modal');
+
+    // Se o modal da IA estiver aberto e o clique não for nele
+    if (aiModal && aiModal.classList.contains('open') && !aiModal.contains(e.target) && e.target.id !== 'mob-ai') {
+        aiModal.classList.remove('open');
+    }
+
+    // Se o modal do Jogo estiver aberto e o clique não for nele
+    if (gameModal && gameModal.classList.contains('open') && !gameModal.contains(e.target) && e.target.id !== 'mob-game') {
+        gameModal.classList.remove('open');
+    }
 });
