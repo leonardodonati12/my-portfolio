@@ -222,6 +222,13 @@
         </p>
     </div>
 
+    <div id="gallery-menu-btn">☰</div>
+    <div id="gallery-dropdown">
+        <a href="../index.html" class="mobile-menu-item">Home</a>
+        <a href="../portfolio/portfolio.html" class="mobile-menu-item">Projects</a>
+        <a href="javascript:void(0)" onclick="toggleSection('about')" id="tab-about" class="mobile-menu-item">About</a>
+    </div>
+
     <script src="../assets/js/cursor.js"></script>
     <script>
         function toggleSection(section) {
@@ -254,6 +261,44 @@
                 toggleSection('about');
             }
         }
+        document.addEventListener("DOMContentLoaded", () => {
+            const iosFix = function () { };
+            document.documentElement.addEventListener('click', iosFix);
+            document.body.addEventListener('click', iosFix);
+
+            document.addEventListener('click', (event) => {
+                const t = event.target;
+                if (!t) return;
+
+                // Agora o JS procura o menu da galeria!
+                const dropdown = document.getElementById('gallery-dropdown');
+                const btn = document.getElementById('gallery-menu-btn');
+
+                if (!dropdown || !btn) return;
+
+                if (t.closest('#gallery-menu-btn')) {
+                    event.stopPropagation();
+                    dropdown.style.display = 'flex';
+                    btn.style.display = 'none';
+                    return;
+                }
+
+                // Quebra de tela ajustada para 850px!
+                if (window.innerWidth <= 850 && dropdown.style.display === 'flex') {
+
+                    if (t.closest('.mobile-menu-item')) {
+                        dropdown.style.display = 'none';
+                        btn.style.display = 'block';
+                        return;
+                    }
+
+                    if (!t.closest('#gallery-dropdown')) {
+                        dropdown.style.display = 'none';
+                        btn.style.display = 'block';
+                    }
+                }
+            }, true);
+        });
     </script>
 </body>
 </html>

@@ -247,6 +247,14 @@
         </div>
     </div>
 
+    <div id="gallery-menu-btn">☰</div>
+    <div id="gallery-dropdown">
+        <a href="../index.html" class="mobile-menu-item">Home</a>
+        <a href="../solutions/solutions.html" class="mobile-menu-item">Solutions</a>
+        <a href="javascript:void(0)" onclick="toggleTab('privacy')" id="tab-privacy" class="mobile-menu-item">Privacy Policy</a>
+        <a href="javascript:void(0)" onclick="toggleTab('support')" id="tab-support" class="mobile-menu-item">Support</a>
+    </div>
+
     <script src="../assets/js/cursor.js"></script>
     <script>
         function toggleTab(tabId) {
@@ -261,7 +269,7 @@
             document.getElementById('tab-support').classList.remove('active');
 
             // Mostra a seção escolhida e colore o link no menu
-            if(tabId === 'plugins') {
+            if (tabId === 'plugins') {
                 document.getElementById('plugins-section').style.display = 'grid';
                 document.getElementById('tab-plugins').classList.add('active');
             } else {
@@ -278,7 +286,44 @@
                 toggleTab(tab); // Se tiver ?tab=privacy ou support na URL, ele já abre a aba certa!
             }
         }
+        document.addEventListener("DOMContentLoaded", () => {
+            const iosFix = function () { };
+            document.documentElement.addEventListener('click', iosFix);
+            document.body.addEventListener('click', iosFix);
 
+            document.addEventListener('click', (event) => {
+                const t = event.target;
+                if (!t) return;
+
+                // Agora o JS procura o menu da galeria!
+                const dropdown = document.getElementById('gallery-dropdown');
+                const btn = document.getElementById('gallery-menu-btn');
+
+                if (!dropdown || !btn) return;
+
+                if (t.closest('#gallery-menu-btn')) {
+                    event.stopPropagation();
+                    dropdown.style.display = 'flex';
+                    btn.style.display = 'none';
+                    return;
+                }
+
+                // Quebra de tela ajustada para 850px!
+                if (window.innerWidth <= 850 && dropdown.style.display === 'flex') {
+
+                    if (t.closest('.mobile-menu-item')) {
+                        dropdown.style.display = 'none';
+                        btn.style.display = 'block';
+                        return;
+                    }
+
+                    if (!t.closest('#gallery-dropdown')) {
+                        dropdown.style.display = 'none';
+                        btn.style.display = 'block';
+                    }
+                }
+            }, true);
+        });
     </script>
 </body>
 </html>

@@ -1752,3 +1752,40 @@ body.push-right #ai-modal {
 				background: #00ff88 !important;
 			}
 }
+
+/* ========================================== */
+/* 🍔 MENU DAS PÁGINAS INTERNAS (QUEBRA EM 850px) */
+/* ========================================== */
+
+/* 1. Esconde por padrão no Desktop */
+#gallery-menu-btn, #gallery-dropdown {
+	display: none;
+}
+
+/* 2. Mostra o botão ☰ apenas quando a tela for 850px ou menor */
+@media (max-width: 850px) {
+	#gallery-menu-btn {
+		display: block;
+		position: fixed;
+		top: 20px;
+		right: 20px;
+		z-index: 9999;
+		font-size: 24px;
+		color: #fff;
+		cursor: pointer;
+	}
+
+	/* Estilo da caixinha do menu (copiado da Home, mas independente) */
+	#gallery-dropdown {
+		position: fixed;
+		top: 60px;
+		right: 20px;
+		background: rgba(10, 10, 10, 0.95);
+		border: 1px solid #333;
+		padding: 15px;
+		display: none; /* Continua escondido até o clique */
+		flex-direction: column;
+		gap: 15px;
+		z-index: 9998;
+	}
+}
