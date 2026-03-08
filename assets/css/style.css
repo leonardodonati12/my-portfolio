@@ -1245,6 +1245,12 @@ body.push-right #ai-modal {
 		cursor: auto !important;
 	}
 
+	/* MOBILE MENU - estado padrão */
+	#mobile-menu-btn,
+	#mobile-dropdown {
+		display: none;
+	}
+
 	/* MENU MENOR E DROP DE CIMA PRA BAIXO */
 	#mobile-menu-btn {
 		display: block;
