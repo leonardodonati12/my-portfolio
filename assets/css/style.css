@@ -1764,47 +1764,53 @@ body.push-right #ai-modal {
 
 /* 2. Mostra o botão ☰ apenas quando a tela for 850px ou menor */
 @media (max-width: 850px) {
-	/* MÁGICA 1: Esconde o menu horizontal do desktop para não ficar duplicado! */
+	/* Esconde o menu horizontal do desktop */
 	.header .nav {
 		display: none !important;
 	}
 
-	/* O Botão ☰ */
+	/* 1. ÍCONE MENOR E ALINHADO CENTRALIZADO */
 	#gallery-menu-btn {
 		display: block;
 		position: fixed;
-		top: 35px; /* Alinhado com o seu Header */
-		right: 30px;
+		top: 30px; /* Alinhado perfeitamente com o topo do seu nome (h1) */
+		right: 20px; /* Mesma margem da tela */
 		z-index: 9999;
-		font-size: 30px; /* Um pouco maior pra ficar fácil de clicar */
-		color: #000 !important; /* MÁGICA 2: PRETO! Agora ele aparece no fundo branco! */
+		font-size: 24px; /* Diminuído de 30px para 24px (tamanho do seu h1) */
+		color: #000 !important;
 		cursor: pointer;
+		line-height: 1;
 	}
 
-	/* Estilo da caixinha do menu (Escura pra dar contraste) */
+	/* 2 e 4. MENU TRANSPARENTE E ALINHADO NO TOPO DO ÍCONE */
 	#gallery-dropdown {
 		position: fixed;
-		top: 80px;
+		top: 30px; /* 4. Exata mesma altura do ícone! */
 		right: 20px;
-		background: rgba(10, 10, 10, 0.95);
-		border: 1px solid #333;
-		padding: 20px;
-		display: none; /* Continua escondido até o clique */
+		background: transparent; /* 2. Fundo removido! */
+		border: none; /* Borda removida */
+		padding: 0; /* Zera o padding para o primeiro link colar no teto */
+		display: none;
 		flex-direction: column;
-		gap: 20px;
+		align-items: flex-end; /* Joga os textos todos para a direita */
+		gap: 15px; /* Espaço entre os links */
 		z-index: 9998;
 	}
 
-		/* Estilo dos links dentro da caixinha escura */
+		/* 3. LINKS DO MENU COM FONTE PRETA */
 		#gallery-dropdown a {
-			color: #eee;
-			font-size: 1rem;
+			color: #000 !important; /* 3. Fonte preta no fundo branco */
+			font-size: 1.1rem;
 			text-decoration: none;
 			text-transform: uppercase;
 			letter-spacing: 2px;
+			text-shadow: none; /* Remove sombras antigas */
+			line-height: 1;
+			margin: 0;
 		}
 
+			/* Mantém o verde quando você toca neles */
 			#gallery-dropdown a:hover, #gallery-dropdown a.active {
-				color: #00ff88;
+				color: #00ff88 !important;
 			}
 }
