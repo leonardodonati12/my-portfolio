@@ -80,7 +80,7 @@ window.startGame = function () {
 // ==========================================
 function initSpace() {
     let gameState = 'start';
-    let player = { x: 180, y: 440, width: 40, height: 20, speed: 5 };
+    let player = { x: 180, y: 440, width: 40, height: 20, speed: 2.5 }; 
     let bullets = [];
     let enemies = [];
     let lastShot = 0;
