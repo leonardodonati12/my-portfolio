@@ -1295,104 +1295,163 @@ body.push-right #ai-modal {
 		}
 
 /* 3. O GRANDE CORTE: 1000px */
+/* 3. O GRANDE CORTE: 1000px */
 @media (max-width: 1000px) {
-	/* Sumir itens desnecessários */
-	#cyber-widget, /* Contador e Botões AI/Game */
-	#copyright, /* Direitos */
-	#resume-btn, /* Botões Header */
-	#portfolio-btn,
-	#solutions-btn,
-	.audio-toggle {
+	/* Sumir itens do desktop (incluindo as antigas SIDETABS #folder-stack) */
+	#cyber-widget, #copyright, #resume-btn, #portfolio-btn, #solutions-btn, .audio-toggle, #folder-stack {
 		display: none !important;
 	}
 
-	/* Mostrar Menu Hambúrguer */
+	/* 1 - MENU MENOR, BRANCO E MENOS ESPAÇADO */
 	#mobile-menu-btn {
 		display: block;
+		color: #fff;
+		font-size: 1.4rem;
+		right: 20px;
+		top: 20px;
+		text-shadow: none;
 	}
 
-	/* Sidetabs (Pastas) descendo para o rodapé */
-	#folder-stack {
-		top: auto !important;
-		bottom: 0 !important;
-		left: 0 !important;
-		width: 100% !important;
-		height: 45px !important;
-		flex-direction: row !important;
-		background: rgba(0, 0, 0, 0.9) !important;
-		border-top: 1px solid #333 !important;
-		margin: 0 !important;
-		padding: 0 !important;
-		transform: none !important;
+	#mobile-dropdown {
+		top: 55px;
+		right: 20px;
+		gap: 12px; /* Menos espaçado */
 	}
 
-	.folder-tab {
-		writing-mode: horizontal-tb !important;
-		transform: none !important;
-		width: 100% !important;
-		margin: 0 !important;
-		border-radius: 10px 10px 0 0 !important;
-		padding: 10px 0 !important;
-		flex: 1 !important;
-		text-align: center !important;
-		border-left: none !important;
-		border-right: 1px solid rgba(255,255,255,0.05);
-		font-size: 0.6rem !important; /* Reduzido */
-	}
-
-		.folder-tab:hover {
-			transform: translateY(-3px) !important;
+		#mobile-dropdown a {
+			font-size: 0.8rem; /* Fonte menor */
+			color: #fff; /* Texto Branco */
 		}
 
-	/* Painéis UI (Skills, Timeline, etc) abrindo a partir do rodapé */
-	.ui-panel {
-		width: 100% !important;
-		height: 65vh !important;
-		bottom: 45px !important; /* Cola em cima das abas */
-		top: auto !important;
-		left: 0 !important;
-		border-radius: 20px 20px 0 0 !important;
-		border: none !important;
-		border-top: 1px solid #00ff88 !important;
+	/* 3 - MOVER HERO PRA ESQUERDA */
+	.hero {
+		left: 15px !important;
+		top: 20px !important;
 	}
 
-	/* Impede a tela de "pular" no mobile ao abrir pastas */
-	body[class*="push-"] #main-wrapper {
-		transform: none !important;
-	}
+		.hero h1, #hero-name {
+			font-size: 2rem !important;
+		}
 
-	body[class*="push-"] #project-modal {
-		transform: none !important;
-	}
+		.hero .subtitle {
+			font-size: 0.7rem !important;
+			margin-left: 2px !important;
+		}
 
-	/* O Hero já fica parado no lugar dele (left: 70px), mas ajustamos a fonte para caber */
-	.hero h1, #hero-name {
-		font-size: 2.2rem !important;
-	}
-
-	.hero .subtitle {
-		font-size: 0.75rem !important;
-	}
-
-	/* Cartão do Projeto centralizado */
+	/* 3 e 4 - ALINHAR O PROJETO COM O HERO, SUBIR E REDUZIR FONTES */
 	#project-modal {
-		left: 50% !important;
-		transform: translateX(-50%) scaleY(0) !important;
-		width: 80% !important;
+		left: 15px !important; /* Exatamente o mesmo 'left' do Hero */
+		top: 90px !important; /* Subiu! Fica logo abaixo do Hero */
+		width: 85% !important;
+		transform: scaleY(0) !important; /* Sobrescreve a centralização anterior */
+		padding-left: 15px !important;
 	}
 
 		#project-modal.open {
-			transform: translateX(-50%) scaleY(1) !important;
+			transform: scaleY(1) !important;
 		}
-}
 
-/* TOUCH FIX: Volta o cursor padrão só pra celular */
-@media (hover: none) and (pointer: coarse) {
-	.cursor-dot, .cursor-outline {
+		/* Redução de fontes do Cartão de Projeto */
+		#project-modal .modal-title {
+			font-size: 0.95rem !important;
+		}
+
+		#project-modal .modal-tech {
+			font-size: 0.6rem !important;
+			margin-bottom: 8px !important;
+		}
+
+		#project-modal .modal-desc {
+			font-size: 0.75rem !important;
+			line-height: 1.3 !important;
+		}
+
+		#project-modal .modal-link-btn {
+			font-size: 0.6rem !important;
+			padding: 5px 10px !important;
+		}
+
+	/* 5 - PAINÉIS (SIDETABS) NO CANTO INFERIOR DIREITO, MINIMALISTAS E SEM FUNDO */
+	.ui-panel {
+		width: 260px !important;
+		height: auto !important;
+		max-height: 60vh !important;
+		bottom: 20px !important; /* Canto inferior */
+		right: 20px !important; /* Canto direito */
+		top: auto !important;
+		left: auto !important;
+		background: transparent !important; /* Totalmente sem fundo */
+		backdrop-filter: none !important;
+		border: none !important;
+		border-right: 2px solid #00ff88 !important; /* Linha de leitura na direita */
+		border-radius: 0 !important;
+		box-shadow: none !important;
+		text-align: right !important; /* Texto alinhado à direita */
+		padding: 0 15px 0 0 !important;
+	}
+
+	/* Esconde o cabeçalho arrastável e ajusta o padding pra não roubar espaço */
+	.panel-header {
 		display: none !important;
 	}
 
-	* {
-		cursor: auto !important;
+	.panel-content {
+		padding: 0 !important;
+		overflow-y: auto;
+		overflow-x: hidden;
+	}
+
+	/* Invertendo a Timeline, Barras e Textos para lerem da direita pra esquerda */
+	.skill-name {
+		justify-content: flex-end !important;
+		gap: 10px;
+		font-size: 0.65rem !important;
+	}
+
+	.retro-bar {
+		justify-content: flex-end;
+	}
+
+	.timeline-item {
+		border-left: none !important;
+		border-right: 1px solid #333 !important;
+		padding-left: 0 !important;
+		padding-right: 15px !important;
+		text-align: right;
+	}
+
+		.timeline-item::before {
+			left: auto !important;
+			right: -3px !important;
+		}
+
+	.time-date, .time-role, .time-place, .time-desc {
+		text-align: right;
+		font-size: 0.7rem !important;
+	}
+
+	.contact-item {
+		border: none !important;
+		border-bottom: 1px solid #222 !important;
+		border-radius: 0 !important;
+		text-align: right;
+		padding: 5px 0 !important;
+	}
+
+	.contact-label {
+		font-size: 0.6rem !important;
+	}
+
+	.contact-val {
+		font-size: 0.75rem !important;
+	}
+
+	.extra-item {
+		text-align: right;
+		border-bottom: 1px solid #222 !important;
+	}
+
+	body[class*="push-"] #main-wrapper {
+		transform: none !important;
 	}
 }

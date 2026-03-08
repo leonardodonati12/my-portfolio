@@ -631,19 +631,18 @@ if (mobileMenuBtn && mobileDropdown) {
         e.stopPropagation(); // Evita que o clique vaze pro 3D
         const isClosed = mobileDropdown.style.display === 'none' || mobileDropdown.style.display === '';
         mobileDropdown.style.display = isClosed ? 'flex' : 'none';
-        mobileMenuBtn.innerHTML = isClosed ? '×' : '☰';
+        // AJUSTE 2: Removida a linha que transformava o menu em 'X'. Ele sempre será '☰'
     });
 
-    // Fecha o menu se clicar em qualquer outro lugar da tela
+    // AJUSTE 2: Fecha o menu se clicar em qualquer outro lugar da tela
     window.addEventListener('click', (e) => {
         if (e.target !== mobileMenuBtn && !mobileDropdown.contains(e.target)) {
             mobileDropdown.style.display = 'none';
-            mobileMenuBtn.innerHTML = '☰';
         }
     });
 }
 
-// 3. Ligar os botões do Dropdown na IA e no Arcade
+// 3. Ligar os botões do Dropdown na IA, Arcade E AGORA NOS PAINÉIS!
 document.getElementById('mob-ai')?.addEventListener('click', (e) => {
     e.preventDefault();
     document.getElementById('ai-modal').classList.add('open');
@@ -651,4 +650,14 @@ document.getElementById('mob-ai')?.addEventListener('click', (e) => {
 document.getElementById('mob-game')?.addEventListener('click', (e) => {
     e.preventDefault();
     document.getElementById('arcade-modal').classList.add('open');
+});
+
+// A MÁGICA: Conectar os botões do menu aos seus painéis originais
+document.querySelectorAll('.mob-panel-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        mobileDropdown.style.display = 'none'; // Fecha o menu ao clicar na opção
+        const targetId = link.getAttribute('data-target');
+        openPanel(targetId); // Usa a sua própria função do código para abrir o HUD!
+    });
 });
