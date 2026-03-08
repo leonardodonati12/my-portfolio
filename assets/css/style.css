@@ -1550,4 +1550,33 @@ body.push-right #ai-modal {
 		}
 	}
 
+	/* ========================================== */
+	/* 📸 FOTO SECRETA: RESPONSIVIDADE MOBILE     */
+	/* ========================================== */
+
+	@media (max-width: 1000px) {
+		/* TABLETS (Telas entre 651px e 1000px) - Foto ao lado do Hero */
+		#secret-photo-card {
+			transform: none !important; /* Remove o 3D */
+			right: -160px !important; /* Posiciona perfeitamente ao lado */
+		}
+	}
+
+	@media (max-width: 650px) {
+		/* CELULARES (Telas até 650px) - Foto vai para baixo do subtítulo */
+		#secret-photo-card {
+			transform: none !important; /* Remove o 3D */
+			right: auto !important;
+			left: 0 !important;
+			top: 110px !important; /* Exata mesma altura do cartão do Projeto! */
+			width: 130px !important;
+			height: 170px !important;
+			box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important;
+		}
+
+		/* Esconde a linha branca no celular para ficar mais limpo */
+		#secret-photo-line {
+			display: none !important;
+		}
+	}
 

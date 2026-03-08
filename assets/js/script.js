@@ -446,13 +446,14 @@ window.addEventListener('click', (event) => {
 
     if (intersects.length > 0) {
         // Acertou a bolinha! Abre o projeto!
+
+        // [NOVO] MÚTUA EXCLUSÃO: Esconde a foto secreta imediatamente
+        const secretCard = document.getElementById('secret-photo-card');
+        const secretSvg = document.getElementById('secret-photo-line');
+        if (secretCard) secretCard.style.opacity = '0';
+        if (secretSvg) secretSvg.style.opacity = '0';
+
         openModal(intersects[0].object.userData.data);
-    } else {
-        // Errou a bolinha (clicou no vazio espacial). Fecha o projeto se estiver aberto!
-        if (modal && modal.classList.contains('open')) {
-            modal.classList.remove('open');
-            setTimeout(() => { modal.style.display = 'none'; }, 200);
-        }
     }
 });
 

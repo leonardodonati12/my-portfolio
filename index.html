@@ -245,37 +245,51 @@
                     hideSecretPhoto();
                 });
 
-                // Evento de Clique (Deixa visível por 5 segundos)
-                heroName.addEventListener('click', () => {
+                // [NOVO] Evento de Clique (Mostra foto, esconde projeto e fecha em 5s)
+                heroName.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Evita que o clique vaze e feche a foto imediatamente
                     showSecretPhoto();
+
+                    // MÚTUA EXCLUSÃO: Fecha o modal de projeto se estiver aberto
+                    const projModal = document.getElementById('project-modal');
+                    if (projModal && projModal.classList.contains('open')) {
+                        projModal.classList.remove('open');
+                    }
+
                     clearTimeout(forceVisibleTimer);
                     forceVisibleTimer = setTimeout(() => {
                         forceVisibleTimer = null;
-                        if (!isHoveringName) hideSecretPhoto();
+                        if (!isHoveringName) hideSecretPhoto(); // Fecha após 5s
                     }, 5000);
                 });
             }
 
+            // [NOVO] Fechar a foto se o usuário clicar em qualquer outro lugar
+            window.addEventListener('click', (e) => {
+                if (isPhotoVisible && heroName && !heroName.contains(e.target) && !secretCard.contains(e.target)) {
+                    hideSecretPhoto();
+                }
+            });
+
             // [ATUALIZADO] Inclinação 3D discreta e travada na foto
             const handle3DTilt = (e) => {
+                // Desliga o efeito 3D em telas menores que 1000px
+                if (window.innerWidth <= 1000) {
+                    if (secretCard) secretCard.style.transform = 'none';
+                    return;
+                }
+
                 if (!isPhotoVisible || !secretCard) return;
 
                 const cardRect = secretCard.getBoundingClientRect();
                 const cardCenterX = cardRect.left + (cardRect.width / 2);
                 const cardCenterY = cardRect.top + (cardRect.height / 2);
-
-                // Força da rotação (maior o valor, mais suave a inclinação)
                 const rotateForce = 15;
-
-                // Calcula a distância do mouse para o centro do cartão
                 const mouseXRelative = e.clientX - cardCenterX;
                 const mouseYRelative = e.clientY - cardCenterY;
-
-                // Calcula a rotação nos eixos X e Y
                 const rotateX = (mouseYRelative / cardRect.height) * -rotateForce;
                 const rotateY = (mouseXRelative / cardRect.width) * rotateForce;
 
-                // Aplica a transformação 3D travada no lugar (perspective() é a chave)
                 secretCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
             };
 
