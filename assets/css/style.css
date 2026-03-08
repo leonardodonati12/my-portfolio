@@ -806,7 +806,7 @@ body.push-bottom .interaction-hint {
 /* ========================================== */
 #project-modal {
 	position: fixed;
-	top: 160px; /* Cola ele perfeitamente abaixo do Hero Subtitle */
+	top: 200px; /* Cola ele perfeitamente abaixo do Hero Subtitle */
 	left: 70px; /* Alinhado à esquerda com os títulos */
 	width: 300px;
 	background: transparent; /* FUNDO TOTALMENTE REMOVIDO */
