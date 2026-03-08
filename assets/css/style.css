@@ -4,7 +4,7 @@ body {
 	overflow: hidden;
 	background-color: #050505;
 	color: #fff;
-	font-family: 'Space Mono', monospace;
+	font-family: Consolas, monospace;
 	cursor: none !important; /* Esconde cursor padrão (JS move o verde) */
 	user-select: none;
 }
