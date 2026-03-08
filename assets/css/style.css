@@ -1471,7 +1471,6 @@ body.push-right #ai-modal {
 		display: flex !important;
 		flex-direction: column !important;
 		width: 100% !important;
-
 		padding-top: 25px !important;
 		padding-right: 5px !important;
 	}
@@ -1601,6 +1600,29 @@ body.push-right #ai-modal {
 	#chat-input {
 		font-size: 16px !important; /* Tem que ser 16px pro iPhone não dar zoom! */
 	}
+
+	/* ========================================== */
+	/* 🛠️ AJUSTES DA INTRODUÇÃO E FONTES MOBILE  */
+	/* ========================================== */
+
+	/* 1. Força a sua fonte customizada em TUDO na introdução */
+	.hero, #hero-subtitle, .seu-container-de-frases, .sua-autodescricao {
+		font-family: inherit !important;
+	}
+
+	/* 2. Autodescrição com Texto Adaptativo (Borracha) */
+	.sua-autodescricao {
+		font-size: clamp(12px, 3vw, 18px) !important;
+		line-height: 1.6 !important;
+		padding: 0 15px !important;
+	}
+
+	/* 4. Anti-Glitch para a digitação de frases */
+	.seu-container-de-frases {
+		white-space: pre-wrap !important;
+		word-break: break-word !important;
+		min-height: 80px !important;
+	}
 }
 
 	/* ========================================== */
@@ -1693,4 +1715,19 @@ body.push-right #ai-modal {
 			#chat-history::-webkit-scrollbar-thumb:hover {
 				background: #00ff88 !important;
 			}
+}
+
+@media (max-width: 600px) {
+	/* 3. Troca o texto de continuar apenas em telas minúsculas */
+	.sua-classe-do-click-anywhere {
+		font-size: 0 !important; /* Esconde o texto longo original */
+	}
+
+		.sua-classe-do-click-anywhere::after {
+			content: "[ click anywhere ]" !important; /* Injeta o texto curto */
+			font-size: 14px !important; /* Devolve o tamanho legível */
+			display: block !important;
+			text-align: center !important;
+			letter-spacing: 2px !important; /* Mantém o estilo cyberpunk */
+		}
 }
