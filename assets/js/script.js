@@ -694,35 +694,89 @@ document.querySelectorAll('.mob-panel-link').forEach(link => {
 });
 
 // 4. FECHAR IA, GAME E ABAS (PAINÉIS) CLICANDO FORA DELES
-window.addEventListener('click', (e) => {
-    const aiModal = document.getElementById('ai-modal');
-    const gameModal = document.getElementById('arcade-modal');
+window.closeAllMobileUI = function (keepOpen) {
+    if (window.innerWidth > 1000) return; // Só age no celular/tablet
 
-    // Fechar IA (Ignora o clique se for no botão mobile ou no botão desktop)
-    if (aiModal && aiModal.classList.contains('open') && !aiModal.contains(e.target) && !e.target.closest('#mob-ai') && !e.target.closest('#btn-cyber-ia')) {
-        aiModal.classList.remove('open');
+    const els = {
+        menu: document.getElementById('mobile-dropdown'),
+        menuBtn: document.getElementById('mobile-menu-btn'),
+        project: document.getElementById('project-modal'),
+        photo: document.getElementById('secret-photo-card'),
+        ai: document.getElementById('ai-modal'),
+        arcade: document.getElementById('arcade-modal')
+    };
+
+    // Fecha o Menu
+    if (keepOpen !== 'menu' && els.menu) {
+        els.menu.style.display = 'none';
+        if (els.menuBtn) els.menuBtn.style.display = 'block'; // Volta o botão ☰
+    }
+    // Fecha o Projeto
+    if (keepOpen !== 'project' && els.project) els.project.classList.remove('open');
+    // Fecha a Foto Secreta
+    if (keepOpen !== 'photo' && els.photo) els.photo.style.opacity = '0';
+    // Fecha IA e Game
+    if (keepOpen !== 'ai' && els.ai) els.ai.classList.remove('open');
+    if (keepOpen !== 'arcade' && els.arcade) els.arcade.classList.remove('open');
+
+    // Fecha todos os Painéis (Skills, Timeline, etc)
+    if (keepOpen !== 'panel') {
+        document.querySelectorAll('.ui-panel').forEach(p => p.style.display = 'none');
+    }
+};
+
+// Substitua o seu evento 'window.addEventListener("click"...)' por este:
+window.addEventListener('click', (event) => {
+    if (!document.body.classList.contains('active')) return;
+
+    // Garante precisão do toque no 3D
+    if (event.clientX !== undefined && event.clientY !== undefined) {
+        if (typeof updateInputPosition === 'function') updateInputPosition(event.clientX, event.clientY);
     }
 
-    // Fechar Game (Ignora o clique se for no botão mobile ou no botão desktop)
-    if (gameModal && gameModal.classList.contains('open') && !gameModal.contains(e.target) && !e.target.closest('#mob-game') && !e.target.closest('#btn-cyber-game')) {
-        gameModal.classList.remove('open');
+    // --- SISTEMA MOBILE: Fecha o que não está sendo clicado ---
+    if (window.innerWidth <= 1000) {
+        const t = event.target;
+
+        // Descobre o que o usuário acabou de abrir
+        if (t.closest('#mobile-menu-btn')) closeAllMobileUI('menu');
+        else if (t.closest('.mob-panel-link')) closeAllMobileUI('panel');
+        else if (t.closest('#hero-name')) closeAllMobileUI('photo');
+        else if (t.closest('#mob-ai')) closeAllMobileUI('ai');
+        else if (t.closest('#mob-game')) closeAllMobileUI('arcade');
+        else {
+            // Se o clique foi numa UI já aberta, não faz nada
+            const isInsideUI = t.closest('.ui-panel') || t.closest('#mobile-dropdown') ||
+                t.closest('#project-modal') || t.closest('#ai-modal') ||
+                t.closest('#arcade-modal') || t.closest('#secret-photo-card');
+
+            // Mas se clicou no VAZIO, limpa a tela inteira!
+            if (!isInsideUI) closeAllMobileUI('none');
+        }
     }
 
-    // FECHAR AS ABAS (SKILLS, TIMELINE, ETC) CLICANDO FORA
-    const isPanelLink = e.target.closest('.mob-panel-link'); // Botão do celular
-    const isFolderTab = e.target.closest('.folder-tab');     // Pasta do computador
+    // Se o clique foi em alguma interface, a gente aborta o laser do 3D
+    if (event.target.closest('.ui-panel') || event.target.closest('.folder-tab') ||
+        event.target.closest('#project-modal') || event.target.closest('.close-modal') ||
+        event.target.closest('#cyber-widget') || event.target.closest('.audio-toggle') ||
+        event.target.closest('.header-btn') || event.target.closest('#mobile-menu-btn') ||
+        event.target.closest('#mobile-dropdown')) return;
 
-    // Se o clique NÃO foi no botão do celular e NEM na pasta do computador...
-    if (!isPanelLink && !isFolderTab) {
-        document.querySelectorAll('.ui-panel').forEach(panel => {
-            // Se a aba estiver aberta e o clique não foi dentro dela...
-            if (panel.style.display === 'flex' && !panel.contains(e.target)) {
-                if (typeof closePanel === 'function') {
-                    closePanel(panel);
-                } else {
-                    panel.style.display = 'none';
-                }
+    // Dispara o laser 3D pra ver se acertou um projeto
+    if (typeof raycaster !== 'undefined' && typeof mouse !== 'undefined' && typeof camera !== 'undefined' && typeof projectNodes !== 'undefined') {
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(projectNodes);
+
+        if (intersects.length > 0) {
+            // Se acertar a bolinha no mobile, fecha todo o resto e abre o projeto!
+            if (window.innerWidth <= 1000) closeAllMobileUI('project');
+            if (typeof openModal === 'function') openModal(intersects[0].object.userData.data);
+        } else {
+            // Se errou a bolinha no desktop, apenas esconde o projeto
+            const modal = document.getElementById('project-modal');
+            if (modal && modal.classList.contains('open') && window.innerWidth > 1000) {
+                modal.classList.remove('open');
             }
-        });
+        }
     }
 });
