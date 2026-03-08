@@ -706,13 +706,19 @@ window.closeAllMobileUI = function (keepOpen) {
 
     const els = {
         menu: document.getElementById('mobile-dropdown'),
+        menuBtn: document.getElementById('mobile-menu-btn'), // <-- RECUPERAMOS SEU BOTÃO AQUI!
         project: document.getElementById('project-modal'),
         photo: document.getElementById('secret-photo-card'),
         ai: document.getElementById('ai-modal'),
         arcade: document.getElementById('arcade-modal')
     };
 
-    if (keepOpen !== 'menu' && els.menu) els.menu.style.display = 'none';
+    // MÁGICA: Fecha o Menu e faz o botão ☰ VOLTAR para a tela!
+    if (keepOpen !== 'menu' && els.menu) {
+        els.menu.style.display = 'none';
+        if (els.menuBtn) els.menuBtn.style.display = 'block';
+    }
+
     if (keepOpen !== 'project' && els.project) els.project.classList.remove('open');
     if (keepOpen !== 'ai' && els.ai) els.ai.classList.remove('open');
     if (keepOpen !== 'arcade' && els.arcade) els.arcade.classList.remove('open');
@@ -720,7 +726,7 @@ window.closeAllMobileUI = function (keepOpen) {
         document.querySelectorAll('.ui-panel').forEach(p => p.style.display = 'none');
     }
 
-    // MATA A FOTO FANTASMA (Tira ela do caminho!)
+    // Mata a foto fantasma
     if (keepOpen !== 'photo' && els.photo) {
         els.photo.style.opacity = '0';
         els.photo.style.pointerEvents = 'none';
@@ -731,10 +737,9 @@ window.closeAllMobileUI = function (keepOpen) {
 document.querySelectorAll('.mob-panel-link, .folder-tab').forEach(link => {
     link.addEventListener('click', (e) => {
         e.preventDefault();
-        e.stopPropagation(); // Impede que o Safari feche na mesma hora
+        e.stopPropagation();
         const targetId = link.getAttribute('data-target');
 
-        // No celular, limpa a tela antes de abrir o painel
         if (window.innerWidth <= 1000) closeAllMobileUI('panel');
 
         if (typeof openPanel === 'function') openPanel(targetId);
@@ -753,13 +758,27 @@ window.addEventListener('pointerdown', (e) => {
     }
 });
 
-// 4. O CÉREBRO DA OPERAÇÃO (O Clique Global fixado no 'document')
+// 4. O CÉREBRO DA OPERAÇÃO 
+// (O 'true' no final obriga isso a rodar ANTES de qualquer script antigo que você tenha!)
 document.addEventListener('click', (event) => {
     if (!document.body.classList.contains('active')) return;
     const t = event.target;
     if (!t) return;
 
-    // --- LÓGICA DA FOTO SECRETA (Agora só ativa clicando EXATAMENTE nas letras!) ---
+    // --- HACK DO MENU: Intercepta o botão e sobrepõe códigos antigos! ---
+    if (t.closest('#mobile-menu-btn')) {
+        event.stopPropagation(); // Trava os scripts antigos pra não dar conflito
+        const dropdown = document.getElementById('mobile-dropdown');
+        const btn = document.getElementById('mobile-menu-btn');
+        if (dropdown && btn) {
+            dropdown.style.display = 'flex'; // Abre o menu
+            btn.style.display = 'none';      // Esconde o botão ☰ temporariamente
+            closeAllMobileUI('menu');        // Manda fechar a descrição do projeto, foto, etc!
+        }
+        return;
+    }
+
+    // --- LÓGICA DA FOTO SECRETA ---
     const isHeroText = t.closest('#name-line-1') || t.closest('#name-line-2');
     const secretCard = document.getElementById('secret-photo-card');
 
@@ -767,7 +786,7 @@ document.addEventListener('click', (event) => {
         if (typeof closeAllMobileUI === 'function') closeAllMobileUI('photo');
         if (secretCard) {
             secretCard.style.opacity = '1';
-            secretCard.style.pointerEvents = 'auto'; // Acorda a foto pra receber cliques!
+            secretCard.style.pointerEvents = 'auto';
         }
         clearTimeout(window.photoTimerMobile);
         window.photoTimerMobile = setTimeout(() => {
@@ -776,20 +795,19 @@ document.addEventListener('click', (event) => {
                 secretCard.style.pointerEvents = 'none';
             }
         }, 5000);
-        return; // Para tudo aqui
+        return;
     }
 
     // --- MODO MOBILE: REGRAS DE FECHAR TUDO ---
     if (window.innerWidth <= 1000) {
         let clickedUI = 'none';
-        if (t.closest('#mobile-menu-btn')) clickedUI = 'menu';
+        if (t.closest('#mobile-dropdown')) clickedUI = 'menu';
         else if (t.closest('.mob-panel-link') || t.closest('.ui-panel')) clickedUI = 'panel';
         else if (t.closest('#mob-ai') || t.closest('#ai-modal')) clickedUI = 'ai';
         else if (t.closest('#mob-game') || t.closest('#arcade-modal')) clickedUI = 'arcade';
         else if (t.closest('#project-modal')) clickedUI = 'project';
         else if (t.closest('#secret-photo-card')) clickedUI = 'photo';
 
-        // Manda fechar todo o resto!
         closeAllMobileUI(clickedUI);
     }
 
@@ -804,7 +822,6 @@ document.addEventListener('click', (event) => {
                 }
             });
         }
-        // Fechar foto no PC se clicar fora
         if (!isHeroText && secretCard && secretCard.style.opacity === '1' && !t.closest('#secret-photo-card')) {
             secretCard.style.opacity = '0';
             secretCard.style.pointerEvents = 'none';
@@ -815,8 +832,8 @@ document.addEventListener('click', (event) => {
     if (t.closest('.ui-panel') || t.closest('.folder-tab') ||
         t.closest('#project-modal') || t.closest('.close-modal') ||
         t.closest('#cyber-widget') || t.closest('.audio-toggle') ||
-        t.closest('.header-btn') || t.closest('#mobile-menu-btn') ||
-        t.closest('#mobile-dropdown') || t.closest('#hero-name')) return;
+        t.closest('.header-btn') || t.closest('#mobile-dropdown') ||
+        t.closest('#hero-name')) return;
 
     // --- LASER 3D (Abre Projetos e fecha foto/menu) ---
     if (typeof raycaster !== 'undefined' && typeof camera !== 'undefined' && typeof projectNodes !== 'undefined') {
@@ -831,4 +848,4 @@ document.addEventListener('click', (event) => {
             if (modal && modal.classList.contains('open')) modal.classList.remove('open');
         }
     }
-});
+}, true);
