@@ -1847,3 +1847,34 @@ body.push-right #ai-modal {
 		transform: translateY(0);
 	}
 }
+
+/* ========================================== */
+/* 🛠️ SISTEMA DE RECOLHIMENTO SUAVE (SMOOTH)  */
+/* ========================================== */
+
+/* Aplicável tanto para Home quanto para Galerias */
+#mobile-dropdown, #gallery-dropdown {
+	display: flex !important; /* Mantemos flex sempre */
+	position: fixed;
+	flex-direction: column;
+	z-index: 4999;
+	/* ESTADO FECHADO (Invisível) */
+	opacity: 0;
+	pointer-events: none; /* Impede clicar no menu enquanto ele tá invisível */
+	transform: translateY(-20px) scaleY(0.9); /* Começa um pouco acima e "esmagado" */
+	transform-origin: top right;
+	transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+	/* ESTADO ABERTO (Ativado via JS) */
+	#mobile-dropdown.active, #gallery-dropdown.active {
+		opacity: 1;
+		pointer-events: auto;
+		transform: translateY(0) scaleY(1); /* Volta pro lugar e tamanho original */
+	}
+
+/* Ajuste fino para os botões das internas não sumirem */
+#gallery-dropdown {
+	background: transparent; /* Como você pediu antes */
+	border: none;
+}

@@ -767,13 +767,19 @@ document.addEventListener('click', (event) => {
 
     // --- HACK DO MENU: Intercepta o botão e sobrepõe códigos antigos! ---
     if (t.closest('#mobile-menu-btn')) {
-        event.stopPropagation(); // Trava os scripts antigos pra não dar conflito
-        const dropdown = document.getElementById('mobile-dropdown');
-        const btn = document.getElementById('mobile-menu-btn');
-        if (dropdown && btn) {
-            dropdown.style.display = 'flex'; // Abre o menu
-            btn.style.display = 'none';      // Esconde o botão ☰ temporariamente
-            closeAllMobileUI('menu');        // Manda fechar a descrição do projeto, foto, etc!
+        event.stopPropagation();
+        dropdown.classList.add('active'); // ADICIONA A CLASSE
+        btn.style.opacity = '0'; // Faz o botão ☰ sumir suavemente
+        btn.style.pointerEvents = 'none';
+        return;
+    }
+
+    // Fechar ao clicar fora
+    if (dropdown.classList.contains('active')) {
+        if (!t.closest('#mobile-dropdown')) {
+            dropdown.classList.remove('active'); // REMOVE A CLASSE
+            btn.style.opacity = '1'; // Faz o botão ☰ voltar
+            btn.style.pointerEvents = 'auto';
         }
         return;
     }
