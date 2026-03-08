@@ -1520,4 +1520,34 @@ body.push-right #ai-modal {
 	body[class*="push-"] #main-wrapper {
 		transform: none !important;
 	}
+
+	.interaction-hint {
+			display: none !important;
+	}
 }
+
+
+	/* ========================================== */
+	/* 📱 PROTEÇÃO TOTAL PARA TOUCH E TELAS GRANDES*/
+	/* ========================================== */
+
+	/* 1. Garante que o Menu Mobile NUNCA apareça em telas maiores que 1000px */
+	@media (min-width: 1001px) {
+		#mobile-menu-btn, #mobile-dropdown {
+			display: none !important;
+		}
+	}
+
+	/* 2. Remove o cursor customizado de QUALQUER dispositivo touch (celular, tablet, tela interativa) independente da largura */
+	@media (hover: none) and (pointer: coarse) {
+		/* Esconde a bolinha verde e a bordinha */
+		.cursor-dot, .cursor-outline {
+			display: none !important;
+		}
+		/* Devolve o comportamento natural de toque e o cursor padrão do sistema */
+		body, a, button, .folder-tab, .close-panel, * {
+			cursor: auto !important;
+		}
+	}
+
+
