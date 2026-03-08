@@ -1589,6 +1589,8 @@ body.push-right #ai-modal {
 		#secret-photo-card {
 			transform: none !important; /* Remove o 3D */
 			right: -160px !important; /* Posiciona perfeitamente ao lado */
+			opacity: 0;
+			pointer-events: none !important;
 		}
 	}
 
@@ -1602,6 +1604,8 @@ body.push-right #ai-modal {
 		width: 130px !important;
 		height: 170px !important;
 		box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important;
+		opacity: 0;
+		pointer-events: none !important;
 	}
 }
 

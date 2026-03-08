@@ -694,6 +694,13 @@ document.querySelectorAll('.mob-panel-link').forEach(link => {
 });
 
 // 4. FECHAR IA, GAME E ABAS (PAINÉIS) CLICANDO FORA DELES
+const iosFix = function () { };
+document.documentElement.addEventListener('click', iosFix);
+document.body.addEventListener('click', iosFix);
+const canvasEl = document.querySelector('canvas');
+if (canvasEl) canvasEl.addEventListener('click', iosFix);
+
+// 1. GERENTE DE EXCLUSÃO MÚTUA
 window.closeAllMobileUI = function (keepOpen) {
     if (window.innerWidth > 1000) return;
 
@@ -713,7 +720,7 @@ window.closeAllMobileUI = function (keepOpen) {
         document.querySelectorAll('.ui-panel').forEach(p => p.style.display = 'none');
     }
 
-    // 👻 MATA A FOTO FANTASMA (Tira ela do caminho dos seus cliques!)
+    // MATA A FOTO FANTASMA (Tira ela do caminho!)
     if (keepOpen !== 'photo' && els.photo) {
         els.photo.style.opacity = '0';
         els.photo.style.pointerEvents = 'none';
@@ -724,7 +731,12 @@ window.closeAllMobileUI = function (keepOpen) {
 document.querySelectorAll('.mob-panel-link, .folder-tab').forEach(link => {
     link.addEventListener('click', (e) => {
         e.preventDefault();
+        e.stopPropagation(); // Impede que o Safari feche na mesma hora
         const targetId = link.getAttribute('data-target');
+
+        // No celular, limpa a tela antes de abrir o painel
+        if (window.innerWidth <= 1000) closeAllMobileUI('panel');
+
         if (typeof openPanel === 'function') openPanel(targetId);
         else {
             const panel = document.getElementById(targetId);
@@ -733,14 +745,7 @@ document.querySelectorAll('.mob-panel-link, .folder-tab').forEach(link => {
     });
 });
 
-// 3. CAPTURADOR SILENCIOSO DE DEDO (Apple Safari Fix)
-window.addEventListener('touchstart', (e) => {
-    if (typeof mouse !== 'undefined' && e.touches.length > 0) {
-        mouse.x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
-    }
-}, { passive: true });
-
+// 3. CAPTURADOR DE COORDENADAS PRO 3D
 window.addEventListener('pointerdown', (e) => {
     if (typeof mouse !== 'undefined' && e.clientX !== undefined) {
         mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -748,37 +753,30 @@ window.addEventListener('pointerdown', (e) => {
     }
 });
 
-// 4. O EVENTO GLOBAL DE CLIQUE (O cérebro da operação)
-window.addEventListener('click', (event) => {
+// 4. O CÉREBRO DA OPERAÇÃO (O Clique Global fixado no 'document')
+document.addEventListener('click', (event) => {
     if (!document.body.classList.contains('active')) return;
     const t = event.target;
     if (!t) return;
 
-    // --- LÓGICA DA FOTO SECRETA ---
-    const isHero = t.closest('#hero-name');
-    const isInsidePhoto = t.closest('#secret-photo-card');
+    // --- LÓGICA DA FOTO SECRETA (Agora só ativa clicando EXATAMENTE nas letras!) ---
+    const isHeroText = t.closest('#name-line-1') || t.closest('#name-line-2');
     const secretCard = document.getElementById('secret-photo-card');
 
-    // Clicou no Nome para exibir a foto
-    if (isHero && !isInsidePhoto) {
+    if (isHeroText) {
         if (typeof closeAllMobileUI === 'function') closeAllMobileUI('photo');
         if (secretCard) {
             secretCard.style.opacity = '1';
-            secretCard.style.pointerEvents = 'auto'; // Acorda a foto pra ela ficar visível!
+            secretCard.style.pointerEvents = 'auto'; // Acorda a foto pra receber cliques!
         }
         clearTimeout(window.photoTimerMobile);
         window.photoTimerMobile = setTimeout(() => {
             if (secretCard) {
                 secretCard.style.opacity = '0';
-                secretCard.style.pointerEvents = 'none'; // Dorme a foto depois de 5s
+                secretCard.style.pointerEvents = 'none';
             }
         }, 5000);
-        return;
-    } else if (secretCard && secretCard.style.opacity === '1' && !isInsidePhoto) {
-        // Clicou no fundo enquanto a foto tava aberta
-        secretCard.style.opacity = '0';
-        secretCard.style.pointerEvents = 'none';
-        clearTimeout(window.photoTimerMobile);
+        return; // Para tudo aqui
     }
 
     // --- MODO MOBILE: REGRAS DE FECHAR TUDO ---
@@ -789,12 +787,13 @@ window.addEventListener('click', (event) => {
         else if (t.closest('#mob-ai') || t.closest('#ai-modal')) clickedUI = 'ai';
         else if (t.closest('#mob-game') || t.closest('#arcade-modal')) clickedUI = 'arcade';
         else if (t.closest('#project-modal')) clickedUI = 'project';
-        else if (isInsidePhoto) clickedUI = 'photo';
+        else if (t.closest('#secret-photo-card')) clickedUI = 'photo';
 
+        // Manda fechar todo o resto!
         closeAllMobileUI(clickedUI);
     }
 
-    // --- RECUPERANDO OS PAINÉIS DO DESKTOP (Fecha clicando fora) ---
+    // --- RECUPERANDO OS PAINÉIS DO DESKTOP ---
     if (window.innerWidth > 1000) {
         const isPanelTrigger = t.closest('.mob-panel-link') || t.closest('.folder-tab');
         if (!isPanelTrigger) {
@@ -805,16 +804,21 @@ window.addEventListener('click', (event) => {
                 }
             });
         }
+        // Fechar foto no PC se clicar fora
+        if (!isHeroText && secretCard && secretCard.style.opacity === '1' && !t.closest('#secret-photo-card')) {
+            secretCard.style.opacity = '0';
+            secretCard.style.pointerEvents = 'none';
+        }
     }
 
-    // --- PROTEÇÃO DO 3D (Ignora o laser se você tocou na UI) ---
+    // --- PROTEÇÃO DO 3D ---
     if (t.closest('.ui-panel') || t.closest('.folder-tab') ||
         t.closest('#project-modal') || t.closest('.close-modal') ||
         t.closest('#cyber-widget') || t.closest('.audio-toggle') ||
         t.closest('.header-btn') || t.closest('#mobile-menu-btn') ||
         t.closest('#mobile-dropdown') || t.closest('#hero-name')) return;
 
-    // --- LASER 3D (Abre os Projetos e fecha foto/menu) ---
+    // --- LASER 3D (Abre Projetos e fecha foto/menu) ---
     if (typeof raycaster !== 'undefined' && typeof camera !== 'undefined' && typeof projectNodes !== 'undefined') {
         raycaster.setFromCamera(mouse, camera);
         const intersects = raycaster.intersectObjects(projectNodes);
