@@ -119,20 +119,30 @@ function initSpace() {
                 bullets.push({ x: player.x + player.width / 2 - 2, y: player.y, width: 4, height: 10 }); lastShot = Date.now();
             }
 
-            // [NOVO] Desenho Lúdico do Jogador (Nave Pixelada Branca)
+            // [NOVO] Nave Melhorada (Aerodinâmica e com propulsor)
             ctx.fillStyle = '#fff';
-            ctx.fillRect(player.x, player.y + 10, 40, 10); // Base
-            ctx.fillRect(player.x + 10, player.y + 5, 20, 5); // Cockpit
-            ctx.fillRect(player.x + 18, player.y, 4, 5); // Canhão
+            ctx.fillRect(player.x + 16, player.y, 8, 6); // Bico/Canhão principal
+            ctx.fillRect(player.x + 12, player.y + 6, 16, 10); // Corpo central
+            ctx.fillRect(player.x + 4, player.y + 10, 8, 6); // Asa esquerda (superior)
+            ctx.fillRect(player.x, player.y + 14, 8, 6); // Ponta da asa esquerda
+            ctx.fillRect(player.x + 28, player.y + 10, 8, 6); // Asa direita (superior)
+            ctx.fillRect(player.x + 32, player.y + 14, 8, 6); // Ponta da asa direita
 
-            // Balas
-            bullets.forEach((b, index) => { b.y -= 8; ctx.fillRect(b.x, b.y, b.width, b.height); if (b.y < 0) bullets.splice(index, 1); });
+            // Fogo do propulsor
+            ctx.fillStyle = '#00ff88';
+            if (Math.floor(Date.now() / 100) % 2 === 0) {
+                ctx.fillRect(player.x + 16, player.y + 16, 8, 4);
+            }
 
-            // Inimigos - Nascem aleatórios
-            if (Date.now() - lastEnemySpawn > Math.random() * 800 + 400) {
+            // Balas (Velocidade aumentada de 8 para 16)
+            ctx.fillStyle = '#fff';
+            bullets.forEach((b, index) => { b.y -= 16; ctx.fillRect(b.x, b.y, b.width, b.height); if (b.y < 0) bullets.splice(index, 1); });
+
+            // Inimigos - Quantidade reduzida (Delay de spawn aumentado)
+            if (Date.now() - lastEnemySpawn > Math.random() * 1200 + 800) {
                 enemies.push({
                     x: Math.random() * (canvas.width - 24), y: -20, width: 20, height: 16,
-                    speed: Math.random() * 1.2 + 0.8 // [NOVO] Velocidade reduzida e equilibrada!
+                    speed: Math.random() * 0.7 + 0.3 // Velocidade reduzida bruscamente
                 });
                 lastEnemySpawn = Date.now();
             }
@@ -141,7 +151,7 @@ function initSpace() {
                 let e = enemies[i];
                 e.y += e.speed;
 
-                // [NOVO] Desenho Lúdico do Inimigo (Alien Pixelado)
+                // Desenho Lúdico do Inimigo (Alien Pixelado)
                 ctx.fillStyle = '#fff';
                 ctx.fillRect(e.x + 2, e.y, 4, 4); // Antena Esq
                 ctx.fillRect(e.x + 14, e.y, 4, 4); // Antena Dir
