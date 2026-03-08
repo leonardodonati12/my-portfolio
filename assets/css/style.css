@@ -1372,25 +1372,40 @@ body.push-right #ai-modal {
 		}
 
 	/* 5 - PAINÉIS (SIDETABS) NO CANTO INFERIOR DIREITO, MINIMALISTAS E SEM FUNDO */
+	/* 2 - Animação de surgir de baixo para cima nas Abas (Painéis) */
+	@keyframes hud-pop-up {
+		0% {
+			transform: scaleY(0);
+			opacity: 0;
+		}
+
+		100% {
+			transform: scaleY(1);
+			opacity: 1;
+		}
+	}
+
 	.ui-panel {
 		width: 260px !important;
 		height: auto !important;
 		max-height: 60vh !important;
-		bottom: 20px !important; /* Canto inferior */
-		right: 20px !important; /* Canto direito */
+		bottom: 20px !important;
+		right: 20px !important;
 		top: auto !important;
 		left: auto !important;
-		background: transparent !important; /* Totalmente sem fundo */
+		background: transparent !important;
 		backdrop-filter: none !important;
 		border: none !important;
-		border-right: 2px solid #00ff88 !important; /* Linha de leitura na direita */
+		border-right: 2px solid #00ff88 !important;
 		border-radius: 0 !important;
 		box-shadow: none !important;
-		text-align: right !important; /* Texto alinhado à direita */
+		text-align: right !important;
 		padding: 0 15px 0 0 !important;
+		/* A mágica da animação de baixo pra cima */
+		transform-origin: bottom !important;
+		animation: hud-pop-up 0.2s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
 	}
 
-	/* Esconde o cabeçalho arrastável e ajusta o padding pra não roubar espaço */
 	.panel-header {
 		display: none !important;
 	}
@@ -1401,7 +1416,7 @@ body.push-right #ai-modal {
 		overflow-x: hidden;
 	}
 
-	/* Invertendo a Timeline, Barras e Textos para lerem da direita pra esquerda */
+	/* 3 - REMOVER LINHAS SEPARADORAS E DEIXAR TOTALMENTE CLEAN */
 	.skill-name {
 		justify-content: flex-end !important;
 		gap: 10px;
@@ -1412,17 +1427,17 @@ body.push-right #ai-modal {
 		justify-content: flex-end;
 	}
 
+	/* Sem linha na direita da timeline e sem bolinha verde */
 	.timeline-item {
 		border-left: none !important;
-		border-right: 1px solid #333 !important;
+		border-right: none !important;
 		padding-left: 0 !important;
-		padding-right: 15px !important;
+		padding-right: 0 !important;
 		text-align: right;
 	}
 
 		.timeline-item::before {
-			left: auto !important;
-			right: -3px !important;
+			display: none !important;
 		}
 
 	.time-date, .time-role, .time-place, .time-desc {
@@ -1430,9 +1445,10 @@ body.push-right #ai-modal {
 		font-size: 0.7rem !important;
 	}
 
+	/* Sem linhas em baixo dos contatos e extras */
 	.contact-item {
 		border: none !important;
-		border-bottom: 1px solid #222 !important;
+		border-bottom: none !important;
 		border-radius: 0 !important;
 		text-align: right;
 		padding: 5px 0 !important;
@@ -1448,7 +1464,8 @@ body.push-right #ai-modal {
 
 	.extra-item {
 		text-align: right;
-		border-bottom: 1px solid #222 !important;
+		border-bottom: none !important;
+		padding-bottom: 5px !important;
 	}
 
 	body[class*="push-"] #main-wrapper {
@@ -1456,14 +1473,16 @@ body.push-right #ai-modal {
 	}
 
 	#ai-modal, #arcade-modal {
-		bottom: 20px !important; /* Bem mais baixo */
-		left: 50% !important;
-		right: auto !important;
-		transform: translateX(-50%) !important; /* Centraliza perfeitamente */
+		bottom: 20px !important;
+		right: 20px !important; /* Voltou para a direita! */
+		left: auto !important;
+		transform-origin: bottom !important; /* Animação baseada no chão */
+		transform: scaleY(0) !important;
+		transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s ease !important;
 	}
 
-		/* Remove a animação original no mobile para não bugar a centralização */
 		#ai-modal.open, #arcade-modal.open {
+			transform: scaleY(1) !important;
 			animation: none !important;
 		}
 

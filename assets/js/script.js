@@ -681,18 +681,35 @@ document.querySelectorAll('.mob-panel-link').forEach(link => {
     });
 });
 
-// 4. FECHAR IA E GAME CLICANDO FORA DELES
+// 4. FECHAR IA, GAME E ABAS (PAINÉIS) CLICANDO FORA DELES
 window.addEventListener('click', (e) => {
     const aiModal = document.getElementById('ai-modal');
     const gameModal = document.getElementById('arcade-modal');
 
-    // Se o modal da IA estiver aberto e o clique não for nele
+    // Fechar IA
     if (aiModal && aiModal.classList.contains('open') && !aiModal.contains(e.target) && e.target.id !== 'mob-ai') {
         aiModal.classList.remove('open');
     }
 
-    // Se o modal do Jogo estiver aberto e o clique não for nele
+    // Fechar Game
     if (gameModal && gameModal.classList.contains('open') && !gameModal.contains(e.target) && e.target.id !== 'mob-game') {
         gameModal.classList.remove('open');
+    }
+
+    // 1 - FECHAR AS ABAS (SKILLS, TIMELINE, ETC) CLICANDO FORA
+    const isPanelLink = e.target.closest('.mob-panel-link');
+    // Se não clicou no botão do menu que abre a aba...
+    if (!isPanelLink) {
+        document.querySelectorAll('.ui-panel').forEach(panel => {
+            // Se a aba estiver aberta e o clique não foi dentro dela...
+            if (panel.style.display === 'flex' && !panel.contains(e.target)) {
+                // Fechamos ela usando a sua função padrão original!
+                if (typeof closePanel === 'function') {
+                    closePanel(panel);
+                } else {
+                    panel.style.display = 'none';
+                }
+            }
+        });
     }
 });
