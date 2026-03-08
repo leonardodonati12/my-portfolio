@@ -725,74 +725,101 @@ window.closeAllMobileUI = function (keepOpen) {
     }
 };
 
-window.addEventListener('pointerdown', (event) => { // 'pointerdown' garante 100% de precisão no toque!
-    if (!document.body.classList.contains('active')) return;
-
-    // 1. Atualiza as coordenadas perfeitas pro 3D ler o seu dedo
-    if (typeof mouse !== 'undefined') {
-        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+// 1. CAPTURADOR SILENCIOSO (Resolve a precisão da bolinha no iPhone)
+window.addEventListener('pointerdown', (e) => {
+    if (typeof mouse !== 'undefined' && e.clientX !== undefined) {
+        mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
     }
+});
 
-    // --- SISTEMA MOBILE EXCLUSIVO ---
-    if (window.innerWidth <= 1000) {
-        const t = event.target;
-        const secretCard = document.getElementById('secret-photo-card');
+// 2. ABRIR PAINÉIS À FORÇA (Garante que nunca vão fechar instantaneamente)
+document.querySelectorAll('.mob-panel-link, .folder-tab').forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.stopPropagation(); // MÁGICA: O clique para aqui e não aciona o fechamento!
 
-        // LÓGICA DA FOTO SECRETA (Abrir, Fechar e Timer de 5s)
-        if (t.closest('#hero-name')) {
-            if (typeof closeAllMobileUI === 'function') closeAllMobileUI('photo');
-            if (secretCard) secretCard.style.opacity = '1';
-
-            // Inicia o timer de 5s para fechar sozinho
-            clearTimeout(window.photoTimerMobile);
-            window.photoTimerMobile = setTimeout(() => {
-                if (secretCard) secretCard.style.opacity = '0';
-            }, 5000);
-            return; // Para tudo aqui para não fechar acidentalmente
-        } else if (secretCard && secretCard.style.opacity === '1') {
-            // Se a foto tá aberta e clicou em outro lugar, fecha ela e mata o timer!
-            secretCard.style.opacity = '0';
-            clearTimeout(window.photoTimerMobile);
+        // Se estiver no celular, esconde o menu e limpa a tela
+        if (window.innerWidth <= 1000 && typeof closeAllMobileUI === 'function') {
+            closeAllMobileUI('panel');
         }
 
-        // GERENTE DE JANELAS (Exclusão Mútua)
-        if (t.closest('#mobile-menu-btn')) closeAllMobileUI('menu');
-        else if (t.closest('.mob-panel-link')) closeAllMobileUI('panel');
-        else if (t.closest('#mob-ai')) closeAllMobileUI('ai');
-        else if (t.closest('#mob-game')) closeAllMobileUI('arcade');
-        else {
+        const targetId = link.getAttribute('data-target');
+
+        // Abre o painel com a sua função original ou com o nosso fallback de emergência
+        if (typeof openPanel === 'function') {
+            openPanel(targetId);
+        } else {
+            const panel = document.getElementById(targetId);
+            if (panel) panel.style.display = 'flex';
+        }
+    });
+});
+
+// 3. O CLIQUE GLOBAL (Controla exclusão mútua e fecha clicando no vazio)
+window.addEventListener('click', (event) => {
+    if (!document.body.classList.contains('active')) return;
+
+    // Proteção contra bugs de navegadores antigos
+    const t = event.target instanceof Element ? event.target : event.target.parentElement;
+    if (!t) return;
+
+    // --- LÓGICA DA FOTO SECRETA ---
+    const secretCard = document.getElementById('secret-photo-card');
+    if (t.closest('#hero-name')) {
+        if (typeof closeAllMobileUI === 'function') closeAllMobileUI('photo');
+        if (secretCard) secretCard.style.opacity = '1';
+        clearTimeout(window.photoTimerMobile);
+        window.photoTimerMobile = setTimeout(() => {
+            if (secretCard) secretCard.style.opacity = '0';
+        }, 5000);
+        return;
+    } else if (secretCard && secretCard.style.opacity === '1' && !t.closest('#secret-photo-card')) {
+        secretCard.style.opacity = '0';
+        clearTimeout(window.photoTimerMobile);
+    }
+
+    // --- GERENTE MOBILE ---
+    if (window.innerWidth <= 1000) {
+        if (t.closest('#mobile-menu-btn')) {
+            if (typeof closeAllMobileUI === 'function') closeAllMobileUI('menu');
+        } else if (t.closest('#mob-ai')) {
+            if (typeof closeAllMobileUI === 'function') closeAllMobileUI('ai');
+        } else if (t.closest('#mob-game')) {
+            if (typeof closeAllMobileUI === 'function') closeAllMobileUI('arcade');
+        } else {
             const isInsideUI = t.closest('.ui-panel') || t.closest('#mobile-dropdown') ||
                 t.closest('#project-modal') || t.closest('#ai-modal') ||
                 t.closest('#arcade-modal');
-            if (!isInsideUI) {
-                if (typeof closeAllMobileUI === 'function') closeAllMobileUI('none');
-            }
+            if (!isInsideUI && typeof closeAllMobileUI === 'function') closeAllMobileUI('none');
         }
     }
 
-    // Se o clique foi em alguma interface de UI, a gente não atira o laser do 3D
-    if (event.target.closest('.ui-panel') || event.target.closest('.folder-tab') ||
-        event.target.closest('#project-modal') || event.target.closest('.close-modal') ||
-        event.target.closest('#cyber-widget') || event.target.closest('.audio-toggle') ||
-        event.target.closest('.header-btn') || event.target.closest('#mobile-menu-btn') ||
-        event.target.closest('#mobile-dropdown')) return;
+    // --- RECUPERANDO OS PAINÉIS DO DESKTOP (Fecha clicando fora) ---
+    document.querySelectorAll('.ui-panel').forEach(p => {
+        if (p.style.display === 'flex' && !p.contains(t)) {
+            if (typeof closePanel === 'function') closePanel(p);
+            else p.style.display = 'none';
+        }
+    });
 
-    // 2. O Laser do Raycaster (Atirando na Bolinha do Projeto)
+    // --- PROTEÇÃO DO 3D ---
+    if (t.closest('.ui-panel') || t.closest('.folder-tab') ||
+        t.closest('#project-modal') || t.closest('.close-modal') ||
+        t.closest('#cyber-widget') || t.closest('.audio-toggle') ||
+        t.closest('.header-btn') || t.closest('#mobile-menu-btn') ||
+        t.closest('#mobile-dropdown')) return;
+
+    // --- LASER 3D (Abrir projetos pela bolinha) ---
     if (typeof raycaster !== 'undefined' && typeof camera !== 'undefined' && typeof projectNodes !== 'undefined') {
         raycaster.setFromCamera(mouse, camera);
         const intersects = raycaster.intersectObjects(projectNodes);
 
         if (intersects.length > 0) {
-            // ACERTOU A BOLINHA!
             if (window.innerWidth <= 1000 && typeof closeAllMobileUI === 'function') closeAllMobileUI('project');
             if (typeof openModal === 'function') openModal(intersects[0].object.userData.data);
         } else {
-            // ERROU A BOLINHA (Clicou no vazio)
             const modal = document.getElementById('project-modal');
-            if (modal && modal.classList.contains('open') && window.innerWidth > 1000) {
-                modal.classList.remove('open');
-            }
+            if (modal && modal.classList.contains('open')) modal.classList.remove('open');
         }
     }
 });

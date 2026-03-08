@@ -1531,13 +1531,15 @@ body.push-right #ai-modal {
 	}
 
 	/* BLINDAGEM PARA IPHONE / SAFARI */
-	.ui-panel, .ui-panel[class*="docked-"] {
+	.ui-panel, #ai-modal {
+		position: fixed !important;
 		top: auto !important;
-		/* Levanta o painel respeitando a "Home Bar" do iPhone */
-		bottom: env(safe-area-inset-bottom, 20px) !important;
+		bottom: env(safe-area-inset-bottom, 0px) !important;
 		margin: 0 !important;
-		/* Usa dvh (Dynamic Viewport Height) pra não vazar pra baixo da barra de endereço */
-		max-height: 75dvh !important;
+		width: 100% !important;
+		left: 0 !important;
+		right: 0 !important;
+		max-height: 75dvh !important; /* Salva do buraco do Safari */
 	}
 }
 
