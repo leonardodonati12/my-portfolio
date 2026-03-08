@@ -803,62 +803,85 @@ body.push-bottom .interaction-hint {
 
 #project-modal {
 	position: fixed;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 80%;
-	max-width: 500px;
-	background: rgba(10, 10, 10, 0.95);
-	border: 1px solid #00ff88;
-	padding: 40px;
-	border-radius: 20px;
+	bottom: 40px; /* Fica colado lá embaixo */
+	left: 70px; /* Alinhado à esquerda, com o seu nome */
+	width: 280px; /* Estreito e vertical */
+	background: rgba(10, 10, 10, 0.65); /* Transparente e elegante */
+	backdrop-filter: blur(12px);
+	border: none;
+	border-left: 2px solid #00ff88; /* Apenas uma linha neon na esquerda */
+	padding: 25px;
+	border-radius: 0 15px 15px 0;
 	z-index: 5005;
 	display: none;
 	flex-direction: column;
-	box-shadow: 0 0 50px rgba(0, 255, 136, 0.15);
+	box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.5);
 	opacity: 0;
-	transition: opacity 0.5s;
+	transform: translateX(-20px);
+	transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 	#project-modal.open {
 		display: flex;
 		opacity: 1;
+		transform: translateX(0);
 	}
 
 .modal-title {
-	font-size: 1.5rem;
+	font-size: 1.1rem;
 	color: #fff;
-	margin-bottom: 10px;
-	border-bottom: 1px solid #333;
-	padding-bottom: 10px;
+	margin-bottom: 5px;
 }
 
 .modal-tech {
 	color: #00ff88;
-	font-size: 0.9rem;
-	margin-bottom: 20px;
+	font-size: 0.65rem;
+	margin-bottom: 15px;
 	text-transform: uppercase;
 	letter-spacing: 1px;
+	opacity: 0.8;
 }
 
 .modal-desc {
-	color: #ccc;
-	line-height: 1.6;
-	font-size: 1rem;
+	color: #aaa;
+	line-height: 1.5;
+	font-size: 0.8rem;
+	margin-bottom: 20px;
 }
 
 .close-modal {
 	position: absolute;
 	top: 15px;
-	right: 20px;
+	right: 15px;
 	color: #555;
-	font-size: 1.5rem;
-	cursor: none;
+	font-size: 1.2rem;
+	cursor: none !important;
 	transition: color 0.3s;
 }
 
 	.close-modal:hover {
 		color: #00ff88;
+	}
+
+/* ESTILO DO NOVO BOTÃO DE LINK */
+.modal-link-btn {
+	display: inline-block;
+	color: #00ff88;
+	font-size: 0.7rem;
+	text-decoration: none;
+	border: 1px solid rgba(0, 255, 136, 0.4);
+	padding: 8px 0;
+	text-align: center;
+	transition: all 0.3s;
+	cursor: none !important;
+	letter-spacing: 1px;
+	margin-top: auto; /* Empurra pro final do card */
+}
+
+	.modal-link-btn:hover {
+		background: rgba(0, 255, 136, 0.1);
+		border-color: #00ff88;
+		box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
 	}
 
 ::-webkit-scrollbar {
