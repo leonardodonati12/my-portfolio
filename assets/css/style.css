@@ -38,11 +38,11 @@ body.active #system-curtain {
 	z-index: 0;
 }
 
-body.push-left #main-wrapper {
+body.push-left #main-wrapper, #project-modal {
 	transform: translateX(240px);
 }
 
-body.push-top #main-wrapper {
+body.push-top #main-wrapper, #project-modal {
 	transform: translateY(280px);
 }
 
@@ -806,7 +806,7 @@ body.push-bottom .interaction-hint {
 /* ========================================== */
 #project-modal {
 	position: fixed;
-	top: 200px; /* Cola ele perfeitamente abaixo do Hero Subtitle */
+	top: 220px !important; /* Cola ele perfeitamente abaixo do Hero Subtitle */
 	left: 70px; /* Alinhado à esquerda com os títulos */
 	width: 300px;
 	background: transparent; /* FUNDO TOTALMENTE REMOVIDO */
