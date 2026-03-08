@@ -707,11 +707,16 @@ window.closeAllMobileUI = function (keepOpen) {
 
     if (keepOpen !== 'menu' && els.menu) els.menu.style.display = 'none';
     if (keepOpen !== 'project' && els.project) els.project.classList.remove('open');
-    if (keepOpen !== 'photo' && els.photo) els.photo.style.opacity = '0';
     if (keepOpen !== 'ai' && els.ai) els.ai.classList.remove('open');
     if (keepOpen !== 'arcade' && els.arcade) els.arcade.classList.remove('open');
     if (keepOpen !== 'panel') {
         document.querySelectorAll('.ui-panel').forEach(p => p.style.display = 'none');
+    }
+
+    // 👻 MATA A FOTO FANTASMA (Tira ela do caminho dos seus cliques!)
+    if (keepOpen !== 'photo' && els.photo) {
+        els.photo.style.opacity = '0';
+        els.photo.style.pointerEvents = 'none';
     }
 };
 
@@ -728,7 +733,14 @@ document.querySelectorAll('.mob-panel-link, .folder-tab').forEach(link => {
     });
 });
 
-// 3. CAPTURADOR SILENCIOSO DE DEDO (Precisão pro 3D no iPhone)
+// 3. CAPTURADOR SILENCIOSO DE DEDO (Apple Safari Fix)
+window.addEventListener('touchstart', (e) => {
+    if (typeof mouse !== 'undefined' && e.touches.length > 0) {
+        mouse.x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
+    }
+}, { passive: true });
+
 window.addEventListener('pointerdown', (e) => {
     if (typeof mouse !== 'undefined' && e.clientX !== undefined) {
         mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -742,35 +754,44 @@ window.addEventListener('click', (event) => {
     const t = event.target;
     if (!t) return;
 
-    // --- MODO MOBILE: REGRAS DE FECHAR E ABRIR ---
-    if (window.innerWidth <= 1000) {
-        const isMenuBtn = t.closest('#mobile-menu-btn');
-        const isHero = t.closest('.hero');
-        const isInsidePhoto = t.closest('#secret-photo-card');
+    // --- LÓGICA DA FOTO SECRETA ---
+    const isHero = t.closest('#hero-name');
+    const isInsidePhoto = t.closest('#secret-photo-card');
+    const secretCard = document.getElementById('secret-photo-card');
 
-        // Identifica o que o usuário quer manter aberto
+    // Clicou no Nome para exibir a foto
+    if (isHero && !isInsidePhoto) {
+        if (typeof closeAllMobileUI === 'function') closeAllMobileUI('photo');
+        if (secretCard) {
+            secretCard.style.opacity = '1';
+            secretCard.style.pointerEvents = 'auto'; // Acorda a foto pra ela ficar visível!
+        }
+        clearTimeout(window.photoTimerMobile);
+        window.photoTimerMobile = setTimeout(() => {
+            if (secretCard) {
+                secretCard.style.opacity = '0';
+                secretCard.style.pointerEvents = 'none'; // Dorme a foto depois de 5s
+            }
+        }, 5000);
+        return;
+    } else if (secretCard && secretCard.style.opacity === '1' && !isInsidePhoto) {
+        // Clicou no fundo enquanto a foto tava aberta
+        secretCard.style.opacity = '0';
+        secretCard.style.pointerEvents = 'none';
+        clearTimeout(window.photoTimerMobile);
+    }
+
+    // --- MODO MOBILE: REGRAS DE FECHAR TUDO ---
+    if (window.innerWidth <= 1000) {
         let clickedUI = 'none';
-        if (isMenuBtn) clickedUI = 'menu';
+        if (t.closest('#mobile-menu-btn')) clickedUI = 'menu';
         else if (t.closest('.mob-panel-link') || t.closest('.ui-panel')) clickedUI = 'panel';
         else if (t.closest('#mob-ai') || t.closest('#ai-modal')) clickedUI = 'ai';
         else if (t.closest('#mob-game') || t.closest('#arcade-modal')) clickedUI = 'arcade';
         else if (t.closest('#project-modal')) clickedUI = 'project';
-        else if (isHero || isInsidePhoto) clickedUI = 'photo';
+        else if (isInsidePhoto) clickedUI = 'photo';
 
-        // MÁGICA: Fecha todo o resto do celular, limpando a tela!
         closeAllMobileUI(clickedUI);
-
-        // Ação específica: Abrir e temporizar a Foto Secreta
-        if (clickedUI === 'photo' && isHero && !isInsidePhoto) {
-            const secretCard = document.getElementById('secret-photo-card');
-            if (secretCard) {
-                secretCard.style.opacity = '1';
-                clearTimeout(window.photoTimerMobile);
-                window.photoTimerMobile = setTimeout(() => {
-                    secretCard.style.opacity = '0';
-                }, 5000); // Some sozinha em 5 segundos
-            }
-        }
     }
 
     // --- RECUPERANDO OS PAINÉIS DO DESKTOP (Fecha clicando fora) ---
@@ -784,12 +805,6 @@ window.addEventListener('click', (event) => {
                 }
             });
         }
-        // Fecha foto no PC se clicar fora
-        const isHero = t.closest('.hero');
-        const secretCard = document.getElementById('secret-photo-card');
-        if (!isHero && secretCard && secretCard.style.opacity === '1') {
-            secretCard.style.opacity = '0';
-        }
     }
 
     // --- PROTEÇÃO DO 3D (Ignora o laser se você tocou na UI) ---
@@ -797,7 +812,7 @@ window.addEventListener('click', (event) => {
         t.closest('#project-modal') || t.closest('.close-modal') ||
         t.closest('#cyber-widget') || t.closest('.audio-toggle') ||
         t.closest('.header-btn') || t.closest('#mobile-menu-btn') ||
-        t.closest('#mobile-dropdown') || t.closest('.hero')) return;
+        t.closest('#mobile-dropdown') || t.closest('#hero-name')) return;
 
     // --- LASER 3D (Abre os Projetos e fecha foto/menu) ---
     if (typeof raycaster !== 'undefined' && typeof camera !== 'undefined' && typeof projectNodes !== 'undefined') {
@@ -805,11 +820,9 @@ window.addEventListener('click', (event) => {
         const intersects = raycaster.intersectObjects(projectNodes);
 
         if (intersects.length > 0) {
-            // Se acertou a bolinha, garante que foto/menu/etc fechem no mobile!
             if (window.innerWidth <= 1000) closeAllMobileUI('project');
             if (typeof openModal === 'function') openModal(intersects[0].object.userData.data);
         } else {
-            // Se errou a bolinha (clicou no fundo do espaço sideral)
             const modal = document.getElementById('project-modal');
             if (modal && modal.classList.contains('open')) modal.classList.remove('open');
         }

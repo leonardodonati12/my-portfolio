@@ -1292,6 +1292,11 @@ body.push-right #ai-modal {
 		cursor: auto !important;
 	}
 
+	body, #main-wrapper, #canvas-container, canvas {
+		cursor: pointer !important;
+		-webkit-tap-highlight-color: transparent; /* Remove aquele piscar cinza do iOS */
+	}
+
 	/* MOBILE MENU - estado padrão */
 	#mobile-menu-btn,
 	#mobile-dropdown {
