@@ -1,4 +1,28 @@
-﻿/* --- GENERAL CONFIG --- */
+﻿/* ========================================== */
+/* 🛡️ BLINDAGEM TIPOGRÁFICA MESTRE (A SOLUÇÃO)  */
+/* ========================================== */
+/* 1. Definimos a fonte customizada baixando o arquivo.
+   Você PRECISA colocar os arquivos Consolas.woff2 ou Consolas.ttf na pasta assets/fonts/ */
+@font-face {
+	font-family: 'Consolas Custom';
+	/* Volta uma pasta (../), entra em fonts e pega o nome EXATO do arquivo */
+	src: url('../fonts/CONSOLA.TTF') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+/* 2. Forçamos o uso dessa fonte em TUDO no mobile */
+@media (max-width: 1000px) {
+	/* Lista de todos os elementos que têm texto na introdução */
+	.intro-name, #scramble-text, .enter-btn,
+	.about-title, #bio-text-container,
+	#phrases-container, .continue-hint,
+	.hero, #hero-subtitle {
+		font-family: 'Consolas Custom', monospace !important;
+	}
+}
+
+/* --- GENERAL CONFIG --- */
 body {
 	margin: 0;
 	overflow: hidden;
@@ -1611,8 +1635,7 @@ body.push-right #ai-modal {
 		.about-title, #bio-text-container,
 		#phrases-container, .continue-hint,
 		.hero, #hero-subtitle {
-			/* 👇 Substitua 'Courier New' pelo nome EXATO da fonte que você importou no projeto */
-			font-family: 'Consolas', 'Courier New', monospace !important;
+			font-family: 'VT323', monospace !important;
 		}
 
 		/* 2. Autodescrição mais bem ajustada */
@@ -1641,7 +1664,7 @@ body.push-right #ai-modal {
 		}
 
 			.continue-hint::after {
-				content: "[ click anywhere ]" !important;
+				content: "[ CLICK ANYWHARE ]" !important;
 				font-size: 14px !important;
 				color: #888888 !important; /* <--- VOLTOU PRO CINZA! (Se quiser mais claro, use #aaaaaa) */
 				display: block !important;
