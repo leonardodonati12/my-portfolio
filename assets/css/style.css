@@ -1469,16 +1469,32 @@ body.push-right #ai-modal {
 			transform: scaleY(1) !important;
 		}
 
-	#chat-history .user-msg {
-		align-self: flex-end !important; /* Empurra a caixa inteira pra direita */
-		text-align: right !important; /* Garante que o texto cole na borda direita */
+	/* 🤖 ALINHAMENTO BLINDADO DO CHAT NO MOBILE */
+	#chat-history {
+		display: flex !important;
+		flex-direction: column !important;
+		gap: 15px !important;
 		width: 100% !important;
 	}
 
-	#chat-history .ai-msg {
-		align-self: flex-start !important; /* Mantém a IA cravada na esquerda */
+	.user-msg {
+		/* MÁGICA: margin-left auto empurra a caixa inteira para a direita */
+		margin-left: auto !important;
+		margin-right: 0 !important;
+		text-align: right !important;
+		width: fit-content !important; /* A caixa só ocupa o tamanho do texto */
+		max-width: 85% !important; /* Não deixa o texto bater na outra parede */
+		display: block !important;
+	}
+
+	.ai-msg {
+		/* IA fica cravada na esquerda */
+		margin-right: auto !important;
+		margin-left: 0 !important;
 		text-align: left !important;
-		width: 100% !important;
+		width: fit-content !important;
+		max-width: 85% !important;
+		display: block !important;
 	}
 
 	/* ARCADE MODAL (Não ganha o Blur 100%, fica quietinho no canto) */
