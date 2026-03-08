@@ -1297,6 +1297,17 @@ body.push-right #ai-modal {
 		-webkit-tap-highlight-color: transparent; /* Remove aquele piscar cinza do iOS */
 	}
 
+	/* 1. Remove o Arcade/Game de telas menores que 1000px */
+	#mob-game, #arcade-modal {
+		display: none !important;
+	}
+
+	/* 2. Levanta a tela da IA para fugir da barra de pesquisa do Safari/Chrome */
+	#ai-modal .ai-screen {
+		/* Aumentamos o padding de baixo de 20px para 90px, criando uma margem de segurança gigante */
+		padding: 0 20px 90px 20px !important;
+	}
+
 	/* MOBILE MENU - estado padrão */
 	#mobile-menu-btn,
 	#mobile-dropdown {

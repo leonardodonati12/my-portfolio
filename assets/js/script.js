@@ -849,3 +849,34 @@ document.addEventListener('click', (event) => {
         }
     }
 }, true);
+
+// ==========================================
+// 🎵 BOTÃO DE ÁUDIO MOBILE (ON / OFF)
+// ==========================================
+const mobAudioBtn = document.getElementById('mob-audio');
+const themeAudio = document.getElementById('theme-audio');
+
+if (mobAudioBtn && themeAudio) {
+    mobAudioBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation(); // Evita que o clique feche o menu acidentalmente
+
+        if (themeAudio.paused) {
+            themeAudio.play();
+            mobAudioBtn.innerText = 'Sound off'; // Muda o texto
+            mobAudioBtn.style.color = '#00ff88'; // Fica verde para indicar que tá tocando
+
+            // Tenta sincronizar com o botão do PC também (se existir)
+            const pcAudioBtn = document.getElementById('audio-btn');
+            if (pcAudioBtn) pcAudioBtn.innerText = 'SOUND OFF';
+        } else {
+            themeAudio.pause();
+            mobAudioBtn.innerText = 'Sound on'; // Muda o texto de volta
+            mobAudioBtn.style.color = '#eee';   // Fica branco/cinza
+
+            // Tenta sincronizar com o botão do PC
+            const pcAudioBtn = document.getElementById('audio-btn');
+            if (pcAudioBtn) pcAudioBtn.innerText = 'SOUND ON';
+        }
+    });
+}
