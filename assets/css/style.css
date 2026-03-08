@@ -1619,7 +1619,6 @@ body.push-right #ai-modal {
 		font-family: 'Courier Prime', monospace !important;
 	}
 
-
 	/* ========================================== */
 	/* 🛠️ AJUSTES DE TAMANHO APENAS PARA MOBILE  */
 	/* ========================================== */
@@ -1628,7 +1627,9 @@ body.push-right #ai-modal {
 		#bio-text-container {
 			font-size: clamp(12px, 3.5vw, 16px) !important;
 			line-height: 1.6 !important;
-			padding: 0 15px !important;
+			width: 95% !important; /* MÁGICA: Faz a caixa ocupar 95% da tela */
+			margin: 0 auto !important; /* Centraliza a caixa perfeitamente */
+			padding: 0 5px !important; /* Diminui a margem interna (antes estava 15px) */
 		}
 
 		/* Frases de efeito sem fatiar palavras no celular */
