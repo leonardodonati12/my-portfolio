@@ -1405,14 +1405,14 @@ body.push-right #ai-modal {
 		left: 0 !important;
 		right: 0 !important;
 		bottom: 0 !important;
-		height: auto !important; /* Acompanha a altura exata do conteúdo */
+		height: fit-content !important;
 		max-height: 80vh !important;
 		/* O fundo esfumaçado com uma "sobra" suave pra cima */
 		background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 65%, transparent 100%) !important;
 		backdrop-filter: blur(8px) !important;
 		-webkit-backdrop-filter: blur(8px) !important;
 		border: none !important;
-		border-right: 2px solid #00ff88 !important; /* Voltou a linha vertical cravada na direita! */
+		border-right: none !important; /* <--- Remove a linha vertical verde */
 		border-bottom: none !important; /* Adeus linha horizontal */
 		border-radius: 0 !important;
 		box-sizing: border-box !important;
@@ -1468,9 +1468,13 @@ body.push-right #ai-modal {
 	}
 
 	.panel-content {
+		display: flex !important;
+		flex-direction: column !important;
+		justify-content: flex-end !important; /* Essa é a mágica que empurra pro chão */
 		padding: 0 !important;
 		overflow-y: auto;
 		overflow-x: hidden;
+		height: auto !important;
 	}
 
 	.skill-name {

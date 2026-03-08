@@ -620,10 +620,12 @@ if (audioBtn) audioBtn.addEventListener('click', toggleAudio);
 
 // 1. Zoom dinâmico do 3D baseado no tamanho da tela
 function adjustCameraZoom() {
-    if (window.innerWidth <= 1000) {
-        camera.position.z = 16; // Afasta a câmera no celular (Zoom Out)
+    if (window.innerWidth <= 700) {
+        camera.position.z = 30; // <--- TELA PEQUENA: Afasta bem mais a câmera
+    } else if (window.innerWidth <= 1000) {
+        camera.position.z = 20; // <--- TABLET: Zoom intermediário
     } else {
-        camera.position.z = 10; // Câmera normal no PC
+        camera.position.z = 10; // <--- DESKTOP: Câmera normal
     }
 }
 // Roda ao carregar e ao redimensionar a janela
