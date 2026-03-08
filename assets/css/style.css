@@ -38,11 +38,11 @@ body.active #system-curtain {
 	z-index: 0;
 }
 
-body.push-left #main-wrapper, #project-modal {
+body.push-left #main-wrapper {
 	transform: translateX(240px);
 }
 
-body.push-top #main-wrapper, #project-modal {
+body.push-top #main-wrapper {
 	transform: translateY(280px);
 }
 
