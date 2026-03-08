@@ -118,7 +118,7 @@ body.push-bottom #copyright {
 /* --- BOTÕES DO HEADER (PADRONIZADOS) --- */
 #resume-btn, #portfolio-btn, #solutions-btn, .audio-toggle {
 	position: fixed;
-	top: 30px;
+	top: 20px;
 	font-size: 0.75rem;
 	color: #eee;
 	font-family: 'Consolas', monospace;
