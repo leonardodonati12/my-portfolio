@@ -1246,55 +1246,6 @@ body.push-right #ai-modal {
 /* ========================================== */
 /* RESPONSIVIDADE & MOBILE (LIMPO E OTIMIZADO)*/
 /* ========================================== */
-
-/* 1. Sumir o DRAG TO ROTATE em 1300px */
-@media (max-width: 1300px) {
-	.interaction-hint {
-		display: none !important;
-	}
-}
-
-/* 2. Estilo Padrão do Menu Mobile (Escondido no Desktop) */
-#mobile-menu-btn {
-	display: none;
-	position: fixed;
-	top: 30px;
-	right: 30px;
-	font-size: 1.8rem;
-	color: #00ff88;
-	z-index: 5000;
-	cursor: none !important;
-	text-shadow: 0 0 10px rgba(0,255,136,0.5);
-}
-
-#mobile-dropdown {
-	display: none;
-	position: fixed;
-	top: 75px;
-	right: 30px;
-	flex-direction: column;
-	gap: 20px;
-	background: transparent;
-	text-align: right;
-	z-index: 4999;
-}
-
-	#mobile-dropdown a {
-		color: #eee;
-		font-family: 'Consolas', monospace;
-		font-size: 1rem;
-		letter-spacing: 2px;
-		text-decoration: none;
-		text-transform: uppercase;
-		text-shadow: 0 2px 10px rgba(0,0,0,0.9);
-		cursor: none !important;
-	}
-
-		#mobile-dropdown a:hover {
-			color: #00ff88;
-		}
-
-/* 3. O GRANDE CORTE: 1000px */
 @media (max-width: 1000px) {
 	/* Sumir itens desnecessários e o cursor verde customizado */
 	#cyber-widget, #copyright, #resume-btn, #portfolio-btn, #solutions-btn, .audio-toggle, #folder-stack, #callout-container, .cursor-dot, .cursor-outline {
