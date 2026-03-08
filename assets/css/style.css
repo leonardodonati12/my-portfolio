@@ -1757,60 +1757,93 @@ body.push-right #ai-modal {
 /* 🍔 MENU DAS PÁGINAS INTERNAS (QUEBRA EM 850px) */
 /* ========================================== */
 
-/* 1. Esconde por padrão no Desktop */
 #gallery-menu-btn, #gallery-dropdown {
 	display: none;
 }
 
-/* 2. Mostra o botão ☰ apenas quando a tela for 850px ou menor */
 @media (max-width: 850px) {
 	/* Esconde o menu horizontal do desktop */
 	.header .nav {
 		display: none !important;
 	}
 
-	/* 1. ÍCONE MENOR E ALINHADO CENTRALIZADO */
+	/* 1. ÍCONE CENTRALIZADO COM O NOME */
 	#gallery-menu-btn {
 		display: block;
 		position: fixed;
-		top: 30px; /* Alinhado perfeitamente com o topo do seu nome (h1) */
-		right: 20px; /* Mesma margem da tela */
+		top: 34px; /* Altura ajustada para o meio do h1 "Leonardo Donati" */
+		right: 20px;
 		z-index: 9999;
-		font-size: 24px; /* Diminuído de 30px para 24px (tamanho do seu h1) */
+		font-size: 24px;
 		color: #000 !important;
 		cursor: pointer;
 		line-height: 1;
 	}
 
-	/* 2 e 4. MENU TRANSPARENTE E ALINHADO NO TOPO DO ÍCONE */
+	/* 2. MENU TRANSPARENTE E NA MESMA ALTURA */
 	#gallery-dropdown {
 		position: fixed;
-		top: 30px; /* 4. Exata mesma altura do ícone! */
+		top: 34px; /* Exata mesma altura do ícone para o 1º link nascer no lugar dele! */
 		right: 20px;
-		background: transparent; /* 2. Fundo removido! */
-		border: none; /* Borda removida */
-		padding: 0; /* Zera o padding para o primeiro link colar no teto */
+		background: transparent;
+		border: none;
+		padding: 0;
 		display: none;
 		flex-direction: column;
-		align-items: flex-end; /* Joga os textos todos para a direita */
-		gap: 15px; /* Espaço entre os links */
+		align-items: flex-end;
+		gap: 15px;
 		z-index: 9998;
 	}
 
-		/* 3. LINKS DO MENU COM FONTE PRETA */
+		/* 3. LINKS MENORES E PREPARO PRA CACHOEIRA */
 		#gallery-dropdown a {
-			color: #000 !important; /* 3. Fonte preta no fundo branco */
-			font-size: 1.1rem;
+			color: #000 !important;
+			font-size: 0.85rem !important; /* <--- FONTE REDUZIDA AQUI! */
 			text-decoration: none;
 			text-transform: uppercase;
 			letter-spacing: 2px;
-			text-shadow: none; /* Remove sombras antigas */
 			line-height: 1;
 			margin: 0;
+			/* Deixa invisível e um pouco pra cima antes de aparecer */
+			opacity: 0;
+			transform: translateY(-10px);
+			/* A animação que será ativada quando o menu abrir */
+			animation: cascade-drop 0.3s ease forwards;
 		}
 
-			/* Mantém o verde quando você toca neles */
+			/* 4. O EFEITO CACHOEIRA (Atraso sequencial para cada link) */
+			#gallery-dropdown a:nth-child(1) {
+				animation-delay: 0.05s;
+			}
+
+			#gallery-dropdown a:nth-child(2) {
+				animation-delay: 0.10s;
+			}
+
+			#gallery-dropdown a:nth-child(3) {
+				animation-delay: 0.15s;
+			}
+
+			#gallery-dropdown a:nth-child(4) {
+				animation-delay: 0.20s;
+			}
+			/* Se tiver mais links no futuro, é só adicionar nth-child(5) com 0.25s e por aí vai... */
+
+			/* Mantém o verde no toque */
 			#gallery-dropdown a:hover, #gallery-dropdown a.active {
 				color: #00ff88 !important;
 			}
+}
+
+/* 5. A MÁGICA DA ANIMAÇÃO */
+@keyframes cascade-drop {
+	0% {
+		opacity: 0;
+		transform: translateY(-15px);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
