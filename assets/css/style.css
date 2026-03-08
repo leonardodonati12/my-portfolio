@@ -1313,14 +1313,33 @@ body.push-right #ai-modal {
 	}
 
 	#mobile-dropdown {
-		top: 55px;
-		right: 20px;
-		gap: 12px; /* Menos espaçado */
+		top: 20px !important; /* Mesma altura do Hero */
+		right: 20px !important;
+		gap: 12px;
+		background: rgba(0, 0, 0, 0.85) !important; /* Fundo escuro pro menu ler bem */
+		padding: 20px !important;
+		border-radius: 12px !important;
+		backdrop-filter: blur(10px) !important;
+		border: 1px solid rgba(0, 255, 136, 0.3) !important;
+		/* Mágica da animação */
+		display: flex !important;
+		transform-origin: top !important;
+		transform: scaleY(0) !important;
+		opacity: 0 !important;
+		pointer-events: none !important;
+		transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease !important;
 	}
 
 		#mobile-dropdown a {
-			font-size: 0.8rem; /* Fonte menor */
-			color: #fff; /* Texto Branco */
+			font-size: 0.8rem;
+			color: #fff;
+		}
+
+		/* Classe que o JS vai ativar para abrir o menu */
+		#mobile-dropdown.open-menu {
+			transform: scaleY(1) !important;
+			opacity: 1 !important;
+			pointer-events: auto !important;
 		}
 
 	/* 3 - MOVER HERO PRA ESQUERDA */
@@ -1341,7 +1360,7 @@ body.push-right #ai-modal {
 	/* 3 e 4 - ALINHAR O PROJETO COM O HERO, SUBIR E REDUZIR FONTES */
 	#project-modal {
 		left: 15px !important; /* Exatamente o mesmo 'left' do Hero */
-		top: 120px !important; /* Subiu! Fica logo abaixo do Hero */
+		top: 130px !important; /* Subiu! Fica logo abaixo do Hero */
 		width: 85% !important;
 		transform: scaleY(0) !important; /* Sobrescreve a centralização anterior */
 		padding-left: 15px !important;
@@ -1385,26 +1404,19 @@ body.push-right #ai-modal {
 		}
 	}
 
-	.ui-panel {
-		width: 260px !important;
-		height: auto !important;
-		max-height: 60vh !important;
-		bottom: 20px !important;
-		right: 20px !important;
-		top: auto !important;
-		left: auto !important;
-		background: transparent !important;
-		backdrop-filter: none !important;
-		border: none !important;
-		border-right: 2px solid #00ff88 !important;
-		border-radius: 0 !important;
-		box-shadow: none !important;
-		text-align: right !important;
-		padding: 0 15px 0 0 !important;
-		/* A mágica da animação de baixo pra cima */
-		transform-origin: bottom !important;
-		animation: hud-pop-up 0.2s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+	.ui-panel, #ai-modal {
+		background: rgba(0, 0, 0, 0.75) !important; /* Fundo preto translúcido */
+		backdrop-filter: blur(12px) !important; /* O Blur elegante */
+		padding: 20px 15px !important; /* Espaço pro texto não colar na borda */
+		border-radius: 15px 0 0 15px !important; /* Arredonda a esquerda */
+		border: 1px solid rgba(255,255,255,0.05) !important;
+		border-right: 2px solid #00ff88 !important; /* Mantém a régua neon */
 	}
+
+	#ai-modal {
+		padding: 5px !important;
+	}
+	/* Ajuste fino pra IA caber na caixa */
 
 	.panel-header {
 		display: none !important;
@@ -1486,4 +1498,17 @@ body.push-right #ai-modal {
 			animation: none !important;
 		}
 
+	/* 4 - REMOVER CURSOR JS TOTALMENTE NO MOBILE */
+	.cursor-dot, .cursor-outline {
+		display: none !important;
+	}
+
+	* {
+		cursor: auto !important;
+	}
+
+	/* 5 - REMOVER CALLOUT DO HOVER NO MOBILE (Aparece só no clique agora!) */
+	#callout-container {
+		display: none !important;
+	}
 }

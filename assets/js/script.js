@@ -683,32 +683,27 @@ document.querySelectorAll('.mob-panel-link').forEach(link => {
 
 // 4. FECHAR IA, GAME E ABAS (PAINÉIS) CLICANDO FORA DELES
 window.addEventListener('click', (e) => {
-    const aiModal = document.getElementById('ai-modal');
-    const gameModal = document.getElementById('arcade-modal');
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileDropdown = document.getElementById('mobile-dropdown');
 
-    // Fechar IA
-    if (aiModal && aiModal.classList.contains('open') && !aiModal.contains(e.target) && e.target.id !== 'mob-ai') {
-        aiModal.classList.remove('open');
+    // Função rápida para recolher o menu com estilo
+    function closeMobileMenu() {
+        if (mobileDropdown) mobileDropdown.classList.remove('open-menu');
+        // Devolve o botão hambúrguer com um leve delay pra animação ficar bonita
+        if (mobileMenuBtn) setTimeout(() => { mobileMenuBtn.style.opacity = '1'; }, 200);
     }
 
-    // Fechar Game
-    if (gameModal && gameModal.classList.contains('open') && !gameModal.contains(e.target) && e.target.id !== 'mob-game') {
-        gameModal.classList.remove('open');
-    }
+    if (mobileMenuBtn && mobileDropdown) {
+        mobileMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mobileDropdown.classList.add('open-menu'); // Abre com animação
+            mobileMenuBtn.style.opacity = '0';  // Esconde o botão ☰
+        });
 
-    // 1 - FECHAR AS ABAS (SKILLS, TIMELINE, ETC) CLICANDO FORA
-    const isPanelLink = e.target.closest('.mob-panel-link');
-    // Se não clicou no botão do menu que abre a aba...
-    if (!isPanelLink) {
-        document.querySelectorAll('.ui-panel').forEach(panel => {
-            // Se a aba estiver aberta e o clique não foi dentro dela...
-            if (panel.style.display === 'flex' && !panel.contains(e.target)) {
-                // Fechamos ela usando a sua função padrão original!
-                if (typeof closePanel === 'function') {
-                    closePanel(panel);
-                } else {
-                    panel.style.display = 'none';
-                }
+        // Fechar menu clicando em qualquer outro lugar da tela
+        window.addEventListener('click', (e) => {
+            if (mobileDropdown.classList.contains('open-menu') && !mobileDropdown.contains(e.target)) {
+                closeMobileMenu();
             }
         });
     }
