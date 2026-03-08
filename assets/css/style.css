@@ -1392,52 +1392,53 @@ body.push-right #ai-modal {
 		}
 	}
 
+	/* 1. Base dos painéis e IA (Trava no chão sem bugar o texto) */
 	.ui-panel, #ai-modal {
-		position: fixed !important; /* Trava na tela */
-		top: auto !important; /* ISSO AQUI MATA O ALINHAMENTO NO TOPO! */
-		bottom: 0 !important; /* E isso ancora no rodapé */
+		position: fixed !important;
+		top: auto !important;
+		bottom: 0 !important; /* Fica colado no chão com segurança */
 		width: 100% !important;
 		left: 0 !important;
 		right: 0 !important;
-		height: fit-content !important;
-		max-height: 80vh !important;
 		background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 65%, transparent 100%) !important;
 		backdrop-filter: blur(8px) !important;
 		-webkit-backdrop-filter: blur(8px) !important;
 		border: none !important;
-		border-right: none !important;
-		border-bottom: none !important;
 		border-radius: 0 !important;
 		box-sizing: border-box !important;
 	}
 
+	/* 2. Painéis Normais (Skills, Timeline, etc) */
 	.ui-panel {
-		padding: 40px 20px 20px 20px !important; /* Os 40px no topo criam a sobrinha do background */
-		text-align: right !important; /* O texto fica alinhado no canto direito */
-		box-shadow: none !important;
+		height: auto !important; /* 'auto' salva a vida no iOS, foge do 'fit-content' */
+		max-height: 75dvh !important;
+		padding: 40px 20px 20px 20px !important;
+		text-align: right !important;
 		transform-origin: bottom !important;
 		animation: hud-pop-up 0.2s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
 	}
 
-	/* IA MODAL (Chat funcional de Lado a Lado) */
+	/* 3. A Caixa de Texto Interna (O segredo do bug) */
+	.panel-content {
+		display: block !important; /* Tira o flex-end que empurrava o texto pro limbo! */
+		height: auto !important;
+		max-height: 60dvh !important; /* Se for muito texto, rola a barra aqui dentro */
+		padding: 0 !important;
+		overflow-y: auto !important;
+		overflow-x: hidden !important;
+	}
+
+	/* 4. Modal da IA (Precisa de altura fixa pra não esmagar o chat) */
 	#ai-modal {
+		height: 65dvh !important;
+		padding: 40px 0 0 0 !important;
 		transform-origin: bottom !important;
 		transform: scaleY(0) !important;
 		transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s ease !important;
-		padding: 40px 0 0 0 !important; /* Sobrinha pra cima no background da IA */
 	}
 
 		#ai-modal.open {
 			transform: scaleY(1) !important;
-			animation: none !important;
-		}
-
-		#ai-modal .ai-screen {
-			width: 100% !important; /* Tela funcional pegando a tela inteira! */
-			height: 60vh !important; /* Dá bastante espaço para as mensagens */
-			margin: 0 !important;
-			padding: 0 20px 20px 20px !important;
-			box-sizing: border-box !important;
 		}
 
 	/* ARCADE MODAL (Não ganha o Blur 100%, fica quietinho no canto) */
