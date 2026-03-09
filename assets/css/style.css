@@ -1747,3 +1747,12 @@ body.push-right #arcade-modal, body.push-right #ai-modal {
 		opacity: 0 !important;
 		transition: opacity 0.2s ease !important;
 	}
+
+/* ========================================== */
+/* 🧹 LIMPANDO O COPYRIGHT EM TELAS < 1585px  */
+/* ========================================== */
+@media (max-width: 1585px) {
+	#copyright {
+		display: none !important;
+	}
+}
