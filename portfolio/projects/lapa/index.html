@@ -229,6 +229,19 @@
 
                 if (!dropdown || !btn) return;
 
+                // 🌟 NOVA FUNÇÃO: O Recolhimento Suave
+                const fecharMenuSuave = () => {
+                    dropdown.classList.add('menu-saindo'); // Começa a animação de saída
+
+                    // Espera 250ms (tempo exato do CSS) para sumir com o menu de verdade
+                    setTimeout(() => {
+                        dropdown.style.display = 'none';
+                        dropdown.classList.remove('menu-saindo'); // Limpa a classe pro próximo uso
+                        btn.style.display = 'block'; // Devolve o botão ☰
+                    }, 250);
+                };
+
+                // Abrir o Menu (Continua instantâneo, o CSS já faz a entrada bonita)
                 if (t.closest('#gallery-menu-btn')) {
                     event.stopPropagation();
                     dropdown.style.display = 'flex';
@@ -236,16 +249,15 @@
                     return;
                 }
 
+                // Condições de Fechamento usando a nova função
                 if (window.innerWidth <= 850 && dropdown.style.display === 'flex') {
                     if (t.closest('.mobile-menu-item')) {
-                        dropdown.style.display = 'none';
-                        btn.style.display = 'block';
+                        fecharMenuSuave();
                         return;
                     }
 
                     if (!t.closest('#gallery-dropdown')) {
-                        dropdown.style.display = 'none';
-                        btn.style.display = 'block';
+                        fecharMenuSuave();
                     }
                 }
             }, true);

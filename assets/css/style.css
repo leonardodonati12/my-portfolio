@@ -1309,7 +1309,7 @@ body.push-right #ai-modal {
 
 	/* 2. Colocamos o 'calço' diretamente na área de digitar */
 	.chat-input-area {
-		margin-bottom: 120px !important; /* Levanta SÓ o campo de texto acima da barra do Safari/Chrome */
+		margin-bottom: 105px !important; /* Levanta SÓ o campo de texto acima da barra do Safari/Chrome */
 	}
 
 	/* MOBILE MENU - estado padrão */
@@ -1848,3 +1848,46 @@ body.push-right #ai-modal {
 	}
 }
 
+/* ========================================== */
+/* 🎬 ANIMAÇÕES DE SAÍDA DO MENU (FECHAR SUAVE) */
+/* ========================================== */
+
+/* Animação para o Menu da Home (Encolhe de baixo pra cima) */
+@keyframes menu-close-home {
+	0% {
+		transform: scaleY(1);
+		opacity: 1;
+	}
+
+	100% {
+		transform: scaleY(0);
+		opacity: 0;
+	}
+}
+
+/* Animação para o Menu das Internas (Sobe e some) */
+@keyframes menu-close-gallery {
+	0% {
+		transform: translateY(0);
+		opacity: 1;
+	}
+
+	100% {
+		transform: translateY(-15px);
+		opacity: 0;
+	}
+}
+
+/* Classes que o nosso JS vai aplicar na hora de fechar */
+#mobile-dropdown.menu-saindo {
+	transform-origin: top right !important;
+	animation: menu-close-home 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+}
+
+#gallery-dropdown.menu-saindo {
+	animation: menu-close-gallery 0.25s ease forwards !important;
+}
+
+	#gallery-dropdown.menu-saindo a {
+		animation: none !important; /* Desliga o delay da "cachoeira" pra caixa fechar toda junta na saída */
+	}
