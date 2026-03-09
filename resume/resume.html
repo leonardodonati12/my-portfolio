@@ -239,12 +239,68 @@
             flex-shrink: 0;
         }
 
+        /* ========================================== */
+        /* 🛑 MENU UNIFICADO (FIX DEFINITIVO)       */
+        /* ========================================== */
+
+        /* 1. Blindagem do Botão de Download para ficar cravado no topo */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            flex-shrink: 0;
+            align-self: flex-start; /* [NOVO] Garante que o botão nunca desça, fica colado no topo do Flexbox! */
+            margin-top: -5px; /* [AJUSTE FINO] Compensa o padding do botão para o ícone centralizar com o nome */
+        }
+
+        /* O Botão Principal: Limpo e sem caixa */
+        .nav-btn {
+            font-size: 0.8rem;
+            color: #000; /* Preto total */
+            letter-spacing: 1px;
+            text-decoration: none;
+            border: 1px solid transparent; /* Blindagem anti-pulo */
+            padding: 8px 15px;
+            border-radius: 30px;
+            background: transparent; /* [NOVO] Fundo transparente */
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            text-shadow: none; /* [NOVO] Começa sem sombra */
+        }
+
+            .nav-btn:hover {
+                /* No hover, ele ganha a cor verde neon da imagem 2! */
+                color: #00ff88 !important;
+                background: transparent;
+                /* [NOVO] O Brilho Neon icônico! */
+                text-shadow: 0 0 10px rgba(0, 255, 136, 0.7), 0 0 20px rgba(0, 255, 136, 0.5) !important;
+                box-shadow: none;
+            }
+
+        /* SVG Blindado: Força a cor verde da imagem 2! */
+        .btn-icon-svg {
+            stroke: #00ff88 !important; /* [NOVO] Cor neon forçada */
+            transition: stroke 0.3s ease, filter 0.3s ease;
+        }
+
+        .nav-btn:hover .btn-icon-svg {
+            filter: drop-shadow(0 0 5px rgba(0, 255, 136, 0.9)); /* [NOVO] Brilho no SVG */
+        }
+
+        /* ------------------------------------------ */
+        /* 🔥 O DROPDOWN TRANSPARENTE (TIPO IMAGE 2) */
+        /* ------------------------------------------ */
         .dropdown-content {
             display: none;
             position: absolute;
-            right: 0;
-            top: 100%;
-            margin-top: 12px;
+            right: 15px; /* Alinha perfeitamente com a margem do botão */
+            top: 100%; /* Começa exatamente abaixo do botão */
+            margin-top: 12px; /* Espaço para o menu 'respirar' */
+            /* Limpeza total: sem fundo, sem borda, sem sombra */
             background: transparent;
             min-width: 150px;
             box-shadow: none;
@@ -252,11 +308,13 @@
             border: none;
             padding: 0;
             z-index: 101;
+            /* Flexbox para empurrar tudo pra direita */
             flex-direction: column;
             align-items: flex-end;
-            gap: 12px;
+            gap: 12px; /* Espaço entre as opções (EN e PT-BR) */
         }
 
+            /* A "ponte invisível" para o mouse não perder o hover */
             .dropdown-content::before {
                 content: '';
                 position: absolute;
@@ -268,27 +326,33 @@
             }
 
         .dropdown:hover .dropdown-content {
-            display: flex;
+            display: flex; /* Muda para Flex para alinhar à direita */
             animation: fadeIn 0.2s ease-in-out;
         }
 
+        /* As Opções do Menu (ENGLISH e PORTUGUÊS) */
         .dropdown-content a {
             color: #333;
             padding: 0;
             text-decoration: none;
-            font-size: 0.75rem;
+            font-size: 0.75rem; /* Um pouco menor para elegância */
             font-weight: 600;
-            text-transform: uppercase; 
+            text-transform: uppercase; /* [NOVO] Cravado em Caixa Alta igual à imagem 2! */
             letter-spacing: 1px;
             transition: color 0.2s;
+            /* Anti-Bug de Leitura: Brilho branco para ler sobre qualquer texto de fundo */
             text-shadow: 0 0 8px #fff, 0 0 15px #fff, 0 0 20px #fff;
         }
 
             .dropdown-content a:hover {
-                background-color: transparent; 
-                color: #00b35f;
+                background-color: transparent;
+                color: #00ff88 !important; /* [NOVO] Cor neon no hover */
+                text-shadow: 0 0 10px rgba(0, 255, 136, 0.7), 0 0 20px rgba(0, 255, 136, 0.5) !important;
             }
 
+        /* ============================ */
+        /* ANIMAÇÕES GERAIS             */
+        /* ============================ */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -298,6 +362,73 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
+            }
+        }
+
+        /* ============================ */
+        /* RESPONSIVIDADE MOBILE        */
+        /* ============================ */
+        @media (max-width: 768px) {
+            body {
+                padding: 0 20px 40px 20px;
+            }
+
+            .cv-header {
+                padding: 20px 0 10px 0;
+            }
+
+            .item-header {
+                flex-direction: column;
+            }
+
+            .skill-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .skill-name {
+                margin-bottom: 5px;
+                color: #222;
+            }
+
+            /* [NOVO] Força o dropdown a ficar no topo no celular também! */
+            .dropdown {
+                align-self: flex-start !important;
+                margin-top: 10px !important;
+            }
+
+            .cv-name-link {
+                margin-top: 10px;
+            }
+        }
+
+        /* Reduz Ícone e Nome em Telas Pequenas < 500px */
+        @media (max-width: 500px) {
+            .btn-text {
+                display: none;
+            }
+
+            .btn-icon {
+                display: block !important;
+            }
+
+            /* Ícone de download mais limpo e centralizado */
+            .nav-btn {
+                padding: 10px;
+                border-radius: 50%; /* Transforma o botão mobile numa bolinha */
+                background: rgba(0,0,0,0.03); /* Fundo super leve pra dar área de clique */
+            }
+
+                .nav-btn:hover {
+                    background: rgba(0, 255, 136, 0.05);
+                }
+
+            .dropdown {
+                margin-top: 5px !important;
+            }
+
+            .cv-name {
+                font-size: 2rem;
             }
         }
 
