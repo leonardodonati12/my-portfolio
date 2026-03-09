@@ -638,10 +638,22 @@ window.addEventListener('resize', adjustCameraZoom);
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
 const mobileDropdown = document.getElementById('mobile-dropdown');
 
-// Função auxiliar rápida para fechar o menu e voltar o botão ☰
+// Função auxiliar rápida para fechar o menu e voltar o botão ☰ (AGORA COM ANIMAÇÃO!)
 function closeMobileMenu() {
-    if (mobileDropdown) mobileDropdown.style.display = 'none';
-    if (mobileMenuBtn) mobileMenuBtn.style.display = 'block';
+    if (mobileDropdown) {
+        // 1. Adiciona a classe que faz o CSS encolher o menu
+        mobileDropdown.classList.add('menu-saindo');
+
+        // 2. Espera 250 milissegundos (o tempo do pulo) antes de apagar de vez
+        setTimeout(() => {
+            mobileDropdown.style.display = 'none';          // Apaga da tela
+            mobileDropdown.classList.remove('menu-saindo'); // Limpa a classe pra próxima vez
+
+            if (mobileMenuBtn) {
+                mobileMenuBtn.style.display = 'block';      // Devolve o botão ☰
+            }
+        }, 250);
+    }
 }
 
 if (mobileMenuBtn && mobileDropdown) {
@@ -654,7 +666,7 @@ if (mobileMenuBtn && mobileDropdown) {
     // Fechar menu clicando em qualquer outro lugar da tela
     window.addEventListener('click', (e) => {
         if (mobileDropdown.style.display === 'flex' && !mobileDropdown.contains(e.target)) {
-            closeMobileMenu();
+            closeMobileMenu(); // Agora ele chama a versão com animação suave!
         }
     });
 }
