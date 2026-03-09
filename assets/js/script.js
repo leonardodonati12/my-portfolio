@@ -876,16 +876,16 @@ if (mobAudioBtn && themeAudio) {
 
         if (themeAudio.paused) {
             themeAudio.play();
-            mobAudioBtn.innerText = 'Sound off'; // Muda o texto
-            mobAudioBtn.style.color = '#00ff88'; // Fica verde para indicar que tá tocando
+            mobAudioBtn.innerText = 'Sound on';  // Fica ON
+            mobAudioBtn.style.color = '#00ff88'; // Fica verde
 
             // Tenta sincronizar com o botão do PC também (se existir)
             const pcAudioBtn = document.getElementById('audio-btn');
             if (pcAudioBtn) pcAudioBtn.innerText = 'SOUND OFF';
         } else {
             themeAudio.pause();
-            mobAudioBtn.innerText = 'Sound on'; // Muda o texto de volta
-            mobAudioBtn.style.color = '#eee';   // Fica branco/cinza
+            mobAudioBtn.innerText = 'Sound off'; // Fica OFF
+            mobAudioBtn.style.color = '#eee';    // Fica branco
 
             // Tenta sincronizar com o botão do PC
             const pcAudioBtn = document.getElementById('audio-btn');
