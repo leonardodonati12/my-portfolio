@@ -132,6 +132,7 @@
             font-weight: bold;
             margin-bottom: 30px;
             letter-spacing: -1px;
+            color: #00ff88;
         }
 
         @keyframes fadeIn {
@@ -174,6 +175,9 @@
     </style>
 </head>
 <body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
 
     <div class="header">
         <a href="../index.html?skip=true" class="identity-group" style="text-decoration: none; cursor: pointer;">
@@ -224,8 +228,9 @@
 
     <div id="gallery-menu-btn">☰</div>
     <div id="gallery-dropdown">
-        <a href="../portfolio/portfolio.html" class="mobile-menu-item">Projects</a>
-        <a href="javascript:void(0)" onclick="toggleSection('about')" id="tab-about" class="mobile-menu-item">About</a>
+        <a href="../index.html" class="mobile-menu-item">Home / 3D</a>
+        <a href="javascript:void(0)" onclick="toggleSection('projects')" class="mobile-menu-item">Projects</a>
+        <a href="javascript:void(0)" onclick="toggleSection('about')" class="mobile-menu-item">About</a>
     </div>
 
     <script src="../assets/js/cursor.js"></script>
@@ -237,29 +242,25 @@
             const tabAbout = document.getElementById('tab-about');
 
             if (section === 'about') {
-                // Mostra aba About, esconde Projects
                 proj.style.display = 'none';
                 about.style.display = 'block';
-                // Deixa About verde, tira o verde de Projects
                 tabProj.classList.remove('active');
                 tabAbout.classList.add('active');
             } else {
-                // Mostra aba Projects, esconde About
                 proj.style.display = 'grid';
                 about.style.display = 'none';
-                // Deixa Projects verde, tira o verde de About
                 tabAbout.classList.remove('active');
                 tabProj.classList.add('active');
             }
         }
 
-        // Script inteligente para detectar quando vêm da página de detalhes
         window.onload = function () {
             const params = new URLSearchParams(window.location.search);
             if (params.get('section') === 'about') {
                 toggleSection('about');
             }
         }
+
         document.addEventListener("DOMContentLoaded", () => {
             const iosFix = function () { };
             document.documentElement.addEventListener('click', iosFix);
@@ -274,17 +275,15 @@
 
                 if (!dropdown || !btn) return;
 
-                // 🌟 A FUNÇÃO DE RECOLHIMENTO SUAVE (Agora dentro da página!)
                 const fecharMenuSuave = () => {
-                    dropdown.classList.add('menu-saindo');
+                    dropdown.style.animation = 'menu-close-gallery 0.25s ease forwards';
                     setTimeout(() => {
                         dropdown.style.display = 'none';
-                        dropdown.classList.remove('menu-saindo');
+                        dropdown.style.animation = '';
                         btn.style.display = 'block';
                     }, 250);
                 };
 
-                // Abre o menu
                 if (t.closest('#gallery-menu-btn')) {
                     event.stopPropagation();
                     dropdown.style.display = 'flex';
@@ -292,16 +291,11 @@
                     return;
                 }
 
-                // Condições para FECHAR
                 if (window.innerWidth <= 850 && dropdown.style.display === 'flex') {
-
-                    // Se clicou num link do menu
                     if (t.closest('.mobile-menu-item')) {
                         fecharMenuSuave();
                         return;
                     }
-
-                    // Se clicou no "vazio" (fora do menu) -> CHAMA A ANIMAÇÃO!
                     if (!t.closest('#gallery-dropdown')) {
                         fecharMenuSuave();
                     }

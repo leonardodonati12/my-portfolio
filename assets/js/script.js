@@ -641,18 +641,14 @@ const mobileDropdown = document.getElementById('mobile-dropdown');
 // Função auxiliar rápida para fechar o menu e voltar o botão ☰ (AGORA COM ANIMAÇÃO!)
 function closeMobileMenu() {
     if (mobileDropdown) {
-        // 1. Adiciona a classe que faz o CSS encolher o menu
-        mobileDropdown.classList.add('menu-saindo');
-
-        // 2. Espera 250 milissegundos (o tempo do pulo) antes de apagar de vez
+        // Injeta a animação diretamente no elemento!
+        mobileDropdown.style.animation = 'menu-close-home 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+        
         setTimeout(() => {
-            mobileDropdown.style.display = 'none';          // Apaga da tela
-            mobileDropdown.classList.remove('menu-saindo'); // Limpa a classe pra próxima vez
-
-            if (mobileMenuBtn) {
-                mobileMenuBtn.style.display = 'block';      // Devolve o botão ☰
-            }
-        }, 250);
+            mobileDropdown.style.display = 'none';
+            mobileDropdown.style.animation = ''; // Limpa pra não bugar a próxima abertura
+            if (mobileMenuBtn) mobileMenuBtn.style.display = 'block';
+        }, 250); 
     }
 }
 
@@ -771,7 +767,6 @@ window.addEventListener('pointerdown', (e) => {
 });
 
 // 4. O CÉREBRO DA OPERAÇÃO 
-// (O 'true' no final obriga isso a rodar ANTES de qualquer script antigo que você tenha!)
 document.addEventListener('click', (event) => {
     if (!document.body.classList.contains('active')) return;
     const t = event.target;
@@ -779,13 +774,13 @@ document.addEventListener('click', (event) => {
 
     // --- HACK DO MENU: Intercepta o botão e sobrepõe códigos antigos! ---
     if (t.closest('#mobile-menu-btn')) {
-        event.stopPropagation(); // Trava os scripts antigos pra não dar conflito
+        event.stopPropagation();
         const dropdown = document.getElementById('mobile-dropdown');
         const btn = document.getElementById('mobile-menu-btn');
         if (dropdown && btn) {
-            dropdown.style.display = 'flex'; // Abre o menu
-            btn.style.display = 'none';      // Esconde o botão ☰ temporariamente
-            closeAllMobileUI('menu');        // Manda fechar a descrição do projeto, foto, etc!
+            dropdown.style.display = 'flex';
+            btn.style.display = 'none';
+            closeAllMobileUI('menu');
         }
         return;
     }
@@ -820,6 +815,9 @@ document.addEventListener('click', (event) => {
         else if (t.closest('#project-modal')) clickedUI = 'project';
         else if (t.closest('#secret-photo-card')) clickedUI = 'photo';
 
+        // 🛡️ A MÁGICA: Se clicou no Canvas (3D), protege o projeto para que o Raycaster faça a animação de troca!
+        if (t.tagName === 'CANVAS') clickedUI = 'project';
+
         closeAllMobileUI(clickedUI);
     }
 
@@ -853,11 +851,14 @@ document.addEventListener('click', (event) => {
         const intersects = raycaster.intersectObjects(projectNodes);
 
         if (intersects.length > 0) {
-            if (window.innerWidth <= 1000) closeAllMobileUI('project');
+            // Clicou na bolinha: A função openModal() vai cuidar de recolher e abrir o novo!
             if (typeof openModal === 'function') openModal(intersects[0].object.userData.data);
         } else {
+            // Clicou no vazio do 3D: Fecha o projeto suavemente!
             const modal = document.getElementById('project-modal');
-            if (modal && modal.classList.contains('open')) modal.classList.remove('open');
+            if (modal && modal.classList.contains('open')) {
+                modal.classList.remove('open');
+            }
         }
     }
 }, true);
