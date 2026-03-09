@@ -186,6 +186,7 @@
             align-items: baseline;
             border-bottom: 1px solid #f9f9f9;
             padding-bottom: 10px;
+            align-items: flex-start;
         }
 
         .skill-name {
@@ -255,10 +256,14 @@
 
         /* O Dropdown Transparente */
         .dropdown-content {
-            display: none;
+            /* Troca o display:none por visibilidade, para podermos atrasar o clique */
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none; /* Bloqueia cliques por padrão */
+
             position: absolute;
             right: 0;
-            top: 0; /* Sobe pro topo absoluto (mesmo lugar do botão fantasma) */
+            top: 0;
             margin-top: 0;
             background: transparent;
             min-width: max-content;
@@ -267,17 +272,23 @@
             border: none;
             padding: 0;
             z-index: 101;
+            display: flex; /* Sempre flexível, apenas fica transparente */
             flex-direction: column;
             align-items: flex-end;
             gap: 12px;
+            /* Animação para sumir */
+            transition: opacity 0.2s ease, visibility 0s 0.2s, pointer-events 0s 0.2s;
         }
 
         .dropdown:hover .dropdown-content {
-            display: flex;
-            animation: fadeIn 0.2s ease-in-out;
+            visibility: visible;
+            opacity: 1;
+            pointer-events: auto; /* Libera o clique... */
+            /* A MÁGICA: Só libera o clique DEPOIS de 150ms! Isso ignora o toque fantasma do celular. */
+            transition: opacity 0.2s ease, visibility 0s 0s, pointer-events 0s 0.15s;
         }
 
-        /* Opções (ENGLISH e PORTUGUÊS) */
+        /* As Opções do Menu (ENGLISH e PORTUGUÊS) */
         .dropdown-content a {
             color: #333;
             padding: 0;
