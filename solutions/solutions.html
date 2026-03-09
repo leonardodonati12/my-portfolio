@@ -304,12 +304,12 @@
                     // Adiciona a classe blindada
                     dropdown.classList.add('menu-saindo-gallery');
 
-                    // Espera 350ms antes de apagar de verdade
+                    // Espera 500ms antes de apagar de verdade
                     setTimeout(() => {
                         dropdown.style.display = 'none';
                         dropdown.classList.remove('menu-saindo-gallery'); // Limpa a classe
                         btn.style.display = 'block';
-                    }, 350);
+                    }, 500);
                 };
 
                 if (t.closest('#gallery-menu-btn')) {

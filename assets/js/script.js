@@ -647,7 +647,7 @@ function closeMobileMenu() {
             mobileDropdown.style.display = 'none';
             mobileDropdown.classList.remove('menu-saindo-home');
             if (mobileMenuBtn) mobileMenuBtn.style.display = 'block';
-        }, 350);
+        }, 500);
     }
 }
 
