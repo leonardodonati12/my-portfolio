@@ -301,12 +301,15 @@
                 if (!dropdown || !btn) return;
 
                 const fecharMenuSuave = () => {
-                    dropdown.style.animation = 'menu-close-gallery 0.25s ease forwards';
+                    // Adiciona a classe blindada
+                    dropdown.classList.add('menu-saindo-gallery');
+
+                    // Espera 350ms antes de apagar de verdade
                     setTimeout(() => {
                         dropdown.style.display = 'none';
-                        dropdown.style.animation = '';
+                        dropdown.classList.remove('menu-saindo-gallery'); // Limpa a classe
                         btn.style.display = 'block';
-                    }, 250);
+                    }, 350);
                 };
 
                 if (t.closest('#gallery-menu-btn')) {

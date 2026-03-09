@@ -458,7 +458,6 @@ window.addEventListener('click', (event) => {
 });
 
 function openModal(data) {
-    // Criamos uma mini-função que injeta os dados e faz a animação de abrir
     const updateContentAndOpen = () => {
         if (modalTitle) modalTitle.innerHTML = data.titulo;
         if (modalTech) modalTech.innerHTML = "// " + data.tech;
@@ -482,14 +481,14 @@ function openModal(data) {
         setTimeout(() => { modal.classList.add('open'); }, 10);
     };
 
-    // A MÁGICA DA TROCA ACONTECE AQUI:
+    // A MÁGICA DA TROCA MAIS SUAVE
     if (modal && modal.classList.contains('open')) {
-        // Se já está aberto, tira a classe para recolher o cartão
         modal.classList.remove('open');
-        // Espera exatos 200ms (tempo da animação do seu CSS) e abre o novo!
-        setTimeout(updateContentAndOpen, 200);
+
+        // Aumentei o timer para 400ms. Dá tempo de você VER a caixa encolher 
+        // perfeitamente antes do novo texto ser injetado e ela descer de novo!
+        setTimeout(updateContentAndOpen, 400);
     } else {
-        // Se estava fechado, só abre direto
         updateContentAndOpen();
     }
 }
@@ -641,14 +640,14 @@ const mobileDropdown = document.getElementById('mobile-dropdown');
 // Função auxiliar rápida para fechar o menu e voltar o botão ☰ (AGORA COM ANIMAÇÃO!)
 function closeMobileMenu() {
     if (mobileDropdown) {
-        // Injeta a animação diretamente no elemento!
-        mobileDropdown.style.animation = 'menu-close-home 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards';
-        
+        // Usa a classe blindada do CSS
+        mobileDropdown.classList.add('menu-saindo-home');
+
         setTimeout(() => {
             mobileDropdown.style.display = 'none';
-            mobileDropdown.style.animation = ''; // Limpa pra não bugar a próxima abertura
+            mobileDropdown.classList.remove('menu-saindo-home');
             if (mobileMenuBtn) mobileMenuBtn.style.display = 'block';
-        }, 250); 
+        }, 350);
     }
 }
 

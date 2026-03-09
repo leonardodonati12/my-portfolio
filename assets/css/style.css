@@ -1720,3 +1720,30 @@ body.push-right #arcade-modal, body.push-right #ai-modal {
 	.text-content p:nth-of-type(3) {
 		animation-delay: 0.20s;
 	}
+
+/* ========================================== */
+/* 🛑 FORÇANDO O RECOLHIMENTO (FIX DEFINITIVO)*/
+/* ========================================== */
+
+/* 1. Desacelera o Modal de Projetos para dar tempo de ver a caixa descendo e subindo */
+#project-modal {
+	transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease !important;
+}
+
+/* 2. Classes de Saída Blindadas com !important */
+.menu-saindo-home {
+	animation: menu-close-home 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+	pointer-events: none !important;
+}
+
+.menu-saindo-gallery {
+	animation: menu-close-gallery 0.35s ease forwards !important;
+	pointer-events: none !important;
+}
+
+	/* Garante que os links sumam junto com a caixa na hora de fechar */
+	.menu-saindo-gallery a {
+		animation: none !important;
+		opacity: 0 !important;
+		transition: opacity 0.2s ease !important;
+	}
