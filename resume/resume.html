@@ -15,7 +15,7 @@
         /* --- CLEAN THEME CSS --- */
         body {
             margin: 0;
-            padding: 0 20px 40px 20px; /* [AJUSTADO] Top padding zerado, o Header cuida disso agora */
+            padding: 0 20px 40px 20px;
             background-color: #ffffff;
             color: #333;
             font-family: 'Inter', sans-serif;
@@ -44,9 +44,8 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(8px);
             z-index: 100;
-            padding: 40px 0 15px 0; /* [NOVO] O padding de cima agora fica aqui */
-            margin-bottom: 20px;
-            border-bottom: 1px solid rgba(0,0,0,0.05); /* Linha sutil pra separar do texto ao rolar */
+            padding: 40px 0 10px 0;
+            /* Borda inferior removida! */
         }
 
         .header-top {
@@ -60,7 +59,7 @@
             text-decoration: none;
             color: inherit;
             flex: 1;
-            min-width: 0; /* Essencial para permitir a quebra do flexbox */
+            min-width: 0;
         }
 
         .cv-name {
@@ -70,7 +69,7 @@
             margin: 0;
             letter-spacing: -1px;
             line-height: 1.1;
-            word-wrap: break-word; /* Permite a quebra Leonardo \n Donati */
+            word-wrap: break-word;
         }
 
         .cv-role {
@@ -81,8 +80,9 @@
             margin-top: 5px;
         }
 
+        /* INFORMAÇÕES DE CONTATO (Agora fora do header sticky) */
         .cv-contact {
-            margin-top: 15px;
+            padding-top: 15px;
             font-size: 0.9rem;
             color: #666;
         }
@@ -238,7 +238,7 @@
         .dropdown {
             position: relative;
             display: inline-block;
-            flex-shrink: 0; /* Garante que o botão não seja esmagado pelo nome */
+            flex-shrink: 0;
         }
 
         .dropdown-content {
@@ -303,11 +303,11 @@
         /* ============================ */
         @media (max-width: 768px) {
             body {
-                padding: 0 20px 40px 20px; /* Mantém zerado no topo */
+                padding: 0 20px 40px 20px;
             }
 
             .cv-header {
-                padding: 20px 0 15px 0; /* Header um pouco mais compacto no celular */
+                padding: 20px 0 10px 0;
             }
 
             .item-header {
@@ -316,15 +316,15 @@
 
             .skill-row {
                 flex-direction: column;
+                align-items: flex-start; /* FIX CRÍTICO: Força o título pro canto esquerdo */
             }
 
             .skill-name {
                 margin-bottom: 5px;
-                color: #222; /* [FIX CRÍTICO] Corrigido, agora volta a ser preto/escuro! */
+                color: #222;
             }
         }
 
-        /* NOVO: Troca Botão por Ícone e Ajusta o Nome */
         @media (max-width: 500px) {
             .btn-text {
                 display: none;
@@ -339,7 +339,7 @@
             }
 
             .cv-name {
-                font-size: 2rem; /* Reduz de leve pra caber mais, e o word-wrap faz o resto! */
+                font-size: 2rem;
             }
         }
     </style>
@@ -371,16 +371,17 @@
             </div>
 
             <div class="cv-role">Brazilian, 23 years old.</div>
-            <div class="cv-contact">
-                Av. Túlio Teodoro de Campos, 6 – Vila Paulista, São Paulo - 4360040
-                <br>
-                +55 12 99777 3790
-                <br />
-                <a href="mailto:leonardodonati12@gmail.com">leonardodonati12@gmail.com</a>
-                <br>
-                <a href="https://linkedin.com/in/leonardodonati12/" target="_blank">linkedin.com/in/leonardodonati12/</a>
-            </div>
         </header>
+
+        <div class="cv-contact">
+            Av. Túlio Teodoro de Campos, 6 – Vila Paulista, São Paulo - 4360040
+            <br>
+            +55 12 99777 3790
+            <br />
+            <a href="mailto:leonardodonati12@gmail.com">leonardodonati12@gmail.com</a>
+            <br>
+            <a href="https://linkedin.com/in/leonardodonati12/" target="_blank">linkedin.com/in/leonardodonati12/</a>
+        </div>
 
         <section>
             <div class="section-title">PROFESSIONAL SUMMARY</div>
