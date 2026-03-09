@@ -15,7 +15,7 @@
         /* --- CLEAN THEME CSS --- */
         body {
             margin: 0;
-            padding: 60px 20px;
+            padding: 0 20px 40px 20px; /* [AJUSTADO] Top padding zerado, o Header cuida disso agora */
             background-color: #ffffff;
             color: #333;
             font-family: 'Inter', sans-serif;
@@ -37,11 +37,30 @@
             background: #fff;
         }
 
-        /* HEADER */
+        /* HEADER TRAVADO NO TOPO (STICKY) */
         .cv-header {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            padding: 40px 0 15px 0; /* [NOVO] O padding de cima agora fica aqui */
             margin-bottom: 20px;
-            border-bottom: none;
-            padding-bottom: 0px;
+            border-bottom: 1px solid rgba(0,0,0,0.05); /* Linha sutil pra separar do texto ao rolar */
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cv-name-link {
+            text-decoration: none;
+            color: inherit;
+            flex: 1;
+            min-width: 0; /* Essencial para permitir a quebra do flexbox */
         }
 
         .cv-name {
@@ -50,6 +69,8 @@
             color: #111;
             margin: 0;
             letter-spacing: -1px;
+            line-height: 1.1;
+            word-wrap: break-word; /* Permite a quebra Leonardo \n Donati */
         }
 
         .cv-role {
@@ -92,14 +113,11 @@
             .section-title::after {
                 content: '';
                 flex: 1;
-                /* Removemos height e background antigos */
                 height: 0;
                 background: transparent;
-                /* Usamos borda para garantir 1px exato em qualquer tela */
                 border-bottom: 1px solid #e0e0e0;
                 margin-left: 15px;
-                /* (Opcional) Ajuste fino vertical se parecer desalinhado */
-                transform: translateY(-1px); 
+                transform: translateY(-1px);
             }
 
             .section-title::before {
@@ -170,15 +188,15 @@
         }
 
         .skill-name {
-            min-width: 230px; /* [ALTERADO] Aumentamos de 180px para 230px para dar respiro */
-            padding-right: 20px; /* [NOVO] Margem de segurança para o texto nunca encostar */
+            min-width: 230px;
+            padding-right: 20px;
             font-weight: 600;
             font-size: 0.9rem;
             color: #222;
         }
 
         .skill-row:last-child {
-            border-bottom: none; /* Tira a linha do último */
+            border-bottom: none;
         }
 
         .skill-desc {
@@ -187,33 +205,19 @@
             font-weight: 300;
         }
 
-        /* --- NAVIGATION & BUTTONS (CORRIGIDO) --- */
-        .nav-container {
-            position: fixed;
-            top: 30px;
-            right: 40px;
-            display: flex;
-            gap: 15px; /* Espaço entre os botões */
-            z-index: 100;
-            align-items: center;
-        }
-
-        /* Estilo unificado para os botões (Sem borda, fonte preta) */
+        /* --- BUTTONS & DROPDOWN --- */
         .nav-btn {
             font-size: 0.8rem;
-            color: #000; /* Preto total */
+            color: #000;
             letter-spacing: 1px;
             text-decoration: none;
-            /* Borda transparente para não pular pixel no hover */
             border: 1px solid transparent;
             padding: 8px 15px;
             border-radius: 30px;
             background: rgba(255,255,255,0.9);
             transition: all 0.3s ease;
-            /* Ajuste da Fonte e Setas */
             font-family: 'Inter', sans-serif;
-            font-weight: 300; /* Fonte leve deixa a seta fina */
-
+            font-weight: 300;
             display: inline-flex;
             align-items: center;
             gap: 6px;
@@ -221,41 +225,41 @@
         }
 
             .nav-btn:hover {
-                /* Apenas cor no texto e sombra leve, sem borda cinza */
                 color: #00b35f;
                 background: #fff;
-                box-shadow:none;
+                box-shadow: none;
             }
+
+        .btn-icon {
+            display: none;
+        }
 
         /* DROPDOWN MENU */
         .dropdown {
             position: relative;
             display: inline-block;
+            flex-shrink: 0; /* Garante que o botão não seja esmagado pelo nome */
         }
 
-        /* Conteúdo do Menu */
         .dropdown-content {
             display: none;
             position: absolute;
             right: 0;
-            top: 100%; /* Começa exatamente abaixo do botão */
-            margin-top: 10px; /* Pequeno espaço visual */
-
+            top: 100%;
+            margin-top: 10px;
             background-color: #fff;
             min-width: 160px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Sombra mais suave */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             border-radius: 12px;
             border: 1px solid #f0f0f0;
             padding: 8px 0;
             z-index: 101;
         }
 
-            /* --- A SOLUÇÃO DO BUG DE HOVER --- */
-            /* Cria uma "ponte invisível" entre o botão e o menu para o mouse não escapar */
             .dropdown-content::before {
                 content: '';
                 position: absolute;
-                top: -15px; /* Cobre o buraco acima */
+                top: -15px;
                 left: 0;
                 width: 100%;
                 height: 15px;
@@ -294,9 +298,16 @@
             }
         }
 
+        /* ============================ */
+        /* RESPONSIVIDADE MOBILE        */
+        /* ============================ */
         @media (max-width: 768px) {
             body {
-                padding: 80px 20px 40px 20px;
+                padding: 0 20px 40px 20px; /* Mantém zerado no topo */
+            }
+
+            .cv-header {
+                padding: 20px 0 15px 0; /* Header um pouco mais compacto no celular */
             }
 
             .item-header {
@@ -309,45 +320,61 @@
 
             .skill-name {
                 margin-bottom: 5px;
-                color: #00b35f;
+                color: #222; /* [FIX CRÍTICO] Corrigido, agora volta a ser preto/escuro! */
+            }
+        }
+
+        /* NOVO: Troca Botão por Ícone e Ajusta o Nome */
+        @media (max-width: 500px) {
+            .btn-text {
+                display: none;
             }
 
-            .nav-container {
-                top: 20px;
-                right: 20px;
-                gap: 5px;
+            .btn-icon {
+                display: block !important;
             }
 
             .nav-btn {
-                padding: 6px 12px;
-                font-size: 0.75rem;
+                padding: 8px 10px;
+            }
+
+            .cv-name {
+                font-size: 2rem; /* Reduz de leve pra caber mais, e o word-wrap faz o resto! */
             }
         }
     </style>
 </head>
 <body>
 
-    <div class="nav-container">
-        <div class="dropdown">
-            <button class="nav-btn">Download</button>
-            <div class="dropdown-content">
-                <a href="../assets/docs/Leonardo Donati_2026.01 (en).pdf" download>English (EN)</a>
-                <a href="../assets/docs/Leonardo Donati_2026.01 (pt-BR).pdf" download>Português (BR)</a>
-            </div>
-        </div>
-
-        <a href="../index.html?skip=true" class="nav-btn">← Home</a>
-    </div>
-
     <div class="cv-container">
 
         <header class="cv-header">
-            <h1 class="cv-name">Leonardo Donati</h1>
+            <div class="header-top">
+                <a href="../index.html?skip=true" class="cv-name-link">
+                    <h1 class="cv-name">Leonardo Donati</h1>
+                </a>
+
+                <div class="dropdown">
+                    <button class="nav-btn">
+                        <span class="btn-text">Download</span>
+                        <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="../assets/docs/Leonardo Donati_2026.01 (en).pdf" download>English (EN)</a>
+                        <a href="../assets/docs/Leonardo Donati_2026.01 (pt-BR).pdf" download>Português (BR)</a>
+                    </div>
+                </div>
+            </div>
+
             <div class="cv-role">Brazilian, 23 years old.</div>
             <div class="cv-contact">
                 Av. Túlio Teodoro de Campos, 6 – Vila Paulista, São Paulo - 4360040
                 <br>
-                +55 12 99777 3790 
+                +55 12 99777 3790
                 <br />
                 <a href="mailto:leonardodonati12@gmail.com">leonardodonati12@gmail.com</a>
                 <br>
