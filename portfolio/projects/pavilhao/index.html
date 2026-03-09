@@ -229,19 +229,17 @@
 
                 if (!dropdown || !btn) return;
 
-                // 🌟 NOVA FUNÇÃO: O Recolhimento Suave
+                // 🌟 A FUNÇÃO DE RECOLHIMENTO SUAVE (Agora dentro da página!)
                 const fecharMenuSuave = () => {
-                    dropdown.classList.add('menu-saindo'); // Começa a animação de saída
-
-                    // Espera 250ms (tempo exato do CSS) para sumir com o menu de verdade
+                    dropdown.classList.add('menu-saindo');
                     setTimeout(() => {
                         dropdown.style.display = 'none';
-                        dropdown.classList.remove('menu-saindo'); // Limpa a classe pro próximo uso
-                        btn.style.display = 'block'; // Devolve o botão ☰
+                        dropdown.classList.remove('menu-saindo');
+                        btn.style.display = 'block';
                     }, 250);
                 };
 
-                // Abrir o Menu (Continua instantâneo, o CSS já faz a entrada bonita)
+                // Abre o menu
                 if (t.closest('#gallery-menu-btn')) {
                     event.stopPropagation();
                     dropdown.style.display = 'flex';
@@ -249,13 +247,16 @@
                     return;
                 }
 
-                // Condições de Fechamento usando a nova função
+                // Condições para FECHAR
                 if (window.innerWidth <= 850 && dropdown.style.display === 'flex') {
+
+                    // Se clicou num link do menu
                     if (t.closest('.mobile-menu-item')) {
                         fecharMenuSuave();
                         return;
                     }
 
+                    // Se clicou no "vazio" (fora do menu) -> CHAMA A ANIMAÇÃO!
                     if (!t.closest('#gallery-dropdown')) {
                         fecharMenuSuave();
                     }

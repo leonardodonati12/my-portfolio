@@ -1849,45 +1849,81 @@ body.push-right #ai-modal {
 }
 
 /* ========================================== */
-/* 🎬 ANIMAÇÕES DE SAÍDA DO MENU (FECHAR SUAVE) */
+/* 🌊 EFEITO CACHOEIRA NAS ABAS (PORTFOLIO/SOLUTIONS) */
 /* ========================================== */
 
-@keyframes menu-close-home {
+@keyframes content-cascade {
 	0% {
-		transform: scaleY(1);
-		opacity: 1;
+		opacity: 0;
+		transform: translateY(15px);
 	}
 
 	100% {
-		transform: scaleY(0);
-		opacity: 0;
-	}
-}
-
-@keyframes menu-close-gallery {
-	0% {
+		opacity: 1;
 		transform: translateY(0);
-		opacity: 1;
-	}
-
-	100% {
-		transform: translateY(-15px);
-		opacity: 0;
 	}
 }
 
-/* O !important aqui garante que ele MATE a animação de abrir */
-#mobile-dropdown.menu-saindo {
-	transform-origin: top right !important;
-	animation: menu-close-home 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
-	pointer-events: none; /* Impede cliques duplos enquanto fecha */
+/* 1. Prepara os itens para a animação */
+.project-item,
+.about-text,
+.text-content p,
+.text-content h3,
+.text-content ul {
+	opacity: 0; /* Começa invisível */
+	animation: content-cascade 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
-#gallery-dropdown.menu-saindo {
-	animation: menu-close-gallery 0.25s ease forwards !important;
-	pointer-events: none;
-}
+	/* 2. O Delay progressivo (A Cachoeira) para os Projetos */
+	.project-item:nth-child(1) {
+		animation-delay: 0.05s;
+	}
 
-	#gallery-dropdown.menu-saindo a {
-		animation: none !important;
+	.project-item:nth-child(2) {
+		animation-delay: 0.10s;
+	}
+
+	.project-item:nth-child(3) {
+		animation-delay: 0.15s;
+	}
+
+	.project-item:nth-child(4) {
+		animation-delay: 0.20s;
+	}
+
+	.project-item:nth-child(5) {
+		animation-delay: 0.25s;
+	}
+
+	.project-item:nth-child(6) {
+		animation-delay: 0.30s;
+	}
+
+	/* 3. O Delay progressivo para os Textos (About, Privacy, etc) */
+	.about-text:nth-of-type(1) {
+		animation-delay: 0.05s;
+	}
+
+	.about-text:nth-of-type(2) {
+		animation-delay: 0.10s;
+	}
+
+	.about-text:nth-of-type(3) {
+		animation-delay: 0.15s;
+	}
+
+	.text-content p:nth-of-type(1) {
+		animation-delay: 0.05s;
+	}
+
+	.text-content p:nth-of-type(2) {
+		animation-delay: 0.10s;
+	}
+
+	.text-content h3:nth-of-type(1) {
+		animation-delay: 0.15s;
+	}
+
+	.text-content p:nth-of-type(3) {
+		animation-delay: 0.20s;
 	}
