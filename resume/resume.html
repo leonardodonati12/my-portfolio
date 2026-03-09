@@ -45,13 +45,12 @@
             backdrop-filter: blur(8px);
             z-index: 100;
             padding: 40px 0 10px 0;
-            /* Borda inferior removida! */
         }
 
         .header-top {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start; /* Alinha o nome e o botão pelo topo */
             gap: 15px;
         }
 
@@ -79,7 +78,6 @@
             margin-top: 5px;
         }
 
-        /* INFORMAÇÕES DE CONTATO (Agora fora do header sticky) */
         .cv-contact {
             padding-top: 15px;
             font-size: 0.9rem;
@@ -97,7 +95,7 @@
                     color: #00b35f;
                 }
 
-        /* SECTIONS */
+        /* SECTIONS E ITEMS */
         .section-title {
             font-size: 0.85rem;
             color: #999;
@@ -128,7 +126,6 @@
                 border-radius: 50%;
             }
 
-        /* ITEMS */
         .item-block {
             margin-bottom: 30px;
         }
@@ -204,117 +201,75 @@
             font-weight: 300;
         }
 
-        /* --- BUTTONS & DROPDOWN --- */
+        /* ========================================== */
+        /* 🛑 MENU UNIFICADO E DROPDOWN (IMAGE 2 E 3) */
+        /* ========================================== */
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            flex-shrink: 0;
+            align-self: flex-start;
+            margin-top: 5px; /* Ajuste para alinhar o texto "Download" com o topo do "L" */
+        }
+
         .nav-btn {
             font-size: 0.8rem;
-            color: #000;
-            letter-spacing: 1px;
+            color: #333; /* Cor mais suave */
+            text-transform: capitalize;
             text-decoration: none;
-            border: 1px solid transparent;
-            padding: 8px 15px;
-            border-radius: 30px;
-            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 0; /* Remove padding para ficar limpo */
+            background: transparent;
             transition: all 0.3s ease;
             font-family: 'Inter', sans-serif;
-            font-weight: 300;
+            font-weight: 400; /* Mais fino */
             display: inline-flex;
             align-items: center;
             gap: 6px;
             cursor: pointer;
+            text-shadow: none;
         }
 
             .nav-btn:hover {
-                color: #00b35f;
-                background: #fff;
-                box-shadow: none;
+                color: #00ff88;
+                background: transparent;
+                text-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
             }
 
         .btn-icon {
             display: none;
         }
 
-        .dropdown {
-            position: relative;
-            display: inline-block;
-            flex-shrink: 0;
-        }
-
-        /* ========================================== */
-        /* 🛑 MENU UNIFICADO (FIX DEFINITIVO)       */
-        /* ========================================== */
-
-        /* 1. Blindagem do Botão de Download para ficar cravado no topo */
-        .dropdown {
-            position: relative;
-            display: inline-block;
-            flex-shrink: 0;
-            align-self: flex-start; /* [NOVO] Garante que o botão nunca desça, fica colado no topo do Flexbox! */
-            margin-top: -5px; /* [AJUSTE FINO] Compensa o padding do botão para o ícone centralizar com o nome */
-        }
-
-        /* O Botão Principal: Limpo e sem caixa */
-        .nav-btn {
-            font-size: 0.8rem;
-            color: #000; /* Preto total */
-            letter-spacing: 1px;
-            text-decoration: none;
-            border: 1px solid transparent; /* Blindagem anti-pulo */
-            padding: 8px 15px;
-            border-radius: 30px;
-            background: transparent; /* [NOVO] Fundo transparente */
-            transition: all 0.3s ease;
-            font-family: 'Inter', sans-serif;
-            font-weight: 300;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            text-shadow: none; /* [NOVO] Começa sem sombra */
-        }
-
-            .nav-btn:hover {
-                /* No hover, ele ganha a cor verde neon da imagem 2! */
-                color: #00ff88 !important;
-                background: transparent;
-                /* [NOVO] O Brilho Neon icônico! */
-                text-shadow: 0 0 10px rgba(0, 255, 136, 0.7), 0 0 20px rgba(0, 255, 136, 0.5) !important;
-                box-shadow: none;
-            }
-
-        /* SVG Blindado: Força a cor verde da imagem 2! */
         .btn-icon-svg {
-            stroke: #00ff88 !important; /* [NOVO] Cor neon forçada */
+            stroke: #333; /* Ícone começa cinza */
+            fill: none;
             transition: stroke 0.3s ease, filter 0.3s ease;
         }
 
         .nav-btn:hover .btn-icon-svg {
-            filter: drop-shadow(0 0 5px rgba(0, 255, 136, 0.9)); /* [NOVO] Brilho no SVG */
+            stroke: #00ff88; /* Fica verde no hover */
+            filter: drop-shadow(0 0 3px rgba(0, 255, 136, 0.6));
         }
 
-        /* ------------------------------------------ */
-        /* 🔥 O DROPDOWN TRANSPARENTE (TIPO IMAGE 2) */
-        /* ------------------------------------------ */
         .dropdown-content {
             display: none;
             position: absolute;
-            right: 15px; /* Alinha perfeitamente com a margem do botão */
-            top: 100%; /* Começa exatamente abaixo do botão */
-            margin-top: 12px; /* Espaço para o menu 'respirar' */
-            /* Limpeza total: sem fundo, sem borda, sem sombra */
+            right: 0; /* Alinha pela direita do botão/ícone */
+            top: 100%;
+            margin-top: 15px;
             background: transparent;
-            min-width: 150px;
+            min-width: max-content; /* Se adapta ao tamanho da palavra PORTUGUÊS */
             box-shadow: none;
             border-radius: 0;
             border: none;
             padding: 0;
             z-index: 101;
-            /* Flexbox para empurrar tudo pra direita */
             flex-direction: column;
-            align-items: flex-end;
-            gap: 12px; /* Espaço entre as opções (EN e PT-BR) */
+            align-items: flex-end; /* Textos alinhados à direita */
+            gap: 12px;
         }
 
-            /* A "ponte invisível" para o mouse não perder o hover */
             .dropdown-content::before {
                 content: '';
                 position: absolute;
@@ -326,33 +281,27 @@
             }
 
         .dropdown:hover .dropdown-content {
-            display: flex; /* Muda para Flex para alinhar à direita */
+            display: flex;
             animation: fadeIn 0.2s ease-in-out;
         }
 
-        /* As Opções do Menu (ENGLISH e PORTUGUÊS) */
         .dropdown-content a {
             color: #333;
             padding: 0;
             text-decoration: none;
-            font-size: 0.75rem; /* Um pouco menor para elegância */
+            font-size: 0.75rem;
             font-weight: 600;
-            text-transform: uppercase; /* [NOVO] Cravado em Caixa Alta igual à imagem 2! */
+            text-transform: uppercase;
             letter-spacing: 1px;
             transition: color 0.2s;
-            /* Anti-Bug de Leitura: Brilho branco para ler sobre qualquer texto de fundo */
             text-shadow: 0 0 8px #fff, 0 0 15px #fff, 0 0 20px #fff;
         }
 
             .dropdown-content a:hover {
-                background-color: transparent;
-                color: #00ff88 !important; /* [NOVO] Cor neon no hover */
-                text-shadow: 0 0 10px rgba(0, 255, 136, 0.7), 0 0 20px rgba(0, 255, 136, 0.5) !important;
+                color: #00ff88;
+                text-shadow: 0 0 10px rgba(0, 255, 136, 0.7), 0 0 20px rgba(0, 255, 136, 0.5);
             }
 
-        /* ============================ */
-        /* ANIMAÇÕES GERAIS             */
-        /* ============================ */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -390,19 +339,8 @@
                 margin-bottom: 5px;
                 color: #222;
             }
-
-            /* [NOVO] Força o dropdown a ficar no topo no celular também! */
-            .dropdown {
-                align-self: flex-start !important;
-                margin-top: 10px !important;
-            }
-
-            .cv-name-link {
-                margin-top: 10px;
-            }
         }
 
-        /* Reduz Ícone e Nome em Telas Pequenas < 500px */
         @media (max-width: 500px) {
             .btn-text {
                 display: none;
@@ -412,100 +350,51 @@
                 display: block !important;
             }
 
-            /* Ícone de download mais limpo e centralizado */
             .nav-btn {
-                padding: 10px;
-                border-radius: 50%; /* Transforma o botão mobile numa bolinha */
-                background: rgba(0,0,0,0.03); /* Fundo super leve pra dar área de clique */
+                padding: 5px; /* Reduz a área de clique para não criar um fundo fantasma */
+                border-radius: 0;
+                background: transparent; /* Remove aquele fundo verde bola do mobile */
             }
 
                 .nav-btn:hover {
-                    background: rgba(0, 255, 136, 0.05);
+                    background: transparent;
                 }
 
             .dropdown {
-                margin-top: 5px !important;
+                margin-top: 8px; /* Ajuste para o ícone alinhar com o topo do nome no mobile */
             }
 
             .cv-name {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
-        }
-
-        /* ============================ */
-        /* RESPONSIVIDADE MOBILE        */
-        /* ============================ */
-        @media (max-width: 768px) {
-            body {
-                padding: 0 20px 40px 20px;
-            }
-
-            .cv-header {
-                padding: 20px 0 10px 0;
-            }
-
-            .item-header {
-                flex-direction: column;
-            }
-
-            .skill-row {
-                flex-direction: column;
-                align-items: flex-start; /* FIX CRÍTICO: Força o título pro canto esquerdo */
-            }
-
-            .skill-name {
-                margin-bottom: 5px;
-                color: #222;
-            }
-        }
-
-        @media (max-width: 500px) {
-            .btn-text {
-                display: none;
-            }
-
-            .btn-icon {
-                display: block !important;
-            }
-
-            .nav-btn {
-                padding: 8px 10px;
-            }
-
-            .cv-name {
-                font-size: 2rem;
-            }
-        }
-    </style>
+        }    </style>
 </head>
 <body>
 
-    <div class="cv-container">
+    <header class="cv-header">
+        <div class="header-top">
+            <a href="../index.html?skip=true" class="cv-name-link">
+                <h1 class="cv-name">Leonardo Donati</h1>
+            </a>
 
-        <header class="cv-header">
-            <div class="header-top">
-                <a href="../index.html?skip=true" class="cv-name-link">
-                    <h1 class="cv-name">Leonardo Donati</h1>
-                </a>
-
-                <div class="dropdown">
-                    <button class="nav-btn">
-                        <span class="btn-text">Download</span>
-                        <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                    </button>
-                    <div class="dropdown-content">
-                        <a href="../assets/docs/Leonardo Donati_2026.01 (en).pdf" download>English (EN)</a>
-                        <a href="../assets/docs/Leonardo Donati_2026.01 (pt-BR).pdf" download>Português (BR)</a>
-                    </div>
+            <div class="dropdown">
+                <button class="nav-btn">
+                    <span class="btn-text">Download</span>
+                    <svg class="btn-icon btn-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </button>
+                <div class="dropdown-content">
+                    <a href="../assets/docs/Leonardo Donati_2026.01 (en).pdf" download>English (EN)</a>
+                    <a href="../assets/docs/Leonardo Donati_2026.01 (pt-BR).pdf" download>Português (BR)</a>
                 </div>
             </div>
+        </div>
 
-            <div class="cv-role">Brazilian, 23 years old.</div>
-        </header>
+        <div class="cv-role">Brazilian, 23 years old.</div>
+    </header>
 
         <div class="cv-contact">
             Av. Túlio Teodoro de Campos, 6 – Vila Paulista, São Paulo - 4360040
@@ -657,8 +546,5 @@
                 </div>
             </div>
         </section>
-
-    </div>
-
 </body>
 </html>
