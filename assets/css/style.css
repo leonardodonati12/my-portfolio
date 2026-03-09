@@ -1612,35 +1612,6 @@ body.push-right #arcade-modal, body.push-right #ai-modal {
 		}
 }
 
-/* --- TELAS BAIXAS (MAX-HEIGHT 800px) --- */
-@media (max-height: 800px) {
-	.ui-panel, #ai-modal {
-		max-height: 300px !important;
-	}
-
-	.panel-content, #chat-history {
-		overflow-y: auto !important;
-	}
-
-		.panel-content::-webkit-scrollbar, #chat-history::-webkit-scrollbar {
-			width: 4px !important;
-		}
-
-		.panel-content::-webkit-scrollbar-track, #chat-history::-webkit-scrollbar-track {
-			background: transparent !important;
-		}
-
-		.panel-content::-webkit-scrollbar-thumb, #chat-history::-webkit-scrollbar-thumb {
-			background: #ffffff !important;
-			border-radius: 10px !important;
-		}
-
-			.panel-content::-webkit-scrollbar-thumb:hover, #chat-history::-webkit-scrollbar-thumb:hover {
-				background: var(--neon) !important;
-			}
-}
-
-
 /* ========================================== */
 /* 🌊 ANIMAÇÕES GERAIS E CACHOEIRAS           */
 /* ========================================== */
