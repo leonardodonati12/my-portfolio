@@ -8,9 +8,9 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%2300ff88' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M32 4 L56 18 V46 L32 60 L8 46 V18 Z'/><path d='M32 4 L32 32 M56 18 L32 32 M56 46 L32 32 M32 60 L32 32 M8 46 L32 32 M8 18 L32 32'/></g></svg>" type="image/svg+xml">
 
     <link rel="stylesheet" href="../assets/css/style.css">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="../assets/js/cursor.js" defer></script>
-
     <style>
         /* --- CLEAN THEME CSS --- */
         body {
@@ -52,7 +52,8 @@
         .header-top {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            /* [FIX 1 - IMAGEM 1] Alinha o nome e o botão de download pelo centro visual */
+            align-items: center;
             gap: 15px;
         }
 
@@ -69,7 +70,11 @@
             margin: 0;
             letter-spacing: -1px;
             line-height: 1.1;
-            word-wrap: break-word;
+        }
+
+        /* [FIX 2 - IMAGEM 2] Quebra oculta por padrão */
+        .name-break {
+            display: none;
         }
 
         .cv-role {
@@ -80,7 +85,7 @@
             margin-top: 5px;
         }
 
-        /* INFORMAÇÕES DE CONTATO */
+        /* INFORMAÇÕES DE CONTATO (Abaixo do sticky) */
         .cv-contact {
             padding-top: 15px;
             font-size: 0.9rem;
@@ -214,7 +219,8 @@
             display: inline-block;
             flex-shrink: 0;
             align-self: flex-start;
-            margin-top: 5px;
+            /* [FIX 1] Com o alinhamento center no pai, tiramos a margem top do filho pra centralizar */
+            margin-top: 0px;
         }
 
         .nav-btn {
@@ -268,13 +274,14 @@
             transition: opacity 0.2s ease, visibility 0s 0.2s;
         }
 
+            /* [FIX 3 - IMAGEM 1/2] Estilo unificado para os botões de idioma */
             .dropdown-content a {
                 color: #333;
                 padding: 0;
                 text-decoration: none;
                 font-size: 0.75rem;
-                font-weight: 600;
-                text-transform: uppercase;
+                font-weight: 600; /* Negrito igual imagem 1/2 */
+                text-transform: uppercase; /* Caixa Alta igual imagem 1/2 */
                 letter-spacing: 1px;
                 transition: color 0.2s;
                 text-shadow: 0 0 8px #fff, 0 0 15px #fff, 0 0 20px #fff;
@@ -354,9 +361,10 @@
                 color: #222;
             }
 
+            /* [FIX 1] Remove o alinhamento flex-start do menu no tablet pra respeitar o center do pai */
             .dropdown {
-                align-self: flex-start !important;
-                margin-top: 10px !important;
+                align-self: center !important;
+                margin-top: 0px !important;
             }
 
             .cv-name-link {
@@ -364,6 +372,7 @@
             }
         }
 
+        /* [FIX GERAL MOBILE - IMAGEM 1/3] Limpeza final */
         @media (max-width: 500px) {
             .btn-text {
                 display: none;
@@ -378,13 +387,26 @@
                 border-radius: 0;
                 background: transparent;
             }
-
+            /* [FIX 1] centraliza ícone na bolinha do mobile */
             .dropdown {
-                margin-top: 8px !important;
+                margin-top: 0px !important;
             }
 
             .cv-name {
                 font-size: 2.2rem;
+            }
+        }
+
+        /* ========================================== */
+        /* [FIX 2 - IMAGEM 2] FORÇA QUEBRA < 450PX    */
+        /* ========================================== */
+        @media (max-width: 450px) {
+            .name-break {
+                display: block; /* Força a quebra 'hard' exatamente no <br> */
+            }
+
+            .cv-name {
+                font-size: 2.1rem; /* Ajuste fino de tamanho pra caber tudo em 2 linhas */
             }
         }
     </style>
@@ -396,7 +418,7 @@
         <header class="cv-header">
             <div class="header-top">
                 <a href="../index.html?skip=true" class="cv-name-link">
-                    <h1 class="cv-name">Leonardo Donati</h1>
+                    <h1 class="cv-name">Leonardo<br class="name-break"> Donati</h1>
                 </a>
 
                 <div class="dropdown">
